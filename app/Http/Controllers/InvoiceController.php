@@ -8,6 +8,13 @@ class InvoiceController extends Controller
 {
     public function index()
     {
-        return view('invoice.dashboard');
+        // dd("Masuk");
+        $data = [];
+        $data["title"] = "Invoice Page";
+        return view('invoice.dashboard', $data);
+    }
+    public function test()
+    {
+        dd("CONFIRM");
     }
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\SystemController;
 use App\Http\Controllers\VesselController;
 use App\Http\Controllers\BayplanImportController;
 use App\Http\Controllers\DischargeController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PlacementController;
 /*
 |--------------------------------------------------------------------------
@@ -31,8 +32,13 @@ Route::get('/master/port', function () {
     return view('master.port');
 });
 
-Route::get('/invoice', function () {
-    return view('invoice.dashboard');
+// Route::get('/invoice', function () {
+//     return view('invoice.dashboard');
+// });
+
+Route::prefix('invoice')->group(function () {
+    Route::get('/', [InvoiceController::class, 'index']);
+    Route::get('/main', [InvoiceController::class, 'test']);
 });
 
 
@@ -73,7 +79,7 @@ Route::get('/planning/schedule_schedule={ves_id}', [VesselController::class, 'ed
 Route::patch('/planning/schedule_update={ves_id}', [VesselController::class, 'update_schedule']);
 Route::delete('/planning/delete_schedule={ves_id}', [VesselController::class, 'delete_schedule']);
 
-Route::get('/planning/bayplan_import', [ BayplanImportController::class, 'index']);
+Route::get('/planning/bayplan_import', [BayplanImportController::class, 'index']);
 Route::post('/getsize', [BayplanImportController::class, 'size']);
 Route::post('/gettype', [BayplanImportController::class, 'type']);
 Route::post('/getcode', [BayplanImportController::class, 'code']);
@@ -101,4 +107,3 @@ Route::post('/get-tipe', [PlacementController::class, 'get_tipe']);
 // Route::post('/confirm', [DischargeController::class, 'confirm']);
 
 Route::middleware('role:admin')->get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
-
