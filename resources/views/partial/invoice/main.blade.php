@@ -54,6 +54,8 @@
   <script src="{{asset('dist/assets/js/pages/simple-datatables.js')}}"></script>
   <script src="{{ asset('vendor/components/jquery/jquery.min.js') }}"></script>
 
+  <!-- select 2 js  -->
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 </body>
 
@@ -62,6 +64,13 @@
   let jquery_datatable2 = $("#table2").DataTable()
   let jquery_datatable3 = $("#table3").DataTable()
   let jquery_datatable4 = $("#table4").DataTable()
+</script>
+
+<script>
+  $(document).ready(function() {
+    $('.js-example-basic-single').select2();
+    $('.js-example-basic-multiple').select2();
+  });
 </script>
 
 </html>

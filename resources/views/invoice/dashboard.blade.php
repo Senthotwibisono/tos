@@ -22,8 +22,8 @@
           <div class="row">
             <div class="col-12">
               <div class="btn-group mb-3" role="group" aria-label="Basic example">
-                <a type="button" class="btn btn-success">
-                  Tambah Data
+                <a href="/invoice/add/step1" type="button" class="btn btn-success">
+                  Tambah Data Delivery
                 </a>
                 <a type="button" class="btn btn-primary">
                   Tambah Data Customer

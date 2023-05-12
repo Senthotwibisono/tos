@@ -39,6 +39,11 @@ Route::get('/master/port', function () {
 Route::prefix('invoice')->group(function () {
     Route::get('/', [InvoiceController::class, 'index']);
     Route::get('/main', [InvoiceController::class, 'test']);
+    Route::prefix('add')->group(function () {
+        Route::get('/step1', [InvoiceController::class, 'addDataStep1']);
+        Route::get('/step2', [InvoiceController::class, 'addDataStep2']);
+        Route::get('/step3', [InvoiceController::class, 'addDataStep3']);
+    });
 });
 
 
