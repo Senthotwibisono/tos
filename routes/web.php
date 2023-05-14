@@ -44,6 +44,9 @@ Route::prefix('invoice')->group(function () {
         Route::get('/step2', [InvoiceController::class, 'addDataStep2']);
         Route::get('/step3', [InvoiceController::class, 'addDataStep3']);
     });
+    Route::prefix('customer')->group(function () {
+        Route::get('/', [InvoiceController::class, 'customerDashboard']);
+    });
 });
 
 

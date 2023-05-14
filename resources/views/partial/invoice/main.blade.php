@@ -57,6 +57,10 @@
   <!-- select 2 js  -->
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+  <!-- flatpickr js -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+
 </body>
 
 <script>
@@ -70,7 +74,21 @@
   $(document).ready(function() {
     $('.js-example-basic-single').select2();
     $('.js-example-basic-multiple').select2();
+    flatpickr('#expired', {
+      "minDate": new Date()
+    });
+    flatpickr('#doexpired', {
+      "minDate": new Date()
+    });
+    flatpickr('#hour', {
+      noCalendar: true,
+      enableTime: true,
+      dateFormat: 'h:i K'
+    });
   });
 </script>
+
+@include('partial.invoice.js.js_modal')
+
 
 </html>
