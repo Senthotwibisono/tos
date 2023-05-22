@@ -22,7 +22,7 @@
           <div class="row">
             <div class="col-12">
               <div class="btn-group mb-3" role="group" aria-label="Basic example">
-                <a id="cust_add" type="button" class="btn btn-success">
+                <a href="/invoice/customer/add" type="button" class="btn btn-success">
                   Tambah Data Customer
                 </a>
               </div>
@@ -58,15 +58,15 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <?php for ($i = 0; $i < 20; $i++) { ?>
+                  <?php foreach ($customer as $data) { ?>
                     <tr>
-                      <td>1</td>
-                      <td>432191</td>
-                      <td>Andrea Tara</td>
-                      <td>08782739981</td>
-                      <td>16310</td>
-                      <td>Komplek Bojongsoang Permata</td>
-                      <td>66009288819983999</td>
+                      <td><?= $data->id ?></td>
+                      <td><?= $data->customer_code ?></td>
+                      <td><?= $data->customer_name ?></td>
+                      <td><?= $data->phone ?></td>
+                      <td><?= $data->fax ?></td>
+                      <td><?= $data->address ?></td>
+                      <td><?= $data->npwp ?></td>
                       <td><a href="" type="button" class="btn btn-sm btn-success"><i class="fa fa-pencil"></i></a></td>
                     </tr>
                   <?php } ?>

@@ -7,6 +7,8 @@ use App\Http\Controllers\BayplanImportController;
 use App\Http\Controllers\DischargeController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PlacementController;
+use App\Http\Controllers\SessionsController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -36,6 +38,11 @@ Route::get('/master/port', function () {
 //     return view('invoice.dashboard');
 // });
 
+Route::post('/set-session/{key}/{value}', [SessionsController::class, 'setSession'])->name('set-session');
+Route::post('/unset-session/{key}', [SessionsController::class, 'unsetSession'])->name('unset-session');
+
+
+
 Route::prefix('invoice')->group(function () {
     Route::get('/', [InvoiceController::class, 'index']);
     Route::get('/main', [InvoiceController::class, 'test']);
@@ -46,6 +53,8 @@ Route::prefix('invoice')->group(function () {
     });
     Route::prefix('customer')->group(function () {
         Route::get('/', [InvoiceController::class, 'customerDashboard']);
+        Route::get('/add', [InvoiceController::class, 'addDataCustomer']);
+        Route::post('/store', [InvoiceController::class, 'storeDataCustomer'])->name('customer.store');
     });
 });
 

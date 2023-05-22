@@ -25,10 +25,10 @@
                 <a href="/invoice/add/step1" type="button" class="btn btn-success">
                   Tambah Data Delivery
                 </a>
-                <a type="button" class="btn btn-primary">
+                <a href="/invoice/customer/add" type="button" class="btn btn-primary">
                   Tambah Data Customer
                 </a>
-                <a type="button" class="btn btn-info">
+                <a href="/invoice/customer" type="button" class="btn btn-info">
                   Lihat Data Customer
                 </a>
               </div>

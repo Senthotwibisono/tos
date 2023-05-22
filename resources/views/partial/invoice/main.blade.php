@@ -53,22 +53,57 @@
   <script src="{{asset('dist/assets/extensions/simple-datatables/umd/simple-datatables.js')}}"></script>
   <script src="{{asset('dist/assets/js/pages/simple-datatables.js')}}"></script>
   <script src="{{ asset('vendor/components/jquery/jquery.min.js') }}"></script>
+  <script src="{{asset('dist/assets/extensions/sweetalert2/sweetalert2.min.js')}}"></script>
+  <script src="{{asset('dist/assets/js/pages/sweetalert2.js')}}"></script>
 
   <!-- select 2 js  -->
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
   <!-- flatpickr js -->
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  @yield('custom_js')
 
+  @if (\Session::has('success'))
+  <script type="text/javascript">
+    // Add CSRF token to the headers
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+    var successMessage = "{!! \Session::get('success') !!}";
+
+    if (successMessage) {
+      Swal.fire({
+        icon: 'success',
+        title: 'bebas',
+        text: successMessage,
+      }).then(function() {
+        // Make an AJAX request to unset session variable
+        $.ajax({
+          url: "{{ route('unset-session', ['key' => 'success']) }}",
+          type: 'POST',
+          success: function(response) {
+            console.log('Success session unset');
+            // {{logger('Success session unset')}} -> call func logger in helper
+          },
+          error: function(error) {
+            console.log('Error unsetting session', error);
+          }
+        });
+      });
+    }
+  </script>
+  @endif
 
 </body>
 
-<script>
+<!-- <script>
   let jquery_datatable = $("#table1").DataTable()
   let jquery_datatable2 = $("#table2").DataTable()
   let jquery_datatable3 = $("#table3").DataTable()
   let jquery_datatable4 = $("#table4").DataTable()
-</script>
+</script> -->
 
 <script>
   $(document).ready(function() {
@@ -88,7 +123,7 @@
   });
 </script>
 
-@include('partial.invoice.js.js_modal')
+@include('partial.invoice.js.js_customer')
 
 
 </html>
