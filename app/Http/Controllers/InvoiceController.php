@@ -28,13 +28,23 @@ class InvoiceController extends Controller
         $client = new Client();
 
         // GET ALL CUSTOMER
-        $url_customer = getenv('API_URL') . '/customer-service/customerAll';
+        // $url_customer = getenv('API_URL') . '/customer-service/customerAll';
+        $url_customer = 'localhost:3002/customer-service/customerAll';
         $req_customer = $client->get($url_customer);
         $response_customer = $req_customer->getBody()->getContents();
         $result_customer = json_decode($response_customer);
         // dd($result_customer);
 
+        // GET ALL CONTAINER
+        // $url_container = getenv('API_URL') . '/container-service/all';
+        $url_container = 'localhost:3001/container-service/all';
+        $req_container = $client->get($url_container);
+        $response_container = $req_container->getBody()->getContents();
+        $result_container = json_decode($response_container);
+        // dd($result_container);
+
         $data["customer"] = $result_customer->data;
+        $data["container"] = $result_container->data;
 
         return view('invoice/delivery_form/add_step_1', $data);
     }
@@ -59,7 +69,8 @@ class InvoiceController extends Controller
         $client = new Client();
 
         // GET ALL CUSTOMER
-        $url_customer = getenv('API_URL') . '/customer-service/customerAll';
+        // $url_customer = getenv('API_URL') . '/customer-service/customerAll';
+        $url_customer = 'localhost:3002/customer-service/customerAll';
         $req_customer = $client->get($url_customer);
         $response_customer = $req_customer->getBody()->getContents();
         $result_customer = json_decode($response_customer);
@@ -116,9 +127,73 @@ class InvoiceController extends Controller
         } else {
             return redirect('/invoice/customer')->with('success', 'Data gagal disimpan!');
         }
+    }
 
+    public function containerDashboard()
+    {
+        $data = [];
+        $client = new Client();
 
-        $data["title"] = "Add Customer Data | Data Customer";
-        return view('invoice/customer/customeradd', $data);
+        // GET ALL CONTAINER
+        // $url_container = getenv('API_URL') . '/container-service/containerAll';
+        $url_container = 'localhost:3001/container-service/all';
+        $req_container = $client->get($url_container);
+        $response_container = $req_container->getBody()->getContents();
+        $result_container = json_decode($response_container);
+        // dd($result_container);
+
+        $data["container"] = $result_container->data;
+        $data["title"] = "Dashboard | Data Container";
+        return view('invoice/container/dashboard', $data);
+    }
+
+    public function addDataContainer()
+    {
+        $data = [];
+        $client = new Client();
+
+        $data["title"] = "Add Container Data | Data Container";
+        return view('invoice/container/containeradd', $data);
+    }
+
+    public function storeDataContainer(Request $request)
+    {
+        $data = [];
+        $client = new Client();
+
+        $container_name = $request->container_name;
+        $container_no = $request->container_no;
+        $ctr_status = $request->ctr_status;
+        $ctr_intern_status = $request->ctr_intern_status;
+        $type = $request->type;
+        $size = $request->size;
+        $gross = $request->gross;
+
+        $fields = [
+            "container_name" => $container_name,
+            "container_no" => $container_no,
+            "ctr_status" => $ctr_status,
+            "ctr_intern_status" => $ctr_intern_status,
+            "type" => $type,
+            "size" => $size,
+            "gross" => $gross,
+        ];
+        // dd($fields);
+
+        $url = getenv('API_URL') . '/container-service/create';
+        $req = $client->post(
+            $url,
+            [
+                "json" => $fields
+            ]
+        );
+        $response = $req->getBody()->getContents();
+        $result = json_decode($response);
+        // dd($result);
+        if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+            return redirect('/invoice/container')->with('success', 'Data berhasil disimpan!');
+        } else {
+            return redirect('/invoice/container')->with('success', 'Data gagal disimpan!');
+        }
     }
 }

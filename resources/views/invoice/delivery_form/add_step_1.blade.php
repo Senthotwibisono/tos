@@ -30,7 +30,7 @@
             <label for="">Customer</label>
             <div class="form-group">
               <select class="js-example-basic-single form-control">
-                <option selected default value="">Pilih Salah Satu</option>
+                <option selected disabled default value="">Pilih Salah Satu</option>
                 <?php foreach ($customer as $data) { ?>
                   <option value="<?= $data->id ?>"><?= $data->customer_name ?></option>
                 <?php } ?>
@@ -70,9 +70,9 @@
           <div class="col-12">
             <label for="">Container Number</label>
             <select class="js-example-basic-multiple form-control" multiple="multiple">
-              <option selected default value="">Pilih Salah Satu</option>
-              <?php foreach ($customer as $data) { ?>
-                <option value="<?= $data->id ?>"><?= $data->customer_name ?></option>
+              <option disabled value="">Pilih Salah Satu</option>
+              <?php foreach ($container as $data) { ?>
+                <option value="<?= $data->id ?>"><?= $data->container_no ?></option>
               <?php } ?>
             </select>
           </div>

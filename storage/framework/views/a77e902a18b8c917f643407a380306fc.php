@@ -76,7 +76,7 @@
     if (successMessage) {
       Swal.fire({
         icon: 'success',
-        title: 'bebas',
+        title: 'Success',
         text: successMessage,
       }).then(function() {
         // Make an AJAX request to unset session variable

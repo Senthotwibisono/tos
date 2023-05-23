@@ -56,6 +56,11 @@ Route::prefix('invoice')->group(function () {
         Route::get('/add', [InvoiceController::class, 'addDataCustomer']);
         Route::post('/store', [InvoiceController::class, 'storeDataCustomer'])->name('customer.store');
     });
+    Route::prefix('container')->group(function () {
+        Route::get('/', [InvoiceController::class, 'containerDashboard']);
+        Route::get('/add', [InvoiceController::class, 'addDataContainer']);
+        Route::post('/store', [InvoiceController::class, 'storeDataContainer']);
+    });
 });
 
 

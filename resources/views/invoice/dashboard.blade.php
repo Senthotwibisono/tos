@@ -25,8 +25,9 @@
                 <a href="/invoice/add/step1" type="button" class="btn btn-success">
                   Tambah Data Delivery
                 </a>
-                <a href="/invoice/customer/add" type="button" class="btn btn-primary">
-                  Tambah Data Customer
+                <a href=""></a>
+                <a href="/invoice/container" type="button" class="btn btn-primary">
+                  Lihat Data Container
                 </a>
                 <a href="/invoice/customer" type="button" class="btn btn-info">
                   Lihat Data Customer
