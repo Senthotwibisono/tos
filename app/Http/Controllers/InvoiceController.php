@@ -27,9 +27,15 @@ class InvoiceController extends Controller
 
         $client = new Client();
 
+        // $url_test = 'localhost:3013/delivery-service/form/all';
+        // $req_test = $client->get($url_test);
+        // $response_test = $req_test->getBody()->getContents();
+        // $result_test = json_decode($response_test);
+        // dd($result_test);
+
         // GET ALL CUSTOMER
         // $url_customer = getenv('API_URL') . '/customer-service/customerAll';
-        $url_customer = 'localhost:3002/customer-service/customerAll';
+        $url_customer = 'localhost:3013/delivery-service/customer/all';
         $req_customer = $client->get($url_customer);
         $response_customer = $req_customer->getBody()->getContents();
         $result_customer = json_decode($response_customer);
@@ -37,7 +43,7 @@ class InvoiceController extends Controller
 
         // GET ALL CONTAINER
         // $url_container = getenv('API_URL') . '/container-service/all';
-        $url_container = 'localhost:3001/container-service/all';
+        $url_container = 'localhost:3013/delivery-service/container/all';
         $req_container = $client->get($url_container);
         $response_container = $req_container->getBody()->getContents();
         $result_container = json_decode($response_container);
@@ -49,9 +55,62 @@ class InvoiceController extends Controller
         return view('invoice/delivery_form/add_step_1', $data);
     }
 
-    public function addDataStep2()
+    public function storeDataStep1(Request $request)
     {
         $data = [];
+        $client = new Client();
+
+        $exp_date = $request->exp_date;
+        $exp_time = $request->exp_time;
+        $customer = $request->customer;
+        $do_number = $request->do_number;
+        $do_exp_date = $request->do_exp_date;
+        $boln = $request->boln;
+        $container = $request->container;
+        $fields = [
+            "exp_date" => $exp_date,
+            "time" => $exp_time,
+            "customer_id" => $customer,
+            "do_number" => $do_number,
+            "do_exp_date" => $do_exp_date,
+            "boln" => $boln,
+            "container" => $container,
+        ];
+        // dd($fields);
+
+        $url = 'localhost:3013/delivery-service/form/create';
+        $req = $client->post(
+            $url,
+            [
+                "json" => $fields
+            ]
+        );
+        $response = $req->getBody()->getContents();
+        $result = json_decode($response);
+        // dd($result);
+        if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+            return redirect('/invoice/add/step2?id=' . $result->data->id)->with('success', 'Form berhasil disimpan!', 'Silahkan preview sebelum melakukan perhitungan!');
+        } else {
+            return redirect('/invoice')->with('success', 'Data gagal disimpan!');
+        }
+    }
+
+    public function addDataStep2(Request $request)
+    {
+        $data = [];
+        $client = new Client();
+
+        $id_form = $request->id;
+        // dd($id_form);
+
+        // GET SINGLE FORM
+        $url_single_form = 'localhost:3013/delivery-service/form/single/' . $id_form;
+        $req_single_form = $client->get($url_single_form);
+        $response_single_form = $req_single_form->getBody()->getContents();
+        $result_single_form = json_decode($response_single_form);
+        // dd($result_single_form);
+
+        $data["singleform"] = $result_single_form->data;
         $data["title"] = "Step 2 | Delivery Form Review Data";
         return view('invoice/delivery_form/add_step_2', $data);
     }
@@ -68,9 +127,15 @@ class InvoiceController extends Controller
         $data = [];
         $client = new Client();
 
+        // $url_test = 'localhost:3013/delivery-service/form/all';
+        // $req_test = $client->get($url_test);
+        // $response_test = $req_test->getBody()->getContents();
+        // $result_test = json_decode($response_test);
+        // dd($result_test->data[0]->container[1]);
+
         // GET ALL CUSTOMER
         // $url_customer = getenv('API_URL') . '/customer-service/customerAll';
-        $url_customer = 'localhost:3002/customer-service/customerAll';
+        $url_customer = 'localhost:3013/delivery-service/customer/all';
         $req_customer = $client->get($url_customer);
         $response_customer = $req_customer->getBody()->getContents();
         $result_customer = json_decode($response_customer);
@@ -96,7 +161,7 @@ class InvoiceController extends Controller
         $client = new Client();
 
         $cust_name = $request->cust_name;
-        $cust_code = $request->cust_code;
+        $cust_no = $request->cust_code;
         $cust_phone = $request->cust_phone;
         $cust_fax = $request->cust_fax;
         $cust_npwp = $request->cust_npwp;
@@ -104,7 +169,7 @@ class InvoiceController extends Controller
 
         $fields = [
             "customer_name" => $cust_name,
-            "customer_code" => $cust_code,
+            "customer_no" => $cust_no,
             "phone" => $cust_phone,
             "fax" => $cust_fax,
             "npwp" => $cust_npwp,
@@ -112,7 +177,7 @@ class InvoiceController extends Controller
         ];
         // dd($fields);
 
-        $url = getenv('API_URL') . '/customer-service/storeCustomer';
+        $url = 'localhost:3013/delivery-service/customer/create';
         $req = $client->post(
             $url,
             [
@@ -136,7 +201,7 @@ class InvoiceController extends Controller
 
         // GET ALL CONTAINER
         // $url_container = getenv('API_URL') . '/container-service/containerAll';
-        $url_container = 'localhost:3001/container-service/all';
+        $url_container = 'localhost:3013/delivery-service/container/all';
         $req_container = $client->get($url_container);
         $response_container = $req_container->getBody()->getContents();
         $result_container = json_decode($response_container);
@@ -180,7 +245,7 @@ class InvoiceController extends Controller
         ];
         // dd($fields);
 
-        $url = getenv('API_URL') . '/container-service/create';
+        $url = 'localhost:3013/delivery-service/container/create';
         $req = $client->post(
             $url,
             [

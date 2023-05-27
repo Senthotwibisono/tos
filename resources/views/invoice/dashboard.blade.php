@@ -23,14 +23,14 @@
             <div class="col-12">
               <div class="btn-group mb-3" role="group" aria-label="Basic example">
                 <a href="/invoice/add/step1" type="button" class="btn btn-success">
-                  Tambah Data Delivery
+                  Data Delivery
                 </a>
                 <a href=""></a>
                 <a href="/invoice/container" type="button" class="btn btn-primary">
-                  Lihat Data Container
+                  Data Container
                 </a>
                 <a href="/invoice/customer" type="button" class="btn btn-info">
-                  Lihat Data Customer
+                  Data Customer
                 </a>
               </div>
             </div>
