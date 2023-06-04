@@ -26,13 +26,6 @@ class InvoiceController extends Controller
         $data["title"] = "Step 1 | Devivery Form Input Data";
 
         $client = new Client();
-
-        // $url_test = 'localhost:3013/delivery-service/form/all';
-        // $req_test = $client->get($url_test);
-        // $response_test = $req_test->getBody()->getContents();
-        // $result_test = json_decode($response_test);
-        // dd($result_test);
-
         // GET ALL CUSTOMER
         // $url_customer = getenv('API_URL') . '/customer-service/customerAll';
         $url_customer = 'localhost:3013/delivery-service/customer/all';
@@ -90,7 +83,7 @@ class InvoiceController extends Controller
         $result = json_decode($response);
         // dd($result);
         if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-            return redirect('/invoice/add/step2?id=' . $result->data->id)->with('success', 'Form berhasil disimpan!', 'Silahkan preview sebelum melakukan perhitungan!');
+            return redirect('/invoice/add/step2?id=' . $result->data->id)->with('success', 'Form berhasil disimpan! Silahkan preview sebelum melakukan perhitungan!');
         } else {
             return redirect('/invoice')->with('success', 'Data gagal disimpan!');
         }
@@ -116,9 +109,71 @@ class InvoiceController extends Controller
         return view('invoice/delivery_form/add_step_2', $data);
     }
 
+    public function storeDataStep2(Request $request)
+    {
+        $data = [];
+        $client = new Client();
+
+        $id = $request->id_param;
+        // dd($id);
+
+        // GET SINGLE FORM
+        $url_single_form = 'localhost:3013/delivery-service/form/container/' . $id;
+        $req_single_form = $client->get($url_single_form);
+        $response_single_form = $req_single_form->getBody()->getContents();
+        $result_single_form = json_decode($response_single_form);
+        // dd($result_single_form);
+        $container = $result_single_form->data->containers;
+        // dd($container);
+        $container_arr = [];
+        foreach ($container as $data) {
+            array_push($container_arr, [
+                // "banner_url" => $banner_url_file_1,
+                $data->container_no
+            ]);
+        }
+        // dd($container_arr);
+
+        $fields = [
+            "id" => $id,
+            "containers" => $container_arr,
+        ];
+        // var_dump($fields);
+        // die();
+        // dd($fields);
+        // Commit changes
+
+        $url = 'localhost:3013/delivery-service/form/calculate';
+        $req = $client->post(
+            $url,
+            [
+                "json" => $fields
+            ]
+        );
+        $response = $req->getBody()->getContents();
+        $result = json_decode($response);
+        // dd($result);
+
+
+
+        if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+            // $data["step3"] = $result;
+            session(['step3_data' => $result]);
+            return redirect('/invoice/add/step3')->with('success', 'Form berhasil disimpan!');
+        } else {
+            return redirect('/invoice')->with('error', 'Data gagal disimpan! kode error : #st2del');
+        }
+    }
+
     public function addDataStep3()
     {
         $data = [];
+        $data["ccdelivery"] = session('step3_data')->data;
+        // $test = session('step3_data');
+        // dd(count($test->data));
+        // dd(count($data["ccdelivery"]->tarifCheck));
+        // dd($data["ccdelivery"]->tarifCheck[0]->lift_on);
+        $data["menuinv"] = ["Cost Recovery", "Lift On", "Lift Off", "Penumpukan Masa 1", "Penumpukan Masa 2", "Penumpukan Masa 3",];
         $data["title"] = "Step 3 | Delivery Pranota";
         return view('invoice/delivery_form/add_step_3', $data);
     }

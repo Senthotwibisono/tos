@@ -38,3 +38,8 @@ function singleCustomer($id)
         return $result->data;
     }
 }
+
+function rupiah($nominal = '')
+{
+    return number_format($nominal, 0, ',', '.');
+}

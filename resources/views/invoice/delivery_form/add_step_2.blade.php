@@ -82,8 +82,8 @@
 
                     <td><?= $data->container_no ?></td>
                     <td><?= $data->container_name ?></td>
-                    <td><?= $data->size ?></td>
-                    <td><?= $data->type ?></td>
+                    <td><?= $data->ctr_size ?></td>
+                    <td><?= $data->ctr_type ?></td>
                     <td><?= $data->ctr_status ?></td>
                     <td><?= $data->ctr_intern_status ?></td>
                     <td><?= $data->gross ?></td>
@@ -95,9 +95,14 @@
         </div>
         <div class="row mt-5">
           <div class="col-12 text-right">
-            <a href="/invoice/add/step3" class="btn btn btn-success">Submit</a>
+            <form action="/invoice/add/storestep2" method="POST" enctype="multipart/form-data">
+
+              @CSRF
+              <input type="hidden" name="id_param" value="<?= $singleform->id ?>">
+              <button type="submit" class="btn btn btn-success">Submit</button>
+            </form>
             <a href="/invoice/add/step1" class="btn btn btn-warning">Edit</a>
-            <a href="" class="btn btn btn-secondary">Cancel</a>
+            <a onclick="canceladdCustomer();" class="btn btn btn-secondary">Cancel</a>
           </div>
         </div>
       </div>

@@ -66,8 +66,8 @@
                       <td><?= $data->container_name ?></td>
                       <td><?= $data->ctr_status ?></td>
                       <td><?= $data->ctr_intern_status ?></td>
-                      <td><?= $data->size ?></td>
-                      <td><?= $data->type ?></td>
+                      <td><?= $data->ctr_size ?></td>
+                      <td><?= $data->ctr_type ?></td>
                       <td><?= $data->gross ?></td>
                       <td><a href="" type="button" class="btn btn-sm btn-success"><i class="fa fa-pencil"></i></a></td>
                     </tr>
