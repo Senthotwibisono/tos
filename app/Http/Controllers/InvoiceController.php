@@ -56,7 +56,7 @@ class InvoiceController extends Controller
 
         $id_invoice = $request->id;
         // dd($id_invoice);
-
+        //commited
         // GET SINGLE FORM
         $url_single_invoice = 'localhost:3013/delivery-service/invoice/single/' . $id_invoice;
         $req_single_invoice = $client->get($url_single_invoice);
