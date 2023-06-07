@@ -43,3 +43,9 @@ function rupiah($nominal = '')
 {
     return number_format($nominal, 0, ',', '.');
 }
+
+function DateTimeFormat($date)
+{
+    $new_date = date("d F Y H:i", strtotime('-0 hours', strtotime($date)));
+    return $new_date;
+}

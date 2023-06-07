@@ -52,7 +52,10 @@ Route::prefix('invoice')->group(function () {
         Route::get('/step3', [InvoiceController::class, 'addDataStep3']);
         Route::post('/storestep1', [InvoiceController::class, 'storeDataStep1']);
         Route::post('/storestep2', [InvoiceController::class, 'storeDataStep2']);
+        Route::post('/storestep3', [InvoiceController::class, 'storeDataStep3']);
     });
+    Route::get('/pranota', [InvoiceController::class, 'Pranota']);
+    Route::get('/paidinvoice', [InvoiceController::class, 'PaidInvoice']);
     Route::prefix('customer')->group(function () {
         Route::get('/', [InvoiceController::class, 'customerDashboard']);
         Route::get('/add', [InvoiceController::class, 'addDataCustomer']);

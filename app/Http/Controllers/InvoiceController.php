@@ -12,9 +12,61 @@ class InvoiceController extends Controller
     public function index()
     {
         // dd("Masuk");
+        $client = new Client();
+
         $data = [];
+
+        // GET ALL INVOICE
+        // $url_invoice = getenv('API_URL') . '/customer-service/customerAll';
+        $url_invoice = 'localhost:3013/delivery-service/invoice/all';
+        $req_invoice = $client->get($url_invoice);
+        $response_invoice = $req_invoice->getBody()->getContents();
+        $result_invoice = json_decode($response_invoice);
+        // dd($result_invoice->data);
+
+        $data["invoices"] = $result_invoice->data;
         $data["title"] = "Invoice Page";
         return view('invoice.dashboard', $data);
+    }
+
+    public function Pranota(Request $request)
+    {
+        $data = [];
+        $client = new Client();
+
+        $id_invoice = $request->id;
+        // dd($id_invoice);
+
+        // GET SINGLE FORM
+        $url_single_invoice = 'localhost:3013/delivery-service/invoice/single/' . $id_invoice;
+        $req_single_invoice = $client->get($url_single_invoice);
+        $response_single_invoice = $req_single_invoice->getBody()->getContents();
+        $result_single_invoice = json_decode($response_single_invoice);
+        // dd($result_single_invoice);
+
+        $data["invoices"] = $result_single_invoice->data;
+        $data["title"] = "Pranota Data";
+        return view('invoice/pranota/index', $data);
+    }
+
+    public function PaidInvoice(Request $request)
+    {
+        $data = [];
+        $client = new Client();
+
+        $id_invoice = $request->id;
+        // dd($id_invoice);
+
+        // GET SINGLE FORM
+        $url_single_invoice = 'localhost:3013/delivery-service/invoice/single/' . $id_invoice;
+        $req_single_invoice = $client->get($url_single_invoice);
+        $response_single_invoice = $req_single_invoice->getBody()->getContents();
+        $result_single_invoice = json_decode($response_single_invoice);
+        // dd($result_single_invoice);
+
+        $data["invoices"] = $result_single_invoice->data;
+        $data["title"] = "Pranota Data";
+        return view('invoice/paid_invoice/index', $data);
     }
     public function test()
     {
@@ -172,10 +224,53 @@ class InvoiceController extends Controller
         // $test = session('step3_data');
         // dd(count($test->data));
         // dd(count($data["ccdelivery"]->tarifCheck));
-        // dd($data["ccdelivery"]->tarifCheck[0]->lift_on);
-        $data["menuinv"] = ["Cost Recovery", "Lift On", "Lift Off", "Penumpukan Masa 1", "Penumpukan Masa 2", "Penumpukan Masa 3",];
+        // dd($data["ccdelivery"]);
+        $data["menuinv"] = ["Cost Recovery", "Lift On", "Lift Off", "Penumpukan Masa 1", "Penumpukan Masa 2", "Penumpukan Masa 3"];
         $data["title"] = "Step 3 | Delivery Pranota";
         return view('invoice/delivery_form/add_step_3', $data);
+    }
+
+    public function storeDataStep3(Request $request)
+    {
+        $data = [];
+        $client = new Client();
+
+
+        $data1 = $request->input('data1');
+        $data2 = $request->input('data2');
+        $data3 = $request->input('data3');
+        $data4 = $request->input('data4');
+        $data5 = $request->input('data5');
+        $data6 = $request->input('data6');
+        $data7 = $request->input('data7');
+
+        $fields = [
+            "data1" => $data1,
+            "data2" => $data2,
+            "data3" => $data3,
+            "data4" => $data4,
+            "data5" => $data5,
+            "data6" => $data6,
+            "data7" => $data7,
+        ];
+        // dd($fields);
+
+        $url = 'localhost:3013/delivery-service/invoice/create';
+        $req = $client->post(
+            $url,
+            [
+                "json" => $fields
+            ]
+        );
+        $response = $req->getBody()->getContents();
+        $result = json_decode($response);
+        // dd($result);
+
+        if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+            return redirect('/invoice')->with('success', 'Invoice berhasil dibuat & disimpan!');
+        } else {
+            return redirect('/invoice')->with('error', 'Data gagal disimpan! kode error : #st2del');
+        }
     }
 
     public function customerDashboard()

@@ -65,7 +65,74 @@
           <div class="row mt-3">
             <?php
             $i = 0;
-            foreach ($ccdelivery->tarifCheck as $data) { ?>
+            $index = 0;
+            foreach ($ccdelivery->tarifCheck as $data) {
+            ?>
+              <?php
+              $data1 = array_slice($ccdelivery->tarifCheck, 0, $index); // Elements before the index
+              $data2 = array_slice($ccdelivery->tarifCheck, $index); // Elements at and after the index
+              ?>
+              <?php
+              foreach ($data2 as $data) { ?>
+
+                <input type="hidden" name="data1[<?= $index ?>][title]" value="<?= $menuinv[0] ?>">
+                <input type="hidden" name="data2[<?= $index ?>][title]" value="<?= $menuinv[1] ?>">
+                <input type="hidden" name="data3[<?= $index ?>][title]" value="<?= $menuinv[2] ?>">
+                <input type="hidden" name="data4[<?= $index ?>][title]" value="<?= $menuinv[3] ?>">
+                <input type="hidden" name="data5[<?= $index ?>][title]" value="<?= $menuinv[4] ?>">
+                <input type="hidden" name="data6[<?= $index ?>][title]" value="<?= $menuinv[5] ?>">
+
+                <input type="hidden" name="data1[<?= $index ?>][jumlah]" value="<?= $ccdelivery->findContainer[$i]->jml_cont ?>">
+                <input type="hidden" name="data2[<?= $index ?>][jumlah]" value="<?= $ccdelivery->findContainer[$i]->jml_cont ?>">
+                <input type="hidden" name="data3[<?= $index ?>][jumlah]" value="<?= $ccdelivery->findContainer[$i]->jml_cont ?>">
+                <input type="hidden" name="data4[<?= $index ?>][jumlah]" value="<?= $ccdelivery->findContainer[$i]->jml_cont ?>">
+                <input type="hidden" name="data5[<?= $index ?>][jumlah]" value="<?= $ccdelivery->findContainer[$i]->jml_cont ?>">
+                <input type="hidden" name="data6[<?= $index ?>][jumlah]" value="<?= $ccdelivery->findContainer[$i]->jml_cont ?>">
+
+                <input type="hidden" name="data1[<?= $index ?>][size]" value="<?= $ccdelivery->findContainer[$i]->ctr_size ?>">
+                <input type="hidden" name="data2[<?= $index ?>][size]" value="<?= $ccdelivery->findContainer[$i]->ctr_size ?>">
+                <input type="hidden" name="data3[<?= $index ?>][size]" value="<?= $ccdelivery->findContainer[$i]->ctr_size ?>">
+                <input type="hidden" name="data4[<?= $index ?>][size]" value="<?= $ccdelivery->findContainer[$i]->ctr_size ?>">
+                <input type="hidden" name="data5[<?= $index ?>][size]" value="<?= $ccdelivery->findContainer[$i]->ctr_size ?>">
+                <input type="hidden" name="data6[<?= $index ?>][size]" value="<?= $ccdelivery->findContainer[$i]->ctr_size ?>">
+
+                <input type="hidden" name="data1[<?= $index ?>][type]" value="<?= $ccdelivery->findContainer[$i]->ctr_type ?>">
+                <input type="hidden" name="data2[<?= $index ?>][type]" value="<?= $ccdelivery->findContainer[$i]->ctr_type ?>">
+                <input type="hidden" name="data3[<?= $index ?>][type]" value="<?= $ccdelivery->findContainer[$i]->ctr_type ?>">
+                <input type="hidden" name="data4[<?= $index ?>][type]" value="<?= $ccdelivery->findContainer[$i]->ctr_type ?>">
+                <input type="hidden" name="data5[<?= $index ?>][type]" value="<?= $ccdelivery->findContainer[$i]->ctr_type ?>">
+                <input type="hidden" name="data6[<?= $index ?>][type]" value="<?= $ccdelivery->findContainer[$i]->ctr_type ?>">
+
+                <input type="hidden" name="data1[<?= $index ?>][status]" value="<?= $ccdelivery->findContainer[$i]->ctr_status ?>">
+                <input type="hidden" name="data2[<?= $index ?>][status]" value="<?= $ccdelivery->findContainer[$i]->ctr_status ?>">
+                <input type="hidden" name="data3[<?= $index ?>][status]" value="<?= $ccdelivery->findContainer[$i]->ctr_status ?>">
+                <input type="hidden" name="data4[<?= $index ?>][status]" value="<?= $ccdelivery->findContainer[$i]->ctr_status ?>">
+                <input type="hidden" name="data5[<?= $index ?>][status]" value="<?= $ccdelivery->findContainer[$i]->ctr_status ?>">
+                <input type="hidden" name="data6[<?= $index ?>][status]" value="<?= $ccdelivery->findContainer[$i]->ctr_status ?>">
+
+                <input type="hidden" name="data1[<?= $index ?>][hari]" value="0">
+                <input type="hidden" name="data2[<?= $index ?>][hari]" value="0">
+                <input type="hidden" name="data3[<?= $index ?>][hari]" value="0">
+                <input type="hidden" name="data4[<?= $index ?>][hari]" value="<?= $ccdelivery->diffInDays[$i]->masa1 ?>">
+                <input type="hidden" name="data5[<?= $index ?>][hari]" value="<?= $ccdelivery->diffInDays[$i]->masa2 ?>">
+                <input type="hidden" name="data6[<?= $index ?>][hari]" value="<?= $ccdelivery->diffInDays[$i]->masa3 ?>">
+
+                <input type="hidden" name="data1[<?= $index ?>][tarif]" value="<?= $data->cost_recovery ?>">
+                <input type="hidden" name="data2[<?= $index ?>][tarif]" value="<?= $data->lift_on ?>">
+                <input type="hidden" name="data3[<?= $index ?>][tarif]" value="<?= $data->lift_off ?>">
+                <input type="hidden" name="data4[<?= $index ?>][tarif]" value="<?= $data->masa1 ?>">
+                <input type="hidden" name="data5[<?= $index ?>][tarif]" value="<?= $data->masa2 ?>">
+                <input type="hidden" name="data6[<?= $index ?>][tarif]" value="<?= $data->masa3 ?>">
+
+                <input type="hidden" name="data1[<?= $index ?>][amount]" value="<?= $ccdelivery->grandTotal[$i]->costRecovery ?>">
+                <input type="hidden" name="data2[<?= $index ?>][amount]" value="<?= $ccdelivery->grandTotal[$i]->liftOn ?>">
+                <input type="hidden" name="data3[<?= $index ?>][amount]" value="<?= $ccdelivery->grandTotal[$i]->liftOff ?>">
+                <input type="hidden" name="data4[<?= $index ?>][amount]" value="<?= $ccdelivery->grandTotal[$i]->penumpukanMasa1 ?>">
+                <input type="hidden" name="data5[<?= $index ?>][amount]" value="<?= $ccdelivery->grandTotal[$i]->penumpukanMasa2 ?>">
+                <input type="hidden" name="data6[<?= $index ?>][amount]" value="<?= $ccdelivery->grandTotal[$i]->penumpukanMasa3 ?>">
+
+              <?php } ?>
+
               <div class="col-12">
                 <h5>Container dengan ukuran <?= $data->size ?></h5>
                 <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
@@ -86,31 +153,9 @@
                   </thead>
                   <tbody>
 
+
                     <?php foreach ($menuinv as $value) { ?>
 
-                      <?php
-                      $total_bfr_grand = 0;
-                      $total_grand = 0;
-                      $total_tax = 0;
-                      $administration = 30000;
-                      foreach ($ccdelivery->tarifCheck as $calcdata) { ?>
-                        <?php
-                        $cr_amount[$i] = $calcdata->cost_recovery * $ccdelivery->findContainer[$i]->jml_cont;
-                        $lo_amount[$i] = $calcdata->lift_on * $ccdelivery->findContainer[$i]->jml_cont;
-                        $lof_amount[$i] = $calcdata->lift_off * $ccdelivery->findContainer[$i]->jml_cont;
-                        $pm1_amount[$i] = $calcdata->masa1 * $ccdelivery->findContainer[$i]->jml_cont * 1;
-                        $pm2_amount[$i] = $calcdata->masa2 * $ccdelivery->findContainer[$i]->jml_cont * $ccdelivery->diffInDays[$i]->masa2;
-                        $pm3_amount[$i] = $calcdata->masa3 * $ccdelivery->findContainer[$i]->jml_cont * $ccdelivery->diffInDays[$i]->masa3;
-
-                        $total[$i] = $lo_amount[$i] + $lof_amount[$i] + $pm1_amount[$i] + $pm2_amount[$i] + $pm3_amount[$i];
-                        $tax[$i] = $total[$i] * 11 / 100;
-                        $grand_total[$i] = $tax[$i] + $total[$i];
-                        // dd(rupiah($grand_total));
-                        $total_grand += $grand_total[$i] + $administration;
-                        $total_bfr_grand += $total[$i];
-                        $total_tax += $tax[$i];
-                        ?>
-                      <?php } ?>
                       <?php
                       // dd("DATA GRAND TOTAL data PERTAMA", rupiah($grand_total[0]), "DATA GRAND TOTAL", rupiah($total_grand)); 
                       ?>
@@ -125,46 +170,47 @@
                         <?php if ($value == "Cost Recovery") { ?>
                           <th>0 Hari</th>
                           <th>Rp. <?= rupiah($data->cost_recovery) ?></th>
-                          <th>Rp. <?= rupiah($data->cost_recovery * $ccdelivery->findContainer[$i]->jml_cont) ?></th>
+                          <th>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->costRecovery) ?></th>
                         <?php } else if ($value == "Lift On") {  ?>
                           <th>0 Hari</th>
                           <th>Rp. <?= rupiah($data->lift_on) ?></th>
-                          <th>Rp. <?= rupiah($data->lift_on * $ccdelivery->findContainer[$i]->jml_cont) ?></th>
+                          <th>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->liftOn) ?></th>
                         <?php } else if ($value == "Lift Off") {  ?>
                           <th>0 Hari</th>
                           <th>Rp. <?= rupiah($data->lift_off) ?></th>
-                          <th>Rp. <?= rupiah($data->lift_off * $ccdelivery->findContainer[$i]->jml_cont) ?></th>
+                          <th>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->liftOff) ?></th>
                         <?php } else if ($value == "Penumpukan Masa 1") {  ?>
                           <th><?= $ccdelivery->diffInDays[$i]->masa1 ?> Hari</th>
                           <th>Rp. <?= rupiah($data->masa1) ?></th>
-                          <th>Rp. <?= rupiah($data->masa1 * $ccdelivery->findContainer[$i]->jml_cont * 1) ?></th>
+                          <th>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->penumpukanMasa1) ?></th>
                         <?php } else if ($value == "Penumpukan Masa 2") {  ?>
                           <th><?= $ccdelivery->diffInDays[$i]->masa2 ?> Hari</th>
                           <th>Rp. <?= rupiah($data->masa2) ?></th>
-                          <th>Rp. <?= rupiah($data->masa2 * $ccdelivery->findContainer[$i]->jml_cont * $ccdelivery->diffInDays[$i]->masa2) ?></th>
+                          <th>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->penumpukanMasa2) ?></th>
                         <?php } else if ($value == "Penumpukan Masa 3") {  ?>
                           <th><?= $ccdelivery->diffInDays[$i]->masa3 ?> Hari</th>
                           <th>Rp. <?= rupiah($data->masa3) ?></th>
-                          <th>Rp. <?= rupiah($data->masa3 * $ccdelivery->findContainer[$i]->jml_cont * $ccdelivery->diffInDays[$i]->masa3) ?></th>
+                          <th>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->penumpukanMasa3) ?></th>
 
                         <?php } else { ?>
                           <th>0</th>
                           <th>Rp. 0</th>
                           <th>Rp. 0</th>
                         <?php } ?>
-
-
-
-
                       </tr>
                     <?php } ?>
                   </tbody>
                 </table>
+                <h4>Total : Rp. <?= rupiah($ccdelivery->grandTotal[$i]->amountBeforeTax) ?>,00 ~</h4>
+                <br>
+                <br>
+                <br>
               </div>
             <?php
               $i = $i + 1;
-            } ?>
+              $index++; // Increment the index variable for each iteration
 
+            } ?>
           </div>
 
           <div class="row mt-3">
@@ -181,10 +227,20 @@
                       <h5 class="text-white">Grand Total :</h5>
                     </div>
                     <div class="col-6" style="text-align:right;">
-                      <h4 class="text-white bold">Rp. <?= rupiah($total_bfr_grand) ?>,00 ~</h4>
-                      <h5 class="text-white">Rp. <?= rupiah($administration) ?>,00 ~</h5>
-                      <h5 class="text-white">Rp. <?= rupiah($total_tax) ?>,00 ~</h5>
-                      <h4 class="bold" style="color:#ff5265;">Rp. <?= rupiah($total_grand) ?>,00 ~</h4>
+                      <h4 class="text-white bold">Rp. <?= rupiah($ccdelivery->finalGrandTotal[0]->totalAmountBeforeTax) ?>,00 ~</h4>
+                      <h5 class="text-white">Rp. 30.000,00 ~</h5>
+                      <h5 class="text-white">Rp. <?= rupiah($ccdelivery->finalGrandTotal[0]->totalAmountWithTax) ?>,00 ~</h5>
+                      <h4 class="bold" style="color:#ff5265;">Rp. <?= rupiah($ccdelivery->finalGrandTotal[0]->totalAmountAfterTax) ?>,00 ~</h4>
+
+
+                      <input type="hidden" name="data7[customer]" value="<?= $ccdelivery->deliveryForm->customer->customer_name ?>">
+                      <input type="hidden" name="data7[deliveryid]" value="<?= $ccdelivery->deliveryForm->id ?>">
+                      <input type="hidden" name="data7[totalamount]" value="<?= $ccdelivery->finalGrandTotal[0]->totalAmountBeforeTax ?>">
+                      <input type="hidden" name="data7[admin]" value="30000">
+                      <input type="hidden" name="data7[tax]" value="<?= $ccdelivery->finalGrandTotal[0]->totalAmountWithTax ?>">
+                      <input type="hidden" name="data7[grandtotal]" value="<?= $ccdelivery->finalGrandTotal[0]->totalAmountAfterTax ?>">
+
+
                     </div>
                   </div>
                 </div>

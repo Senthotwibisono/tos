@@ -81,9 +81,10 @@
                 <thead>
                   <tr>
                     <th>Performa No</th>
-                    <th>Vessel</th>
+                    <!-- <th>Vessel</th> -->
                     <th>Customer</th>
-                    <th>Service</th>
+                    <!-- <th>Service</th> -->
+                    <th>Dibuat Pada</th>
                     <th>Status</th>
                     <th>Pranota</th>
                     <th>Invoice</th>
@@ -92,17 +93,40 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <?php for ($i = 0; $i < 20; $i++) { ?>
+                  <?php foreach ($invoices as $value) { ?>
                     <tr>
-                      <td>1</td>
-                      <td>Vessel 1</td>
-                      <td>Customer 1</td>
-                      <td>Service 1</td>
-                      <td><span class="badge bg-danger text-white">Not Paid</span></td>
-                      <td><a type="button" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a></td>
-                      <td><a type="button" class="btn btn-sm btn-primary text-white disabled"><i class="fa fa-file"></i></a></td>
-                      <td><a type="button" class="btn btn-sm btn-info text-white"><i class="fa fa-file"></i></a></td>
+                      <td><?= $value->performaId ?></td>
+                      <!-- <td>Vessel Name</td> -->
+                      <td><?= $value->data7->customer ?></td>
+                      <!-- <td>Service Name</td> -->
+                      <td><?= DateTimeFormat($value->createdAt) ?></td>
+                      <td>
+                        <?php if ($value->isPaid == 0) { ?>
+                          <span class="badge bg-danger text-white">Not Paid</span>
+                        <?php } else { ?>
+                          <span class="badge bg-success text-white">Paid</span>
+                        <?php } ?>
+                      </td>
+                      <td>
+                        <a type="button" href="/invoice/pranota?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
+                      </td>
+                      <td>
+                        <?php if ($value->isPaid == 0) { ?>
+                          <a type="button" class="btn btn-sm btn-primary text-white disabled"><i class="fa fa-file"></i></a>
+                        <?php } else { ?>
+                          <a type="button" href="/invoice/paidinvoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-file"></i></a>
+                        <?php } ?>
+                      </td>
+
+                      <td>
+                        <?php if ($value->pranota == 0) { ?>
+                          <a type="button" class="btn btn-sm btn-primary text-white disabled"><i class="fa fa-file"></i></a>
+                        <?php } else { ?>
+                          <a type="button" class="btn btn-sm btn-primary text-white disabled"><i class="fa fa-file"></i></a>
+                        <?php } ?>
+                      </td>
                       <td><a href="" type="button" class="btn btn-sm btn-success"><i class="fa fa-pencil"></i></a></td>
+
                     </tr>
                   <?php } ?>
                 </tbody>
