@@ -188,6 +188,28 @@ class TestResponseTest extends TestCase
         $response->assertViewHas('foos', $actual->concat([new TestModel(['id' => 3])]));
     }
 
+    public function testAssertViewHasWithArray()
+    {
+        $response = $this->makeMockResponse([
+            'render' => 'hello world',
+            'gatherData' => ['foo' => 'bar'],
+        ]);
+
+        $response->assertViewHas(['foo' => 'bar']);
+    }
+
+    public function testAssertViewHasAll()
+    {
+        $response = $this->makeMockResponse([
+            'render' => 'hello world',
+            'gatherData' => ['foo' => 'bar'],
+        ]);
+
+        $response->assertViewHasAll([
+            'foo' => 'bar',
+        ]);
+    }
+
     public function testAssertViewMissing()
     {
         $response = $this->makeMockResponse([
@@ -579,6 +601,25 @@ class TestResponseTest extends TestCase
         $response->assertMethodNotAllowed();
     }
 
+    public function testAssertNotAcceptable()
+    {
+        $response = TestResponse::fromBaseResponse(
+            (new Response)->setStatusCode(Response::HTTP_NOT_ACCEPTABLE)
+        );
+
+        $response->assertNotAcceptable();
+
+        $response = TestResponse::fromBaseResponse(
+            (new Response)->setStatusCode(Response::HTTP_OK)
+        );
+
+        $this->expectException(AssertionFailedError::class);
+        $this->expectExceptionMessage("Expected response status code [406] but received 200.\nFailed asserting that 406 is identical to 200.");
+
+        $response->assertNotAcceptable();
+        $this->fail();
+    }
+
     public function testAssertForbidden()
     {
         $statusCode = 500;
@@ -703,6 +744,63 @@ class TestResponseTest extends TestCase
         $this->expectExceptionMessage("Expected response status code [302] but received 200.\nFailed asserting that 302 is identical to 200.");
 
         $response->assertFound();
+        $this->fail();
+    }
+
+    public function testAssertNotModified()
+    {
+        $response = TestResponse::fromBaseResponse(
+            (new Response)->setStatusCode(Response::HTTP_NOT_MODIFIED)
+        );
+
+        $response->assertNotModified();
+
+        $response = TestResponse::fromBaseResponse(
+            (new Response)->setStatusCode(Response::HTTP_OK)
+        );
+
+        $this->expectException(AssertionFailedError::class);
+        $this->expectExceptionMessage("Expected response status code [304] but received 200.\nFailed asserting that 304 is identical to 200.");
+
+        $response->assertNotModified();
+        $this->fail();
+    }
+
+    public function testAssertTemporaryRedirect()
+    {
+        $response = TestResponse::fromBaseResponse(
+            (new Response)->setStatusCode(Response::HTTP_TEMPORARY_REDIRECT)
+        );
+
+        $response->assertTemporaryRedirect();
+
+        $response = TestResponse::fromBaseResponse(
+            (new Response)->setStatusCode(Response::HTTP_OK)
+        );
+
+        $this->expectException(AssertionFailedError::class);
+        $this->expectExceptionMessage("Expected response status code [307] but received 200.\nFailed asserting that 307 is identical to 200.");
+
+        $response->assertTemporaryRedirect();
+        $this->fail();
+    }
+
+    public function testAssertPermanentRedirect()
+    {
+        $response = TestResponse::fromBaseResponse(
+            (new Response)->setStatusCode(Response::HTTP_PERMANENTLY_REDIRECT)
+        );
+
+        $response->assertPermanentRedirect();
+
+        $response = TestResponse::fromBaseResponse(
+            (new Response)->setStatusCode(Response::HTTP_OK)
+        );
+
+        $this->expectException(AssertionFailedError::class);
+        $this->expectExceptionMessage("Expected response status code [308] but received 200.\nFailed asserting that 308 is identical to 200.");
+
+        $response->assertPermanentRedirect();
         $this->fail();
     }
 

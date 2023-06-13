@@ -45,17 +45,20 @@ Route::post('/unset-session/{key}', [SessionsController::class, 'unsetSession'])
 
 Route::prefix('invoice')->group(function () {
     Route::get('/', [InvoiceController::class, 'index']);
-    Route::get('/main', [InvoiceController::class, 'test']);
+    Route::get('/test', [InvoiceController::class, 'test']);
+    Route::get('/delivery', [InvoiceController::class, 'deliveryForm']);
     Route::prefix('add')->group(function () {
         Route::get('/step1', [InvoiceController::class, 'addDataStep1']);
+        Route::get('/update_step1', [InvoiceController::class, 'updateDataStep1']);
         Route::get('/step2', [InvoiceController::class, 'addDataStep2']);
-        Route::get('/step3', [InvoiceController::class, 'addDataStep3']);
         Route::post('/storestep1', [InvoiceController::class, 'storeDataStep1']);
+        Route::post('/storeupdatestep1', [InvoiceController::class, 'storeUpdateDataStep1']);
         Route::post('/storestep2', [InvoiceController::class, 'storeDataStep2']);
-        Route::post('/storestep3', [InvoiceController::class, 'storeDataStep3']);
     });
     Route::get('/pranota', [InvoiceController::class, 'Pranota']);
     Route::get('/paidinvoice', [InvoiceController::class, 'PaidInvoice']);
+    Route::get('/job', [InvoiceController::class, 'jobPage']);
+
     Route::prefix('customer')->group(function () {
         Route::get('/', [InvoiceController::class, 'customerDashboard']);
         Route::get('/add', [InvoiceController::class, 'addDataCustomer']);
@@ -65,6 +68,11 @@ Route::prefix('invoice')->group(function () {
         Route::get('/', [InvoiceController::class, 'containerDashboard']);
         Route::get('/add', [InvoiceController::class, 'addDataContainer']);
         Route::post('/store', [InvoiceController::class, 'storeDataContainer']);
+    });
+    Route::prefix('singleData')->group(function () {
+        Route::post('/invoiceForm', [InvoiceController::class, 'singleInvoiceForm']);
+        Route::post('/verifyPayment', [InvoiceController::class, 'VerifyPayment']);
+        Route::post('/verifyPiutang', [InvoiceController::class, 'VerifyPiutang']);
     });
 });
 

@@ -62,6 +62,41 @@
             </div>
           </div>
 
+          <div class="row mt-5">
+            <div class="col-12">
+              <h5>Selected Container</h5>
+              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+            </div>
+            <div class="col-12">
+              <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
+                <thead>
+                  <tr>
+                    <th>Container No</th>
+                    <th>Vessel Name</th>
+                    <th>Size</th>
+                    <th>Type</th>
+                    <th>CTR Status</th>
+                    <th>CTR Intern Status</th>
+                    <th>Gross</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php foreach ($ccdelivery->deliveryForm->containers as $data) { ?>
+                    <tr>
+                      <td><?= $data->container_no ?></td>
+                      <td><?= $data->vessel_name ?></td>
+                      <td><?= $data->ctr_size ?></td>
+                      <td><?= $data->ctr_type ?></td>
+                      <td><?= $data->ctr_status ?></td>
+                      <td><?= $data->ctr_intern_status ?></td>
+                      <td><?= $data->gross ?></td>
+                    </tr>
+                  <?php } ?>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
           <div class="row mt-3">
             <?php
             $i = 0;
@@ -73,7 +108,7 @@
               $data2 = array_slice($ccdelivery->tarifCheck, $index); // Elements at and after the index
               ?>
               <?php
-              foreach ($data2 as $data) { ?>
+              foreach ($data2 as $data_arr) { ?>
 
                 <input type="hidden" name="data1[<?= $index ?>][title]" value="<?= $menuinv[0] ?>">
                 <input type="hidden" name="data2[<?= $index ?>][title]" value="<?= $menuinv[1] ?>">
@@ -117,16 +152,16 @@
                 <input type="hidden" name="data5[<?= $index ?>][hari]" value="<?= $ccdelivery->diffInDays[$i]->masa2 ?>">
                 <input type="hidden" name="data6[<?= $index ?>][hari]" value="<?= $ccdelivery->diffInDays[$i]->masa3 ?>">
 
-                <input type="hidden" name="data1[<?= $index ?>][tarif]" value="<?= $data->cost_recovery ?>">
-                <input type="hidden" name="data2[<?= $index ?>][tarif]" value="<?= $data->lift_on ?>">
-                <input type="hidden" name="data3[<?= $index ?>][tarif]" value="<?= $data->lift_off ?>">
-                <input type="hidden" name="data4[<?= $index ?>][tarif]" value="<?= $data->masa1 ?>">
-                <input type="hidden" name="data5[<?= $index ?>][tarif]" value="<?= $data->masa2 ?>">
-                <input type="hidden" name="data6[<?= $index ?>][tarif]" value="<?= $data->masa3 ?>">
+                <input type="hidden" name="data1[<?= $index ?>][tarif]" value="<?= $data_arr->cost_recovery ?>">
+                <input type="hidden" name="data2[<?= $index ?>][tarif]" value="<?= $data_arr->lift_on ?>">
+                <input type="hidden" name="data3[<?= $index ?>][tarif]" value="<?= $data_arr->pass_truck ?>">
+                <input type="hidden" name="data4[<?= $index ?>][tarif]" value="<?= $data_arr->masa1 ?>">
+                <input type="hidden" name="data5[<?= $index ?>][tarif]" value="<?= $data_arr->masa2 ?>">
+                <input type="hidden" name="data6[<?= $index ?>][tarif]" value="<?= $data_arr->masa3 ?>">
 
                 <input type="hidden" name="data1[<?= $index ?>][amount]" value="<?= $ccdelivery->grandTotal[$i]->costRecovery ?>">
                 <input type="hidden" name="data2[<?= $index ?>][amount]" value="<?= $ccdelivery->grandTotal[$i]->liftOn ?>">
-                <input type="hidden" name="data3[<?= $index ?>][amount]" value="<?= $ccdelivery->grandTotal[$i]->liftOff ?>">
+                <input type="hidden" name="data3[<?= $index ?>][amount]" value="<?= $ccdelivery->grandTotal[$i]->passTruck ?>">
                 <input type="hidden" name="data4[<?= $index ?>][amount]" value="<?= $ccdelivery->grandTotal[$i]->penumpukanMasa1 ?>">
                 <input type="hidden" name="data5[<?= $index ?>][amount]" value="<?= $ccdelivery->grandTotal[$i]->penumpukanMasa2 ?>">
                 <input type="hidden" name="data6[<?= $index ?>][amount]" value="<?= $ccdelivery->grandTotal[$i]->penumpukanMasa3 ?>">
@@ -134,7 +169,7 @@
               <?php } ?>
 
               <div class="col-12">
-                <h5>Container dengan ukuran <?= $data->size ?></h5>
+                <h5>Tarif Container dengan ukuran <?= $data->size ?></h5>
                 <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
               </div>
               <div class="col-12">
@@ -154,48 +189,48 @@
                   <tbody>
 
 
-                    <?php foreach ($menuinv as $value) { ?>
+                    <?php
+                    // $i = 0;
+                    foreach ($menuinv as $value) { ?>
 
                       <?php
                       // dd("DATA GRAND TOTAL data PERTAMA", rupiah($grand_total[0]), "DATA GRAND TOTAL", rupiah($total_grand)); 
                       ?>
                       <tr>
-                        <th><?= $value ?></th>
-                        <th><?= $ccdelivery->findContainer[$i]->jml_cont ?></th>
-                        <th><?= $ccdelivery->findContainer[$i]->ctr_size ?></th>
-                        <th><?= $ccdelivery->findContainer[$i]->ctr_type ?></th>
-                        <th><?= $ccdelivery->findContainer[$i]->ctr_status ?></th>
-
-
+                        <td><?= $value ?></td>
+                        <td><?= $ccdelivery->findContainer[$i]->jml_cont ?></td>
+                        <td><?= $ccdelivery->findContainer[$i]->ctr_size ?></td>
+                        <td><?= $ccdelivery->findContainer[$i]->ctr_type ?></td>
+                        <td><?= $ccdelivery->findContainer[$i]->ctr_status ?></td>
                         <?php if ($value == "Cost Recovery") { ?>
-                          <th>0 Hari</th>
-                          <th>Rp. <?= rupiah($data->cost_recovery) ?></th>
-                          <th>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->costRecovery) ?></th>
+                          <td>0 Hari</td>
+                          <td>Rp. <?= rupiah($data->cost_recovery) ?></td>
+                          <td>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->costRecovery) ?></td>
                         <?php } else if ($value == "Lift On") {  ?>
-                          <th>0 Hari</th>
-                          <th>Rp. <?= rupiah($data->lift_on) ?></th>
-                          <th>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->liftOn) ?></th>
-                        <?php } else if ($value == "Lift Off") {  ?>
-                          <th>0 Hari</th>
-                          <th>Rp. <?= rupiah($data->lift_off) ?></th>
-                          <th>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->liftOff) ?></th>
+                          <td>0 Hari</td>
+                          <td>Rp. <?= rupiah($data->lift_on) ?></td>
+                          <td>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->liftOn) ?></td>
+                        <?php } else if ($value == "Pass Truck") {  ?>
+                          <td>0 Hari</td>
+                          <td>Rp. <?= rupiah($data->pass_truck) ?> x 2 (In & Out)</td>
+                          <td>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->passTruck) ?> </td>
                         <?php } else if ($value == "Penumpukan Masa 1") {  ?>
-                          <th><?= $ccdelivery->diffInDays[$i]->masa1 ?> Hari</th>
-                          <th>Rp. <?= rupiah($data->masa1) ?></th>
-                          <th>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->penumpukanMasa1) ?></th>
+                          <td><?= $ccdelivery->diffInDays[$i]->masa1 ?> Hari</td>
+                          <td>Rp. <?= rupiah($data->masa1) ?></td>
+                          <td>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->penumpukanMasa1) ?></td>
                         <?php } else if ($value == "Penumpukan Masa 2") {  ?>
-                          <th><?= $ccdelivery->diffInDays[$i]->masa2 ?> Hari</th>
-                          <th>Rp. <?= rupiah($data->masa2) ?></th>
-                          <th>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->penumpukanMasa2) ?></th>
+                          <td><?= $ccdelivery->diffInDays[$i]->masa2 ?> Hari</td>
+                          <td>Rp. <?= rupiah($data->masa2) ?></td>
+                          <td>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->penumpukanMasa2) ?></td>
                         <?php } else if ($value == "Penumpukan Masa 3") {  ?>
-                          <th><?= $ccdelivery->diffInDays[$i]->masa3 ?> Hari</th>
-                          <th>Rp. <?= rupiah($data->masa3) ?></th>
-                          <th>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->penumpukanMasa3) ?></th>
+                          <td><?= $ccdelivery->diffInDays[$i]->masa3 ?> Hari</td>
+                          <td>Rp. <?= rupiah($data->masa3) ?></td>
+                          <td>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->penumpukanMasa3) ?></td>
 
                         <?php } else { ?>
-                          <th>0</th>
-                          <th>Rp. 0</th>
-                          <th>Rp. 0</th>
+                          <td>0</td>
+                          <td>Rp. 0</td>
+                          <td>Rp. 0</td>
                         <?php } ?>
                       </tr>
                     <?php } ?>
@@ -207,7 +242,7 @@
                 <br>
               </div>
             <?php
-              $i = $i + 1;
+              $i++;
               $index++; // Increment the index variable for each iteration
 
             } ?>
@@ -250,7 +285,7 @@
           <div class="row mt-5">
             <div class="col-12 text-right">
               <button type="submit" class="btn btn btn-success">Submit</button>
-              <a href="/invoice/add/step1" class="btn btn btn-warning">Edit</a>
+              <a href="/invoice/add/update_step1?id=<?= $ccdelivery->deliveryForm->id ?>" class="btn btn btn-warning">Edit</a>
               <a onclick="canceladdCustomer();" class="btn btn btn-secondary">Cancel</a>
             </div>
           </div>

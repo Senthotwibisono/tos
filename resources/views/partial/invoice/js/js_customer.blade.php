@@ -39,6 +39,10 @@
     // let containers = 
 
   }
+
+  // $('form').bind('submit', function() {
+  //   $(this).find(':input').prop('disabled', false);
+  // });
 </script>
 
 
@@ -59,5 +63,176 @@
 
     // Cetak hasil
     document.write(rupiah); // Hasil: 23.456.789
+  }
+</script>
+
+<script>
+  function paidConfig(invoiceId) {
+    let id = invoiceId;
+    let fd = new FormData();
+
+    // Retrieve the CSRF token value from the page's meta tag
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+    fd.append('id', id);
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+      },
+      type: "POST",
+      url: `/invoice/singleData/invoiceForm`,
+      cache: false,
+      contentType: false,
+      processData: false,
+      data: fd,
+      success: function(response) {
+        let res = JSON.parse(response);
+        $('#editModal').modal('show');
+        console.log(response);
+        // console.log(res.data.data[7]);
+        $("#input_id").val(res.data.id);
+        $("#customer").val(res.data.data6.customer);
+        if (res.data.isPaid == 1) {
+          $("#isPaid").addClass("bg-success").text("Paid");
+          $("#verifyPayment").prop("disabled", true).text("Already Paid");
+        } else {
+          $("#isPaid").addClass("bg-danger").text("Not Paid");
+        }
+        console.log(res.data.isPiutang);
+        if (res.data.isPiutang == 1) {
+          $("#isPiutang").addClass("bg-warning").text("Piutang");
+          $("#verifyPiutang").prop("disabled", true).text("Already Piutang");
+          // $("#verifyPayment").style("display", "none");
+        } else {
+          $("#isPiutang").addClass("bg-danger").text("Not Piutang");
+        }
+
+        $("#verifyPayment").click(function(event) {
+          Swal.fire({
+            icon: 'question',
+            title: 'Are You Sure?',
+            text: 'You are about to do verifying this payment, and cannot be reverted!',
+            showCancelButton: true,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              let fd = new FormData();
+              let id = res.data.id;
+
+              fd.append('id', id);
+              $.ajax({
+                headers: {
+                  'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+                },
+                type: "POST",
+                url: `/invoice/singleData/verifyPayment`,
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: fd,
+                success: function(response) {
+                  let res = JSON.parse(response);
+                  console.log(res);
+                  Swal.fire({
+                    icon: 'success',
+                    title: 'Successfully Verify Payment!',
+                    text: 'Please Check Again',
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      location.reload();
+                    } else {
+                      location.reload();
+
+                    }
+                  })
+                },
+                error(err) {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: 'Something wrong happened! #VE42i',
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      location.reload();
+                    } else {
+                      location.reload();
+                    }
+                  });
+                }
+              });
+            }
+          })
+        });
+        $("#verifyPiutang").click(function(event) {
+          Swal.fire({
+            icon: 'question',
+            title: 'Are You Sure?',
+            text: 'You are about to do verifying Piutang this payment, and cannot be reverted!',
+            showCancelButton: true,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              let fd = new FormData();
+              let id = res.data.id;
+
+              fd.append('id', id);
+              $.ajax({
+                headers: {
+                  'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+                },
+                type: "POST",
+                url: `/invoice/singleData/verifyPiutang`,
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: fd,
+                success: function(response) {
+                  let res = JSON.parse(response);
+                  console.log(res);
+                  Swal.fire({
+                    icon: 'success',
+                    title: 'Successfully Verify Piutang!',
+                    text: 'Please Check Again',
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      location.reload();
+                    } else {
+                      location.reload();
+
+                    }
+                  })
+                },
+                error(err) {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: 'Something wrong happened! #VE42i',
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      location.reload();
+                    } else {
+                      location.reload();
+                    }
+                  });
+                }
+              });
+            }
+          })
+        });
+
+      },
+      error(err) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops!',
+          text: 'Something wrong happened! #VE42i',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            location.reload();
+          } else {
+            location.reload();
+          }
+        });
+      }
+    });
+
   }
 </script>

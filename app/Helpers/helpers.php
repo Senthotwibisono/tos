@@ -3,6 +3,10 @@
 use Config\Services;
 use GuzzleHttp\Client;
 
+use Symfony\Component\HttpFoundation\Response;
+
+
+
 function singleContainer($id)
 {
     $client = new Client();
@@ -47,5 +51,11 @@ function rupiah($nominal = '')
 function DateTimeFormat($date)
 {
     $new_date = date("d F Y H:i", strtotime('-0 hours', strtotime($date)));
+    return $new_date;
+}
+
+function DateFormat($date)
+{
+    $new_date = date("d F Y", strtotime('-0 hours', strtotime($date)));
     return $new_date;
 }

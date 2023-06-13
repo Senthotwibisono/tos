@@ -497,7 +497,6 @@ class DatabaseEloquentFactoryTest extends TestCase
 
         $class = new ReflectionClass($factory);
         $prop = $class->getProperty('count');
-        $prop->setAccessible(true);
         $value = $prop->getValue($factory);
 
         $this->assertSame(3, $value);
@@ -898,7 +897,7 @@ class FactoryTestCommentFactory extends Factory
         return [
             'commentable_id' => FactoryTestPostFactory::new(),
             'commentable_type' => FactoryTestPost::class,
-            'user_id' => FactoryTestUserFactory::new(),
+            'user_id' => fn () => FactoryTestUserFactory::new(),
             'body' => $this->faker->name(),
         ];
     }

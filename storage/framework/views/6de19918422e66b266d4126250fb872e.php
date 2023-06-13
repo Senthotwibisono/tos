@@ -82,7 +82,9 @@
             <div class="row">
               <div class="col-xs-12 col-8 my-auto">
                 <h2>Invoice<br>
-                  <span class="small">Performa No. #<?= $invoices->performaId ?></span>
+                  <span class="small">Proforma No. #<?= $invoices->performaId ?></span>
+                  <br>
+                  <span class="small">Invoice No. <?= $invoices->invoiceNumber ?></span>
                 </h2>
               </div>
               <?php if ($invoices->isPaid == "1") { ?>
@@ -97,7 +99,7 @@
             <div class="col-xs-6">
               <address>
                 <strong>Billed To:</strong><br>
-                <?= $invoices->data7->customer ?><br>
+                <?= $invoices->data6->customer ?><br>
               </address>
             </div>
           </div>
@@ -155,7 +157,7 @@
                       <td><?= $value->type ?></td>
                       <td><?= $value->status ?></td>
                       <td><?= $value->hari ?></td>
-                      <td>Rp. <?= rupiah($value->tarif) ?>,00 ~</td>
+                      <td>Rp. <?= rupiah($value->tarif) ?>,00 ~ x 2 (In & Out)</td>
                       <td>Rp. <?= rupiah($value->amount) ?>,00 ~</td>
 
                     </tr>
@@ -199,19 +201,6 @@
 
                     </tr>
                   <?php } ?>
-                  <?php foreach ($invoices->data6 as $value) { ?>
-                    <tr>
-                      <td><?= $value->title ?></td>
-                      <td><?= $value->jumlah ?></td>
-                      <td><?= $value->size ?></td>
-                      <td><?= $value->type ?></td>
-                      <td><?= $value->status ?></td>
-                      <td><?= $value->hari ?></td>
-                      <td>Rp. <?= rupiah($value->tarif) ?>,00 ~</td>
-                      <td>Rp. <?= rupiah($value->amount) ?>,00 ~</td>
-
-                    </tr>
-                  <?php } ?>
                 </tbody>
               </table>
             </div>
@@ -220,14 +209,14 @@
             <div class="col-xs-12 col-6">
               <p>Total Amount: </p>
               <p>Administration: </p>
-              <p>Tax (10%): </p>
+              <p>Tax (11%): </p>
               <p>Grand Total: </p>
             </div>
             <div class="col-xs-12 col-6" style="text-align: right;">
-              <p><strong>Rp. <?= rupiah($invoices->data7->totalamount) ?> ,00 ~</strong></p>
-              <p><strong>Rp. <?= rupiah($invoices->data7->admin) ?> ,00 ~</strong></p>
-              <p><strong>Rp. <?= rupiah($invoices->data7->tax) ?> ,00 ~</strong></p>
-              <p><strong>Rp. <?= rupiah($invoices->data7->grandtotal) ?> ,00 ~</strong></p>
+              <p><strong>Rp. <?= rupiah($invoices->data6->totalamount) ?>,00 ~</strong></p>
+              <p><strong>Rp. <?= rupiah($invoices->data6->admin) ?>,00 ~</strong></p>
+              <p><strong>Rp. <?= rupiah($invoices->data6->tax) ?>,00 ~</strong></p>
+              <p><strong>Rp. <?= rupiah($invoices->data6->grandtotal) ?>,00 ~</strong></p>
             </div>
           </div>
         </div>
