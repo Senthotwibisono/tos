@@ -85,7 +85,7 @@
                   <p><?= $job->container_no ?></p>
                   <p><?= $job->ctr_size ?> / <?= $job->ctr_type ?> / <?= $job->ctr_status ?></p>
                   <p><?= $job->ves_name ?> / <?= $job->voy_no ?> </p>
-                  <p><?= $job->yard_block ?> / <?= $job->yard_slot ?> / <?= $job->yard_row ?></p>
+                  <p><?= $job->yard_block != "" ? $job->yard_block . " /" : "" ?> <?= $job->yard_slot != "" ? $job->yard_slot . " /" : "" ?> <?= $job->yard_row != "" ? $job->yard_row : "" ?></p>
                   <p><?= $job->yard_tier ?></p>
                   <p><?= $job->bl_no ?></p>
                   <p><?= $job->consignee ?></p>

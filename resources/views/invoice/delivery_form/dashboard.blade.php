@@ -79,7 +79,7 @@
                         <?php if ($data->hasInvoice == 1) { ?>
                           <button disabled type="button" class="btn btn-sm btn-success"><i class="fa fa-file"></i></button>
                         <?php } else { ?>
-                          <button href="/invoice/add/update_step1?id=<?= $data->id ?>" type="button" class="btn btn-sm btn-info"><i class="fa fa-pencil"></i></button>
+                          <a href="/invoice/add/update_step1?id=<?= $data->id ?>" type="button" class="btn btn-sm btn-info"><i class="fa fa-pencil"></i></a>
                         <?php } ?>
                       </td>
                     </tr>

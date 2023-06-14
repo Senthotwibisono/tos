@@ -120,10 +120,13 @@ class InvoiceController extends Controller
             ]);
         }
         // dd($container_arr);
-
+        $jobNumber = $result_single_invoice->data->jobNumber;
+        // dd($jobNumber);
         $fields = [
             "containers" => $container_arr,
+            "jobNumber" => $jobNumber,
         ];
+        // dd($fields);
 
         $url = 'localhost:3013/delivery-service/job/conkey';
         $req = $client->get(
@@ -134,6 +137,7 @@ class InvoiceController extends Controller
         );
         $response = $req->getBody()->getContents();
         $result = json_decode($response);
+        // dd($result);
         $data = [];
         $jobData = $result->data->jobData;
         $qrcodes = [];
@@ -383,6 +387,7 @@ class InvoiceController extends Controller
             "data5" => $data5,
             "data6" => $data6,
             // "data7" => $data7,
+            "orderService" => "sp2",
         ];
         // dd($fields);
 

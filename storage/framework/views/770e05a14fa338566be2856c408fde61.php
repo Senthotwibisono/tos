@@ -97,6 +97,7 @@
           $("#verifyPayment").prop("disabled", true).text("Already Paid");
         } else {
           $("#isPaid").addClass("bg-danger").text("Not Paid");
+          $("#verifyPayment").prop("disabled", false).text("Verify This Payment");
         }
         console.log(res.data.isPiutang);
         if (res.data.isPiutang == 1) {
@@ -105,6 +106,7 @@
           // $("#verifyPayment").style("display", "none");
         } else {
           $("#isPiutang").addClass("bg-danger").text("Not Piutang");
+          $("#verifyPiutang").prop("disabled", false).text("Piutang This Invoice");
         }
 
         $("#verifyPayment").click(function(event) {
