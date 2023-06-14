@@ -5,10 +5,15 @@ use App\Http\Controllers\SystemController;
 use App\Http\Controllers\VesselController;
 use App\Http\Controllers\BayplanImportController;
 use App\Http\Controllers\DischargeController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PlacementController;
+
+use App\Http\Controllers\SessionsController;
+=======
 use App\Http\Controllers\MasterController;
 use App\Http\Controllers\EdiController;
 use App\Http\Controllers\YardrotController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -35,8 +40,46 @@ Route::get('/master/port', function () {
     return view('master.port');
 });
 
-Route::get('/invoice', function () {
-    return view('invoice.dashboard');
+// Route::get('/invoice', function () {
+//     return view('invoice.dashboard');
+// });
+
+Route::post('/set-session/{key}/{value}', [SessionsController::class, 'setSession'])->name('set-session');
+Route::post('/unset-session/{key}', [SessionsController::class, 'unsetSession'])->name('unset-session');
+
+
+
+Route::prefix('invoice')->group(function () {
+    Route::get('/', [InvoiceController::class, 'index']);
+    Route::get('/test', [InvoiceController::class, 'test']);
+    Route::get('/delivery', [InvoiceController::class, 'deliveryForm']);
+    Route::prefix('add')->group(function () {
+        Route::get('/step1', [InvoiceController::class, 'addDataStep1']);
+        Route::get('/update_step1', [InvoiceController::class, 'updateDataStep1']);
+        Route::get('/step2', [InvoiceController::class, 'addDataStep2']);
+        Route::post('/storestep1', [InvoiceController::class, 'storeDataStep1']);
+        Route::post('/storeupdatestep1', [InvoiceController::class, 'storeUpdateDataStep1']);
+        Route::post('/storestep2', [InvoiceController::class, 'storeDataStep2']);
+    });
+    Route::get('/pranota', [InvoiceController::class, 'Pranota']);
+    Route::get('/paidinvoice', [InvoiceController::class, 'PaidInvoice']);
+    Route::get('/job', [InvoiceController::class, 'jobPage']);
+
+    Route::prefix('customer')->group(function () {
+        Route::get('/', [InvoiceController::class, 'customerDashboard']);
+        Route::get('/add', [InvoiceController::class, 'addDataCustomer']);
+        Route::post('/store', [InvoiceController::class, 'storeDataCustomer'])->name('customer.store');
+    });
+    Route::prefix('container')->group(function () {
+        Route::get('/', [InvoiceController::class, 'containerDashboard']);
+        Route::get('/add', [InvoiceController::class, 'addDataContainer']);
+        Route::post('/store', [InvoiceController::class, 'storeDataContainer']);
+    });
+    Route::prefix('singleData')->group(function () {
+        Route::post('/invoiceForm', [InvoiceController::class, 'singleInvoiceForm']);
+        Route::post('/verifyPayment', [InvoiceController::class, 'VerifyPayment']);
+        Route::post('/verifyPiutang', [InvoiceController::class, 'VerifyPiutang']);
+    });
 });
 
 
@@ -77,6 +120,34 @@ Route::get('/planning/schedule_schedule={ves_id}', [VesselController::class, 'ed
 Route::patch('/planning/schedule_update={ves_id}', [VesselController::class, 'update_schedule']);
 Route::delete('/planning/delete_schedule={ves_id}', [VesselController::class, 'delete_schedule']);
 
+
+Route::get('/planning/bayplan_import', [BayplanImportController::class, 'index']);
+Route::post('/getsize', [BayplanImportController::class, 'size']);
+Route::post('/gettype', [BayplanImportController::class, 'type']);
+Route::post('/getcode', [BayplanImportController::class, 'code']);
+Route::post('/getname', [BayplanImportController::class, 'name']);
+Route::post('/getvoy', [BayplanImportController::class, 'voy']);
+Route::post('/getagent', [BayplanImportController::class, 'agent']);
+Route::post('/planning/bayplan_import', [BayplanImportController::class, 'store']);
+Route::get('/planning/edit_bayplanimport_{container_key}', [BayplanImportController::class, 'edit']);
+Route::post('/getsize_edit', [BayplanImportController::class, 'size_edit']);
+Route::post('/gettype_edit', [BayplanImportController::class, 'type_edit']);
+Route::post('/get-iso-type', [BayplanImportController::class, 'get_iso_type']);
+Route::post('/get-iso-size', [BayplanImportController::class, 'get_iso_size']);
+Route::post('/get-ves-name', [BayplanImportController::class, 'get_ves_name']);
+Route::post('/planning/update_bayplanimport', [BayplanImportController::class, 'update_bayplanimport']);
+Route::delete('/planning/delete_item={container_key}', [BayplanImportController::class, 'delete_item']);
+
+Route::get('/disch/confrim_disch', [DischargeController::class, 'index']);
+Route::post('/search-container', [DischargeController::class, 'container']);
+Route::post('/get-container-key', [DischargeController::class, 'get_key']);
+Route::post('/confirm', [DischargeController::class, 'confirm']);
+
+Route::get('/yard/placement', [PlacementController::class, 'index']);
+Route::post('/placement', [PlacementController::class, 'place']);
+Route::post('/get-tipe', [PlacementController::class, 'get_tipe']);
+// Route::post('/confirm', [DischargeController::class, 'confirm']);
+=======
 
 //role master Port
 Route::get('/master/port', [MasterController::class, 'port']);
@@ -139,5 +210,5 @@ route::post('yards/rowtier/get_rowtier', [YardrotController::class, 'get_rowtier
 
 Route::get('/planning/bayplan_import', [ BayplanImportController::class, 'index']);
 
-Route::middleware('role:admin')->get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 
+Route::middleware('role:admin')->get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');

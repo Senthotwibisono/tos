@@ -1,272 +1,212 @@
 @extends ('partial.invoice.main')
 
+
 @section('content')
 
 <div class="page-heading">
-    <h3>Horizontal Layout</h3>
+  <h3><?= $title ?></h3>
+  <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+
 </div>
 <div class="page-content">
-    <section class="row">
-        <div class="col-12 col-lg-9">
-            <div class="row">
-                <div class="col-6 col-lg-3 col-md-6">
-                    <div class="card">
-                        <div class="card-body px-4 py-4-5">
-                            <div class="row">
-                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
-                                    <div class="stats-icon purple mb-2">
-                                        <i class="iconly-boldShow"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                    <h6 class="text-muted font-semibold">Profile Views</h6>
-                                    <h6 class="font-extrabold mb-0">112.000</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-lg-3 col-md-6">
-                    <div class="card">
-                        <div class="card-body px-4 py-4-5">
-                            <div class="row">
-                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
-                                    <div class="stats-icon blue mb-2">
-                                        <i class="iconly-boldProfile"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                    <h6 class="text-muted font-semibold">Followers</h6>
-                                    <h6 class="font-extrabold mb-0">183.000</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-lg-3 col-md-6">
-                    <div class="card">
-                        <div class="card-body px-4 py-4-5">
-                            <div class="row">
-                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
-                                    <div class="stats-icon green mb-2">
-                                        <i class="iconly-boldAdd-User"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                    <h6 class="text-muted font-semibold">Following</h6>
-                                    <h6 class="font-extrabold mb-0">80.000</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-lg-3 col-md-6">
-                    <div class="card">
-                        <div class="card-body px-4 py-4-5">
-                            <div class="row">
-                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
-                                    <div class="stats-icon red mb-2">
-                                        <i class="iconly-boldBookmark"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                    <h6 class="text-muted font-semibold">Saved Post</h6>
-                                    <h6 class="font-extrabold mb-0">112</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>Profile Visit</h4>
-                        </div>
-                        <div class="card-body">
-                            <div id="chart-profile-visit"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12 col-xl-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>Profile Visit</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="d-flex align-items-center">
-                                        <svg class="bi text-primary" width="32" height="32" fill="blue"
-                                            style="width:10px">
-                                            <use
-                                                xlink:href="dist/assets/images/bootstrap-icons.svg#circle-fill" />
-                                        </svg>
-                                        <h5 class="mb-0 ms-3">Europe</h5>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <h5 class="mb-0">862</h5>
-                                </div>
-                                <div class="col-12">
-                                    <div id="chart-europe"></div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="d-flex align-items-center">
-                                        <svg class="bi text-success" width="32" height="32" fill="blue"
-                                            style="width:10px">
-                                            <use
-                                                xlink:href="dist/assets/images/bootstrap-icons.svg#circle-fill" />
-                                        </svg>
-                                        <h5 class="mb-0 ms-3">America</h5>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <h5 class="mb-0">375</h5>
-                                </div>
-                                <div class="col-12">
-                                    <div id="chart-america"></div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="d-flex align-items-center">
-                                        <svg class="bi text-danger" width="32" height="32" fill="blue"
-                                            style="width:10px">
-                                            <use
-                                                xlink:href="dist/assets/images/bootstrap-icons.svg#circle-fill" />
-                                        </svg>
-                                        <h5 class="mb-0 ms-3">Indonesia</h5>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <h5 class="mb-0">1025</h5>
-                                </div>
-                                <div class="col-12">
-                                    <div id="chart-indonesia"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-xl-8">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>Latest Comments</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-hover table-lg">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Comment</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="col-3">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="avatar avatar-md">
-                                                        <img src="dist/assets/images/faces/5.jpg">
-                                                    </div>
-                                                    <p class="font-bold ms-3 mb-0">Cantik</p>
-                                                </div>
-                                            </td>
-                                            <td class="col-auto">
-                                                <p class=" mb-0">Congratulations on your graduation!</p>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="col-3">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="avatar avatar-md">
-                                                        <img src="dist/assets/images/faces/2.jpg">
-                                                    </div>
-                                                    <p class="font-bold ms-3 mb-0">Ganteng</p>
-                                                </div>
-                                            </td>
-                                            <td class="col-auto">
-                                                <p class=" mb-0">Wow amazing design! Can you make another tutorial for
-                                                    this design?</p>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <section class="row">
+    <div class="col-12 text-center">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">
+            Data Management
+          </h4>
+          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
         </div>
-        <div class="col-12 col-lg-3">
-            <div class="card">
-                <div class="card-body py-4 px-5">
-                    
-                    <div class="d-flex align-items-center">
-                        <div class="avatar avatar-xl">
-                            <img src="dist/assets/images/faces/1.jpg" alt="Face 1">
-                        </div>
-                        <div class="ms-3 name">
-                            <h5 class="font-bold">John Duck</h5>
-                            <h6 class="text-muted mb-0">@johnducky</h6>
-                        </div>
-                    </div>
-                </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-12">
+              <div class="btn-group mb-3" role="group" aria-label="Basic example">
+                <a href="/invoice/delivery" type="button" class="btn btn-success">
+                  Data Delivery
+                </a>
+                <a href=""></a>
+                <a href="/invoice/container" type="button" class="btn btn-primary">
+                  Data Container
+                </a>
+                <a href="/invoice/customer" type="button" class="btn btn-info">
+                  Data Customer
+                </a>
+              </div>
             </div>
-            <div class="card">
-                <div class="card-header">
-                    <h4>Recent Messages</h4>
-                </div>
-                <div class="card-content pb-4">
-                    <div class="recent-message d-flex px-4 py-3">
-                        <div class="avatar avatar-lg">
-                            <img src="dist/assets/images/faces/4.jpg">
-                        </div>
-                        <div class="name ms-4">
-                            <h5 class="mb-1">Hank Schrader</h5>
-                            <h6 class="text-muted mb-0">@johnducky</h6>
-                        </div>
-                    </div>
-                    <div class="recent-message d-flex px-4 py-3">
-                        <div class="avatar avatar-lg">
-                            <img src="dist/assets/images/faces/5.jpg">
-                        </div>
-                        <div class="name ms-4">
-                            <h5 class="mb-1">Dean Winchester</h5>
-                            <h6 class="text-muted mb-0">@imdean</h6>
-                        </div>
-                    </div>
-                    <div class="recent-message d-flex px-4 py-3">
-                        <div class="avatar avatar-lg">
-                            <img src="dist/assets/images/faces/1.jpg">
-                        </div>
-                        <div class="name ms-4">
-                            <h5 class="mb-1">John Dodol</h5>
-                            <h6 class="text-muted mb-0">@dodoljohn</h6>
-                        </div>
-                    </div>
-                    <div class="px-4">
-                        <button class='btn btn-block btn-xl btn-light-primary font-bold mt-3'>Start
-                            Conversation</button>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <h4>Visitors Profile</h4>
-                </div>
-                <div class="card-body">
-                    <div id="chart-visitors-profile"></div>
-                </div>
-            </div>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+
+  </section>
+
+  <section class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">Invoice Data Table</h4>
+          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+        </div>
+        <div class="card-body">
+          <!-- <div class="row">
+            <div class="col-12 col-md-4">
+              <div class="form-group">
+                <label for="">Performa No</label>
+                <input type="text" class="form-control" placeholder="Performa No">
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="form-group">
+                <label for=""> From Date</label>
+                <input type="text" class="form-control" placeholder="Start">
+              </div>
+            </div>
+            <div class="col-12 col-md-3">
+              <div class="form-group">
+                <label for="">To Date</label>
+                <input type="text" class="form-control" placeholder="To">
+              </div>
+            </div>
+            <div class="col m-auto">
+              <div class="align-items-center mt-2">
+                <a href="" class="btn block btn-primary"><i class="fa fa-search"></i></a>
+              </div>
+            </div>
+
+          </div> -->
+          <div class="row mt-5">
+            <div class="col-12">
+              <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
+                <thead>
+                  <tr>
+                    <th>Performa No</th>
+                    <!-- <th>Vessel</th> -->
+                    <th>Customer</th>
+                    <!-- <th>Service</th> -->
+                    <th>Dibuat Pada</th>
+                    <th>Status</th>
+                    <th>Piutang</th>
+                    <th>Pranota</th>
+                    <th>Invoice</th>
+                    <th>Job</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php foreach ($invoices as $value) { ?>
+                    <tr>
+                      <td><?= $value->performaId ?></td>
+                      <!-- <td>Vessel Name</td> -->
+                      <td><?= $value->data6->customer ?></td>
+                      <!-- <td>Service Name</td> -->
+                      <td><?= DateTimeFormat($value->createdAt) ?></td>
+                      <td>
+                        <?php if ($value->isPaid == 0) { ?>
+                          <span class="badge bg-danger text-white">Not Paid</span>
+                        <?php } else { ?>
+                          <span class="badge bg-success text-white">Paid</span>
+                        <?php } ?>
+                      </td>
+                      <td>
+                        <?php if ($value->isPiutang == 0) { ?>
+                          <span class="badge bg-danger text-white">Not Piutang</span>
+                        <?php } else { ?>
+                          <span class="badge bg-warning text-white">Piutang</span>
+                        <?php } ?>
+                      </td>
+                      <td>
+                        <a type="button" href="/invoice/pranota?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
+                      </td>
+                      <td>
+                        <?php if ($value->isPiutang == 1 && $value->isPaid == 1) { ?>
+                          <a type="button" href="/invoice/paidinvoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-file"></i></a>
+                        <?php } else if ($value->isPiutang == 1 && $value->isPaid == 0) { ?>
+                          <a type="button" href="/invoice/paidinvoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-file"></i></a>
+                        <?php } else if ($value->isPiutang == 0 && $value->isPaid == 1) { ?>
+                          <a type="button" href="/invoice/paidinvoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-file"></i></a>
+                        <?php } else if ($value->isPiutang == 0 && $value->isPaid == 0) { ?>
+                          <a type="button" class="btn btn-sm btn-primary text-white disabled"><i class="fa fa-file"></i></a>
+                        <?php } ?>
+                      </td>
+
+                      <td>
+                        <?php if ($value->isPiutang == 1 && $value->isPaid == 1) { ?>
+                          <a type="button" href="/invoice/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-file"></i></a>
+                        <?php } else if ($value->isPiutang == 1 && $value->isPaid == 0) { ?>
+                          <a type="button" href="/invoice/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-file"></i></a>
+                        <?php } else if ($value->isPiutang == 0 && $value->isPaid == 1) { ?>
+                          <a type="button" href="/invoice/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-file"></i></a>
+                        <?php } else if ($value->isPiutang == 0 && $value->isPaid == 0) { ?>
+                          <a type="button" class="btn btn-sm btn-info text-white disabled"><i class="fa fa-file"></i></a>
+                        <?php } ?>
+
+                      </td>
+                      <td><a type="button" onclick="paidConfig(`<?= $value->id ?>`)" class="btn btn-sm btn-success"><i class="fa fa-pencil"></i></a></td>
+
+                    </tr>
+                  <?php } ?>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </div>
+
+<!-- Edit Modal Single Data Table  -->
+<div class="modal fade text-left modal-borderless" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Verify Payment</h5>
+        <button type="button" class="close rounded-pill" data-bs-dismiss="modal" aria-label="Close">
+          <i data-feather="x"></i>
+        </button>
+      </div>
+      <form action="#">
+        <div class="modal-body" style="height:auto;">
+          <div class="form-group">
+            <label>Id</label>
+            <input type="text" id="input_id" disabled value="kosong" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="">Customer</label>
+            <input type="text" id="customer" class="form-control" disabled value="kosong">
+          </div>
+          <div class="form-group">
+            <label>Status Pembayaran</label>
+            <p>
+              <span id="isPaid" class="badge text-white"></span>
+            </p>
+          </div>
+          <div class="form-group">
+            <label>Status Piutang</label>
+            <p>
+              <span id="isPiutang" class="badge text-white"></span>
+            </p>
+          </div>
+
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+            <i class="bx bx-x d-block d-sm-none"></i>
+            <span class="d-none d-sm-block">Cancel</span>
+          </button>
+          <button id="verifyPayment" type="button" class="btn btn-primary ml-1" data-bs-dismiss="modal">
+            Verify This Payment
+          </button>
+          <button id="verifyPiutang" type="button" class="btn btn-warning ml-1" data-bs-dismiss="modal">
+            Piutang This Invoice
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- end of Edit Modal Single Data Table  -->
 
 @endsection
