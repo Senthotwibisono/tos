@@ -17,6 +17,7 @@
 <link rel="stylesheet" href="{{ asset('select2/dist/css/select2.min.css') }}">
 <link rel="stylesheet" href="{{ asset('query-ui/jquery-ui.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ asset('query-ui/jquery-ui.min.css') }}">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 
 <!-- Select 2 js -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />

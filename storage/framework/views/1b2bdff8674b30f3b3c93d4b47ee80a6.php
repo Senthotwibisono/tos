@@ -1,6 +1,3 @@
-
-
-
 <?php $__env->startSection('content'); ?>
 
 <div class="page-heading">
@@ -21,15 +18,15 @@
               <div class="col-12">
                 <div class="form-group">
                   <label for="">Container Name</label>
-                  <input value="abctest" class="form-control" type="text" name="container_name" placeholder="MV. Baltic Strait" required>
+                  <input value="" class="form-control" type="text" name="container_name" placeholder="MV. Baltic Strait" required>
                 </div>
                 <div class="form-group">
                   <label for="">Container No</label>
-                  <input value="abctest" class="form-control" type="text" name="container_no" placeholder="AAGP3345" required>
+                  <input value="" class="form-control" type="text" name="container_no" placeholder="AAGP3345" required>
                 </div>
                 <div class="form-group">
                   <label for="">CTR Status</label>
-                  <input value="abctest" class="form-control" type="text" name="ctr_status" placeholder="FCL" required>
+                  <input value="" class="form-control" type="text" name="ctr_status" placeholder="FCL" required>
                 </div>
                 <div class="form-group">
                   <label for="">CTR Intern Status</label>
@@ -42,15 +39,15 @@
                 </div>
                 <div class="form-group">
                   <label for="">Size</label>
-                  <input value="abctest" class="form-control" type="text" name="size" placeholder="22">
+                  <input value="" class="form-control" type="text" name="size" placeholder="22">
                 </div>
                 <div class="form-group">
                   <label for="">type</label>
-                  <input value="abctest" class="form-control" type="text" name="type" placeholder="mtp">
+                  <input value="" class="form-control" type="text" name="type" placeholder="mtp">
                 </div>
                 <div class="form-group">
                   <label for="">Gross</label>
-                  <input value="abctest" class="form-control" type="text" name="gross" placeholder="3000.00">
+                  <input value="" class="form-control" type="text" name="gross" placeholder="3000.00">
                 </div>
 
 

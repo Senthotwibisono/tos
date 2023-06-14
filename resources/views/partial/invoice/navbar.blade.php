@@ -19,13 +19,13 @@
               <a class="submenu-link" href="/invoice">Invoice</a>
             </li>
             <li class="submenu-item">
-              <a class="submenu-link" href="#">Delivery</a>
+              <a class="submenu-link" href="/invoice/delivery">Delivery</a>
             </li>
             <li class="submenu-item">
-              <a class="submenu-link" href="/customer">Customer</a>
+              <a class="submenu-link" href="/invoice/customer">Customer</a>
             </li>
             <li class="submenu-item">
-              <a class="submenu-link" href="/container">Container</a>
+              <a class="submenu-link" href="/invoice/container">Container</a>
             </li>
           </ul>
         </div>

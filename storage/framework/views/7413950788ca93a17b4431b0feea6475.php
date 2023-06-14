@@ -1,6 +1,3 @@
-
-
-
 <?php $__env->startSection('content'); ?>
 
 <div class="page-heading">
@@ -61,7 +58,7 @@
                   <?php foreach ($customer as $data) { ?>
                     <tr>
                       <td><?= $data->id ?></td>
-                      <td><?= $data->customer_code ?></td>
+                      <td><?= $data->customer_no ?></td>
                       <td><?= $data->customer_name ?></td>
                       <td><?= $data->phone ?></td>
                       <td><?= $data->fax ?></td>
