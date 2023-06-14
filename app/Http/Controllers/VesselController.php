@@ -18,7 +18,7 @@ class VesselController extends Controller
 {
     public function index()
     {
-        $vessel_voyage = VVoyage::orderBy('ves_id', 'desc')->get();
+        $vessel_voyage = VVoyage::all();
         return view('planning.vessel.main', compact('vessel_voyage'));
     }
 
@@ -152,11 +152,14 @@ class VesselController extends Controller
 
             'voy_in' => 'required|max:7',
             'voy_out' => 'required|max:7',
-            'voyage_owner' => 'required|max:4',
+            'voy_owner' => 'required|max:4',
             'berth_grid' => 'required|max:5',
             'export_booking'=> 'required|max:11',
-
           
+          
+        
+            'billing_complate' => 'required|max:1',
+            'no_ppk' => 'required|max:20',
         ],
         [
 
@@ -165,7 +168,7 @@ class VesselController extends Controller
 
             'voy_in.max' => 'Kolom Voy In tidak boleh lebih dari 7 karakter.',
             'voy_out.max' => 'Kolom Voy Out tidak boleh lebih dari 7 karakter.',
-            'voyage_owner.max' => 'Kolom Voy Owner tidak boleh lebih dari 4 karakter.',
+            'voy_owner.max' => 'Kolom Voy Owner tidak boleh lebih dari 4 karakter.',
            
             'berth_grid.max' => 'Kolom Berth Grid tidak boleh lebih dari 5 karakter.',
             'cy_code.max' => 'Kolom Cy Code tidak boleh lebih dari 1 karakter.',
@@ -186,7 +189,7 @@ class VesselController extends Controller
            'export_yn' => $request->export_yn,
            'ves_length' => $request->ves_length,
            'reg_flag' => $request->reg_flag,
-           'ocean_interisland' => $request->ocean_interisland,
+           'ocean_interisland' => $request->coean_interisland,
            'berth_no' => $request->berth_no,
            'berth_fr_metre' => $request->berth_fr_metre,
            'berth_to_metre' => $request->berth_to_metre,
@@ -196,8 +199,8 @@ class VesselController extends Controller
            'act_anchorage_date'=> $request->act_anchorage_date,
            'est_pilot_date' => $request->est_pilot_date,
            'act_pilot_date' => $request->act_pilot_date,
-           'est_start_work_date' => $request->est_start_work_date,
-           'act_start_work_date' => $request->act_start_work_date,
+           'est_start_work_date' => $request->est_work_date,
+           'act_start_work_date' => $request->act_work_date,
            'est_end_work_date' => $request->est_end_work_date,
            'act_end_work_date' => $request->act_end_work_date,
            'eta_date' => $request->eta_date,
@@ -236,57 +239,14 @@ class VesselController extends Controller
            'berth_code' =>$request->berth_code,
            'cy_code' =>$request->cy_code,
            'no_bc11' =>$request->no_bc11,
-           'no_ppk' => $request->no_ppk,
-           'open_stack_date'=>$request->open_stack_date,
         ]);
 
-        return redirect('/planning/vessel-schedule');
-    }
-
-    public function edit_schedule($ves_id){
-
-        $users = User::all();
-        $vessel_voyage = VVoyage::where('ves_id', $ves_id)->first();
-        $currentDateTime = Carbon::now();
-        $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
-       
-        return view('planning.vessel.edit', compact('vessel_voyage', 'currentDateTimeString'));
-    }
-
-    public function update_schedule(Request $request, $ves_id)
-    {
-
-        $this->validate($request, [
-            
-        ]);
-
-        VVoyage::where('ves_id', $ves_id)->update([
-
-       
-        'act_anchorage_date'=> $request->act_anchorage_date,     
-        'act_pilot_date' => $request->act_pilot_date,       
-        'act_start_work_date' => $request->act_start_work_date,        
-        'act_end_work_date' => $request->act_end_work_date,        
-        'arrival_date' => $request->arrival_date,        
-        'deparature_date' => $request->deparature_date,        
-        'berthing_date' => $request->berthing_date,
-        'export_booking' =>$request->export_booking,
-        'export_counter' =>$request->export_counter,
-        'import_booking' =>$request->import_booking,
-        'import_counter' =>$request->import_counter,
-        'clossing_date' => $request->clossing_date,
-        'doc_clossing_date' => $request->doc_clossing_date,
-        'loading_date' => $request->loading_date,
-        'no_bc11' => $request->no_bc11,
-        'open_stack_date' =>$request->open_stack_date,
-        ]);
         return redirect('/planning/vessel-schedule');
     }
 
 
     public function delete_schedule($ves_id)
     {
-        
         VVoyage::where('ves_id',$ves_id)->delete();
         return back();
     }

@@ -23,7 +23,7 @@
             <div class="card-header">
                
             
-                <button class="btn btn-info btn-sm" id="btn-port"><i class="fa fa-file"></i> Create Port</button>
+                <button class="btn btn-info btn-sm" id="btn-service"><i class="fa fa-file"></i> Create Vessel Service</button>
             
              </div>
             <div class="card-body">
@@ -45,11 +45,11 @@
                             <td>{{$service->update_time}}</td>
                           
                             <td>
-                            <form action="/master/delete_service={{$service->service_code}}" method="POST">
+                            <form action="/master/delete_service={{$service->service_id}}" method="POST">
                                @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn icon btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus record ini?')"> <i class="bi bi-x"></i></button>                             
-                                <a href="javascript:void(0)" class="btn btn-primary edit-modal" data-id="{{ $service->service_code }}" ><i class="bi bi-pencil"></i></a>
+                                <a href="javascript:void(0)" class="btn btn-primary edit-modal" data-id="{{ $service->service_id }}" ><i class="bi bi-pencil"></i></a>
 
                             </form>
 
@@ -63,14 +63,14 @@
     </section>
 </div>
 
-<div id="create-port-modal" class="modal fade" tabindex="-1" role="dialog">
+<div id="create-service-modal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
               <h4 class="modal-title">Please Insert All Field</h4>
             </div>
-            <form id="create-port-form" class="form-horizontal" action="/master/port_store" method="POST" enctype="multipart/form-data">
+            <form id="create-service-form" class="form-horizontal" action="/master/service_store" method="POST" enctype="multipart/form-data">
                 @CSRF
                 
                 <div class="modal-body"> 
@@ -93,7 +93,7 @@
                                 </select>
                             </div>
                             
-                            <input type="hidden" id="-column" class="form-control" value ="{{ Auth::user()->id }}" placeholder="{{ Auth::user()->name }}" name="user_id" required readonly>
+                            <input type="hidden" id="-column" class="form-control" value ="{{ Auth::user()->name }}" placeholder="{{ Auth::user()->name }}" name="user_id" required readonly>
 
 
                         </div>
@@ -110,14 +110,14 @@
 </div><!-- /.modal -->
 
 
-<div id="edit-port-modal" class="modal fade" tabindex="-1" role="dialog">
+<div id="edit-service-modal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
               <h4 class="modal-title">Please Insert All Field</h4>
             </div>
-            <form id="edit-port-form" class="form-horizontal" action="/master/port_edit_store" method="POST" enctype="multipart/form-data">
+            <form id="edit-vessel-form" class="form-horizontal" action="/master/service_edit_store" method="POST" enctype="multipart/form-data">
              @csrf
             
                 
@@ -125,37 +125,21 @@
                     <div class="row">
                         <div class="col-md-12">
                             
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">Port</label>
+                           <div class="form-group">
+                                <label class="col-sm-3 control-label">Service Code</label>
                                 <div class="col-sm-6">
-                                    <input type="text"  class="form-control" name="port" id="port"  readonly />
+                                    <input type="text"  class="form-control" name="service_code" id="service_code"  required />
+                                    <input type="text"  class="form-control" name="service_id" id="service_id"  hidden />
                                 </div>
                             </div>                            
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">UN Country</label>
-                                <div class="col-sm-6">
-                                    <input type="text" class="form-control" name="un_country" id="un_country" readonly />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">UN Port</label>
-                                <div class="col-sm-6">
-                                    <input type="text" class="form-control" name="un_port" id="un_port" readonly/>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">Country Name </label>
-                                <div class="col-sm-6">
-                                    <textarea class="form-control" name="country_name" id="country_name"></textarea>
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">Description </label>
-                                <div class="col-sm-6">
-                                    <textarea class="form-control" name="descr" id="descr"></textarea>
-                                </div>
+                                <label for="-id-column">Disch Port</label>
+                                <select class="form-select" id="disch_port" name="disch_port" required>
+                                  
+                                  @foreach($port_master as $port)
+                                    <option value="{{$port->port}}">{{$port->port}}</option>
+                                  @endforeach
+                                </select>
                             </div>
 
                             <input type="hidden" id="-column" class="form-control" value ="{{ Auth::user()->id }}" placeholder="{{ Auth::user()->name }}" name="user_id" required readonly>
@@ -167,7 +151,7 @@
                 <div class="modal-footer">
                   <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
                 
-                  <button type="submit" class="btn btn-primary">Update Port</button>
+                  <button type="submit" class="btn btn-primary">Update Vessek Service</button>
                 </div>
             </form>
         </div><!-- /.modal-content -->
@@ -194,19 +178,19 @@
     
  $(document).ready(function()
     {
-        $('#btn-port').on("click", function(){
+        $('#btn-service').on("click", function(){
         
-            $('#create-port-modal').modal('show');
+            $('#create-service-modal').modal('show');
         
         });
        
-        $('#port').blur(function() {
+        $('#service_code').blur(function() {
 
             //alert("SAASASSASsa");
-            var id = $("#port").val();
+            var id = $("#service_code").val();
             $.ajax({
                type: 'GET',
-               url: '/master/edit_port',
+               url: '/master/edit_service',
                cache: false,
                data : {port : id},
                 dataType : 'json',
@@ -215,14 +199,9 @@
             //alert(response.message);  
             if(response.message=='Data Tidak Ditemukan')
             {
-               var un_port = $("#port").val();
-               var un_country = $("#port").val();
-  
-               //alert($("#port").val());
-              $("#un_port").val(un_port.substring(2,7));
-              $("#un_country").val(un_country.substring(0,2));
+              
             }else{alert('Data sudah pernah di dimasukkan/duplicate data');
-                $("#port").val('');
+                $("#service_code").val('');
             }
           }
         });
@@ -235,20 +214,19 @@
    let id = $(this).data('id');
       $.ajax({
                type: 'GET',
-               url: '/master/edit_port',
+               url: '/master/edit_service',
                cache: false,
-               data : {port : id},
+               data : {service_id : id},
                 dataType : 'json',
      
       success: function(response) {
        
-         $('#edit-port-modal').modal('show');
-         $("#edit-port-modal #port").val(response.data.port);
-         $("#edit-port-modal #un_port").val(response.data.un_port);
-         $("#edit-port-modal #un_country").val(response.data.un_country);
-         $("#edit-port-modal #country_name").val(response.data.country_name);
-         $("#edit-port-modal #descr").val(response.data.descr);
-
+         $('#edit-service-modal').modal('show');
+         $("#edit-service-modal #service_code").val(response.data.service);
+         $("#edit-service-modal #disch_port").val(response.data.disch_port);
+         $("#edit-service-modal #service_id").val(response.data.service_id);
+       
+       
          // fill form fields with record data
      },
                 error: function(xhr, status, error) {

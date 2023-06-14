@@ -7,7 +7,13 @@ use App\Http\Controllers\BayplanImportController;
 use App\Http\Controllers\DischargeController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PlacementController;
+
 use App\Http\Controllers\SessionsController;
+=======
+use App\Http\Controllers\MasterController;
+use App\Http\Controllers\EdiController;
+use App\Http\Controllers\YardrotController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -114,6 +120,7 @@ Route::get('/planning/schedule_schedule={ves_id}', [VesselController::class, 'ed
 Route::patch('/planning/schedule_update={ves_id}', [VesselController::class, 'update_schedule']);
 Route::delete('/planning/delete_schedule={ves_id}', [VesselController::class, 'delete_schedule']);
 
+
 Route::get('/planning/bayplan_import', [BayplanImportController::class, 'index']);
 Route::post('/getsize', [BayplanImportController::class, 'size']);
 Route::post('/gettype', [BayplanImportController::class, 'type']);
@@ -140,5 +147,68 @@ Route::get('/yard/placement', [PlacementController::class, 'index']);
 Route::post('/placement', [PlacementController::class, 'place']);
 Route::post('/get-tipe', [PlacementController::class, 'get_tipe']);
 // Route::post('/confirm', [DischargeController::class, 'confirm']);
+=======
+
+//role master Port
+Route::get('/master/port', [MasterController::class, 'port']);
+Route::post('/master/port_store', [MasterController::class, 'port_store'])->name('/master/port_store');
+Route::post('/master/port_edit_store', [MasterController::class, 'port_edit_store'])->name('/master/port_edit_store');
+Route::delete('/master/delete_port={port}', [MasterController::class, 'delete_port']);
+Route::get('/master/edit_port', [MasterController::class, 'edit_port']);
+
+//role master Vessel
+Route::get('/master/vessel', [MasterController::class, 'vessel']);
+Route::post('/master/vessel_store', [MasterController::class, 'vessel_store'])->name('/master/vessel_store');
+Route::post('/master/vessel_edit_store', [MasterController::class, 'vessel_edit_store'])->name('/master/vessel_edit_store');
+Route::delete('/master/delete_vessel={vessel}', [MasterController::class, 'delete_vessel']);
+Route::get('/master/edit_vessel', [MasterController::class, 'edit_vessel']);
+
+
+//role master VesBerthsel
+Route::get('/master/berth', [MasterController::class, 'berth']);
+Route::post('/master/berth_store', [MasterController::class, 'berth_store'])->name('/master/berth_store');
+Route::post('/master/berth_edit_store', [MasterController::class, 'berth_edit_store'])->name('/master/berth_edit_store');
+Route::delete('/master/delete_berth={berth_no}', [MasterController::class, 'delete_berth']);
+Route::get('/master/edit_berth', [MasterController::class, 'edit_berth']);
+
+
+//role Vessel Servicel
+Route::get('/master/service', [MasterController::class, 'service']);
+Route::post('/master/service_store', [MasterController::class, 'service_store'])->name('/master/service_store');
+Route::post('/master/service_edit_store', [MasterController::class, 'service_edit_store'])->name('/master/service_edit_store');
+Route::delete('/master/delete_service={service_id}', [MasterController::class, 'delete_service']);
+Route::get('/master/edit_service', [MasterController::class, 'edit_service']);
+
+
+//role ISO Code
+Route::get('/master/isocode', [MasterController::class, 'isocode']);
+Route::post('/master/isocode_store', [MasterController::class, 'isocode_store'])->name('/master/isocode_store');
+Route::post('/master/isocode_edit_store', [MasterController::class, 'isocode_edit_store'])->name('/master/isocode_edit_store');
+Route::delete('/master/delete_isocode={iso_code}', [MasterController::class, 'delete_isocode']);
+Route::get('/master/edit_isocode', [MasterController::class, 'edit_isocode']);
+
+
+
+//role Yard Block
+Route::get('/master/block', [MasterController::class, 'block']);
+Route::post('/master/block_store', [MasterController::class, 'block_store'])->name('/master/block_store');
+Route::get('/master/edit_block', [MasterController::class, 'edit_block']);
+
+//role EDI Baplie recievr
+Route::get('/edi/receiveedi', [EdiController::class, 'receiveedi']);
+Route::post('/edi/receiveeditxt_store', [EdiController::class, 'receiveeditxt_store'])->name('/edi/receiveeditxt_store');
+Route::delete('/edi/delete_itembayplan={container_key}', [EdiController::class, 'delete_itembayplan']);
+Route::get('/edi/edit_itembayplan', [EdiController::class, 'edit_itembayplan']);
+
+
+
+route::resource('yards/rowtier', YardrotController::class);
+route::post('yards/rowtier/get_rowtier', [YardrotController::class, 'get_rowtier'])->name('rowtier.get_rowtier');
+
+
+
+
+Route::get('/planning/bayplan_import', [ BayplanImportController::class, 'index']);
+
 
 Route::middleware('role:admin')->get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');

@@ -8,6 +8,8 @@ use App\Models\Port;
 use App\Models\VMaster;
 use App\Models\Berth;
 use App\Models\VService;
+use App\Models\Isocode;
+use App\Models\Block;
 use Carbon\Carbon;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
@@ -333,5 +335,242 @@ class MasterController extends Controller
          }
  
 
+         public function service_store(request $request){
+            $request->validate([
+                'service_code' => 'required|max:5'
+              ],
+            [
+                'service_code.max' => 'Kolom Port ID tidak boleh lebih dari 5 karakter.'
+               
+            ]);
+
+            
+            $vessel_service = Vservice::create([
+               'service' => $request->service_code,
+               'disch_port' => $request->disch_port,
+               'user_id' => $request->user_id
+               
+            ]);              
+
+      
+            return redirect('/master/service');
+        }
+       
+        public function delete_service($service_id)
+        {
+            Vservice::where('service_id',$service_id)->delete();
+            return back();
+        }
+
+        public function edit_service(Request $request)
+        {
+             $service_id=$request->service_id; 
+            
+            $vessel_service = Vservice::where('service_id', $service_id)->first();
+     
+            if (!$vessel_service) {
+                // Data tidak ditemukan
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Data Tidak Ditemukan',
+                    'data'    => ''  
+                ]); 
+          } else {
+            return response()->json([
+                'success' => true,
+                'message' => 'Detail Data Post',
+                'data'    => $vessel_service  
+            ]); 
+           }
+
+        } 
+
+
+
+        public function service_edit_store(request $request){
+            $request->validate([
+                'service_code' => 'required|max:4'
+              ],
+            [
+                'service_code.max' => 'Kolom Port ID tidak boleh lebih dari 4 karakter.'
+               
+            ]);
+
+            
+            $service_id=$request->service_id; 
+            $vessel_service = VService::where('service_id',$service_id)->update([
+                'service' => $request->service_code,
+                'disch_port' => $request->disch_port,
+                'user_id' => $request->user_id
+                
+            ]);              
+
+      
+            return redirect('/master/service');
+        }
+
+
+
+//Master ISO Code 
+public function isocode()
+{
+    $isocode = Isocode::all();
+    
+    return view('master.isocode', compact('isocode'));
+}
+
+
+public function isocode_store(request $request){
+   $request->validate([
+       'iso_code' => 'required|max:5'
+     ],
+   [
+       'iso_code.max' => 'Kolom Port ID tidak boleh lebih dari 5 karakter.'
+      
+   ]);
+
+   
+   $isocode = Isocode::create([
+    'iso_code'=> $request->iso_code,
+    'iso_size'=> $request->iso_size,
+    'iso_type'=> $request->iso_type,
+    'iso_weight'=> $request->iso_weight,
+    'iso_height'=> $request->iso_height,
+    'iso_desc'=> $request->descr,
+    'user_id'=> $request->user_id 
+      
+   ]);              
+
+
+   return redirect('/master/isocode');
+    }
+
+    public function delete_isocode($iso_code)
+    {
+      Isocode::where('iso_code',$iso_code)->delete();
+      return back();
+    }
+
+    public function edit_isocode(Request $request)
+   {
+       $iso_code=$request->iso_code; 
+   
+      $isocode = Isocode::where('iso_code', $iso_code)->first();
+
+   if (!$isocode) {
+       // Data tidak ditemukan
+       return response()->json([
+           'success' => true,
+           'message' => 'Data Tidak Ditemukan',
+           'data'    => ''  
+       ]); 
+ } else {
+   return response()->json([
+       'success' => true,
+       'message' => 'Detail Data Post',
+       'data'    => $isocode  
+   ]); 
+  }
+
+} 
+
+
+
+public function isocode_edit_store(request $request){
+   $request->validate([
+       'iso_code' => 'required|max:4'
+     ],
+   [
+       'iso_code.max' => 'Kolom Port ID tidak boleh lebih dari 4 karakter.'
+      
+   ]);
+
+   
+   $iso_code=$request->iso_code; 
+   $isocode = Isocode::where('iso_code',$iso_code)->update([
+    'iso_code'=> $request->iso_code,
+    'iso_size'=> $request->iso_size,
+    'iso_type'=> $request->iso_type,
+    'iso_weight'=> $request->iso_weight,
+    'iso_height'=> $request->iso_height,
+    'iso_desc'=> $request->descr,
+    'user_id'=> $request->user_id
+       
+   ]);              
+
+
+   return redirect('/master/isocode');
+}
+
+        
+
+//Master Yard Block 
+public function block()
+{
+    $block = Block::all();
+    
+    return view('master.yard_block', compact('block'));
+}
+
+
+public function block_store(request $request){
+   $request->validate([
+       'yard_block' => 'required|max:5'
+     ],
+   [
+       'yard_block.max' => 'Kolom Port ID tidak boleh lebih dari 5 karakter.'
+      
+   ]);
+
+  $i=0;
+   for($i = 1; $i <= $request->yard_slot; $i++)
+   {
+      $r=0;  
+     for($r = 1; $r <= $request->yard_row; $r++)
+        {     
+            $t=0;
+            for($t = 1; $t <= $request->yard_tier; $t++)
+            {                  
+             $block = Block::create([
+                'yard_block'=> $request->yard_block,
+                'yard_slot'=> $i,
+                'yard_row'=> $r,
+                'yard_tier'=> $t,
+                'user_id'=> $request->user_id 
+                  
+               ]);
+            }        
+            
+        }
+    
+    }
+   
+
+    return redirect('/master/block');
+    }
+
+    public function edit_block(Request $request)
+    {
+        $yard_block=$request->yard_block; 
+    
+       $block = Block::where('iso_code', $yard_block)->first();
+ 
+    if (!$block) {
+        // Data tidak ditemukan
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Tidak Ditemukan',
+            'data'    => ''  
+        ]); 
+  } else {
+    return response()->json([
+        'success' => true,
+        'message' => 'Detail Data Post',
+        'data'    => $block  
+    ]); 
+   }
+ 
+ } 
+ 
 
 }
