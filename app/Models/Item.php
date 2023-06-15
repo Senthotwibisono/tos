@@ -110,4 +110,9 @@ class item extends Model
         'is_damage',
         'user_id',
     ];
+
+    public function job()
+    {
+        return $this->hasMany(Job::class, 'container_key', );
+    }
 }

@@ -7,7 +7,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Multiple Column</h4>
+                        <h1>Create Schedule -Form</h1>
                     </div>
                     <div class="card-content">
                         <div class="card-body">
@@ -22,8 +22,8 @@
                             @endif
                             <form class="form" method="post" action='/planning/vessel_schedule_store'>
                                 @CSRF
-                                <div class="row">
-                                    <div class="col-md-6 col-12">
+                                <div class="row" style="border:1px solid blue;">
+                                    <div class="col-md-6 col-12" >
                                         <div class="form-group">
                                             <label for="first-name-column">Vessel Code</label>
                                             <select class="form-select" id="vescode" name="ves_code">
@@ -79,11 +79,20 @@
                                     </div>
                                     
                                     <div class="col-md-6 col-12">
-                                        <div class="form-group">
+                                      <div class="form-group" style="border:1px solid red;">
+                                        <label for="export">Export:</label>
+                                        <input type="checkbox"  name="export_yn" value="Y" style="margin-left: 10px;">
+                                        <label for="import" style="margin-left: 20px;">Import:</label>
+                                        <input type="checkbox"  name="import_yn" value="Y" style="margin-left: 10px;">
+                                      </div>
+                                    </div>
+                                    <!-- <div class="col-md-6 col-12" >
+                                        <div class="form-group" style="border:1px solid red;">
                                         <input type="checkbox" name="export_yn" value="Y"> Export 
+                                        <br>
                                         <input type="checkbox" name="import_yn" value="Y"> Import
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <div class="col-md-6 col-12">
                                         <div class="form-group">
                                         <label for="-id-column">Liner/Tramp</label>
@@ -134,14 +143,6 @@
                                             <input type="text" id="-id-column" class="form-control" name="no_ppk" placeholder="" required>
                                         </div>
                                     </div>
-                                    <div class="col-md-3 col-12">
-                                        <div class="form-group">
-                                            <label for="-id-column">Billing Complete</label>
-                                            <input type="" id="-id-column" class="form-control" name="billing_complate" placeholder="" required>
-                                        </div>
-                                    </div>
-
-                   
                                     <br>
                                     <hr>
                                     <h6>Port Informatiom</h6>

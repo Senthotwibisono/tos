@@ -3,6 +3,7 @@
 <html lang="en">
 
 <head>
+    
    @include('partial.head')
 </head>
 
@@ -12,10 +13,9 @@
             <div class="sidebar-wrapper active">
     <div class="sidebar-header position-relative">
         <div class="d-flex justify-content-between align-items-center">
-            <div class="logo">
-                <a href="/dashboard"><img src="{{asset('dist/assets/images/logo/logo.svg')}}" alt="Logo" srcset=""></a>
+            <div class="logoicon">
+                <a href="/dashboard"><img src="{{asset('logo/icon2.png')}}" alt="Logo" srcset=""></a>
             </div>
-
             <!-- Dark or Light mode -->
             
             <div class="theme-toggle d-flex gap-2  align-items-center mt-2">

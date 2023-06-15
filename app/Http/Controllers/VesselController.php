@@ -16,14 +16,20 @@ use Carbon\Carbon;
 
 class VesselController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function index()
     {
+        $title = 'Vessel Schedule';
         $vessel_voyage = VVoyage::orderBy('ves_id', 'desc')->get();
-        return view('planning.vessel.main', compact('vessel_voyage'));
+        return view('planning.vessel.main', compact('vessel_voyage', 'title'));
     }
 
     public function create()
     {
+        $title = 'Add Schedule';
        $users = User::all();
        $vessel_master = VMaster::all();
        $vessel_seq = VSeq::all();
@@ -32,7 +38,7 @@ class VesselController extends Controller
        $currentDateTime = Carbon::now();
        $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
        $item = Item::select('ves_id');
-        return view('planning.vessel.create', compact('users', 'vessel_master', 'vessel_seq', 'vessel_service', 'berth', 'currentDateTimeString', 'item'));
+        return view('planning.vessel.create', compact('users', 'vessel_master', 'vessel_seq', 'vessel_service', 'berth', 'currentDateTimeString', 'item', 'title'));
     }
 
     public function getvessel(request $request)
@@ -147,7 +153,7 @@ class VesselController extends Controller
     public function schedule_store(request $request){
         $request->validate([
 
-            'Ves_code' => 'required|max:4',
+            'ves_code' => 'required|max:4',
             
 
             'voy_in' => 'required|max:7',
@@ -228,7 +234,6 @@ class VesselController extends Controller
            'import_booking' =>$request->import_booking,
            'import_counter' =>$request->import_counter,
            'vessel_service' =>$request->vessel_service,
-           'billing_complate' =>$request->billing_complate,
            'remarks' =>$request->remarks,
            'update_time' =>$request->update_time,
            'user_id' =>$request->user_id,
@@ -244,13 +249,14 @@ class VesselController extends Controller
     }
 
     public function edit_schedule($ves_id){
+        $title = 'Edit Schedule';
 
         $users = User::all();
         $vessel_voyage = VVoyage::where('ves_id', $ves_id)->first();
         $currentDateTime = Carbon::now();
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
        
-        return view('planning.vessel.edit', compact('vessel_voyage', 'currentDateTimeString'));
+        return view('planning.vessel.edit', compact('vessel_voyage', 'currentDateTimeString', 'title'));
     }
 
     public function update_schedule(Request $request, $ves_id)

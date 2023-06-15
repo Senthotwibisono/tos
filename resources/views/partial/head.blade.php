@@ -2,12 +2,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Admin Dashboard</title>
+@if (isset($title))
+    <title>{{ $title }}</title>
+@endif
     
     <link rel="stylesheet" href="{{asset('dist/assets/css/main/app.css')}}">
     <link rel="stylesheet" href="{{asset('dist/assets/css/main/app-dark.css')}}">
-    <link rel="shortcut icon" href="{{asset('dist/assets/images/logo/favicon.svg')}}" type="image/x-icon">
-    <link rel="shortcut icon" href="{{asset('dist/assets/images/logo/favicon.png')}}" type="image/png">
+    <link rel="shortcut icon" href="{{asset('logo/icon.png')}}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{asset('logo/icon.png')}}" type="image/png">
     <link rel="stylesheet" href="{{asset('dist/assets/css/shared/iconly.css')}}">
     <link rel="stylesheet" href="{{ asset('fontawesome/css/all.min.css') }}">
     <link rel="stylesheet" href="{{asset('dist/assets/css/pages/datatables.css')}}">
@@ -15,6 +17,7 @@
     <link rel="stylesheet" href="{{asset('dist/assets/css/pages/simple-datatables.css')}}">
     <link rel="stylesheet" href="{{asset('dist/assets/extensions/sweetalert2/sweetalert2.min.css')}}">
     <link rel="stylesheet" href="{{ asset('select2/dist/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{asset('dist/assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css')}}">
     <style>
     .select2-container--default .select2-selection--single {
         border-radius:.3rem;
@@ -32,7 +35,21 @@
     height: calc(2.5rem + 2px);
     background-color: #010f1c;
   }
+
+  .logoicon {
+    transform: scale(3);
+}
+.round-image-3 {
+  width: 40px; /* Sesuaikan dengan lebar yang diinginkan */
+  height: 40px; /* Sesuaikan dengan tinggi yang diinginkan */
+  border-radius: 50%;
+  overflow: hidden;
+}
+
 </style>
+@if(View::hasSection('custom_styles'))
+    @yield('custom_styles')
+@endif
     <link rel="stylesheet" href="{{ asset('query-ui/jquery-ui.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('query-ui/jquery-ui.min.css') }}">
 

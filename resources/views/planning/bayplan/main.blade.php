@@ -5,14 +5,13 @@
             <div class="row">
                 <div class="col-12 col-md-6 order-md-1 order-last">
                     <h3>Bay Plan Import</h3>
-                    <p class="text-subtitle text-muted">A sortable, searchable, paginated table without dependencies thanks
-                        to simple-datatables</p>
+                    <p class="text-subtitle text-muted"></p>
                 </div>
 
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item active" aria-current="page">DataTable</li>
+                            <li class="breadcrumb-item active" aria-current="page">Bay Import</li>
                         </ol>
                     </nav>
                 </div>
@@ -33,8 +32,8 @@
                         <thead>
                             <tr>
                                 <th>Vessel Id</th>
+                                <th>Vessel Name</th>
                                 <th>Voyage In</th>
-                                <th>Seq</th>
                                 <th>Container No</th>
                                 <th>Size</th>
                                 <th>Type</th>
@@ -53,8 +52,8 @@
                         @foreach($formattedData as $d)
                                 <tr>
                                     <td>{{ str_pad($d['ves_id'],4,'0', STR_PAD_LEFT)}}</td>
+                                    <td>{{$d['ves_name']}}</td>
                                     <td>{{$d['voy_no']}}</td>
-                                    <td>{{$d['disc_load_seq']}}</td>
                                     <td>{{$d['container_no']}}</td>
                                     <td>{{$d['ctr_size']}}</td>
                                     <td>{{$d['ctr_type']}}</td>
@@ -169,13 +168,13 @@
                                     <div class="col-md-10 col-12">
                                         <div class="form-group">
                                             <label for="-id-column">B/L No</label>
-                                            <input type="text" id="-id-column" class="form-control" name="bl_no" placeholder="" required>
+                                            <input type="text" id="-id-column" class="form-control" name="bl_no" placeholder="">
                                         </div>
                                     </div>
                                     <div class="col-md-12 col-12">
                                         <div class="form-group">
                                             <label for="-id-column">Seal No</label>
-                                            <input type="text" id="-id-column" class="form-control" name="seal_no" placeholder="" required>
+                                            <input type="text" id="-id-column" class="form-control" name="seal_no" placeholder="" >
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-12">
@@ -184,7 +183,7 @@
                                             <input type="text" id="-id-column" class="form-control" name="commodity_name" placeholder="" required>
                                             <input type="hidden" id="-id-column" class="form-control" value="01" name="ctr_intern_status" placeholder="" required>
                                             <input type="hidden" id="-id-column" class="form-control" value="I" name="ctr_i_e_t" placeholder="" required>
-                                            <input type="hidden" id="-id-column" class="form-control" value="{{ Auth::user()->id }}" name="user_id" placeholder="" required>
+                                            <input type="hidden" id="-id-column" class="form-control" value="{{ Auth::user()->name }}" name="user_id" placeholder="" required>
                                             <label for="-id-column">Imo Code : </label>
                                                      <select class="form-select" id="imo" name="imo_code" required>
                                                             <option value="-">-</option>  
@@ -207,13 +206,13 @@
                                     <div class="col-md-6 col-12">
                                         <div class="form-group">
                                             <label for="-id-column">O Height</label>
-                                            <input type="text" id="-id-column" class="form-control" name="over_height" placeholder="" required>
+                                            <input type="text" id="-id-column" class="form-control" name="over_height" placeholder="" >
                                             <label for="-id-column">O Weight</label>
-                                            <input type="text" id="-id-column" class="form-control" name="over_weight" placeholder="" required>
+                                            <input type="text" id="-id-column" class="form-control" name="over_weight" placeholder="" >
                                             <label for="-id-column">O  Length</label>
-                                            <input type="text" id="-id-column" class="form-control" name="over_length" placeholder="" required>
+                                            <input type="text" id="-id-column" class="form-control" name="over_length" placeholder="" >
                                             <label for="-id-column">Child. Temp</label>
-                                            <input type="text" id="-id-column" class="form-control" name="chilled_temp" placeholder="" required>
+                                            <input type="text" id="-id-column" class="form-control" name="chilled_temp" placeholder="" >
                                         </div>
                                     </div>
                                    
@@ -228,7 +227,7 @@
                                             <select class="form-select" id="vesid" name="ves_id">
                                             <option value="-">-</option>
                                                 @foreach($vessel_import as $vi)
-                                            <option value="{{$vi->ves_id}}">{{str_pad($vi->ves_id,4,'0', STR_PAD_LEFT)}}</option>
+                                            <option value="{{$vi->ves_id}}">{{str_pad($vi->ves_id,4,'0', STR_PAD_LEFT)}}-{{$vi->ves_code}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -562,7 +561,7 @@
                                                      <div class="form-group">
                                                          <label for="-id-column">Tier</label>
                                                          <input type="text" id="tier_edit" class="form-control" name="bay_tier" placeholder="" required>
-                                                         <input type="hidden" id="user_update" class="form-control" value="{{ Auth::user()->id }}" name="user_id" placeholder="" required>
+                                                         <input type="hidden" id="user_update" class="form-control" value="{{ Auth::user()->name }}" name="user_id" placeholder="" required>
 
                                                      </div>
                                                  </div>
@@ -771,13 +770,14 @@ $(document).on('click', '.update_item', function(e){
                             dataType: 'json',
                             success: function(response) {
                                 console.log(response);
-                                location.reload();
+                                
 
                             },
                             error: function(data) {
                                     console.log('error:', data);
                                 },
                         });
+                        location.reload();
                       } else if (result.isDenied) {
                         Swal.fire('Changes are not saved', '', 'info')                     
                       }

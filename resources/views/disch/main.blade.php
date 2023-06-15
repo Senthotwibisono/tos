@@ -33,7 +33,7 @@
                                 <th>Container No</th>
                                 <th>Crane Code</th>
                                 <th>Operator</th>
-                                <th>Confirmed At</th>
+                                <th>Disc At</th>
                             </tr>
                         </thead>
                         <tbody>          
@@ -43,7 +43,7 @@
                             <td>{{$d['container_no']}}</td>
                             <td>{{$d['cc_tt_no']}}</td>
                             <td>{{$d['cc_tt_oper']}}</td>
-                            <td>{{$d['update_time']}}</td>
+                            <td>{{$d['disc_date']}}</td>
                         </tr>
                             @endforeach
                         </tbody>
@@ -64,7 +64,7 @@
                         <div class="modal-body">
                             <!-- form -->
                             
-                                <div class="form-body">
+                                <div class="form-body" id="modal-update">
                                     <div class="row">
                                     <div class="col-12">
                                             <div class="form-group">
@@ -79,17 +79,17 @@
                                             </div>
                                         </div>
                                         <div class="col-12">
-                                            <div class="form-group">
+                                            <div class="form-group" >
                                                 <label for="first-name-vertical">Choose Container Number</label>   
-                                                <select style="width:100%;"class="form-control container"  id="container_no" name="container_no" required>
+                                                <select style="width:100%;"class="form-control container"  id="container_key" name="container_key" required>
                                                   <option value="">Select Container</option>
                                                   @foreach($items as $data)
-                                                    <option value="{{$data->container_no}}">{{$data->container_no}}</option>
+                                                    <option  value="{{$data->container_key}}">{{$data->container_no}}</option>
                                                   @endforeach
                                                 </select>
-                                                <input type="hidden" id="key" class="form-control" name="container_key">                                             
                                             </div>
                                             {{ csrf_field()}}
+                                            <input type="hidden"  id="container_no" class="form-control" name="container_no" readonly>  
                                         </div>
                                         <div class="col-6" style="border:1px solid blue;">
                                             <div class="row">
@@ -122,7 +122,8 @@
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="first-name-vertical">Op Lapangan</label>   
-                                                <input type="text"  id="user" class="form-control" value="{{ Auth::user()->name }}" name="wharf_yard_oa"  readonly>                                               
+                                                <input type="text"  id="user" class="form-control" value="{{ Auth::user()->name }}" name="wharf_yard_oa"  readonly>
+                                                <input type="datetime-local"  id="tanggal" class="form-control" value="{{ $currentDateTimeString }}" name="disc_date"  readonly>                                               
                                             </div>
                                         </div>
                                     </div>
@@ -150,15 +151,30 @@ $(document).ready(function() {
     });
 });
 $(document).on('click', '.update_status', function(e){
+    e.preventDefault(); // membatalkan perilaku default dari tombol submit
+    // Menetapkan nilai input field pada saat modal ditampilkan
+    $('#no_alat').val(localStorage.getItem('no_alat'));
+    $('#operator').val(localStorage.getItem('operator'));
+    
+});
+$(document).on('keyup', '#no_alat', function() {
+    localStorage.setItem('no_alat', $(this).val());
+});
+$(document).on('keyup', '#operator', function() {
+    localStorage.setItem('operator', $(this).val());
+});
+
+
+$(document).on('click', '.update_status', function(e){
     e.preventDefault();
-    var container_key = $('#key').val();
-    var container_no= $('#container_no').val();
+    var container_key= $('#container_key').val();
     var data = {
-       'container_key' : $('#key').val(),
+       'container_key': $('#container_key').val(),
        'container_no': $('#container_no').val(),
        'cc_tt_oper': $('#operator').val(),
        'cc_tt_no': $('#no_alat').val(),
        'wharf_yard_oa': $('#user').val(),
+       'disc_date': $('#tanggal').val(),
         
     }
     $.ajaxSetup({
@@ -168,7 +184,7 @@ $(document).on('click', '.update_status', function(e){
 });
                       Swal.fire({
                       title: 'Are you Sure?',
-                      text: "Container " +container_no+ " will be updated",
+                      text: "Container will be updated",
                       icon: 'warning',
                       showDenyButton: false,
                       showCancelButton: true,
@@ -188,13 +204,50 @@ $(document).on('click', '.update_status', function(e){
                             success: function(response) {
                                 console.log(response);
                                 
+                                
+                                $('#modal-update').load(window.location.href + ' #modal-update', function(){
+                                    $(document).ready(function() {
+                                        $('.container').select2({
+                                            dropdownParent:'#success',
+                                        });
+                                    });
 
+                                    
+                                    $(document).ready(function() {
+                                             $('#container_key').on('change', function() {
+                                                 let id = $(this).val();
+                                                 $.ajax({
+                                                     type: 'POST',
+                                                     url: '/get-container-key',
+                                                     data: { container_key : id },
+                                                     success: function(response) {
+
+                                                             $('#container_no').val(response.container_no);
+                                                             $('#name').val(response.name);
+                                                             $('#slot').val(response.slot);
+                                                             $('#row').val(response.row);
+                                                             $('#tier').val(response.tier);
+
+                                                     },
+                                                     error: function(data) {
+                                                         console.log('error:', data);
+                                                     },
+                                                 });
+                                             });
+                                     });
+                                     $('#no_alat').val(localStorage.getItem('no_alat'));
+                                $('#operator').val(localStorage.getItem('operator'));
+                                    
+                                });
+                                
+                                $('#table1').load(window.location.href + ' #table1');
+                                
                             },
                             error: function(data) {
                                     console.log('error:', data);
                                 },
                         });
-                        location.reload();
+                        
                       } else if (result.isDenied) {
                         Swal.fire('Changes are not saved', '', 'info')                     
                       }
@@ -212,15 +265,15 @@ $(function() {
             }
         });
         $(document).ready(function() {
-            $('#container_no').on('change', function() {
+            $('#container_key').on('change', function() {
                 let id = $(this).val();
                 $.ajax({
                     type: 'POST',
                     url: '/get-container-key',
-                    data: { container_no : id },
+                    data: { container_key : id },
                     success: function(response) {
                        
-                            $('#key').val(response.key);
+                            $('#container_no').val(response.container_no);
                             $('#name').val(response.name);
                             $('#slot').val(response.slot);
                             $('#row').val(response.row);

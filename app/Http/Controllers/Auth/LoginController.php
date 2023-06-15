@@ -44,7 +44,11 @@ class LoginController extends Controller
     {
         if ($user->hasRole('admin')) {
             return redirect()->route('dashboard');
+        }elseif ($user->hasRole('android')) {
+        return view('android.main');
+        }else {
+            return redirect('/invoice');
         }
-        return redirect('/invoice');
+        
     }
 }
