@@ -10,4 +10,12 @@ class VService extends Model
     use HasFactory;
 
     protected $table = 'vessel_service';
+    public $timestamps = false;
+
+    protected $fillable = [
+        'service' ,
+        'disch_port' ,
+        'user_id'
+];          
+    
 }

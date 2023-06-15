@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\Hash;
 use Auth;
 use App\Models\User;
@@ -35,19 +36,20 @@ class SystemController extends Controller
     }
 
     public function rolestore(Request $request)
-{
-    // validasi form input
-    $validatedData = $request->validate([
-        'name' => 'required|min:2',
-    ]);
+    {
+        // dd("masuk");
+        // validasi form input
+        $validatedData = $request->validate([
+            'name' => 'required|min:2',
+        ]);
 
-    // simpan data ke database
-    Role::create([
-    'name' => $request->name,
-    'guard_name' => $request->web,
-    ]);
-    // redirect ke halaman sukses
-    return redirect('/system/role')->with('success', 'Data berhasil disimpan!');
+        // simpan data ke database
+        Role::create([
+            'name' => $request->name,
+            'guard_name' => $request->web,
+        ]);
+        // redirect ke halaman sukses
+        return redirect('/system/role')->with('success', 'Data berhasil disimpan!');
     }
 
     public function edit_role($id){
@@ -60,9 +62,9 @@ class SystemController extends Controller
     public function update_role(Request $request, $id)
     {
         Role::where('id', $id)->update([
-            'name'=> $request->name,
-            'guard_name'=> $request->guard_name,
-            
+            'name' => $request->name,
+            'guard_name' => $request->guard_name,
+
         ]);
         return redirect('/system/role');
     }
@@ -108,7 +110,7 @@ class SystemController extends Controller
 
         $this->validate($request, [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|unique:users,email,'.$user->id.'|max:255',
+            'email' => 'required|string|email|unique:users,email,' . $user->id . '|max:255',
             'role' => 'required|exists:roles,name'
         ]);
 
@@ -128,6 +130,4 @@ class SystemController extends Controller
         User::destroy($id);
         return back();
     }
-
-    
 }

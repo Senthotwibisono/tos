@@ -1,8 +1,15 @@
 <ul class="menu">
+
+<!-- <li class="sidebar-title">Planning &amp; Yard</li> -->
+
+
+
+
+
             <li class="sidebar-title">Menu</li>
             
             <li
-                class="sidebar-item @if(Request::is('dashboard')) active @endif">
+                class="sidebar-item @if(Request::is('dashboard' || '' )) active @endif">
                 <a href="/dashboard" class='sidebar-link'>
                     <i class="bi bi-grid-fill"></i>
                     <span>Dashboard</span>
@@ -350,7 +357,6 @@
             
 
              <!-- Report -->
-
              <li
                 class="sidebar-item has-sub @if(Request::is('reports/*')) active @endif">
                 <a href="#" class='sidebar-link'>
@@ -365,7 +371,7 @@
                         <a href="layout-vertical-1-column.html">History Container Equal</a>
                     </li>
                     <li class="submenu-item">
-                        <a href="layout-vertical-navbar.html">Yard Display</a>
+                        <a href="{{ route('rowtier.index') }}">Yard Display</a>
                     </li>
                     <li class="submenu-item ">
                         <a href="layout-rtl.html">Vessel Activity Monitoring</a>
@@ -510,6 +516,9 @@
                     <li class="submenu-item ">
                         <a href="/master/isocode">ISO Code Maintenance</a>
                     </li>
+                    <li class="submenu-item ">
+                        <a href="/master/block">Create Yard Block</a>
+                    </li>
                 </ul>
             </li>
 
@@ -521,14 +530,15 @@
 
 
             <!-- <li
+
                 class="sidebar-item  ">
                 <a href="form-layout.html" class='sidebar-link'>
                     <i class="bi bi-file-earmark-medical-fill"></i>
                     <span>Yard</span>
                 </a>
             </li> -->
-            
-            <!-- <li
+
+<!-- <li
                 class="sidebar-item  has-sub">
                 <a href="#" class='sidebar-link'>
                     <i class="bi bi-journal-check"></i>
@@ -586,8 +596,8 @@
                     </li>
                 </ul>
             </li> -->
-            
-            <!-- <li class="sidebar-title">Extra UI</li>
+
+<!-- <li class="sidebar-title">Extra UI</li>
             
             <li
                 class="sidebar-item  has-sub">
