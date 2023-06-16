@@ -13,7 +13,7 @@
     <div class="col-lg-5 col-12">
         <div id="auth-left">
             <div class="logoicon">
-                <a href="index.html"><img src="{{asset('logo/icon2.png')}}" alt="Logo"></a>
+                <a href="index.html"><img src="{{asset('logo/ICON2.png')}}" alt="Logo"></a>
             </div>
             <h1 class="auth-title">Log in.</h1>
             <p class="auth-subtitle mb-5">Log in with your data that you entered during registration.</p>
