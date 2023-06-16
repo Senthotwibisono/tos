@@ -13,7 +13,7 @@
             <header class="mb-5">
                 <div class="header-top">
                     <div class="container">
-                        <div class="logoicon">
+                        <div class="logo">
                             <a href="/invoice"><img src="{{asset('logo/ICON2.png')}}" alt="Logo"></a>
                         </div>
                         <div class="header-top-right">
