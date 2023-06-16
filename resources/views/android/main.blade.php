@@ -18,9 +18,13 @@
 
 <body>
     <nav class="navbar navbar-light">
-         <div style="position: relative; left: -10px;">
-            <img class="logo" src="{{asset('logo/ICON2.png')}}" alt="auth-left">
+         <div class="container d-block">
+
+         
+            <img src="{{asset('logo/icon2.png')}}" alt="Logo" srcset="">
+            
         </div>
+        
           <br>
             <br>
         
