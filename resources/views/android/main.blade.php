@@ -21,7 +21,7 @@
          <div class="container d-block">
 
             <a class="navbar-brand ms-4" href="#">
-            <img src="{{asset('logo/ICON2.png')}}" alt="Logo" srcset="">
+            <img class="logoicon" src="{{asset('logo/ICON2.png')}}" alt="Logo" srcset="">
             </a>
         </div>
         
