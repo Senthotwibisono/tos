@@ -15,7 +15,7 @@
 </head>
 <body>
     <div id="app">
-        @include('layouts.partials.sidebar',['href' => route('dashboard'),'logo' => asset('logo/icon2.png'), 'title' => "Menu"])
+        @include('layouts.partials.sidebar',['href' => route('dashboard'),'logo' => asset('logo/ICON2.png'), 'title' => "Menu"])
         
         <div id="main" class='layout-navbar'>
             @include('layouts.partials.header')
