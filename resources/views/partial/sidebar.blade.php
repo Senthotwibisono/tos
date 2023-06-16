@@ -12,14 +12,14 @@
                 class="sidebar-item @if(Request::is('dashboard')) active @endif">
                 <a href="/dashboard" class='sidebar-link'>
                     <i class="bi bi-grid-fill"></i>
-                    <span>Dashboard1</span>
+                    <span>Dashboard</span>
                 </a>
             </li>
 
 
                         <!-- planning -->
 
-                        <li
+            <li
                 class="sidebar-item  has-sub @if(Request::is('planning/*')) active @endif">
                 <a href="#" class='sidebar-link'>
                 <i class="fa-solid fa-ship"></i>
@@ -242,9 +242,10 @@
                         <a href="form-element-textarea.html">Laporan Job Slip Scanning</a>
                     </li> <li class="submenu-item ">
                         <a href="form-element-checkbox.html">Laporan Job Slip Gerakan Extra</a>
-                    </li> -->
+                    
 
                     <hr>
+                    </li> -->
 
                     <!-- </li> <li class="submenu-item ">
                         <a href="form-element-checkbox.html">Laporan Behandle Confirm</a>
