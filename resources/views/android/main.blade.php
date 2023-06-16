@@ -24,6 +24,9 @@
             <img class="logoicon" src="{{asset('logo/ICON2.png')}}" alt="Logo" srcset="">
             </a>
         </div>
+          <br>
+            <br>
+        
                             <button class="btn btn-danger rounded-pill">
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                                onclick="event.preventDefault();
