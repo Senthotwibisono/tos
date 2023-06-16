@@ -14,7 +14,7 @@
     <div class="sidebar-header position-relative">
         <div class="d-flex justify-content-between align-items-center">
             <div class="logoicon">
-                <a href="/dashboard"><img src="{{asset('logo/icon2.png')}}" alt="Logo" srcset=""></a>
+                <a href="/dashboard"><img src="{{asset('logo/ICON2.png')}}" alt="Logo" srcset=""></a>
             </div>
             <!-- Dark or Light mode -->
             
