@@ -15,7 +15,7 @@
         <div class="container d-block">
 
             <a class="navbar-brand ms-4" href="index.html">
-            <img src="{{asset('logo/icon2.png')}}" alt="Logo" srcset="">
+            <img src="{{asset('logo/ICON2.png')}}" alt="Logo" srcset="">
             </a>
         </div>
                             <button class="btn btn-danger rounded-pill">
