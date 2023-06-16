@@ -8,3 +8,16 @@
     
 <link rel="stylesheet" href="{{asset('dist/assets/css/shared/iconly.css')}}">
 <link rel="stylesheet" href="{{ asset('fontawesome/css/all.min.css') }}">
+
+ <style>
+  .logoicon {
+    transform: scale(3);
+}
+.round-image-3 {
+  width: 40px; /* Sesuaikan dengan lebar yang diinginkan */
+  height: 40px; /* Sesuaikan dengan tinggi yang diinginkan */
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+</style>
