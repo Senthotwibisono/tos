@@ -14,7 +14,7 @@
                 <div class="header-top">
                     <div class="container">
                         <div class="logo">
-                            <a href="/invoice"><img src="{{asset('dist/assets/images/logo/logo.svg')}}" alt="Logo"></a>
+                            <a href="/invoice"><img src="{{asset('logo/ICON2.png')}}" alt="Logo"></a>
                         </div>
                         <div class="header-top-right">
 
