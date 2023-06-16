@@ -7,7 +7,7 @@
 
         <div class="sidebar-header position-relative">
             <div class="d-flex justify-content-between align-items-center">
-                <div class="logo">
+                <div class="logoicon">
                     <a href="{{ $href }}"><img src="{{asset('logo/ICON2.png')}}" alt="Logo" srcset=""></a>
                 </div>
 
