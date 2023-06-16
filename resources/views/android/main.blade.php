@@ -8,6 +8,12 @@
     <link rel="stylesheet" href="{{asset('dist/assets/css/main/app.css')}}">
     <link rel="shortcut icon" href="{{asset('logo/icon.png')}}" type="image/x-icon">
     <link rel="shortcut icon" href="{{asset('logo/icon.png')}}" type="image/png">
+
+<style>
+  .logoicon {
+    transform: scale(3);
+}
+</style>
 </head>
 
 <body>
@@ -15,7 +21,7 @@
         <div class="container d-block">
 
             <a class="navbar-brand ms-4" href="index.html">
-            <img src="{{asset('logo/ICON2.png')}}" alt="Logo" srcset="">
+            <img class="logoicon" src="{{asset('logo/ICON2.png')}}" alt="Logo" srcset="">
             </a>
         </div>
                             <button class="btn btn-danger rounded-pill">
