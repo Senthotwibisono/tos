@@ -16,7 +16,7 @@ use App\Http\Controllers\Gati;
 use App\Http\Controllers\Gato;
 use App\Http\Controllers\MasterController;
 use App\Http\Controllers\EdiController;
-use App\Http\controllers\ProfileControllers;
+use App\Http\Controllers\ProfileControllers;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportCont;
 use App\Http\Controllers\SessionsController;
