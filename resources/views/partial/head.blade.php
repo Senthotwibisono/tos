@@ -1,6 +1,6 @@
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
 @if (isset($title))
     <title>{{ $title }}</title>
@@ -30,7 +30,7 @@
   .select2-container--default .select2-selection--single .select2-selection__rendered {
     color: #fff;
   }
-
+   
   .select2-container--default .select2-selection--single .select2-selection__arrow {
     height: calc(2.5rem + 2px);
     background-color: #010f1c;

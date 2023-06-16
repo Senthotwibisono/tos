@@ -2,7 +2,7 @@
             <li class="sidebar-title">Menu</li>
             
             <li
-                class="sidebar-item active">
+                class="sidebar-item @if(Request::is('dashboard')) active @endif">
                 <a href="/dashboard" class='sidebar-link'>
                     <i class="bi bi-grid-fill"></i>
                     <span>Dashboard</span>
@@ -13,7 +13,7 @@
                         <!-- planning -->
 
                         <li
-                class="sidebar-item  has-sub">
+                class="sidebar-item  has-sub @if(Request::is('planning/*')) active @endif">
                 <a href="#" class='sidebar-link'>
                 <i class="fa-solid fa-ship"></i>
                     <span>Planning</span>
@@ -36,6 +36,13 @@
                     </li> -->
                     <li class="submenu-item ">
                         <a href="/planning/bayplan_import">Bay Plan Import</a>
+                    </li>
+                    <hr>
+                    <li class="submenu-item ">
+                        <a href="/planning/report">Discharge List</a>
+                    </li>
+                    <li class="submenu-item ">
+                        <a href="/planning/realisasi-bongkar">Realisasi Bongkar</a>
                     </li>
                     <!-- <li class="submenu-item ">
                         <a href="form-element-checkbox.html">Bay Plan Export</a>
@@ -90,7 +97,7 @@
             <!-- disch/load -->
 
             <li
-                class="sidebar-item  has-sub">
+                class="sidebar-item  has-sub @if(Request::is('disch/*')) active @endif">
                 <a href="#" class='sidebar-link'>
                     <i class="bi bi-collection-fill"></i>
                     <span>Disch/Load</span>
@@ -140,7 +147,7 @@
                         <!-- yard -->
 
                         <li
-                class="sidebar-item  has-sub">
+                class="sidebar-item  has-sub @if(Request::is('yard/*')) active @endif">
                 <a href="#" class='sidebar-link'>
                 <i class="fa-solid fa-landmark-flag"></i>
                     <span>Yard</span>
@@ -167,7 +174,7 @@
                         <a href="form-element-textarea.html">Yard Display</a>
                     </li>  -->
                     <li class="submenu-item ">
-                        <a href="/yards/rowtier">Yard View</a>
+                        <a href="/yard/rowtier">Yard View</a>
                     </li>
                     <!-- <li class="submenu-item ">
                         <a href="form-element-textarea.html">Reefer Monitoring</a>
@@ -232,16 +239,16 @@
 
                     <hr>
 
-                    </li> <li class="submenu-item ">
+                    <!-- </li> <li class="submenu-item ">
                         <a href="form-element-checkbox.html">Laporan Behandle Confirm</a>
-                    </li>
+                    </li> -->
                 </ul>
             </li>
             
 
                                     <!-- gate -->
 
-            <li class="sidebar-item  has-sub">
+            <li class="sidebar-item  has-sub @if(Request::is('delivery/*')) active @endif">
                 <a href="#" class='sidebar-link'>
                 <i class="fa-solid fa-torii-gate"></i>
                     <span>Gate</span>
@@ -271,7 +278,7 @@
 
                                     <!-- EDI -->
 
-                <li class="sidebar-item  has-sub">
+                <li class="sidebar-item  has-sub @if(Request::is('edi/*')) active @endif">
                 <a href="#" class='sidebar-link'>
                 <i class="fa-solid fa-file"></i>
                     <span>EDI</span>
@@ -345,14 +352,14 @@
              <!-- Report -->
 
              <li
-                class="sidebar-item has-sub">
+                class="sidebar-item has-sub @if(Request::is('reports/*')) active @endif">
                 <a href="#" class='sidebar-link'>
                 <i class="fa-solid fa-circle-info"></i>
                     <span>Report and Information</span>
                 </a>
                 <ul class="submenu">
                     <li class="submenu-item ">
-                        <a href="/history-cont">History Container</a>
+                        <a href="/reports/hist">History Container</a>
                     </li>
                     <!-- <li class="submenu-item ">
                         <a href="layout-vertical-1-column.html">History Container Equal</a>
@@ -448,7 +455,7 @@
             <!-- System -->
 
             <li
-            class="sidebar-item has-sub">
+            class="sidebar-item has-sub @if(Request::is('system/*')) active @endif">
                 <a href="#" class='sidebar-link'>
                 < <i class="fa-solid fa-wrench"></i>
                     <span>System</span>
@@ -479,7 +486,7 @@
 
                         <!-- Master -->
                         <li
-                class="sidebar-item  has-sub">
+                class="sidebar-item  has-sub @if(Request::is('master/*')) active @endif">
                 <a href="#" class='sidebar-link'>
                     <i class="bi bi-stack"></i>
                     <span>Master</span>
