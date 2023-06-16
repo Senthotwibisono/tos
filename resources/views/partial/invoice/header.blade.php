@@ -11,7 +11,7 @@
 
  <style>
   .logoicon {
-    transform: scale(0.1);
+    transform: scale(3);
 }
 .round-image-3 {
   width: 40px; /* Sesuaikan dengan lebar yang diinginkan */
