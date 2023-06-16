@@ -2,7 +2,7 @@
 @section('custom_styles')
 <style>
     .kotak {
-            width: 80px;
+            width: 110px;
             height: 40px;
             background-color: #F5F5F5;
             margin: 06px;
@@ -11,6 +11,7 @@
             line-height: 40px;
             border-radius: 8px; /* Mengatur radius sudut kotak */
             border: 2px solid #00BFFF; /* Mengatur border dengan warna biru laut */
+            font-size: 12px;
             
     }
     .kotak.filled {
@@ -96,15 +97,34 @@
            
         </div>
         <hr>
-        <div class="card-body wide-body">
+        <div class="card-body">
         @php
         $row = 15;
         $tier = 13;
         $evenNumbers = [94, 92, 90, 88, 86, 84, 82, 80, 14, 12, 10, 8, 6, 4, 2];
         $numberIndex = 0;
     @endphp
-
-    @for ($i = $row - 1; $i >= 0; $i--)
+    <table class="table table-hover" id="">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>12</th>
+                                <th>10</th>
+                                <th>08</th>
+                                <th>06</th>
+                                <th>04</th>
+                                <th>02</th>
+                                <th>00</th>
+                                <th>01</th>
+                                <th>03</th>
+                                <th>05</th>
+                                <th>07</th>
+                                <th>09</th>
+                                <th>11</th>
+                            </tr>
+                        </thead>
+                        <tbody>          
+                        @for ($i = $row - 1; $i >= 0; $i--)
         <div class="row-container">
             <div class="tier-label left-label">{{$evenNumbers[$numberIndex]}}</div>
 
@@ -119,6 +139,10 @@
             @endphp
         </div>
     @endfor
+                        </tbody>
+                    </table>
+
+   
             
 
         </div>
