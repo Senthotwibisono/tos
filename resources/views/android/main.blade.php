@@ -18,11 +18,8 @@
 
 <body>
     <nav class="navbar navbar-light">
-        <div class="container d-block">
-
-            <a class="navbar-brand ms-4" href="#">
-            <img class="logoicon" src="{{asset('logo/ICON2.png')}}" alt="Logo" srcset="">
-            </a>
+         <div style="position: relative; left: -10px;">
+            <img class="logo" src="{{asset('logo/ICON2.png')}}" alt="auth-left">
         </div>
           <br>
             <br>
