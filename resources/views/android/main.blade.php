@@ -21,7 +21,7 @@
          <div class="container d-block">
 
          
-            <img src="{{asset('logo/icon2.png')}}" alt="Logo" srcset="">
+            <img src="{{asset('logo/ICON2.png')}}" alt="Logo" srcset="">
             
         </div>
         
