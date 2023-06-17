@@ -7,7 +7,20 @@ use App\Http\Controllers\BayplanImportController;
 use App\Http\Controllers\DischargeController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PlacementController;
+use App\Http\Controllers\AndroidController;
+use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\YardrotController;
+use App\Http\Controllers\DischargeView;
+use App\Http\Controllers\Stripping;
+use App\Http\Controllers\Gati;
+use App\Http\Controllers\Gato;
+use App\Http\Controllers\MasterController;
+use App\Http\Controllers\EdiController;
+use App\Http\Controllers\ProfileControllers;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ReportCont;
 use App\Http\Controllers\SessionsController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +37,7 @@ use App\Http\Controllers\SessionsController;
 //     return view('welcome');
 // });
 
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
+Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
@@ -34,9 +47,10 @@ Route::get('/master/port', function () {
     return view('master.port');
 });
 
-// Route::get('/invoice', function () {
-//     return view('invoice.dashboard');
-// });
+//Route::get('/invoice', function () {
+//    return view('invoice.dashboard');
+//});
+
 
 Route::post('/set-session/{key}/{value}', [SessionsController::class, 'setSession'])->name('set-session');
 Route::post('/unset-session/{key}', [SessionsController::class, 'unsetSession'])->name('unset-session');
@@ -78,7 +92,6 @@ Route::prefix('invoice')->group(function () {
 
 
 
-
 Auth::routes();
 
 Route::get('/system/user', [SystemController::class, 'user'])->name('system.user.main');
@@ -114,6 +127,7 @@ Route::get('/planning/schedule_schedule={ves_id}', [VesselController::class, 'ed
 Route::patch('/planning/schedule_update={ves_id}', [VesselController::class, 'update_schedule']);
 Route::delete('/planning/delete_schedule={ves_id}', [VesselController::class, 'delete_schedule']);
 
+
 Route::get('/planning/bayplan_import', [BayplanImportController::class, 'index']);
 Route::post('/getsize', [BayplanImportController::class, 'size']);
 Route::post('/gettype', [BayplanImportController::class, 'type']);
@@ -131,14 +145,205 @@ Route::post('/get-ves-name', [BayplanImportController::class, 'get_ves_name']);
 Route::post('/planning/update_bayplanimport', [BayplanImportController::class, 'update_bayplanimport']);
 Route::delete('/planning/delete_item={container_key}', [BayplanImportController::class, 'delete_item']);
 
+//kotak-kotak
+Route::get('/disch-view-vessel', [DischargeView::class, 'index']);
+Route::post('/get-ves', [DischargeView::class, 'get_ves']);
+Route::post('/get-bay', [DischargeView::class, 'get_bay']);
+Route::get('/get-container', [DischargeView::class, 'get_container']);
+// Android
+Route::get('/android-dashboard', [AndroidController::class, 'index']);
 Route::get('/disch/confrim_disch', [DischargeController::class, 'index']);
 Route::post('/search-container', [DischargeController::class, 'container']);
 Route::post('/get-container-key', [DischargeController::class, 'get_key']);
 Route::post('/confirm', [DischargeController::class, 'confirm']);
 
+//tampilan android
+Route::get('/disch/android', [DischargeController::class, 'android']);
+Route::get('/yard/android', [PlacementController::class, 'android']);
+Route::get('/stripping/android', [Stripping::class, 'android']);
+Route::get('/delivery/android-in', [Gati::class, 'android']);
+Route::get('/delivery/android-out', [Gato::class, 'android']);
+
 Route::get('/yard/placement', [PlacementController::class, 'index']);
 Route::post('/placement', [PlacementController::class, 'place']);
-Route::post('/get-tipe', [PlacementController::class, 'get_tipe']);
+Route::post('/dapet-tipe', [PlacementController::class, 'get_tipe']);
+Route::post('/container-tipe', [PlacementController::class, 'tipe_container']);
+
+
+//Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+// Route::post('/get-slot', [PlacementController::class, 'get_slot']);
 // Route::post('/confirm', [DischargeController::class, 'confirm']);
 
-Route::middleware('role:admin')->get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
+
+// //role master Port
+// Route::get('/master/port', [MasterController::class, 'port']);
+// Route::post('/master/port_store', [MasterController::class, 'port_store'])->name('/master/port_store');
+// Route::post('/master/port_edit_store', [MasterController::class, 'port_edit_store'])->name('/master/port_edit_store');
+// Route::delete('/master/delete_port={port}', [MasterController::class, 'delete_port']);
+// Route::get('/master/edit_port', [MasterController::class, 'edit_port']);
+
+// //role master Vessel
+// Route::get('/master/vessel', [MasterController::class, 'vessel']);
+// Route::post('/master/vessel_store', [MasterController::class, 'vessel_store'])->name('/master/vessel_store');
+// Route::post('/master/vessel_edit_store', [MasterController::class, 'vessel_edit_store'])->name('/master/vessel_edit_store');
+// Route::delete('/master/delete_vessel={vessel}', [MasterController::class, 'delete_vessel']);
+// Route::get('/master/edit_vessel', [MasterController::class, 'edit_vessel']);
+
+
+// //role master VesBerthsel
+// Route::get('/master/berth', [MasterController::class, 'berth']);
+// Route::post('/master/berth_store', [MasterController::class, 'berth_store'])->name('/master/berth_store');
+// Route::post('/master/berth_edit_store', [MasterController::class, 'berth_edit_store'])->name('/master/berth_edit_store');
+// Route::delete('/master/delete_berth={berth_no}', [MasterController::class, 'delete_berth']);
+// Route::get('/master/edit_berth', [MasterController::class, 'edit_berth']);
+
+
+// //role Vessel Servicel
+// Route::get('/master/service', [MasterController::class, 'service']);
+// Route::post('/master/service_store', [MasterController::class, 'service_store'])->name('/master/service_store');
+// Route::post('/master/service_edit_store', [MasterController::class, 'service_edit_store'])->name('/master/service_edit_store');
+// Route::delete('/master/delete_service={service_id}', [MasterController::class, 'delete_service']);
+// Route::get('/master/edit_service', [MasterController::class, 'edit_service']);
+
+
+// //role ISO Code
+// Route::get('/master/isocode', [MasterController::class, 'isocode']);
+// Route::post('/master/isocode_store', [MasterController::class, 'isocode_store'])->name('/master/isocode_store');
+// Route::post('/master/isocode_edit_store', [MasterController::class, 'isocode_edit_store'])->name('/master/isocode_edit_store');
+// Route::delete('/master/delete_isocode={iso_code}', [MasterController::class, 'delete_isocode']);
+// Route::get('/master/edit_isocode', [MasterController::class, 'edit_isocode']);
+
+
+
+// //role Yard Block
+// Route::get('/master/block', [MasterController::class, 'block']);
+// Route::post('/master/block_store', [MasterController::class, 'block_store'])->name('/master/block_store');
+// Route::get('/master/edit_block', [MasterController::class, 'edit_block']);
+
+// //role EDI Baplie recievr
+// Route::get('/edi/receiveedi', [EdiController::class, 'receiveedi']);
+// Route::post('/edi/receiveeditxt_store', [EdiController::class, 'receiveeditxt_store'])->name('/edi/receiveeditxt_store');
+// Route::delete('/edi/delete_itembayplan={container_key}', [EdiController::class, 'delete_itembayplan']);
+// Route::get('/edi/edit_itembayplan', [EdiController::class, 'edit_itembayplan']);
+
+
+
+route::resource('yards/rowtier', YardrotController::class);
+route::post('yards/rowtier/get_rowtier', [YardrotController::class, 'get_rowtier'])->name('rowtier.get_rowtier');
+
+
+
+
+Route::get('/planning/bayplan_import', [ BayplanImportController::class, 'index']);
+
+
+Route::get('/stripping', [Stripping::class, 'index']);
+Route::post('/get-stripping', [Stripping::class, 'get_stripping']);
+Route::post('/stripping-place', [Stripping::class, 'stripping_place']);
+
+Route::get('/delivery/gate-in', [Gati::class, 'index']);
+Route::post('/gati-data_container', [Gati::class, 'data_container']);
+Route::post('/gati-del', [Gati::class, 'gati_del']);
+
+Route::get('/delivery/gate-out', [Gato::class, 'index']);
+Route::post('/gato-data_container', [Gato::class, 'data_container']);
+Route::post('/gato-del', [Gato::class, 'gato_del']);
+
+
+// history
+Route::group([
+    'prefix' => 'reports',
+    'as' => 'reports.'
+], function () {
+    Route::post('/hist/get_cont', [
+        HistoryController::class,
+        'get_cont'
+    ])->name('hist.get_cont');
+    Route::post('/hist/get_cont_hist', [
+        HistoryController::class,
+        'get_cont_hist'
+    ])->name('hist.get_cont_hist');
+    Route::post('/hist/get_cont_job', [
+        HistoryController::class,
+        'get_cont_job'
+    ])->name('hist.get_cont_job');
+    Route::get('/blank', function () {
+        return view('reports.hist.blank');
+    })->name('hist.blank');
+    Route::resource('/hist', HistoryController::class);
+});
+//role master Port
+Route::get('/master/port', [MasterController::class, 'port']);
+Route::post('/master/port_store', [MasterController::class, 'port_store'])->name('/master/port_store');
+Route::post('/master/port_edit_store', [MasterController::class, 'port_edit_store'])->name('/master/port_edit_store');
+Route::delete('/master/delete_port={port}', [MasterController::class, 'delete_port']);
+Route::get('/master/edit_port', [MasterController::class, 'edit_port']);
+
+//role master Vessel
+Route::get('/master/vessel', [MasterController::class, 'vessel']);
+Route::post('/master/vessel_store', [MasterController::class, 'vessel_store'])->name('/master/vessel_store');
+Route::post('/master/vessel_edit_store', [MasterController::class, 'vessel_edit_store'])->name('/master/vessel_edit_store');
+Route::delete('/master/delete_vessel={vessel}', [MasterController::class, 'delete_vessel']);
+Route::get('/master/edit_vessel', [MasterController::class, 'edit_vessel']);
+
+
+//role master VesBerthsel
+Route::get('/master/berth', [MasterController::class, 'berth']);
+Route::post('/master/berth_store', [MasterController::class, 'berth_store'])->name('/master/berth_store');
+Route::post('/master/berth_edit_store', [MasterController::class, 'berth_edit_store'])->name('/master/berth_edit_store');
+Route::delete('/master/delete_berth={berth_no}', [MasterController::class, 'delete_berth']);
+Route::get('/master/edit_berth', [MasterController::class, 'edit_berth']);
+
+
+//role Vessel Servicel
+Route::get('/master/service', [MasterController::class, 'service']);
+Route::post('/master/service_store', [MasterController::class, 'service_store'])->name('/master/service_store');
+Route::post('/master/service_edit_store', [MasterController::class, 'service_edit_store'])->name('/master/service_edit_store');
+Route::delete('/master/delete_service={service_id}', [MasterController::class, 'delete_service']);
+Route::get('/master/edit_service', [MasterController::class, 'edit_service']);
+
+
+//role ISO Code
+Route::get('/master/isocode', [MasterController::class, 'isocode']);
+Route::post('/master/isocode_store', [MasterController::class, 'isocode_store'])->name('/master/isocode_store');
+Route::post('/master/isocode_edit_store', [MasterController::class, 'isocode_edit_store'])->name('/master/isocode_edit_store');
+Route::delete('/master/delete_isocode={iso_code}', [MasterController::class, 'delete_isocode']);
+Route::get('/master/edit_isocode', [MasterController::class, 'edit_isocode']);
+
+
+
+//role Yard Block
+Route::get('/master/block', [MasterController::class, 'block']);
+Route::post('/master/block_store', [MasterController::class, 'block_store'])->name('/master/block_store');
+Route::get('/master/edit_block', [MasterController::class, 'edit_block']);
+
+//role EDI Baplie recievr
+Route::get('/edi/receiveedi', [EdiController::class, 'receiveedi']);
+Route::post('/edi/receiveeditxt_store', [EdiController::class, 'receiveeditxt_store'])->name('/edi/receiveeditxt_store');
+Route::delete('/edi/delete_itembayplan={container_key}', [EdiController::class, 'delete_itembayplan']);
+Route::get('/edi/edit_itembayplan', [EdiController::class, 'edit_itembayplan']);
+
+
+
+route::resource('yard/rowtier', YardrotController::class);
+route::post('yards/rowtier/get_rowtier', [YardrotController::class, 'get_rowtier'])->name('rowtier.get_rowtier');
+
+Route::middleware('role:admin')->get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
+
+Route::get('/profile', [ProfileControllers::class, 'index']);
+Route::post('/update_profile_photo', [ProfileControllers::class, 'profil']);
+
+Route::get('/planning/report', [ReportCont::class, 'index'])->name('report.index');
+Route::post('/review-get-ves', [ReportCont::class, 'get_ves'])->name('report.get-ves');
+Route::post('/review-get-bay', [ReportCont::class, 'get_bay'])->name('report.get-bay');
+Route::get('/review-get-container', [ReportCont::class, 'get_container'])->name('report.get-container');
+Route::get('/generate-pdf-disch', [ReportCont::class, 'generatePDF_disch'])->name('report.generate-pdf-disch');
+
+// Routes untuk Realisasi Bongkar
+Route::get('/planning/realisasi-bongkar', [ReportCont::class, 'index_bongkar'])->name('realisasi-bongkar.index');
+Route::post('/realisasi-get-ves', [ReportCont::class, 'get_ves_bongkar'])->name('realisasi-bongkar.get-ves');
+Route::post('/realisasi-get-bay', [ReportCont::class, 'get_bay_bongkar'])->name('realisasi-bongkar.get-bay');
+Route::get('/realisasi-get-container', [ReportCont::class, 'get_container_bongkar'])->name('realisasi-bongkar.get-container');
+Route::get('/generate-pdf-bongkar', [ReportCont::class, 'generatePDF_bongkar'])->name('realisasi-bongkar.generate-pdf-bongkar');
+

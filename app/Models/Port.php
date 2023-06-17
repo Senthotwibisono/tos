@@ -9,4 +9,14 @@ class Port extends Model
 {
     use HasFactory;
     protected $table = 'port_master';
+    public $timestamps = false;
+
+    protected $fillable = [
+        'port',
+        'un_port',
+        'un_country',
+        'country_name',
+        'descr',
+        'user_id',
+    ];
 }

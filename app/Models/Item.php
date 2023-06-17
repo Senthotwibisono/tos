@@ -93,7 +93,6 @@ class item extends Model
         'container_dest',
         'remarks',
         'oper_name',
-        'update_time',
         'iso_code',
         'no_permohonan_ob',
         'bhd_date',
@@ -110,4 +109,9 @@ class item extends Model
         'is_damage',
         'user_id',
     ];
+
+    public function job()
+    {
+        return $this->hasMany(Job::class, 'container_key', );
+    }
 }

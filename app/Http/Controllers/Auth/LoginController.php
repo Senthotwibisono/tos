@@ -7,6 +7,8 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AndroidController;
+
 
 class LoginController extends Controller
 {
@@ -44,7 +46,11 @@ class LoginController extends Controller
     {
         if ($user->hasRole('admin')) {
             return redirect()->route('dashboard');
+        }elseif ($user->hasRole('android')) {
+        return redirect('/android-dashboard');
+        }else {
+            return redirect('/invoice');
         }
-        return redirect('/invoice');
+        
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Database\Connection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Models\VVoyage;
 use App\Models\Isocode;
@@ -10,16 +12,22 @@ use App\Models\Item;
 use App\Models\Imocode;
 use App\Models\Port;
 use App\Models\User;
+use App\Models\HistoryContainer;
 use Auth;
 
 use Carbon\Carbon;
 
 class BayplanImportController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function index()
     {
+        $title = 'Bay Plan Import';
         
-        $item = Item::orderBy('container_key', 'desc')->get();
+        $item = Item::where('ctr_intern_status', '=', '01')->orderBy('container_key', 'desc')->get();
         $formattedData = [];
 
         foreach ($item as $tem) {
@@ -41,6 +49,7 @@ class BayplanImportController extends Controller
 
             $formattedData[] = [
                 'ves_id' => $tem->ves_id,
+                'ves_name' => $tem->ves_name,
                 'voy_no' => $tem->voy_no,
                 'disc_load_seq' => $tem->disc_load_seq,
                 'container_no' => $tem->container_no,
@@ -61,13 +70,13 @@ class BayplanImportController extends Controller
         $isocode = Isocode::all();
         $today = date('Y-m-d H:i:s');
         $vessel_voyage = Vvoyage::all();
-        $vessel_import = VVoyage::whereDate('eta_date', '>', now())->get();
+        $vessel_import = VVoyage::whereDate('eta_date', '>=', now())->get();
         // where('eta_date', '>', $today)->get();
         $currentDateTime = Carbon::now();
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
         $imocode = Imocode::all();
         $port_master = Port::all();
-        return view('planning.bayplan.main', compact('item', 'currentDateTimeString', 'isocode', 'vessel_voyage', 'imocode', 'users','vessel_import', 'port_master', 'formattedData'));
+        return view('planning.bayplan.main', compact('item', 'currentDateTimeString', 'isocode', 'vessel_voyage', 'title', 'imocode', 'users','vessel_import', 'port_master', 'formattedData'));
     }
 
     public function size(request $request)
@@ -161,6 +170,8 @@ class BayplanImportController extends Controller
         'user_id'=>$request->user_id,
         ]);
 
+        $item->save();
+    
         return back();
     }
 
@@ -209,7 +220,7 @@ public function get_ves_name(Request $request)
     {
         $container_key = $request->container_key;
         $item = Item::where('container_key',$container_key)->first();
-            Item::where('container_key', $container_key)->update([
+            $item->update([
             'container_no' => $request->container_no,
             'ves_id' => $request->ves_id,
             'ves_code' => $request->ves_code,
@@ -242,11 +253,14 @@ public function get_ves_name(Request $request)
             'ctr_opr' => $request->ctr_opr,
             'user_id'=> $request->user_id,
         ]);
-    
+
+       
+       
             return response()->json([
                 'success' => 400,
                 'message' => 'updated successfully!',
                 'data'    => $item,
+                'history' =>$history_container, 
             ]);
     }
 

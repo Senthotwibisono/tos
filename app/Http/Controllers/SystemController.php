@@ -11,21 +11,28 @@ use Illuminate\Http\Request;
 
 class SystemController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function user()
     {
+        $title = 'User View';
         $users = User::all();
-        return view('system.user.main', compact('users'));
+        return view('system.user.main', compact('users', 'title'));
     }
 
     public function role()
     {
+        $title = 'Role View';
         $roles = Role::all();
-        return view('system.role.main', compact('roles'));
+        return view('system.role.main', compact('roles', 'title'));
     }
 
     public function createrole()
     {
-        return view('system.role.create');
+        $title = 'Add Role';
+        return view('system.role.create', compact('title'));
     }
 
     public function rolestore(Request $request)
@@ -45,11 +52,11 @@ class SystemController extends Controller
         return redirect('/system/role')->with('success', 'Data berhasil disimpan!');
     }
 
-    public function edit_role($id)
-    {
+    public function edit_role($id){
+        $title = 'Edit Role';
         $roles = Role::where('id', $id)->first();
         // dd($role);
-        return view('system.role.edit', compact('roles'));
+        return view('system.role.edit', compact('roles', 'title'));
     }
 
     public function update_role(Request $request, $id)
@@ -70,8 +77,9 @@ class SystemController extends Controller
 
     public function create_user()
     {
+        $title = 'Add User';
         $roles = Role::all();
-        return view('system.user.create', compact('roles'));
+        return view('system.user.create', compact('roles', 'title'));
     }
 
     public function user_store(Request $request)
@@ -89,11 +97,11 @@ class SystemController extends Controller
         return redirect('/system/user');
     }
 
-    public function edit_user($id)
-    {
+    public function edit_user($id){
+        $title = 'Edit User';
         $users = User::where('id', $id)->first();
         $roles = Role::all();
-        return view('system.user.edit', compact('users', 'roles'));
+        return view('system.user.edit', compact('users','roles', 'title'));
     }
 
     public function update_user(Request $request, $id)
