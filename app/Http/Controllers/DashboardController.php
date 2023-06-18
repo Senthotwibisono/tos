@@ -15,6 +15,10 @@ class DashboardController extends Controller
         $user = Auth::user();
         $hideSidebar = $user->role === 'android';
 
-        return view('dashboard', compact('hideSidebar'));
+        $data = [];
+        $data["active"] = "Dashboard";
+        $data["subactive"] = "";
+
+        return view('dashboard', compact('hideSidebar'), $data);
     }
 }

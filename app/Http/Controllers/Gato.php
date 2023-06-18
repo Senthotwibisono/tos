@@ -9,6 +9,8 @@ use App\Models\Yard;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use GuzzleHttp\Client;
+
 
 class Gato extends Controller
 {
@@ -21,6 +23,7 @@ class Gato extends Controller
         $title = 'Gate Out Delivery';
         $confirmed = Item::where('ctr_intern_status', '=', '09',)->orderBy('update_time', 'desc')->get();
         $formattedData = [];
+        $data = [];
 
         foreach ($confirmed as $tem) {
             $now = Carbon::now();
@@ -56,7 +59,9 @@ class Gato extends Controller
         $yard_tier = Yard::distinct('yard_tier')->pluck('yard_tier');
         $currentDateTime = Carbon::now();
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
-        return view('gate.delivery.main_out', compact('confirmed', 'title', 'formattedData', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'));
+        $data["active"] = "delivery";
+        $data["subactive"] = "gateout";
+        return view('gate.delivery.main_out', $data, compact('confirmed', 'title', 'formattedData', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'));
     }
     public function android()
     {
@@ -138,12 +143,41 @@ class Gato extends Controller
             'truck_no' => $request->truck_no,
             'truck_out_date' => $request->truck_out_date
         ]);
+        $client = new Client();
 
+        $fields = [
+            "container_key" => $request->container_key,
+            "ctr_intern_status" => "09",
+        ];
+        // dd($fields, $item->getAttributes());
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Updated successfully!',
-            'item' => $item,
-        ]);
+        $url = 'localhost:3013/delivery-service/container/confirmDisch';
+        $req = $client->post(
+            $url,
+            [
+                "json" => $fields
+            ]
+        );
+        $response = $req->getBody()->getContents();
+        $result = json_decode($response);
+        // var_dump($result);
+        // die();
+        if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+            // $item->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'updated successfully!',
+                'data'    => $item,
+            ]);
+        } else {
+            return back();
+        }
+
+        // return response()->json([
+        //     'success' => true,
+        //     'message' => 'Updated successfully!',
+        //     'item' => $item,
+        // ]);
     }
 }

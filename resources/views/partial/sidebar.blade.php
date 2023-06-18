@@ -1,28 +1,26 @@
 <ul class="menu">
-            <li class="sidebar-title">Menu</li>
-            
-            <li
-                class="sidebar-item @if(Request::is('dashboard')) active @endif">
-                <a href="/dashboard" class='sidebar-link'>
-                    <i class="bi bi-grid-fill"></i>
-                    <span>Dashboard</span>
-                </a>
-            </li>
+  <li class="sidebar-title">Menu</li>
+
+  <li class="sidebar-item <?= $active == "Dashboard" ? "active" : "" ?>">
+    <a href="/dashboard" class='sidebar-link'>
+      <i class="bi bi-grid-fill"></i>
+      <span>Dashboard</span>
+    </a>
+  </li>
 
 
-                        <!-- planning -->
+  <!-- planning -->
 
-                        <li
-                class="sidebar-item  has-sub @if(Request::is('planning/*')) active @endif">
-                <a href="#" class='sidebar-link'>
-                <i class="fa-solid fa-ship"></i>
-                    <span>Planning</span>
-                </a>
-                <ul class="submenu ">
-                    <li class="submenu-item ">
-                        <a href="/planning/vessel-schedule">Vessel Schedule</a>
-                    </li>
-                    <!-- <li class="submenu-item ">
+  <li class="sidebar-item  has-sub <?= $active == "planning" ? "active" : "" ?>">
+    <a href="#" class='sidebar-link'>
+      <i class="fa-solid fa-ship"></i>
+      <span>Planning</span>
+    </a>
+    <ul class="submenu <?= $active == "planning" ? "active" : "" ?>">
+      <li class="submenu-item ">
+        <a href="/planning/vessel-schedule">Vessel Schedule</a>
+      </li>
+      <!-- <li class="submenu-item ">
                         <a href="form-element-select.html">Vessel Service / Route</a>
                     </li>
                     <li class="submenu-item ">
@@ -34,17 +32,17 @@
                     <li class="submenu-item ">
                         <a href="form-element-checkbox.html">Load Planning - Bigger Vessel</a>
                     </li> -->
-                    <li class="submenu-item ">
-                        <a href="/planning/bayplan_import">Bay Plan Import</a>
-                    </li>
-                    <hr>
-                    <li class="submenu-item ">
-                        <a href="/planning/report">Discharge List</a>
-                    </li>
-                    <li class="submenu-item ">
-                        <a href="/planning/realisasi-bongkar">Realisasi Bongkar</a>
-                    </li>
-                    <!-- <li class="submenu-item ">
+      <li class="submenu-item <?= $subactive == "bayplanimport" ? "active" : "" ?>">
+        <a href="/planning/bayplan_import">Bay Plan Import</a>
+      </li>
+      <hr>
+      <li class="submenu-item ">
+        <a href="/planning/report">Discharge List</a>
+      </li>
+      <li class="submenu-item ">
+        <a href="/planning/realisasi-bongkar">Realisasi Bongkar</a>
+      </li>
+      <!-- <li class="submenu-item ">
                         <a href="form-element-checkbox.html">Bay Plan Export</a>
                     </li>
                     <li class="submenu-item ">
@@ -86,34 +84,35 @@
                     <li class="submenu-item ">
                         <a href="form-element-textarea.html">VIP Container Export</a>
                     </li> -->
-                </ul>
-            </li>
+    </ul>
+  </li>
 
 
-            
 
-            
 
-            <!-- disch/load -->
 
-            <li
-                class="sidebar-item  has-sub @if(Request::is('disch/*')) active @endif">
-                <a href="#" class='sidebar-link'>
-                    <i class="bi bi-collection-fill"></i>
-                    <span>Disch/Load</span>
-                </a>
-                <ul class="submenu ">
-                    <!-- <li class="submenu-item ">
+
+  <!-- disch/load -->
+
+  <li class="sidebar-item  has-sub <?= $active == "discharge" ? "active" : "" ?>">
+    <a href="#" class='sidebar-link'>
+      <i class="bi bi-collection-fill"></i>
+      <span>Disch/Load</span>
+    </a>
+    <ul class="submenu <?= $active == "discharge" ? "active" : "" ?>">
+      <!-- <li class="submenu-item ">
                         <a href="extra-component-avatar.html">Loading Confirm With Plan</a>
                     </li>
                     <li class="submenu-item ">
                         <a href="extra-component-sweetalert.html">Loading Confirm Without Plan</a>
                     </li> -->
-                    <li class="submenu-item ">
-                        <a href="/disch/confrim_disch">Discharge Confirm</a>
-                        <a href="/disch-view-vessel">Discharge View</a>
-                    </li>
-                    <!-- <li class="submenu-item ">
+      <li class="submenu-item <?= $subactive == "confirm" ? "active" : "" ?>">
+        <a href="/disch/confrim_disch ">Discharge Confirm</a>
+      </li>
+      <li class="submenu-item">
+        <a href="/disch-view-vessel">Discharge View</a>
+      </li>
+      <!-- <li class="submenu-item ">
                         <a href="extra-component-rating.html">Entry Hatch Move</a>
                     </li>
                     <br>
@@ -141,19 +140,18 @@
                     <li class="submenu-item ">
                          <a href="extra-component-divider.html">Statement or Facts</a>
                     </li>      -->
-                </ul>
-            </li>
-            
-                        <!-- yard -->
+    </ul>
+  </li>
 
-                        <li
-                class="sidebar-item  has-sub @if(Request::is('yard/*')) active @endif">
-                <a href="#" class='sidebar-link'>
-                <i class="fa-solid fa-landmark-flag"></i>
-                    <span>Yard</span>
-                </a>
-                <ul class="submenu ">
-                    <!-- <li class="submenu-item ">
+  <!-- yard -->
+
+  <li class="sidebar-item  has-sub <?= $active == "yard" ? "active" : "" ?>">
+    <a href="#" class='sidebar-link'>
+      <i class="fa-solid fa-landmark-flag"></i>
+      <span>Yard</span>
+    </a>
+    <ul class="submenu <?= $active == "yard" ? "active" : "" ?>">
+      <!-- <li class="submenu-item ">
                         <a href="form-element-input.html">Yard Operation Control</a>
                     </li>
                     <li class="submenu-item ">
@@ -167,16 +165,16 @@
                         <a href="form-element-radio.html">Karantina Control</a>
                     </li>
                     <hr> -->
-                    <li class="submenu-item ">
-                        <a href="/yard/placement">Placement Container</a>
-                    </li>
-                    <!-- <li class="submenu-item ">
+      <li class="submenu-item <?= $subactive == "placement" ? "active" : "" ?>">
+        <a href="/yard/placement">Placement Container</a>
+      </li>
+      <!-- <li class="submenu-item ">
                         <a href="form-element-textarea.html">Yard Display</a>
                     </li>  -->
-                    <li class="submenu-item ">
-                        <a href="/yard/rowtier">Yard View</a>
-                    </li>
-                    <!-- <li class="submenu-item ">
+      <li class="submenu-item ">
+        <a href="/yard/rowtier">Yard View</a>
+      </li>
+      <!-- <li class="submenu-item ">
                         <a href="form-element-textarea.html">Reefer Monitoring</a>
                     </li> <li class="submenu-item ">
                         <a href="form-element-checkbox.html">Reefer Export Control</a>
@@ -237,63 +235,63 @@
                         <a href="form-element-checkbox.html">Laporan Job Slip Gerakan Extra</a>
                     </li> -->
 
-                    <hr>
+      <hr>
 
-                    <!-- </li> <li class="submenu-item ">
+      <!-- </li> <li class="submenu-item ">
                         <a href="form-element-checkbox.html">Laporan Behandle Confirm</a>
                     </li> -->
-                </ul>
-            </li>
-            
+    </ul>
+  </li>
 
-                                    <!-- gate -->
 
-            <li class="sidebar-item  has-sub @if(Request::is('delivery/*')) active @endif">
-                <a href="#" class='sidebar-link'>
-                <i class="fa-solid fa-torii-gate"></i>
-                    <span>Gate</span>
-                </a>
-                <ul class="submenu ">
-                <li class="submenu-item ">
-                        <a href="/delivery/gate-in">Get in Delivery</a>
-                    </li>
-                    <li class="submenu-item ">
-                        <a href="/delivery/gate-out">Gate Out Delivery</a>
-                    </li>
+  <!-- gate -->
 
-                    <hr>
+  <li class="sidebar-item  has-sub <?= $active == "delivery" ? "active" : "" ?>">
+    <a href="#" class='sidebar-link'>
+      <i class="fa-solid fa-torii-gate"></i>
+      <span>Gate</span>
+    </a>
+    <ul class="submenu <?= $active == "delivery" ? "active" : "" ?>">
+      <li class="submenu-item <?= $subactive == "gatein" ? "active" : "" ?>">
+        <a href="/delivery/gate-in">Get in Delivery</a>
+      </li>
+      <li class="submenu-item <?= $subactive == "gateout" ? "active" : "" ?>">
+        <a href="/delivery/gate-out">Gate Out Delivery</a>
+      </li>
 
-                    
-                    <!-- <li class="submenu-item ">
+      <hr>
+
+
+      <!-- <li class="submenu-item ">
                         <a href="form-element-select.html">Gate In Receiving</a>
                     </li>
                     <li class="submenu-item ">
                         <a href="form-element-radio.html">Gate Out Receiving</a>
                     </li> -->
-                </ul>
-            </li>
-            
+    </ul>
+  </li>
 
 
 
-                                    <!-- EDI -->
 
-                <li class="sidebar-item  has-sub @if(Request::is('edi/*')) active @endif">
-                <a href="#" class='sidebar-link'>
-                <i class="fa-solid fa-file"></i>
-                    <span>EDI</span>
-                </a>
-                <ul class="submenu ">
-                    <li class="submenu-item ">
-                        <a href="/edi/receiveedi">Baplie Arrival</a>
-                    </li>
-                    <!-- <li class="submenu-item ">
+  <!-- EDI -->
+
+  <li class="sidebar-item  has-sub @if(Request::is('edi/*')) active @endif">
+    <a href="#" class='sidebar-link'>
+      <i class="fa-solid fa-file"></i>
+      <span>EDI</span>
+    </a>
+    <ul class="submenu ">
+      <li class="submenu-item ">
+        <a href="/edi/receiveedi">Baplie Arrival</a>
+      </li>
+      <!-- <li class="submenu-item ">
                         <a href="form-element-input-group.html">Baplie  Deparature</a>
                     </li> -->
-                </ul>
-            </li>
+    </ul>
+  </li>
 
-             <!-- <li class="sidebar-item  has-sub">
+  <!-- <li class="sidebar-item  has-sub">
                 <a href="#" class='sidebar-link'>
                 <i class="fa-solid fa-torii-gate"></i>
                     <span>Gate</span>
@@ -318,50 +316,49 @@
                 </ul>
             </li> -->
 
-            <!-- Android Menu -->
+  <!-- Android Menu -->
 
-            <li class="sidebar-item  has-sub">
-                <a href="#" class='sidebar-link'>
-                <i class="fa-solid fa-mobile"></i>
-                    <span>Android</span>
-                </a>
-                <ul class="submenu ">
-                    <li class="submenu-item ">
-                        <a href="/disch/confrim_disch">Confirm Disch</a>
-                    </li>
-                    <li class="submenu-item ">
-                        <a href="/yard/placement">Placement Container</a>
-                    </li>
-                    <li class="submenu-item ">
-                        <a href="/stripping">Stripping</a>
-                    </li>
+  <li class="sidebar-item  has-sub">
+    <a href="#" class='sidebar-link'>
+      <i class="fa-solid fa-mobile"></i>
+      <span>Android</span>
+    </a>
+    <ul class="submenu ">
+      <li class="submenu-item ">
+        <a href="/disch/confrim_disch">Confirm Disch</a>
+      </li>
+      <li class="submenu-item ">
+        <a href="/yard/placement">Placement Container</a>
+      </li>
+      <li class="submenu-item ">
+        <a href="/stripping">Stripping</a>
+      </li>
 
-                    <hr>
+      <hr>
 
-                    
-                    <li class="submenu-item ">
-                        <a href="/delivery/gate-in">Gate In Delivery</a>
-                    </li>
-                    <li class="submenu-item ">
-                        <a href="/delivery/gate-out">Gate Out Delivery</a>
-                    </li>
-                </ul>
-            </li>
-            
 
-             <!-- Report -->
+      <li class="submenu-item ">
+        <a href="/delivery/gate-in">Gate In Delivery</a>
+      </li>
+      <li class="submenu-item ">
+        <a href="/delivery/gate-out">Gate Out Delivery</a>
+      </li>
+    </ul>
+  </li>
 
-             <li
-                class="sidebar-item has-sub @if(Request::is('reports/*')) active @endif">
-                <a href="#" class='sidebar-link'>
-                <i class="fa-solid fa-circle-info"></i>
-                    <span>Report and Information</span>
-                </a>
-                <ul class="submenu">
-                    <li class="submenu-item ">
-                        <a href="/reports/hist">History Container</a>
-                    </li>
-                    <!-- <li class="submenu-item ">
+
+  <!-- Report -->
+
+  <li class="sidebar-item has-sub @if(Request::is('reports/*')) active @endif">
+    <a href="#" class='sidebar-link'>
+      <i class="fa-solid fa-circle-info"></i>
+      <span>Report and Information</span>
+    </a>
+    <ul class="submenu">
+      <li class="submenu-item ">
+        <a href="/reports/hist">History Container</a>
+      </li>
+      <!-- <li class="submenu-item ">
                         <a href="layout-vertical-1-column.html">History Container Equal</a>
                     </li>
                     <li class="submenu-item">
@@ -421,13 +418,13 @@
                     <li class="submenu-item">
                         <a href="layout-vertical-navbar.html">SP2 Active</a>
                     </li> -->
-                </ul>
-            </li>
+    </ul>
+  </li>
 
 
-            <!-- CTR -->
+  <!-- CTR -->
 
-            <!-- <li
+  <!-- <li
                 class="sidebar-item has-sub">
                 <a href="#" class='sidebar-link'>
                 <i class="fa-solid fa-toolbox"></i>
@@ -452,83 +449,80 @@
                 </ul>
             </li> -->
 
-            <!-- System -->
+  <!-- System -->
 
-            <li
-            class="sidebar-item has-sub @if(Request::is('system/*')) active @endif">
-                <a href="#" class='sidebar-link'>
-                < <i class="fa-solid fa-wrench"></i>
-                    <span>System</span>
-                </a>
-                <ul class="submenu">
-                    <li class="submenu-item ">
-                        <a href="/system/user">User</a>
-                    </li>
-                    <li class="submenu-item ">
-                        <a href="/system/role">Role</a>
-                    </li>
-                </ul>
-            </li>
-
-
-
-           
-
-            <!-- invoice -->
-
-            <li
-                class="sidebar-item">
-                <a href="/invoice" class='sidebar-link'>
-                <i class="bi bi-currency-exchange"></i>
-                    <span>Invoice</span>
-                </a>
-            </li>
-
-                        <!-- Master -->
-                        <li
-                class="sidebar-item  has-sub @if(Request::is('master/*')) active @endif">
-                <a href="#" class='sidebar-link'>
-                    <i class="bi bi-stack"></i>
-                    <span>Master</span>
-                </a>
-                <ul class="submenu ">
-                    <li class="submenu-item ">
-                        <a href="/master/port">Port Maintenance</a>
-                    </li>
-                    <li class="submenu-item ">
-                        <a href="/master/berth">Berth Maintenance</a>
-                    </li>
-                    <li class="submenu-item ">
-                        <a href="/master/vessel">Vessel Maintenance</a>
-                    </li>
-                    <li class="submenu-item ">
-                        <a href="/master/service">Vessel Service Maintenance</a>
-                    </li>
-                    <li class="submenu-item ">
-                        <a href="/master/block">Yard</a>
-                    </li>
-                    <li class="submenu-item ">
-                        <a href="/master/isocode">ISO Code Maintenance</a>
-                    </li>
-                </ul>
-            </li>
+  <li class="sidebar-item has-sub @if(Request::is('system/*')) active @endif">
+    <a href="#" class='sidebar-link'>
+      < <i class="fa-solid fa-wrench"></i>
+        <span>System</span>
+    </a>
+    <ul class="submenu">
+      <li class="submenu-item ">
+        <a href="/system/user">User</a>
+      </li>
+      <li class="submenu-item ">
+        <a href="/system/role">Role</a>
+      </li>
+    </ul>
+  </li>
 
 
 
-            
-            <!-- <li class="sidebar-title">Planning &amp; Yard</li> -->
+
+
+  <!-- invoice -->
+
+  <li class="sidebar-item">
+    <a href="/invoice" class='sidebar-link'>
+      <i class="bi bi-currency-exchange"></i>
+      <span>Invoice</span>
+    </a>
+  </li>
+
+  <!-- Master -->
+  <li class="sidebar-item  has-sub @if(Request::is('master/*')) active @endif">
+    <a href="#" class='sidebar-link'>
+      <i class="bi bi-stack"></i>
+      <span>Master</span>
+    </a>
+    <ul class="submenu ">
+      <li class="submenu-item ">
+        <a href="/master/port">Port Maintenance</a>
+      </li>
+      <li class="submenu-item ">
+        <a href="/master/berth">Berth Maintenance</a>
+      </li>
+      <li class="submenu-item ">
+        <a href="/master/vessel">Vessel Maintenance</a>
+      </li>
+      <li class="submenu-item ">
+        <a href="/master/service">Vessel Service Maintenance</a>
+      </li>
+      <li class="submenu-item ">
+        <a href="/master/block">Yard</a>
+      </li>
+      <li class="submenu-item ">
+        <a href="/master/isocode">ISO Code Maintenance</a>
+      </li>
+    </ul>
+  </li>
 
 
 
-            <!-- <li
+
+  <!-- <li class="sidebar-title">Planning &amp; Yard</li> -->
+
+
+
+  <!-- <li
                 class="sidebar-item  ">
                 <a href="form-layout.html" class='sidebar-link'>
                     <i class="bi bi-file-earmark-medical-fill"></i>
                     <span>Yard</span>
                 </a>
             </li> -->
-            
-            <!-- <li
+
+  <!-- <li
                 class="sidebar-item  has-sub">
                 <a href="#" class='sidebar-link'>
                     <i class="bi bi-journal-check"></i>
@@ -586,8 +580,8 @@
                     </li>
                 </ul>
             </li> -->
-            
-            <!-- <li class="sidebar-title">Extra UI</li>
+
+  <!-- <li class="sidebar-title">Extra UI</li>
             
             <li
                 class="sidebar-item  has-sub">

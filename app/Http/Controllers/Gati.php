@@ -9,6 +9,8 @@ use App\Models\Yard;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use GuzzleHttp\Client;
+
 
 class Gati extends Controller
 {
@@ -21,6 +23,7 @@ class Gati extends Controller
         $title = 'Gate In Delivery';
         $confirmed = Item::where('ctr_intern_status', '=', 10,)->orderBy('truck_in_date', 'desc')->get();
         $formattedData = [];
+        $data = [];
 
         foreach ($confirmed as $tem) {
             $now = Carbon::now();
@@ -56,7 +59,20 @@ class Gati extends Controller
         $yard_tier = Yard::distinct('yard_tier')->pluck('yard_tier');
         $currentDateTime = Carbon::now();
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
-        return view('gate.delivery.main', compact('confirmed', 'formattedData', 'title', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'));
+
+        $client = new Client();
+        // GET ALL JOB_CONTAINER
+        $url_jobContainer = 'localhost:3013/delivery-service/job/all';
+        $req_jobContainer = $client->get($url_jobContainer);
+        $response_jobContainer = $req_jobContainer->getBody()->getContents();
+        $result_jobContainer = json_decode($response_jobContainer);
+        // dd($result_jobContainer->data);
+        // dd($containerKeys);
+
+        $data["active"] = "delivery";
+        $data["subactive"] = "gatein";
+        $data["jobContainers"] = $result_jobContainer->data;
+        return view('gate.delivery.main', $data, compact('confirmed', 'formattedData', 'title', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'), $data);
     }
     public function android()
     {
@@ -113,13 +129,37 @@ class Gati extends Controller
 
     public function data_container(Request $request)
     {
-        $container_key = $request->container_key;
-        $name = Item::where('container_key', $container_key)->first();
+        // $container_key = $request->container_key;
+        // $name = Item::where('container_key', $container_key)->first();
 
-        if ($name) {
-            return response()->json(['container_no' => $name->container_no, 'job' => $name->job_no, 'invoice' => $name->invoice_no]);
+        // if ($name) {
+        //     return response()->json(['container_no' => $name->container_no, 'job' => $name->job_no, 'invoice' => $name->invoice_no]);
+        // }
+        // return response()->json(['container_no' => 'data tidak ditemukan', 'job' => 'data tidak ditemukan', 'invoice' => 'data tidak ditemukan']);
+        $client = new Client();
+
+        $fields = [
+            "container_key" => $request->container_key,
+        ];
+        // dd($fields, $item->getAttributes());
+
+        $url = 'localhost:3013/delivery-service/job/containerbykey';
+        $req = $client->post(
+            $url,
+            [
+                "json" => $fields
+            ]
+        );
+        $response = $req->getBody()->getContents();
+        $result = json_decode($response);
+        // dd($result);
+        if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+            // $item->save();
+
+            echo $response;
+        } else {
+            return response()->json(['container_no' => 'data tidak ditemukan', 'job' => 'data tidak ditemukan', 'invoice' => 'data tidak ditemukan']);
         }
-        return response()->json(['container_no' => 'data tidak ditemukan', 'job' => 'data tidak ditemukan', 'invoice' => 'data tidak ditemukan']);
     }
 
     public function gati_del(Request $request)
@@ -127,6 +167,8 @@ class Gati extends Controller
 
 
         $container_key = $request->container_key;
+        // var_dump($request->job_no);
+        // die();
         $item = Item::where('container_key', $container_key)->first();
 
 
@@ -134,14 +176,47 @@ class Gati extends Controller
         $item->update([
             'ctr_intern_status' => 10,
             'truck_no' => $request->truck_no,
-            'truck_in_date' => $request->truck_in_date
+            'truck_in_date' => $request->truck_in_date,
+            'job_no' => $request->job_no,
+            'invoice_no' => $request->invoice_no,
         ]);
+        // var_dump($item);
+        // die();
+        $client = new Client();
 
+        $fields = [
+            "container_key" => $request->container_key,
+            "ctr_intern_status" => "10",
+        ];
+        // dd($fields, $item->getAttributes());
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Updated successfully!',
-            'item' => $item,
-        ]);
+        $url = 'localhost:3013/delivery-service/container/confirmDisch';
+        $req = $client->post(
+            $url,
+            [
+                "json" => $fields
+            ]
+        );
+        $response = $req->getBody()->getContents();
+        $result = json_decode($response);
+        // var_dump($result);
+        // die();
+        if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+            // $item->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'updated successfully!',
+                'data'    => $item,
+            ]);
+        } else {
+            return back();
+        }
+
+        // return response()->json([
+        //     'success' => true,
+        //     'message' => 'Updated successfully!',
+        //     'item' => $item,
+        // ]);
     }
 }
