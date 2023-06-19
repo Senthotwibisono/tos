@@ -143,6 +143,21 @@ public function android()
 
         $container_key = $request->container_key;
     $item = Item::where('container_key', $container_key)->first();
+    $request->validate([
+        'container_no'=> 'required',
+        'yard_block'  => 'required',
+        'yard_slot'  => 'required',
+        'yard_row'  => 'required',
+        'yard_tier' => 'required',
+        
+    ], [
+        'container_no.required' => 'Container Number is required.',
+        'yard_block.required' => 'Block is required.',
+        'yard_slot.required' => 'Slot Alat Number is required.',
+        'yard_row.required' => 'Row Alat Number is required.',
+        'yard_tier.required' => 'Tier Alat Number is required.',
+    ]);
+    
     
     $yard_rowtier = Yard::where('yard_block', $request->yard_block)
         ->where('yard_slot', $request->yard_slot)
