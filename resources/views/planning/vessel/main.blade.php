@@ -50,7 +50,7 @@
                             <td>{{$voyage->agent}}</td>
                             <td>{{$voyage->liner}}</td>
                             <td>{{$voyage->berthing_date}}</td>
-                            <td>{{$voyage->deparature_date}}</td>
+                            <td>{{$voyage->etd_date}}</td>
                             <td>
                             <form action="/planning/delete_schedule={{$voyage->ves_id}}" method="POST">
                             @csrf
@@ -67,5 +67,21 @@
 
     </section>
 </div>
+
+@endsection
+@section('custom_js')
+
+<script src="{{asset('dist/assets/extensions/sweetalert2/sweetalert2.min.js')}}"></script>    
+    <script src="{{asset('dist/assets/js/pages/sweetalert2.js')}}"></script>
+
+    <script>
+    @if (session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: "{{ session('success') }}"
+        });
+    @endif
+</script>
 
 @endsection

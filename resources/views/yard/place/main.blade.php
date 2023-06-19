@@ -222,9 +222,8 @@ $(document).on('click', '.update_status', function(e){
                     }).then((result) => {
                       /* Read more about isConfirmed, isDenied below */
                       if (result.isConfirmed) {
-                        Swal.fire('Saved!', '', 'success')
-                       
-                        $.ajax({
+                          
+                          $.ajax({
                             type: 'POST',
                             url: '/placement',
                             data: data,
@@ -233,6 +232,7 @@ $(document).on('click', '.update_status', function(e){
                             success: function(response) {
                                 console.log(response);
                                 if (response.success) {
+                                    Swal.fire('Saved!', '', 'success')
                                     $('#load_ini').load(window.location.href + ' #load_ini');
                                     $('#place_cont').load(window.location.href + ' #place_cont', function() {
                                         $(document).ready(function() {
@@ -252,25 +252,25 @@ $(document).on('click', '.update_status', function(e){
                                                 dropdownParent: '#success',
                                             });
                                             $(document).ready(function() {
-            $('#key').on('change', function() {
-                let id = $(this).val();
-                $.ajax({
-                    type: 'POST',
-                    url: '/container-tipe',
-                    data: { container_key : id },
-                    success: function(response) {
-                       
-                            $('#container_no').val(response.container_no);
-                            $('#tipe').val(response.tipe);
-                            $('#coname').val(response.coname);
-                        },
-                    error: function(data) {
-                        console.log('error:', data);
-                    },
-                });
-            });
-    });
-    // $
+                                                    $('#key').on('change', function() {
+                                                        let id = $(this).val();
+                                                        $.ajax({
+                                                            type: 'POST',
+                                                            url: '/container-tipe',
+                                                            data: { container_key : id },
+                                                            success: function(response) {
+                                                            
+                                                                    $('#container_no').val(response.container_no);
+                                                                    $('#tipe').val(response.tipe);
+                                                                    $('#coname').val(response.coname);
+                                                                },
+                                                            error: function(data) {
+                                                                console.log('error:', data);
+                                                            },
+                                                        });
+                                                    });
+                                            });
+                                            // $
                                         });
                                     
                                         $('#load_ini').load(window.location.href + ' #load_ini');
@@ -279,9 +279,22 @@ $(document).on('click', '.update_status', function(e){
                                     Swal.fire('Error', response.message, 'error');
                                 }
                             },
-                            error: function(data) {
-                                    console.log('error:', data);
-                                },
+                            error: function(response) {
+                    var errors = response.responseJSON.errors;
+                    if (errors) {
+                        var errorMessage = '';
+                        $.each(errors, function(key, value) {
+                            errorMessage += value[0] + '<br>';
+                        });
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Validation Error',
+                            html: errorMessage,
+                        });
+                    } else {
+                        console.log('error:', response);
+                    }
+                },
                         });
                         
                       } else if (result.isDenied) {

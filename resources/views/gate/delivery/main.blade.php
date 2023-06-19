@@ -90,7 +90,7 @@
                                         <div class="col-12">
                                             <div class="form-group">
                                                 <label for="first-name-vertical">Truck Number</label>   
-                                                <input type="text"  id="tayo" class="form-control" name="truck_no"  required>                                        
+                                                <input type="text"  id="tayo" class="form-control" name="truck_no" required>                                        
                                             </div>
                                         </div>
                                         <div class="col-12">
@@ -155,7 +155,7 @@ $(document).on('click', '.update_status', function(e){
                     }).then((result) => {
                       /* Read more about isConfirmed, isDenied below */
                       if (result.isConfirmed) {
-                        Swal.fire('Saved!', '', 'success')
+                       
                        
                         $.ajax({
                             type: 'POST',
@@ -166,6 +166,7 @@ $(document).on('click', '.update_status', function(e){
                             success: function(response) {
                                 console.log(response);
                                 if (response.success) {
+                                     Swal.fire('Saved!', '', 'success')
                                     $('#load_ini').load(window.location.href + ' #load_ini');
                                     $('#place_cont').load(window.location.href + ' #place_cont', function() {
                                         $(document).ready(function() {
@@ -197,12 +198,29 @@ $(document).on('click', '.update_status', function(e){
                                         $('#load_ini').load(window.location.href + ' #load_ini');
                                     });
                                 } else {
-                                    Swal.fire('Error', response.message, 'error');
+                                    Swal.fire({
+                                         icon: 'error',
+                                         title: 'Validation Error',
+                                         text: response.message,
+                                     });
                                 }
                             },
-                            error: function(data) {
-                                    console.log('error:', data);
-                                },
+                            error: function(response) {
+                    var errors = response.responseJSON.errors;
+                    if (errors) {
+                        var errorMessage = '';
+                        $.each(errors, function(key, value) {
+                            errorMessage += value[0] + '<br>';
+                        });
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Validation Error',
+                            html: errorMessage,
+                        });
+                    } else {
+                        console.log('error:', response);
+                    }
+                },
                         });
                         
                       } else if (result.isDenied) {

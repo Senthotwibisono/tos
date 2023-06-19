@@ -25,9 +25,19 @@
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit">
                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                        </svg> Create Schedule</button>
+                        </svg> Create Container</button>
                 </div>
                 <div class="card-body">
+                @if ($errors->any())
+                                <div class="alert alert-danger">
+                                    <ul>
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+                       
                     <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
                         <thead>
                             <tr>
@@ -227,7 +237,7 @@
                                             <select class="form-select" id="vesid" name="ves_id">
                                             <option value="-">-</option>
                                                 @foreach($vessel_import as $vi)
-                                            <option value="{{$vi->ves_id}}">{{str_pad($vi->ves_id,4,'0', STR_PAD_LEFT)}}-{{$vi->ves_code}}</option>
+                                            <option value="{{$vi->ves_id}}">{{str_pad($vi->ves_id,4,'0', STR_PAD_LEFT)}}-{{$vi->ves_code}} Tiba Pada {{$vi->eta_date}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -273,7 +283,7 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-6" style="border:1px solid blue;">
+                                        <div class="col-6">
                                             <div class="row">
                                                 <h4>Plan of Bay</h4>
                                                  <div class="col-md-12 col-12" >
@@ -302,7 +312,7 @@
                                                  </div>
                                             </div>        
                                         </div>
-                                        <div class="col-6" style="border:1px solid blue;" >
+                                        <div class="col-6">
                                             <div class="row">
                                                 <h4>Port Pelabuhan</h4>
                                                  <div class="col-md-12 col-12" >
@@ -310,7 +320,7 @@
                                                          <label for="-id-column">Load Port</label>
                                                          <select class="form-select" id="" name="load_port" required>
                                                          @foreach($port_master as $pm)  
-                                                         <option value="{{$pm->un_port}}">{{$pm->un_port}}</option>
+                                                         <option value="{{$pm->un_port}}">{{$pm->port}}</option>
                                                         @endforeach
                                                         </select>
                                                      </div>
@@ -320,7 +330,7 @@
                                                          <label for="-id-column">Disc Port</label>
                                                         <select class="form-select" id="" name="disch_port" required>
                                                          @foreach($port_master as $pm)  
-                                                         <option value="{{$pm->un_port}}">{{$pm->un_port}}</option>
+                                                         <option value="{{$pm->un_port}}">{{$pm->port}}</option>
                                                         @endforeach
                                                         </select>
                                                      </div>
@@ -499,7 +509,7 @@
                                             <select class="form-select" id="vesid_edit" name="ves_id">
                                             <option value="-">-</option>
                                                 @foreach($vessel_voyage as $vy)
-                                            <option value="{{$vy->ves_id}}">{{str_pad($vy->ves_id,4,'0', STR_PAD_LEFT)}}</option>
+                                            <option value="{{$vy->ves_id}}">{{str_pad($vi->ves_id,4,'0', STR_PAD_LEFT)}}-{{$vi->ves_code}} Tiba Pada {{$vi->eta_date}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -575,7 +585,7 @@
                                                          <label for="-id-column">Load Port</label>
                                                         <select class="form-select" id="loadport_edit" name="load_port" required>
                                                          @foreach($port_master as $pm)  
-                                                         <option value="{{$pm->un_port}}">{{$pm->un_port}}</option>
+                                                         <option value="{{$pm->un_port}}">{{$pm->port}}</option>
                                                         @endforeach
                                                         </select>
                                                      </div>
@@ -585,7 +595,7 @@
                                                          <label for="-id-column">Disc Port</label>
                                                          <select class="form-select" id="dischport_edit" name="disch_port" required>
                                                          @foreach($port_master as $pm)  
-                                                         <option value="{{$pm->un_port}}">{{$pm->un_port}}</option>
+                                                         <option value="{{$pm->un_port}}">{{$pm->port}}</option>
                                                         @endforeach
                                                         </select>
                                                      </div>
@@ -628,6 +638,16 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
     <script src="{{asset('dist/assets/extensions/sweetalert2/sweetalert2.min.js')}}"></script>    
     <script src="{{asset('dist/assets/js/pages/sweetalert2.js')}}"></script>
+
+    <script>
+    @if (session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: "{{ session('success') }}"
+        });
+    @endif
+</script>
 
     <script>
         $(document).ready(function() {
@@ -751,39 +771,56 @@ $(document).on('click', '.update_item', function(e){
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
 });
-                      Swal.fire({
-                      title: 'Do you want to save the changes?',
-                      showDenyButton: false,
-                      showCancelButton: true,
-                      confirmButtonText: 'Save',
-                      denyButtonText: `Don't save`,
-                    }).then((result) => {
-                      /* Read more about isConfirmed, isDenied below */
-                      if (result.isConfirmed) {
-                        Swal.fire('Saved!', '', 'success')
-                       
-                        $.ajax({
-                            type: 'POST',
-                            url: '/planning/update_bayplanimport',
-                            data: data,
-                            cache: false,
-                            dataType: 'json',
-                            success: function(response) {
-                                console.log(response);
-                                
-
-                            },
-                            error: function(data) {
-                                    console.log('error:', data);
-                                },
-                        });
+Swal.fire({
+    icon : 'question',
+        title: 'Do you want to save the changes?',
+        showDenyButton: false,
+        showCancelButton: true,
+        confirmButtonText: 'Save',
+        denyButtonText: `Don't save`,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            
+            
+            $.ajax({
+                type: 'POST',
+                url: '/planning/update_bayplanimport',
+                data: data,
+                cache: false,
+                dataType: 'json',
+                success: function(response) {
+                    Swal.fire({
+                            icon: 'success',
+                            title: 'Saved',
+                            html: 'Update Successfully',
+                        }).then((result) => {
+                    if (result.isConfirmed) {
                         location.reload();
-                      } else if (result.isDenied) {
-                        Swal.fire('Changes are not saved', '', 'info')                     
-                      }
-                      
-                    })
-   
+                    }
+                });
+                console.log(response.message);
+                },
+                error: function(response) {
+                    var errors = response.responseJSON.errors;
+                    if (errors) {
+                        var errorMessage = '';
+                        $.each(errors, function(key, value) {
+                            errorMessage += value[0] + '<br>';
+                        });
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Validation Error',
+                            html: errorMessage,
+                        });
+                    } else {
+                        console.log('error:', response);
+                    }
+                },
+            });
+        } else if (result.isDenied) {
+            Swal.fire('Changes are not saved', '', 'info');
+        }
+    });
 });
 
                   

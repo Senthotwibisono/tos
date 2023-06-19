@@ -81,7 +81,7 @@
                     <div class="card">
                         <div class="card-header">
                         
-                <a href="index.html"><img src="{{asset('logo/ICON2.png')}}" alt="Logo"></a>
+                <a href="index.html"><img src="{{asset('logo/icon2.png')}}" alt="Logo"></a>
            
                         </div>
                         <div class="card-body">
@@ -185,7 +185,7 @@
                         </div>
                         <div class="name ms-4">
                             <h5 class="mb-1">{{$voy->ves_name}}</h5>
-                            <h6 class="text-muted mb-0">{{$voy->eta_date}}</h6>
+                            <h6 class="text-muted mb-0">{{$voy->etd_date}}</h6>
                         </div>
                     </div>
                     @endforeach
@@ -226,6 +226,10 @@
                                             <td>
                                                 @if($history->operation_name === 'ANNI')
                                                 <p class=" mb-0">Recive container <b>{{$history->container_no}}</b> from ship <b>{{$history->ves_code}}</b> <br>
+                                                    at {{$history->update_time}}</p>
+
+                                                @elseif($history->operation_name === 'CORANNI')
+                                                <p class=" mb-0">Edit container profile <b>{{$history->container_no}}</b> from ship <b>{{$history->ves_code}}</b> <br>
                                                     at {{$history->update_time}}</p>
 
                                                 @elseif($history->operation_name === 'DISC')

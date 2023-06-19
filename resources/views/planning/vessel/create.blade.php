@@ -284,8 +284,8 @@
                                     </tr>
                                     <tr>
                                         <td class="text-bold-500"><h5>Counter</h5></td>
-                                        <td><input type="number"   name="import_counter" class="form-control"></td>
-                                        <td ><input type="number" name="export_counter" class="form-control"></td>
+                                        <td><input type="number"   name="import_counter" class="form-control" disabled></td>
+                                        <td ><input type="number" name="export_counter" class="form-control" disabled></td>
                                         <td>-</td>
                                     </tr>
                                     </tbody>
