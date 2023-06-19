@@ -6,6 +6,7 @@ use App\Models\Item;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Yard;
+use App\Models\Job;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -128,9 +129,22 @@ class Gati extends Controller
 
         $container_key = $request->container_key;
         $item = Item::where('container_key', $container_key)->first();
+        $cek_expired = Job::where('container_key', $container_key)->where('ACTIVE_TO','<=', $request->truck_in_date)->exists();
 
+        if ($cek_expired) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sudah melewati expired !!',
+            ]);
+        }
 
-
+        $request->validate([
+            'container_no'=> 'required',
+            'truck_no' => 'required',
+        ], [
+            'container_no.required' => 'Container Number is required.',
+            'truck_no.required' => 'Truck Number is required.',
+        ]);
         $item->update([
             'ctr_intern_status' => 10,
             'truck_no' => $request->truck_no,

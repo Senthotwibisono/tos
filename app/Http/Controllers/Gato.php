@@ -130,20 +130,32 @@ class Gato extends Controller
 
         $container_key = $request->container_key;
         $item = Item::where('container_key', $container_key)->first();
-
-
-
+        $request->validate([
+            'container_no'=> 'required',
+            'truck_no' => 'required',
+        ], [
+            'container_no.required' => 'Container Number is required.',
+            'truck_no.required' => 'Truck Number is required.',
+        ]);
+        
+        
+        if ($item->truck_no === $request->truck_no) {
         $item->update([
             'ctr_intern_status' => '09',
             'truck_no' => $request->truck_no,
-            'truck_out_date' => $request->truck_out_date
+            'truck_out_date' => $request->truck_out_date,
         ]);
-
-
+    
         return response()->json([
             'success' => true,
             'message' => 'Updated successfully!',
             'item' => $item,
         ]);
+        }else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Nomor Truck Berbeda Pada Saat Gate In !!',
+            ]);
+        }
     }
 }
