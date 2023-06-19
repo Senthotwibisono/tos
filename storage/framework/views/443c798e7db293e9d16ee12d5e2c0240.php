@@ -2,12 +2,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
-<title><?= $title ?></title>
+<title>SP2 | <?= $title ?></title>
 
 <link rel="stylesheet" href="<?php echo e(asset('dist/assets/css/main/app.css')); ?>">
-<link rel="stylesheet" href="<?php echo e(asset('dist/assets/css/main/app-dark.css')); ?>">
-<link rel="shortcut icon" href="<?php echo e(asset('dist/assets/images/logo/favicon.svg')); ?>" type="image/x-icon">
-<link rel="shortcut icon" href="<?php echo e(asset('dist/assets/images/logo/favicon.png')); ?>" type="image/png">
+<link rel="shortcut icon" href="<?php echo e(asset('logo/icon.png')); ?>" type="image/x-icon">
+<link rel="shortcut icon" href="<?php echo e(asset('logo/icon.png')); ?>" type="image/png">
+
 <link rel="stylesheet" href="<?php echo e(asset('dist/assets/css/shared/iconly.css')); ?>">
 <link rel="stylesheet" href="<?php echo e(asset('fontawesome/css/all.min.css')); ?>">
 <link rel="stylesheet" href="<?php echo e(asset('dist/assets/css/pages/datatables.css')); ?>">
@@ -23,4 +23,19 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 <!-- flatpickr js  -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"><?php /**PATH D:\Fdw Files\CTOS\dev\frontend\tos-dev-local\resources\views/partial/invoice/header.blade.php ENDPATH**/ ?>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<style>
+  .logoicon {
+    transform: scale(3);
+  }
+
+  .round-image-3 {
+    width: 40px;
+    /* Sesuaikan dengan lebar yang diinginkan */
+    height: 40px;
+    /* Sesuaikan dengan tinggi yang diinginkan */
+    border-radius: 50%;
+    overflow: hidden;
+  }
+</style><?php /**PATH D:\Fdw Files\CTOS\dev\frontend\tos-dev-local\resources\views/partial/invoice/header.blade.php ENDPATH**/ ?>

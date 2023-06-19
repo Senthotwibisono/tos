@@ -237,4 +237,247 @@
     });
 
   }
+</script>
+
+<script>
+  function tarifConfig(tarifId) {
+    let id = tarifId;
+    let fd = new FormData();
+
+    // Retrieve the CSRF token value from the page's meta tag
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+    fd.append('id', id);
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+      },
+      type: "POST",
+      url: `/invoice/singleData/mastertarif`,
+      cache: false,
+      contentType: false,
+      processData: false,
+      data: fd,
+      success: function(response) {
+        let res = JSON.parse(response);
+        console.log(res.data.lokasi_sandar);
+        $('#editModalTarif').modal('show');
+        $("#id").val(res.data.id);
+        $("#Lokasi_Sandar").val(res.data.lokasi_sandar);
+        $("#Type").val(res.data.type);
+        $("#Size").val(res.data.size);
+        $("#Status").val(res.data.status);
+        $("#Masa_1").val(res.data.masa1);
+        $("#Masa_2").val(res.data.masa2);
+        $("#Masa_3").val(res.data.masa3);
+        $("#Masa_4").val(res.data.masa4);
+        $("#Lift_On").val(res.data.lift_on);
+        $("#Lift_Off").val(res.data.lift_off);
+        $("#Pass_Truck").val(res.data.pass_truck);
+        $("#Gate_Pass_Admin").val(res.data.gate_pass_admin);
+        $("#Cost_Recovery").val(res.data.cost_recovery);
+        $("#Surcharge").val(res.data.surcharge);
+        $("#Packet_PLP").val(res.data.packet_plp);
+        $("#Behandle").val(res.data.behandle);
+        $("#Recooling").val(res.data.recooling);
+        $("#Monitoring").val(res.data.monitoring);
+        $("#Administrasi").val(res.data.administrasi);
+        $("#editSubmit").click(function(event) {
+          Swal.fire({
+            icon: 'question',
+            title: 'Are You Sure?',
+            text: 'You are about to do updating data!',
+            showCancelButton: true,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              let fd = new FormData();
+              let id = res.data.id;
+              let lokasi_sandar = $("#Lokasi_Sandar").val();
+              let type = $("#Type").val();
+              let size = $("#Size").val();
+              let status = $("#Status").val();
+              let masa1 = $("#Masa_1").val();
+              let masa2 = $("#Masa_2").val();
+              let masa3 = $("#Masa_3").val();
+              let masa4 = $("#Masa_4").val();
+              let lift_on = $("#Lift_On").val();
+              let lift_off = $("#Lift_Off").val();
+              let pass_truck = $("#Pass_Truck").val();
+              let gate_pass_admin = $("#Gate_Pass_Admin").val();
+              let cost_recovery = $("#Cost_Recovery").val();
+              let surcharge = $("#Surcharge").val();
+              let packet_plp = $("#Packet_PPLP").val();
+              let behandle = $("#Behandle").val();
+              let recooling = $("#Recooling").val();
+              let monitoring = $("#Monitoring").val();
+              let administrasi = $("#Administrasi").val();
+
+              fd.append('id', id);
+              fd.append('lokasi_sandar', lokasi_sandar)
+              fd.append('type', type)
+              fd.append('size', size)
+              fd.append('status', status)
+              fd.append('masa1', masa1)
+              fd.append('masa2', masa2)
+              fd.append('masa3', masa3)
+              fd.append('masa4', masa4)
+              fd.append('lift_on', lift_on)
+              fd.append('lift_off', lift_off)
+              fd.append('pass_truck', pass_truck)
+              fd.append('gate_pass_admin', gate_pass_admin)
+              fd.append('cost_recovery', cost_recovery)
+              fd.append('surcharge', surcharge)
+              fd.append('packet_plp', packet_plp)
+              fd.append('behandle', behandle)
+              fd.append('recooling', recooling)
+              fd.append('monitoring', monitoring)
+              fd.append('administrasi', administrasi)
+              $.ajax({
+                headers: {
+                  'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+                },
+                type: "POST",
+                url: `/invoice/singleData/updateMasterTarif`,
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: fd,
+                success: function(response) {
+                  let res = JSON.parse(response);
+                  console.log(res);
+                  Swal.fire({
+                    icon: 'success',
+                    title: 'Successfully Verify Payment!',
+                    text: 'Please Check Again',
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      location.reload();
+                    } else {
+                      location.reload();
+
+                    }
+                  })
+                },
+                error(err) {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: 'Something wrong happened! #VE42i',
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      location.reload();
+                    } else {
+                      location.reload();
+                    }
+                  });
+                }
+              });
+            }
+          })
+        });
+
+      }
+    })
+  }
+</script>
+
+<script>
+  function createTarif() {
+    $('#createModalTarif').modal('show');
+    $("#editSubmit").click(function(event) {
+
+      // Retrieve the CSRF token value from the page's meta tag
+      let csrfToken = $('meta[name="csrf-token"]').attr('content');
+      Swal.fire({
+        icon: 'question',
+        title: 'Are You Sure?',
+        text: 'You are about to do updating data!',
+        showCancelButton: true,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          let fd = new FormData();
+          let id = res.data.id;
+          let lokasi_sandar = $("#Lokasi_Sandar").val();
+          let type = $("#Type").val();
+          let size = $("#Size").val();
+          let status = $("#Status").val();
+          let masa1 = $("#Masa_1").val();
+          let masa2 = $("#Masa_2").val();
+          let masa3 = $("#Masa_3").val();
+          let masa4 = $("#Masa_4").val();
+          let lift_on = $("#Lift_On").val();
+          let lift_off = $("#Lift_Off").val();
+          let pass_truck = $("#Pass_Truck").val();
+          let gate_pass_admin = $("#Gate_Pass_Admin").val();
+          let cost_recovery = $("#Cost_Recovery").val();
+          let surcharge = $("#Surcharge").val();
+          let packet_plp = $("#Packet_PPLP").val();
+          let behandle = $("#Behandle").val();
+          let recooling = $("#Recooling").val();
+          let monitoring = $("#Monitoring").val();
+          let administrasi = $("#Administrasi").val();
+
+          fd.append('id', id);
+          fd.append('lokasi_sandar', lokasi_sandar)
+          fd.append('type', type)
+          fd.append('size', size)
+          fd.append('status', status)
+          fd.append('masa1', masa1)
+          fd.append('masa2', masa2)
+          fd.append('masa3', masa3)
+          fd.append('masa4', masa4)
+          fd.append('lift_on', lift_on)
+          fd.append('lift_off', lift_off)
+          fd.append('pass_truck', pass_truck)
+          fd.append('gate_pass_admin', gate_pass_admin)
+          fd.append('cost_recovery', cost_recovery)
+          fd.append('surcharge', surcharge)
+          fd.append('packet_plp', packet_plp)
+          fd.append('behandle', behandle)
+          fd.append('recooling', recooling)
+          fd.append('monitoring', monitoring)
+          fd.append('administrasi', administrasi)
+          $.ajax({
+            headers: {
+              'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+            },
+            type: "POST",
+            url: `/invoice/singleData/createMasterTarif`,
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: fd,
+            success: function(response) {
+              let res = JSON.parse(response);
+              console.log(res);
+              Swal.fire({
+                icon: 'success',
+                title: 'Successfully Verify Payment!',
+                text: 'Please Check Again',
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  location.reload();
+                } else {
+                  location.reload();
+
+                }
+              })
+            },
+            error(err) {
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                text: 'Something wrong happened! #VE42i',
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  location.reload();
+                } else {
+                  location.reload();
+                }
+              });
+            }
+          });
+        }
+      })
+    });
+  }
 </script><?php /**PATH D:\Fdw Files\CTOS\dev\frontend\tos-dev-local\resources\views/partial/invoice/js/js_customer.blade.php ENDPATH**/ ?>

@@ -82,6 +82,33 @@
             </div>
           </div>
           <div class="row mt-5">
+            <div class="col-12">
+              <h5>Beacukai Information</h5>
+              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-group">
+                <label class="mb-2" for="">Document Number <span class="badge bg-warning">Maximum 6 Characters </span></label>
+                <div class="input-group mb-3">
+                  <input type="text" class="form-control" name="documentNumber" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
+                  <button class="btn btn-primary" type="button" id="button-addon1"><i class="fa fa-magnifying-glass"></i> Check</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-3">
+              <div class="form-group">
+                <label for="">Document Type</label>
+                <input class="form-control" type="text" name="documentType">
+              </div>
+            </div>
+            <div class="col-12 col-md-3">
+              <div class="form-group">
+                <label for="">Document Date</label>
+                <input class="form-control" type="text" name="documentDate">
+              </div>
+            </div>
+          </div>
+          <div class="row mt-5">
             <div class="col-12 text-right">
               <button type="submit" class="btn btn-success">Submit</button>
               <a type="button" onclick="canceladdCustomer();" class="btn btn-secondary">Cancel</a>

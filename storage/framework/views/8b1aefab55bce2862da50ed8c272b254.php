@@ -89,6 +89,7 @@
                   <p><?= $job->yard_tier ?></p>
                   <p><?= $job->bl_no ?></p>
                   <p><?= $job->consignee ?></p>
+                  <p>Active To <?= DateFormat($delivery->exp_date) ?></p>
 
                 </div>
 

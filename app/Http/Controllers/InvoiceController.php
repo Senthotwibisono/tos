@@ -52,6 +52,24 @@ class InvoiceController extends Controller
         return view('invoice/delivery_form/dashboard', $data);
     }
 
+    public function masterTarif()
+    {
+        $data = [];
+        $client = new Client();
+
+        // GET ALL FORM
+        $url_master_tarif = 'localhost:3013/delivery-service/mastertarif/sp2/all';
+        $req_master_tarif = $client->get($url_master_tarif);
+        $response_master_tarif = $req_master_tarif->getBody()->getContents();
+        $result_master_tarif = json_decode($response_master_tarif);
+        // dd($result_master_tarif);
+
+        $data["mastertarif"] = $result_master_tarif->data;
+        $data["title"] = "SP2 Master Tarif Data";
+        return view('invoice/master_tarif/dashboard', $data);
+    }
+
+
     public function Pranota(Request $request)
     {
         $data = [];
@@ -88,7 +106,7 @@ class InvoiceController extends Controller
         // dd($result_single_invoice);
 
         $data["invoices"] = $result_single_invoice->data;
-        $data["title"] = "Pranota Data";
+        $data["title"] = "Invoice " . $result_single_invoice->data->invoice->invoiceNumber;
         return view('invoice/paid_invoice/index', $data);
     }
 
@@ -106,7 +124,7 @@ class InvoiceController extends Controller
         $result_single_invoice = json_decode($response_single_invoice);
         // dd($result_single_invoice);
 
-        $id_delivery = $result_single_invoice->data->data6->deliveryid;
+        $id_delivery = $result_single_invoice->data->invoice->data6->deliveryid;
 
         // GET SINGLE DELIVERY FORM
         $url_single_form = 'localhost:3013/delivery-service/form/container/' . $id_delivery;
@@ -124,7 +142,7 @@ class InvoiceController extends Controller
             ]);
         }
         // dd($container_arr);
-        $jobNumber = $result_single_invoice->data->jobNumber;
+        $jobNumber = $result_single_invoice->data->invoice->jobNumber;
         // dd($jobNumber);
         $fields = [
             "containers" => $container_arr,
@@ -144,6 +162,7 @@ class InvoiceController extends Controller
         // dd($result);
         $data = [];
         $jobData = $result->data->jobData;
+        // dd($jobData);
         $qrcodes = [];
         foreach ($jobData as $value) {
             array_push(
@@ -154,12 +173,10 @@ class InvoiceController extends Controller
         // dd($qrcodes);
         $data["jobs"] = $jobData;
         $data["invoice"] = $result_single_invoice->data;
-        $data["title"] = "Pranota Data";
+        $data["delivery"] = $result_single_form->data;
+        $data["title"] = "Job Page";
         return view('invoice/jobPage/index', $data, compact('qrcodes'));
     }
-
-
-
 
     public function test()
     {
@@ -319,7 +336,6 @@ class InvoiceController extends Controller
             return redirect('/invoice')->with('success', 'Data gagal disimpan!');
         }
     }
-
 
     public function addDataStep2(Request $request)
     {
@@ -567,6 +583,146 @@ class InvoiceController extends Controller
         // die();
 
         echo $response_form;
+    }
+
+    public function singleMasterTarif(Request $request)
+    {
+        $client = new Client();
+
+        $id = $request->id;
+        // var_dump($id);
+        // die();
+        $url_form = 'localhost:3013/delivery-service/mastertarif/sp2/single/' . $id;
+        $req_form = $client->get($url_form);
+        $response_form = $req_form->getBody()->getContents();
+        // var_dump($response_form);
+        // die();
+
+        echo $response_form;
+    }
+
+    public function updateMasterTarif(Request $request)
+    {
+        $client = new Client();
+
+        $id = $request->id;
+        // var_dump($id);
+        // die();
+        $lokasi_sandar = $request->lokasi_sandar;
+        $type = $request->type;
+        $size = $request->size;
+        $status = $request->status;
+        $masa1 = $request->masa1;
+        $masa2 = $request->masa2;
+        $masa3 = $request->masa3;
+        $masa4 = $request->masa4;
+        $lift_on = $request->lift_on;
+        $lift_off = $request->lift_off;
+        $pass_truck = $request->pass_truck;
+        $gate_pass_admin = $request->gate_pass_admin;
+        $cost_recovery = $request->cost_recovery;
+        $surcharge = $request->surcharge;
+        $packet_plp = $request->packet_plp;
+        $behandle = $request->behandle;
+        $recooling = $request->recooling;
+        $monitoring = $request->monitoring;
+        $administrasi = $request->administrasi;
+        $fields =
+            [
+                "lokasi_sandar" => $lokasi_sandar,
+                "type" => $type,
+                "size" => $size,
+                "status" => $status,
+                "masa1" => $masa1,
+                "masa2" => $masa2,
+                "masa3" => $masa3,
+                "masa4" => $masa4,
+                "lift_on" => $lift_on,
+                "lift_off" => $lift_off,
+                "pass_truck" => $pass_truck,
+                "gate_pass_admin" => $gate_pass_admin,
+                "cost_recovery" => $cost_recovery,
+                "surcharge" => $surcharge,
+                "packet_plp" => $packet_plp,
+                "behandle" => $behandle,
+                "recooling" => $recooling,
+                "monitoring" => $monitoring,
+                "administrasi" => $administrasi,
+            ];
+        $url = 'localhost:3013/delivery-service/mastertarif/sp2/update/' . $id;
+        $req = $client->post(
+            $url,
+            [
+                "json" => $fields
+            ]
+        );
+        $response = $req->getBody()->getContents();
+        // var_dump($response);
+        // die();
+
+        echo $response;
+    }
+
+    public function createMasterTarif(Request $request)
+    {
+        $client = new Client();
+
+        $id = $request->id;
+        // var_dump($id);
+        // die();
+        $lokasi_sandar = $request->lokasi_sandar;
+        $type = $request->type;
+        $size = $request->size;
+        $status = $request->status;
+        $masa1 = $request->masa1;
+        $masa2 = $request->masa2;
+        $masa3 = $request->masa3;
+        $masa4 = $request->masa4;
+        $lift_on = $request->lift_on;
+        $lift_off = $request->lift_off;
+        $pass_truck = $request->pass_truck;
+        $gate_pass_admin = $request->gate_pass_admin;
+        $cost_recovery = $request->cost_recovery;
+        $surcharge = $request->surcharge;
+        $packet_plp = $request->packet_plp;
+        $behandle = $request->behandle;
+        $recooling = $request->recooling;
+        $monitoring = $request->monitoring;
+        $administrasi = $request->administrasi;
+        $fields =
+            [
+                "lokasi_sandar" => $lokasi_sandar,
+                "type" => $type,
+                "size" => $size,
+                "status" => $status,
+                "masa1" => $masa1,
+                "masa2" => $masa2,
+                "masa3" => $masa3,
+                "masa4" => $masa4,
+                "lift_on" => $lift_on,
+                "lift_off" => $lift_off,
+                "pass_truck" => $pass_truck,
+                "gate_pass_admin" => $gate_pass_admin,
+                "cost_recovery" => $cost_recovery,
+                "surcharge" => $surcharge,
+                "packet_plp" => $packet_plp,
+                "behandle" => $behandle,
+                "recooling" => $recooling,
+                "monitoring" => $monitoring,
+                "administrasi" => $administrasi,
+            ];
+        $url = 'localhost:3013/delivery-service/mastertarif/sp2/create';
+        $req = $client->post(
+            $url,
+            [
+                "json" => $fields
+            ]
+        );
+        $response = $req->getBody()->getContents();
+        // var_dump($response);
+        // die();
+
+        echo $response;
     }
 
     public function VerifyPayment(Request $request)

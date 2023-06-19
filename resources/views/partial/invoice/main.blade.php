@@ -13,7 +13,7 @@
         <div class="header-top">
           <div class="container">
             <div class="logo">
-              <a href="/invoice"><img class="logoicon" src="{{asset('logo/ICON2.png')}}" alt="Logo"></a>
+              <a href="/"><img class="logoicon" src="{{asset('logo/ICON2.png')}}" alt="Logo"></a>
             </div>
             <div class="header-top-right">
 
