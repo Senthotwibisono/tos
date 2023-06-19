@@ -81,7 +81,7 @@
                     <div class="card">
                         <div class="card-header">
                         
-                <a href="index.html"><img src="{{asset('logo/icon2.png')}}" alt="Logo"></a>
+                <a href="index.html"><img src="{{asset('logo/ICON2.png')}}" alt="Logo"></a>
            
                         </div>
                         <div class="card-body">
