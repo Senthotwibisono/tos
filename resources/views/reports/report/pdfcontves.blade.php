@@ -106,7 +106,7 @@
 </div>
 <div class="add-detail mt-10">
     <div class="w-50 float-left mt-10">
-        <p class="m-0 pt-5 text-bold w-100">Vessel Name - <span class="gray-color">{{$ves_name}}</span></p>
+        <p class="m-0 pt-5 text-bold w-100">Vessel Name - <span class="gray-color">{{$ves_name}}    //      Voy no. {{$voy_no}}</span></p>
         <p class="m-0 pt-5 text-bold w-100">Ves Code - <span class="gray-color">{{$ves_code}}</span></p>
         <p class="m-0 pt-5 text-bold w-100">Vessel Id - <span class="gray-color">{{$ves_id}}</span></p>
     </div>
