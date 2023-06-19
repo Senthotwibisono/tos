@@ -153,7 +153,7 @@ Route::post('/get-bay', [DischargeView::class, 'get_bay']);
 Route::get('/get-container', [DischargeView::class, 'get_container']);
 // Android
 Route::get('/android-dashboard', [AndroidController::class, 'index']);
-Route::get('/disch/confrim_disch', [DischargeController::class, 'index']);
+Route::get('/disch/confirm_disch', [DischargeController::class, 'index']);
 Route::post('/search-container', [DischargeController::class, 'container']);
 Route::post('/get-container-key', [DischargeController::class, 'get_key']);
 Route::post('/confirm', [DischargeController::class, 'confirm']);
