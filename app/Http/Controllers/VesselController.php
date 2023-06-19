@@ -158,38 +158,24 @@ class VesselController extends Controller
 
             'voy_in' => 'required|max:7',
             'voy_out' => 'required|max:7',
-           
+            'berth_no' => 'required',
             'berth_grid' => 'required|max:5',
-        
             'est_anchorage_date' => 'required',
-
             'est_pilot_date' =>'required',
-
             'est_start_work_date' =>'required',
-
             'est_end_work_date' =>'required',
-
             'eta_date' =>'required',
-
             'etd_date' =>'required',
-
             'est_berthing_date' =>'required',
-
-          
+            'voyage_owner'=>'required|max:4'
         ],
         [
-
-            'ves_code.max' => 'vessel code  tidak boleh lebih dari 4 karakter.',
-          
-
+            'ves_code.max' => 'vessel code  tidak boleh lebih dari 4 karakter.', 
             'voy_in.max' => 'Kolom Voy In tidak boleh lebih dari 7 karakter.',
             'voy_out.max' => 'Kolom Voy Out tidak boleh lebih dari 7 karakter.',
-           
-           
             'berth_grid.max' => 'Kolom Berth Grid tidak boleh lebih dari 5 karakter.',
             'cy_code.max' => 'Kolom Cy Code tidak boleh lebih dari 1 karakter.',
             'no_ook.max' => 'Kolom No.PPK tidak boleh lebih dari 20 karakter.',
-
         ]    
     );
 
@@ -321,7 +307,7 @@ class VesselController extends Controller
     {
         
         VVoyage::where('ves_id',$ves_id)->delete();
-        return back();
+        return back()->with('success', "Berhasil Dihapus");
     }
 
     public function refreshCounter(Request $request)
