@@ -27,7 +27,7 @@ class HomeController extends Controller
     public function index()
     {
         $title = 'Admin Dashboard';
-        $vessel_voyage = VVoyage::orderBy('eta_date', 'desc')->take(3)->get();
+        $vessel_voyage = VVoyage::orderBy('etd_date', 'desc')->take(3)->get();
         $history_container = HistoryContainer::orderBy('update_time', 'desc')->take(3)->get();
 
         $countNotNull = Yard::whereNotNull('container_key')->count();
