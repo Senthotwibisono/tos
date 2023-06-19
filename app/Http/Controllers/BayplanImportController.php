@@ -131,9 +131,23 @@ class BayplanImportController extends Controller
     public function store(request $request)
     {
         $request->validate([
+            'container_no'=> 'required|max:13',
+            'ves_id'=> 'required',
+            'gross'=> 'required',
+            'gross_class'=> 'required',
+            'commodity_name'=> 'required',
+            'load_port'=> 'required',
+            'disch_port'=> 'required',
+            'disc_load_seq'=> 'required',
+            'bay_slot'=> 'required',
+            'bay_row'=> 'required|max:2',
+            'bay_tier'=> 'required|max:2',
+            'iso_code'=> 'required',
+            'ctr_opr'=> 'required',
+
 
         ]);
-
+        try {
         $item = Item::create([
         'container_no'=>$request->container_no,
         'ves_id'=>$request->ves_id,
@@ -144,7 +158,7 @@ class BayplanImportController extends Controller
         'ctr_size'=>$request->ctr_size,
         'ctr_type'=>$request->ctr_type,
         'ctr_status'=>$request->ctr_status,
-        'ctr_intern_status'=>$request->ctr_intern_status,
+        'ctr_intern_status'=> '01',
         'disc_load_trans_shift'=>$request->disc_load_trans_shift,
         'gross'=>$request->gross,
         'gross_class'=>$request->gross_class,
@@ -170,9 +184,11 @@ class BayplanImportController extends Controller
         'user_id'=>$request->user_id,
         ]);
 
-        $item->save();
     
-        return back();
+        return redirect('/planning/bayplan_import')->with('success', "Container Berhasil Dibuat");
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.')->withInput();
+    }
     }
 
     public function edit(Request $request)
@@ -220,6 +236,24 @@ public function get_ves_name(Request $request)
     {
         $container_key = $request->container_key;
         $item = Item::where('container_key',$container_key)->first();
+        $request->validate([
+            'container_no'=> 'required|max:13',
+            'ves_id'=> 'required',
+            'gross'=> 'required',
+            'gross_class'=> 'required',
+            'commodity_name'=> 'required',
+            'load_port'=> 'required',
+            'disch_port'=> 'required',
+            'disc_load_seq'=> 'required',
+            'bay_slot'=> 'required',
+            'bay_row'=> 'required|max:2',
+            'bay_tier'=> 'required|max:2',
+            'iso_code'=> 'required',
+            'ctr_opr'=> 'required',
+
+
+        ]);
+        
             $item->update([
             'container_no' => $request->container_no,
             'ves_id' => $request->ves_id,
@@ -260,7 +294,6 @@ public function get_ves_name(Request $request)
                 'success' => 400,
                 'message' => 'updated successfully!',
                 'data'    => $item,
-                'history' =>$history_container, 
             ]);
     }
 
