@@ -126,6 +126,7 @@ Route::post('/planning/vessel_schedule_store', [VesselController::class, 'schedu
 Route::get('/planning/schedule_schedule={ves_id}', [VesselController::class, 'edit_schedule']);
 Route::patch('/planning/schedule_update={ves_id}', [VesselController::class, 'update_schedule']);
 Route::delete('/planning/delete_schedule={ves_id}', [VesselController::class, 'delete_schedule']);
+Route::get('/refresh_counter', [VesselController::class, 'refreshCounter']);
 
 
 Route::get('/planning/bayplan_import', [BayplanImportController::class, 'index']);
