@@ -250,9 +250,8 @@ $(document).on('click', '.update_status', function(e){
                     }).then((result) => {
                       /* Read more about isConfirmed, isDenied below */
                       if (result.isConfirmed) {
-                        Swal.fire('Saved!', '', 'success')
-                       
-                        $.ajax({
+                          
+                          $.ajax({
                             type: 'POST',
                             url: '/stripping-place',
                             data: data,
@@ -261,6 +260,7 @@ $(document).on('click', '.update_status', function(e){
                             success: function(response) {
                                 console.log(response);
                                 if (response.success) {
+                                    Swal.fire('Saved!', '', 'success')
                                     $('#place_cont').load(window.location.href + ' #place_cont', function() {
                                         $(document).ready(function() {
                                             $('.container').select2({
@@ -309,9 +309,22 @@ $(document).on('click', '.update_status', function(e){
                                     Swal.fire('Error', response.message, 'error');
                                 }
                             },
-                            error: function(data) {
-                                    console.log('error:', data);
-                                },
+                            error: function(response) {
+                    var errors = response.responseJSON.errors;
+                    if (errors) {
+                        var errorMessage = '';
+                        $.each(errors, function(key, value) {
+                            errorMessage += value[0] + '<br>';
+                        });
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Validation Error',
+                            html: errorMessage,
+                        });
+                    } else {
+                        console.log('error:', response);
+                    }
+                },
                         });
                         
                       } else if (result.isDenied) {
