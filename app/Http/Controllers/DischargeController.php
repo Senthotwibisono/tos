@@ -105,6 +105,15 @@ class DischargeController extends Controller
     {
         $container_key = $request->container_key;
         $item = Item::where('container_key', $container_key)->first();
+        $request->validate([
+            'container_no'=> 'required',
+            'cc_tt_no' => 'required',
+            'cc_tt_oper' => 'required',
+        ], [
+            'container_no.required' => 'Container Number is required.',
+            'cc_tt_no.required' => 'Nomor Alat Number is required.',
+            'cc_tt_oper.required' => 'Operator Alat Number is required.',
+        ]);
         Item::where('container_key', $container_key)->update([
             'cc_tt_no' => $request->cc_tt_no,
             'cc_tt_oper' => $request->cc_tt_oper,
