@@ -29,13 +29,18 @@ class HomeController extends Controller
         $title = 'Admin Dashboard';
         $vessel_voyage = VVoyage::orderBy('etd_date', 'desc')->take(3)->get();
         $history_container = HistoryContainer::orderBy('update_time', 'desc')->take(3)->get();
+        $data = [];
 
         $countNotNull = Yard::whereNotNull('container_key')->count();
         $countNull = Yard::whereNull('container_key')->count();
-        return view('dashboard', compact('title', 'vessel_voyage', 'history_container'), [
+        $data["active"] = "Dashboard";
+        $data["subactive"] = "";
+        // dd($data);
+        return view('dashboard', compact('title', 'vessel_voyage', 'history_container'),  [
             'countNotNull' => $countNotNull,
             'countNull' => $countNull,
+            'active' => "Dashboard",
+            'subactive' => "",
         ]);
     }
-
 }

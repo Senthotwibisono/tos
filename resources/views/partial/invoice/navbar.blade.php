@@ -24,8 +24,11 @@
             <li class="submenu-item">
               <a class="submenu-link" href="/invoice/customer">Customer</a>
             </li>
-            <li class="submenu-item">
+            <!-- <li class="submenu-item">
               <a class="submenu-link" href="/invoice/container">Container</a>
+            </li> -->
+            <li class="submenu-item">
+              <a href="/invoice/mastertarif" class="submenu-link">Master Tarif</a>
             </li>
           </ul>
         </div>

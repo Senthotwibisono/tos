@@ -86,15 +86,12 @@
                     <li class="submenu-item ">
                         <a href="form-element-textarea.html">VIP Container Export</a>
                     </li> -->
-                </ul>
-            </li>
+    </ul>
+  </li>
 
 
-            
 
-            
 
-            <!-- disch/load -->
 
             <li
                 class="sidebar-item  has-sub @if(Request::is('disch/*')) active @endif">
@@ -245,16 +242,14 @@
                         <a href="form-element-checkbox.html">Laporan Job Slip Gerakan Extra</a>
                     </li> -->
 
-                    <hr>
+      <hr>
 
-                    <!-- </li> <li class="submenu-item ">
+      <!-- </li> <li class="submenu-item ">
                         <a href="form-element-checkbox.html">Laporan Behandle Confirm</a>
                     </li> -->
-                </ul>
-            </li>
-            
+    </ul>
+  </li>
 
-                                    <!-- gate -->
 
             <li class="sidebar-item  has-sub @if(Request::is('delivery/*')) active @endif">
                 <a href="#" class='sidebar-link'>
@@ -269,22 +264,33 @@
                         <a href="/delivery/gate-out">Gate Out Delivery</a>
                     </li>
 
-                    <hr>
+  <li class="sidebar-item  has-sub <?= $active == "delivery" ? "active" : "" ?>">
+    <a href="#" class='sidebar-link'>
+      <i class="fa-solid fa-torii-gate"></i>
+      <span>Gate</span>
+    </a>
+    <ul class="submenu <?= $active == "delivery" ? "active" : "" ?>">
+      <li class="submenu-item <?= $subactive == "gatein" ? "active" : "" ?>">
+        <a href="/delivery/gate-in">Get in Delivery</a>
+      </li>
+      <li class="submenu-item <?= $subactive == "gateout" ? "active" : "" ?>">
+        <a href="/delivery/gate-out">Gate Out Delivery</a>
+      </li>
 
-                    
-                    <!-- <li class="submenu-item ">
+      <hr>
+
+
+      <!-- <li class="submenu-item ">
                         <a href="form-element-select.html">Gate In Receiving</a>
                     </li>
                     <li class="submenu-item ">
                         <a href="form-element-radio.html">Gate Out Receiving</a>
                     </li> -->
-                </ul>
-            </li>
-            
+    </ul>
+  </li>
 
 
 
-                                    <!-- EDI -->
 
                 <li class="sidebar-item  has-sub @if(Request::is('edi/*')) active @endif">
                 <a href="#" class='sidebar-link'>
@@ -298,10 +304,10 @@
                     <!-- <li class="submenu-item ">
                         <a href="form-element-input-group.html">Baplie  Deparature</a>
                     </li> -->
-                </ul>
-            </li>
+    </ul>
+  </li>
 
-             <!-- <li class="sidebar-item  has-sub">
+  <!-- <li class="sidebar-item  has-sub">
                 <a href="#" class='sidebar-link'>
                 <i class="fa-solid fa-torii-gate"></i>
                     <span>Gate</span>
@@ -429,13 +435,13 @@
                     <li class="submenu-item">
                         <a href="layout-vertical-navbar.html">SP2 Active</a>
                     </li> -->
-                </ul>
-            </li>
+    </ul>
+  </li>
 
 
-            <!-- CTR -->
+  <!-- CTR -->
 
-            <!-- <li
+  <!-- <li
                 class="sidebar-item has-sub">
                 <a href="#" class='sidebar-link'>
                 <i class="fa-solid fa-toolbox"></i>
@@ -492,6 +498,14 @@
                 </a>
             </li>
 
+            <li
+                class="sidebar-item">
+                <a href="/spps" class='sidebar-link'>
+                <i class="bi bi-currency-exchange"></i>
+                    <span>Spps</span>
+                </a>
+            </li>
+
                         <!-- Master -->
                         <li
                 class="sidebar-item  has-sub @if(Request::is('master/*')) active @endif">
@@ -535,8 +549,8 @@
                     <span>Yard</span>
                 </a>
             </li> -->
-            
-            <!-- <li
+
+  <!-- <li
                 class="sidebar-item  has-sub">
                 <a href="#" class='sidebar-link'>
                     <i class="bi bi-journal-check"></i>
@@ -594,8 +608,8 @@
                     </li>
                 </ul>
             </li> -->
-            
-            <!-- <li class="sidebar-title">Extra UI</li>
+
+  <!-- <li class="sidebar-title">Extra UI</li>
             
             <li
                 class="sidebar-item  has-sub">

@@ -81,8 +81,9 @@
             <br>
             <div class="row">
               <div class="col-xs-12 col-8 my-auto">
-                <h2>Pranota<br>
-                  <span class="small">Proforma No. #<?= $invoices->performaId ?></span>
+                <h2>Invoice<br>
+                  <span class="small">Proforma No. #<?= $invoices->invoice->performaId ?></span>
+                  <br>
                 </h2>
               </div>
             </div>
@@ -92,7 +93,7 @@
             <div class="col-xs-6">
               <address>
                 <strong>Billed To:</strong><br>
-                <?= $invoices->data6->customer ?><br>
+                <?= $invoices->invoice->data6->customer ?><br>
               </address>
             </div>
           </div>
@@ -107,7 +108,13 @@
             <div class="col-xs-6 text-right">
               <address>
                 <strong>Order Date:</strong><br>
-                <?= DateTimeFormat($invoices->createdAt) ?> WIB
+                <?= DateTimeFormat($invoices->invoice->createdAt) ?> WIB
+              </address>
+            </div>
+            <div class="col-xs-6 text-right">
+              <address>
+                <strong>Masa Penumpukan :</strong><br>
+                <?= DateFormat($invoices->deliveryForm->data->containers[0]->disc_date) ?> S.d <?= DateFormat($invoices->deliveryForm->data->exp_date) ?>
               </address>
             </div>
           </div>
@@ -129,7 +136,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <?php foreach ($invoices->data1 as $value) { ?>
+                  <?php foreach ($invoices->invoice->data1 as $value) { ?>
                     <tr>
                       <td><?= $value->title ?></td>
                       <td><?= $value->jumlah ?></td>
@@ -142,7 +149,7 @@
 
                     </tr>
                   <?php } ?>
-                  <?php foreach ($invoices->data2 as $value) { ?>
+                  <?php foreach ($invoices->invoice->data2 as $value) { ?>
                     <tr>
                       <td><?= $value->title ?></td>
                       <td><?= $value->jumlah ?></td>
@@ -155,7 +162,7 @@
 
                     </tr>
                   <?php } ?>
-                  <?php foreach ($invoices->data3 as $value) { ?>
+                  <?php foreach ($invoices->invoice->data3 as $value) { ?>
                     <tr>
                       <td><?= $value->title ?></td>
                       <td><?= $value->jumlah ?></td>
@@ -168,7 +175,7 @@
 
                     </tr>
                   <?php } ?>
-                  <?php foreach ($invoices->data4 as $value) { ?>
+                  <?php foreach ($invoices->invoice->data4 as $value) { ?>
                     <tr>
                       <td><?= $value->title ?></td>
                       <td><?= $value->jumlah ?></td>
@@ -181,7 +188,7 @@
 
                     </tr>
                   <?php } ?>
-                  <?php foreach ($invoices->data5 as $value) { ?>
+                  <?php foreach ($invoices->invoice->data5 as $value) { ?>
                     <tr>
                       <td><?= $value->title ?></td>
                       <td><?= $value->jumlah ?></td>
@@ -206,10 +213,10 @@
               <p>Grand Total: </p>
             </div>
             <div class="col-xs-12 col-6" style="text-align: right;">
-              <p><strong>Rp. <?= rupiah($invoices->data6->totalamount) ?>,00 ~</strong></p>
-              <p><strong>Rp. <?= rupiah($invoices->data6->admin) ?>,00 ~</strong></p>
-              <p><strong>Rp. <?= rupiah($invoices->data6->tax) ?>,00 ~</strong></p>
-              <p><strong>Rp. <?= rupiah($invoices->data6->grandtotal) ?>,00 ~</strong></p>
+              <p><strong>Rp. <?= rupiah($invoices->invoice->data6->totalamount) ?>,00 ~</strong></p>
+              <p><strong>Rp. <?= rupiah($invoices->invoice->data6->admin) ?>,00 ~</strong></p>
+              <p><strong>Rp. <?= rupiah($invoices->invoice->data6->tax) ?>,00 ~</strong></p>
+              <p><strong>Rp. <?= rupiah($invoices->invoice->data6->grandtotal) ?>,00 ~</strong></p>
             </div>
           </div>
         </div>

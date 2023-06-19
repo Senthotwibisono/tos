@@ -6,6 +6,7 @@ use App\Http\Controllers\VesselController;
 use App\Http\Controllers\BayplanImportController;
 use App\Http\Controllers\DischargeController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\SppsController;
 use App\Http\Controllers\PlacementController;
 use App\Http\Controllers\AndroidController;
 use App\Http\Controllers\HistoryController;
@@ -87,6 +88,51 @@ Route::prefix('invoice')->group(function () {
         Route::post('/invoiceForm', [InvoiceController::class, 'singleInvoiceForm']);
         Route::post('/verifyPayment', [InvoiceController::class, 'VerifyPayment']);
         Route::post('/verifyPiutang', [InvoiceController::class, 'VerifyPiutang']);
+        Route::post('/mastertarif', [InvoiceController::class, 'singleMasterTarif']);
+        Route::post('/updateMasterTarif', [InvoiceController::class, 'updateMasterTarif']);
+        Route::post('/createMasterTarif', [InvoiceController::class, 'createMasterTarif']);
+    });
+    Route::prefix('mastertarif')->group(function () {
+        Route::get('/', [InvoiceController::class, 'masterTarif']);
+    });
+});
+
+Route::prefix('spps')->group(function () {
+    Route::get('/', [SppsController::class, 'index']);
+    Route::get('/test', [SppsController::class, 'test']);
+    Route::get('/delivery', [SppsController::class, 'deliveryForm']);
+    Route::prefix('add')->group(function () {
+        Route::get('/step1', [SppsController::class, 'addDataStep1']);
+        Route::get('/update_step1', [SppsController::class, 'updateDataStep1']);
+        Route::get('/step2', [SppsController::class, 'addDataStep2']);
+        Route::post('/storestep1', [SppsController::class, 'storeDataStep1']);
+        Route::post('/storeupdatestep1', [SppsController::class, 'storeUpdateDataStep1']);
+        Route::post('/storestep2', [SppsController::class, 'storeDataStep2']);
+    });
+    Route::get('/pranota', [SppsController::class, 'Pranota']);
+    Route::get('/paidinvoice', [SppsController::class, 'PaidInvoice']);
+    Route::get('/job', [SppsController::class, 'jobPage']);
+
+    Route::prefix('customer')->group(function () {
+        Route::get('/', [SppsController::class, 'customerDashboard']);
+        Route::get('/add', [SppsController::class, 'addDataCustomer']);
+        Route::post('/store', [SppsController::class, 'storeDataCustomer'])->name('customer.store');
+    });
+    // Route::prefix('container')->group(function () {
+    //     Route::get('/', [SppsController::class, 'containerDashboard']);
+    //     Route::get('/add', [SppsController::class, 'addDataContainer']);
+    //     Route::post('/store', [SppsController::class, 'storeDataContainer']);
+    // });
+    Route::prefix('singleData')->group(function () {
+        Route::post('/invoiceForm', [SppsController::class, 'singleInvoiceForm']);
+        Route::post('/verifyPayment', [SppsController::class, 'VerifyPayment']);
+        Route::post('/verifyPiutang', [SppsController::class, 'VerifyPiutang']);
+        Route::post('/mastertarif', [SppsController::class, 'singleMasterTarif']);
+        Route::post('/updateMasterTarif', [SppsController::class, 'updateMasterTarif']);
+        Route::post('/createMasterTarif', [SppsController::class, 'createMasterTarif']);
+    });
+    Route::prefix('mastertarif')->group(function () {
+        Route::get('/', [SppsController::class, 'masterTarif']);
     });
 });
 
@@ -236,7 +282,7 @@ route::post('yards/rowtier/get_rowtier', [YardrotController::class, 'get_rowtier
 
 
 
-Route::get('/planning/bayplan_import', [ BayplanImportController::class, 'index']);
+Route::get('/planning/bayplan_import', [BayplanImportController::class, 'index']);
 
 
 Route::get('/stripping', [Stripping::class, 'index']);
@@ -347,4 +393,3 @@ Route::post('/realisasi-get-ves', [ReportCont::class, 'get_ves_bongkar'])->name(
 Route::post('/realisasi-get-bay', [ReportCont::class, 'get_bay_bongkar'])->name('realisasi-bongkar.get-bay');
 Route::get('/realisasi-get-container', [ReportCont::class, 'get_container_bongkar'])->name('realisasi-bongkar.get-container');
 Route::get('/generate-pdf-bongkar', [ReportCont::class, 'generatePDF_bongkar'])->name('realisasi-bongkar.generate-pdf-bongkar');
-

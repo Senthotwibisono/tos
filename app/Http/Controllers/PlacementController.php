@@ -7,7 +7,10 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Yard;
 use Auth;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+
+
 
 class PlacementController extends Controller
 {
@@ -15,103 +18,104 @@ class PlacementController extends Controller
     {
         $this->middleware('auth');
     }
-public function index()
-{
-    $title = 'PLC';
-    $confirmed = Item::where('ctr_intern_status', '=', 03,)->orderBy('update_time', 'desc')->get();
-    $formattedData = [];
+    public function index()
+    {
+        $title = 'PLC';
+        $confirmed = Item::where('ctr_intern_status', '=', 03,)->orderBy('update_time', 'desc')->get();
+        $formattedData = [];
+        $data = [];
 
-    foreach ($confirmed as $tem) {
-        $now = Carbon::now();
-        $updatedAt = Carbon::parse($tem->update_time);
+        foreach ($confirmed as $tem) {
+            $now = Carbon::now();
+            $updatedAt = Carbon::parse($tem->update_time);
 
-        // Perhitungan selisih waktu
-        $diff = $updatedAt->diffForHumans($now);
+            // Perhitungan selisih waktu
+            $diff = $updatedAt->diffForHumans($now);
 
-        // Jika selisih waktu kurang dari 1 hari, maka tampilkan format jam
-        if ($updatedAt->diffInDays($now) < 1) {
-            $diff = $updatedAt->diffForHumans($now, true);
-            $diff = str_replace(['hours', 'hour','minutes', 'minutes', 'seconds', 'seconds'], ['jam', 'jam','menit', 'menit', 'detik', 'detik'], $diff);
-        } else {
-            // Jika selisih waktu lebih dari 1 hari, maka tampilkan format hari dan jam
-            $diff = $updatedAt->diffForHumans($now, true);
-            $diff = str_replace(['days', 'day', 'hours', 'hour','minutes', 'minutes', 'seconds', 'seconds'], ['hari', 'hari', 'jam', 'jam','menit', 'menit', 'detik', 'detik'], $diff);
+            // Jika selisih waktu kurang dari 1 hari, maka tampilkan format jam
+            if ($updatedAt->diffInDays($now) < 1) {
+                $diff = $updatedAt->diffForHumans($now, true);
+                $diff = str_replace(['hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
+            } else {
+                // Jika selisih waktu lebih dari 1 hari, maka tampilkan format hari dan jam
+                $diff = $updatedAt->diffForHumans($now, true);
+                $diff = str_replace(['days', 'day', 'hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['hari', 'hari', 'jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
+            }
+
+            $formattedData[] = [
+                'container_no' => $tem->container_no,
+                'ctr_type' => $tem->ctr_type,
+                'yard_block' => $tem->yard_block,
+                'yard_slot' => $tem->yard_slot,
+                'yard_row' => $tem->yard_row,
+                'yard_tier' => $tem->yard_tier,
+                'update_time' => $diff . ' yang lalu',
+                'container_key' => $tem->container_key
+            ];
         }
-
-        $formattedData[] = [
-            'container_no' => $tem->container_no,
-            'ctr_type'=>$tem->ctr_type,
-            'yard_block'=>$tem->yard_block,
-            'yard_slot'=>$tem->yard_slot,
-            'yard_row'=>$tem->yard_row,
-            'yard_tier'=>$tem->yard_tier,
-            'update_time' => $diff . ' yang lalu',
-            'container_key' => $tem->container_key
-        ];
-      
+        $items = Item::whereIn('ctr_intern_status', [02, 03, 04])->get();
+        $users = User::all();
+        $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
+        $yard_slot = Yard::distinct('yard_slot')->pluck('yard_slot');
+        $yard_row = Yard::distinct('yard_row')->pluck('yard_row');
+        $yard_tier = Yard::distinct('yard_tier')->pluck('yard_tier');
+        $currentDateTime = Carbon::now();
+        $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
+        $data["active"] = "yard";
+        $data["subactive"] = "placement";
+        return view('yard.place.main', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier'), $data);
     }
-    $items = Item::whereIn('ctr_intern_status', [02, 03, 04])->get();
-    $users = User::all();
-    $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
-    $yard_slot = Yard::distinct('yard_slot')->pluck('yard_slot');
-    $yard_row = Yard::distinct('yard_row')->pluck('yard_row');
-    $yard_tier = Yard::distinct('yard_tier')->pluck('yard_tier');
-    $currentDateTime = Carbon::now();
-    $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
-    return view('yard.place.main', compact('confirmed','formattedData','title', 'items','users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier'));
-}
-public function android()
-{
-    $title = 'PLC';
-    $confirmed = Item::where('ctr_intern_status', '=', 03,)->orderBy('update_time', 'desc')->get();
-    $formattedData = [];
+    public function android()
+    {
+        $title = 'PLC';
+        $confirmed = Item::where('ctr_intern_status', '=', 03,)->orderBy('update_time', 'desc')->get();
+        $formattedData = [];
 
-    foreach ($confirmed as $tem) {
-        $now = Carbon::now();
-        $updatedAt = Carbon::parse($tem->update_time);
+        foreach ($confirmed as $tem) {
+            $now = Carbon::now();
+            $updatedAt = Carbon::parse($tem->update_time);
 
-        // Perhitungan selisih waktu
-        $diff = $updatedAt->diffForHumans($now);
+            // Perhitungan selisih waktu
+            $diff = $updatedAt->diffForHumans($now);
 
-        // Jika selisih waktu kurang dari 1 hari, maka tampilkan format jam
-        if ($updatedAt->diffInDays($now) < 1) {
-            $diff = $updatedAt->diffForHumans($now, true);
-            $diff = str_replace(['hours', 'hour','minutes', 'minutes', 'seconds', 'seconds'], ['jam', 'jam','menit', 'menit', 'detik', 'detik'], $diff);
-        } else {
-            // Jika selisih waktu lebih dari 1 hari, maka tampilkan format hari dan jam
-            $diff = $updatedAt->diffForHumans($now, true);
-            $diff = str_replace(['days', 'day', 'hours', 'hour','minutes', 'minutes', 'seconds', 'seconds'], ['hari', 'hari', 'jam', 'jam','menit', 'menit', 'detik', 'detik'], $diff);
+            // Jika selisih waktu kurang dari 1 hari, maka tampilkan format jam
+            if ($updatedAt->diffInDays($now) < 1) {
+                $diff = $updatedAt->diffForHumans($now, true);
+                $diff = str_replace(['hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
+            } else {
+                // Jika selisih waktu lebih dari 1 hari, maka tampilkan format hari dan jam
+                $diff = $updatedAt->diffForHumans($now, true);
+                $diff = str_replace(['days', 'day', 'hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['hari', 'hari', 'jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
+            }
+
+            $formattedData[] = [
+                'container_no' => $tem->container_no,
+                'ctr_type' => $tem->ctr_type,
+                'yard_block' => $tem->yard_block,
+                'yard_slot' => $tem->yard_slot,
+                'yard_row' => $tem->yard_row,
+                'yard_tier' => $tem->yard_tier,
+                'update_time' => $diff . ' yang lalu',
+                'container_key' => $tem->container_key
+            ];
         }
-
-        $formattedData[] = [
-            'container_no' => $tem->container_no,
-            'ctr_type'=>$tem->ctr_type,
-            'yard_block'=>$tem->yard_block,
-            'yard_slot'=>$tem->yard_slot,
-            'yard_row'=>$tem->yard_row,
-            'yard_tier'=>$tem->yard_tier,
-            'update_time' => $diff . ' yang lalu',
-            'container_key' => $tem->container_key
-        ];
-      
+        $items = Item::where('ctr_intern_status', 02)->get();
+        $users = User::all();
+        $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
+        $yard_slot = Yard::distinct('yard_slot')->pluck('yard_slot');
+        $yard_row = Yard::distinct('yard_row')->pluck('yard_row');
+        $yard_tier = Yard::distinct('yard_tier')->pluck('yard_tier');
+        $currentDateTime = Carbon::now();
+        $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
+        return view('yard.place.android', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier'));
     }
-    $items = Item::where('ctr_intern_status', 02)->get();
-    $users = User::all();
-    $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
-    $yard_slot = Yard::distinct('yard_slot')->pluck('yard_slot');
-    $yard_row = Yard::distinct('yard_row')->pluck('yard_row');
-    $yard_tier = Yard::distinct('yard_tier')->pluck('yard_tier');
-    $currentDateTime = Carbon::now();
-    $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
-    return view('yard.place.android', compact('confirmed','formattedData','title', 'items','users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier'));
-}
 
 
     // public function get_tipe(Request $request)
     // {
     //     $container_no = $request->container_no;
     //     $name = Item::where('container_no', $container_no)->get();
-       
+
     //     if ($name) {
     //         return response()->json(['key' => $name->container_key, 'tipe'=>$name->ctr_type,'coname'=>$name->commodity_name]);
     //     }
@@ -122,13 +126,13 @@ public function android()
     {
         $container_key = $request->container_key;
         $name = Item::where('container_key', $container_key)->first();
-       
+
         if ($name) {
-            return response()->json(['container_no' => $name->container_no, 'tipe'=>$name->ctr_type,'coname'=>$name->commodity_name]);
+            return response()->json(['container_no' => $name->container_no, 'tipe' => $name->ctr_type, 'coname' => $name->commodity_name]);
         }
         return response()->json(['container_no' => 'data tidak ditemukan', 'tipe' => 'data tidak ditemukan', 'coname' => 'data tidak ditemukan']);
     }
-    
+
     public function place(Request $request)
 {
     $container_key = $request->container_key;
@@ -164,11 +168,36 @@ public function android()
             'wharf_yard_oa' => $request->wharf_yard_oa,
         ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Updated successfully!',
-            'item' => $item,
-        ]);
+            $client = new Client();
+
+            $fields = [
+                "container_key" => $request->container_key,
+                "ctr_intern_status" => "03",
+            ];
+            // dd($fields, $item->getAttributes());
+
+            $url = 'localhost:3013/delivery-service/container/confirmDisch';
+            $req = $client->post(
+                $url,
+                [
+                    "json" => $fields
+                ]
+            );
+            $response = $req->getBody()->getContents();
+            $result = json_decode($response);
+
+            // dd($result);
+            if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+                // $item->save();
+
+                return response()->json([
+                    'success' => 400,
+                    'message' => 'updated successfully!',
+                    'data'    => $item,
+                ]);
+            } else {
+                return back();
+            }
     } else {
         return response()->json([
             'success' => false,
@@ -176,7 +205,4 @@ public function android()
         ]);
     }
 }
-
 }
-
-
