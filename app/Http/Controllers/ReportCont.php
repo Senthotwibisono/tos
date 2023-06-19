@@ -64,9 +64,11 @@ public function generatePDF_disch(Request $request)
 {
     
     $ves_id = $request->query('ves_id');
+    $voy_nos = Item::where('ves_id', $ves_id)->distinct('voy_no')->pluck('voy_no');
     $ves_names = Item::where('ves_id', $ves_id)->distinct('ves_name')->pluck('ves_name');
     $ves_codes = Item::where('ves_id', $ves_id)->distinct('ves_code')->pluck('ves_code');
     $ves_name = implode(", ", $ves_names->toArray());
+    $voy_no = implode(", ", $voy_nos->toArray());
     $ves_code = implode(", ", $ves_codes->toArray());
     $item = Item::where('ves_id', $ves_id)
                 ->orderBy('bay_slot', 'asc')->orderBy('bay_row', 'asc')->orderBy('bay_tier', 'asc')
@@ -87,7 +89,7 @@ public function generatePDF_disch(Request $request)
         $pdf = new Dompdf($options);
         $pageNumber = $pdf->getCanvas()->get_page_number();
         $pageCount = $pdf->getCanvas()->get_page_count();
-        $pdf->loadHtml(view('reports.report.pdfcontves', ['item'=>$item, 'ves_id'=>$ves_id, 'ves_name'=>$ves_name, 'ves_code'=>$ves_code, 'total'=>$total, 'belum_bongkar'=>$belum_bongkar, 'pageNumber'=>$pageNumber, 'pageCount'=>$pageCount]));
+        $pdf->loadHtml(view('reports.report.pdfcontves', ['item'=>$item, 'ves_id'=>$ves_id, 'voy_no'=>$voy_no, 'ves_name'=>$ves_name, 'ves_code'=>$ves_code, 'total'=>$total, 'belum_bongkar'=>$belum_bongkar, 'pageNumber'=>$pageNumber, 'pageCount'=>$pageCount]));
         $pdf->render();
 
         // Menggunakan response untuk mengirim PDF ke browser
@@ -146,10 +148,12 @@ public function generatePDF_bongkar(Request $request)
 {
     
     $ves_id = $request->query('ves_id');
+    $voy_nos = Item::where('ves_id', $ves_id)->distinct('voy_no')->pluck('voy_no');
     $ves_names = Item::where('ves_id', $ves_id)->distinct('ves_name')->pluck('ves_name');
     $ves_codes = Item::where('ves_id', $ves_id)->distinct('ves_code')->pluck('ves_code');
     $ves_name = implode(", ", $ves_names->toArray());
     $ves_code = implode(", ", $ves_codes->toArray());
+    $voy_no = implode(", ", $voy_nos->toArray());
     $items = Item::where('ves_id', $ves_id)
                 ->where('ctr_intern_status','!=', '01' )
                 ->orderBy('ctr_intern_status', 'asc')
@@ -166,7 +170,7 @@ public function generatePDF_bongkar(Request $request)
         
         // Contoh: Membuat objek PDF menggunakan library seperti Dompdf atau TCPDF
         $pdf = new \Dompdf\Dompdf();
-        $pdf->loadHtml(view('planning.print.pdfbongkar', ['items'=>$items, 'ves_id'=>$ves_id, 'ves_name'=>$ves_name, 'ves_code'=>$ves_code, 'total'=>$total, 'bongkar'=>$bongkar]));
+        $pdf->loadHtml(view('planning.print.pdfbongkar', ['items'=>$items, 'ves_id'=>$ves_id, 'voy_no'=>$voy_no, 'ves_name'=>$ves_name, 'ves_code'=>$ves_code, 'total'=>$total, 'bongkar'=>$bongkar]));
         $pdf->render();
 
         // Menggunakan response untuk mengirim PDF ke browser

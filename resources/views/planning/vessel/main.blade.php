@@ -50,12 +50,13 @@
                             <td>{{$voyage->agent}}</td>
                             <td>{{$voyage->liner}}</td>
                             <td>{{$voyage->berthing_date}}</td>
-                            <td>{{$voyage->deparature_date}}</td>
+                            <td>{{$voyage->etd_date}}</td>
                             <td>
-                            <form action="/planning/delete_schedule={{$voyage->ves_id}}" method="POST">
+                            <form action="/planning/delete_schedule={{$voyage->ves_id}}" method="POST" class="deleteForm">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn icon btn-danger"> <i class="bi bi-x"></i></button>
+                            <button type="button" class="btn icon btn-danger" onclick="confirmDelete(event)"> <i class="bi bi-x"></i></button>
+
                             <a href="/planning/schedule_schedule={{$voyage->ves_id}}" class="btn icon btn-primary"><i class="bi bi-pencil"></i></a>
                             </form>
                         </tr>
@@ -67,5 +68,37 @@
 
     </section>
 </div>
+
+@endsection
+@section('custom_js')
+
+<script src="{{asset('dist/assets/extensions/sweetalert2/sweetalert2.min.js')}}"></script>    
+    <script src="{{asset('dist/assets/js/pages/sweetalert2.js')}}"></script>
+
+    <script>
+    @if (session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: "{{ session('success') }}"
+        });
+    @endif
+
+    function confirmDelete(event) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Confirmation',
+            text: 'Are you sure you want to delete this schedule?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+            cancelButtonText: 'Cancel',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                event.target.closest('.deleteForm').submit();
+            }
+        });
+    }
+</script>
 
 @endsection

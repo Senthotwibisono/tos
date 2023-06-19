@@ -134,25 +134,40 @@ class PlacementController extends Controller
     }
 
     public function place(Request $request)
-    {
-        $container_key = $request->container_key;
-        $item = Item::where('container_key', $container_key)->first();
+{
+    $container_key = $request->container_key;
+    $item = Item::where('container_key', $container_key)->first();
+    $request->validate([
+        'container_no'=> 'required',
+        'yard_block'  => 'required',
+        'yard_slot'  => 'required',
+        'yard_row'  => 'required',
+        'yard_tier' => 'required',
+        
+    ], [
+        'container_no.required' => 'Container Number is required.',
+        'yard_block.required' => 'Block is required.',
+        'yard_slot.required' => 'Slot Alat Number is required.',
+        'yard_row.required' => 'Row Alat Number is required.',
+        'yard_tier.required' => 'Tier Alat Number is required.',
+    ]);
+    
+    $yard_rowtier = Yard::where('yard_block', $request->yard_block)
+        ->where('yard_slot', $request->yard_slot)
+        ->where('yard_row', $request->yard_row)
+        ->where('yard_tier', $request->yard_tier)
+        ->first();
+    
+    if (is_null($yard_rowtier->container_key)) {
+        $item->update([
+            'yard_block' => $request->yard_block,
+            'yard_slot' => $request->yard_slot,
+            'yard_row' => $request->yard_row,
+            'yard_tier' => $request->yard_tier,
+            'ctr_intern_status' => '03',
+            'wharf_yard_oa' => $request->wharf_yard_oa,
+        ]);
 
-        $yard_rowtier = Yard::where('yard_block', $request->yard_block)
-            ->where('yard_slot', $request->yard_slot)
-            ->where('yard_row', $request->yard_row)
-            ->where('yard_tier', $request->yard_tier)
-            ->first();
-
-        if (is_null($yard_rowtier->container_key)) {
-            $item->update([
-                'yard_block' => $request->yard_block,
-                'yard_slot' => $request->yard_slot,
-                'yard_row' => $request->yard_row,
-                'yard_tier' => $request->yard_tier,
-                'ctr_intern_status' => '03',
-                'wharf_yard_oa' => $request->wharf_yard_oa,
-            ]);
             $client = new Client();
 
             $fields = [
@@ -183,11 +198,11 @@ class PlacementController extends Controller
             } else {
                 return back();
             }
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Yard sudah terisi!',
-            ]);
-        }
+    } else {
+        return response()->json([
+            'success' => false,
+            'message' => 'Yard sudah terisi!',
+        ]);
     }
+}
 }

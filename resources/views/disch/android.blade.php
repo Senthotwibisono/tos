@@ -193,18 +193,18 @@ $(document).on('click', '.update_status', function(e){
                     }).then((result) => {
                       /* Read more about isConfirmed, isDenied below */
                       if (result.isConfirmed) {
-                        Swal.fire('Saved!', '', 'success')
-                       
-                        $.ajax({
-                            type: 'POST',
-                            url: '/confirm',
-                            data: data,
-                            cache: false,
-                            dataType: 'json',
-                            success: function(response) {
-                                console.log(response);
+                          
+                          $.ajax({
+                              type: 'POST',
+                              url: '/confirm',
+                              data: data,
+                              cache: false,
+                              dataType: 'json',
+                              success: function(response) {
+                                  Swal.fire('Saved!', '', 'success')
+                                  console.log(response);
                                 
-                                
+                                  
                                 $('#modal-update').load(window.location.href + ' #modal-update', function(){
                                     $(document).ready(function() {
                                         $('.container').select2({
@@ -243,9 +243,22 @@ $(document).on('click', '.update_status', function(e){
                                 $('#table1').load(window.location.href + ' #table1');
                                 
                             },
-                            error: function(data) {
-                                    console.log('error:', data);
-                                },
+                            error: function(response) {
+                    var errors = response.responseJSON.errors;
+                    if (errors) {
+                        var errorMessage = '';
+                        $.each(errors, function(key, value) {
+                            errorMessage += value[0] + '<br>';
+                        });
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Validation Error',
+                            html: errorMessage,
+                        });
+                    } else {
+                        console.log('error:', response);
+                    }
+                },
                         });
                         
                       } else if (result.isDenied) {

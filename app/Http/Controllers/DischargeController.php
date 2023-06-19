@@ -107,18 +107,28 @@ class DischargeController extends Controller
     return response()->json(['container_no' => 'data tidak ditemukan', 'name' => 'data tidak ditemukan', 'slot' => 'data tidak ditemukan', 'row' => 'data tidak ditemukan', 'tier' => 'data tidak ditemukan']);
   }
 
-  public function confirm(Request $request)
-  {
-    $container_key = $request->container_key;
-    $item = Item::where('container_key', $container_key)->first();
-    Item::where('container_key', $container_key)->update([
-      'cc_tt_no' => $request->cc_tt_no,
-      'cc_tt_oper' => $request->cc_tt_oper,
-      'disc_date' => $request->disc_date,
-      'ctr_intern_status' => '02',
-      'wharf_yard_oa' => $request->wharf_yard_oa,
 
-    ]);
+    public function confirm(Request $request)
+    {
+        $container_key = $request->container_key;
+        $item = Item::where('container_key', $container_key)->first();
+        $request->validate([
+            'container_no'=> 'required',
+            'cc_tt_no' => 'required',
+            'cc_tt_oper' => 'required',
+        ], [
+            'container_no.required' => 'Container Number is required.',
+            'cc_tt_no.required' => 'Nomor Alat Number is required.',
+            'cc_tt_oper.required' => 'Operator Alat Number is required.',
+        ]);
+        Item::where('container_key', $container_key)->update([
+            'cc_tt_no' => $request->cc_tt_no,
+            'cc_tt_oper' => $request->cc_tt_oper,
+            'disc_date' => $request->disc_date,
+            'ctr_intern_status' => '02',
+            'wharf_yard_oa' => $request->wharf_yard_oa,
+
+        ]);
 
     $client = new Client();
 
@@ -131,11 +141,11 @@ class DischargeController extends Controller
 
     $url = 'localhost:3013/delivery-service/container/confirmDisch';
     $req = $client->post(
-      $url,
-      [
-        "json" => $fields
-      ]
-    );
+        $url,
+        [
+          "json" => $fields
+        ]
+      );
     $response = $req->getBody()->getContents();
     $result = json_decode($response);
     // dd($result);
@@ -150,5 +160,6 @@ class DischargeController extends Controller
     } else {
       return back();
     }
+    }
   }
-}
+

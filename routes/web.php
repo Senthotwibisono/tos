@@ -172,6 +172,7 @@ Route::post('/planning/vessel_schedule_store', [VesselController::class, 'schedu
 Route::get('/planning/schedule_schedule={ves_id}', [VesselController::class, 'edit_schedule']);
 Route::patch('/planning/schedule_update={ves_id}', [VesselController::class, 'update_schedule']);
 Route::delete('/planning/delete_schedule={ves_id}', [VesselController::class, 'delete_schedule']);
+Route::get('/refresh_counter', [VesselController::class, 'refreshCounter']);
 
 
 Route::get('/planning/bayplan_import', [BayplanImportController::class, 'index']);
@@ -192,13 +193,13 @@ Route::post('/planning/update_bayplanimport', [BayplanImportController::class, '
 Route::delete('/planning/delete_item={container_key}', [BayplanImportController::class, 'delete_item']);
 
 //kotak-kotak
-Route::get('/disch-view-vessel', [DischargeView::class, 'index']);
+Route::get('/disch/view-vessel', [DischargeView::class, 'index']);
 Route::post('/get-ves', [DischargeView::class, 'get_ves']);
 Route::post('/get-bay', [DischargeView::class, 'get_bay']);
 Route::get('/get-container', [DischargeView::class, 'get_container']);
 // Android
 Route::get('/android-dashboard', [AndroidController::class, 'index']);
-Route::get('/disch/confrim_disch', [DischargeController::class, 'index']);
+Route::get('/disch/confirm_disch', [DischargeController::class, 'index']);
 Route::post('/search-container', [DischargeController::class, 'container']);
 Route::post('/get-container-key', [DischargeController::class, 'get_key']);
 Route::post('/confirm', [DischargeController::class, 'confirm']);

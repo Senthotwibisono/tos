@@ -137,92 +137,107 @@ class BayplanImportController extends Controller
 
     public function store(request $request)
     {
-        $request->validate([]);
+        $request->validate([
+            'container_no'=> 'required|max:13',
+            'ves_id'=> 'required',
+            'gross'=> 'required',
+            'gross_class'=> 'required',
+            'commodity_name'=> 'required',
+            'load_port'=> 'required',
+            'disch_port'=> 'required',
+            'disc_load_seq'=> 'required',
+            'bay_slot'=> 'required',
+            'bay_row'=> 'required|max:2',
+            'bay_tier'=> 'required|max:2',
+            'iso_code'=> 'required',
+            'ctr_opr'=> 'required',
 
-        $item = Item::create([
-            'container_no' => $request->container_no,
-            'ves_id' => $request->ves_id,
-            'ves_code' => $request->ves_code,
-            'ves_name' => $request->ves_name,
-            'voy_no' => $request->voy_no,
-            'ctr_i_e_t' => $request->ctr_i_e_t,
-            'ctr_size' => $request->ctr_size,
-            'ctr_type' => $request->ctr_type,
-            'ctr_status' => $request->ctr_status,
-            'ctr_intern_status' => $request->ctr_intern_status,
-            'disc_load_trans_shift' => $request->disc_load_trans_shift,
-            'gross' => $request->gross,
-            'gross_class' => $request->gross_class,
-            'over_height' => $request->over_height,
-            'over_weight' => $request->over_weight,
-            'over_length' => $request->over_length,
-            'commodity_name' => $request->commodity_name,
-            'load_port' => $request->load_port,
-            'disch_port' => $request->disch_port,
-            'agent' => $request->agent,
-            'chilled_temp' => $request->chilled_temp,
-            'imo_code' => $request->imo_code,
-            'dangerous_yn' => $request->dangerous_yn,
-            'dangerous_label_yn' => $request->dangerous_label_yn,
-            'bl_no' => $request->bl_no,
-            'seal_no' => $request->seal_no,
-            'disc_load_seq' => $request->disc_load_seq,
-            'bay_slot' => $request->bay_slot,
-            'bay_row' => $request->bay_row,
-            'bay_tier' => $request->bay_tier,
-            'iso_code' => $request->iso_code,
-            'ctr_opr' => $request->ctr_opr,
-            'user_id' => $request->user_id,
+
         ]);
+        try {
+        $item = Item::create([
+                'container_no' => $request->container_no,
+                'ves_id' => $request->ves_id,
+                'ves_code' => $request->ves_code,
+                'ves_name' => $request->ves_name,
+                'voy_no' => $request->voy_no,
+                'ctr_i_e_t' => $request->ctr_i_e_t,
+                'ctr_size' => $request->ctr_size,
+                'ctr_type' => $request->ctr_type,
+                'ctr_status' => $request->ctr_status,
+                'ctr_intern_status' => '01',
+                'disc_load_trans_shift' => $request->disc_load_trans_shift,
+                'gross' => $request->gross,
+                'gross_class' => $request->gross_class,
+                'over_height' => $request->over_height,
+                'over_weight' => $request->over_weight,
+                'over_length' => $request->over_length,
+                'commodity_name' => $request->commodity_name,
+                'load_port' => $request->load_port,
+                'disch_port' => $request->disch_port,
+                'agent' => $request->agent,
+                'chilled_temp' => $request->chilled_temp,
+                'imo_code' => $request->imo_code,
+                'dangerous_yn' => $request->dangerous_yn,
+                'dangerous_label_yn' => $request->dangerous_label_yn,
+                'bl_no' => $request->bl_no,
+                'seal_no' => $request->seal_no,
+                'disc_load_seq' => $request->disc_load_seq,
+                'bay_slot' => $request->bay_slot,
+                'bay_row' => $request->bay_row,
+                'bay_tier' => $request->bay_tier,
+                'iso_code' => $request->iso_code,
+                'ctr_opr' => $request->ctr_opr,
+                'user_id' => $request->user_id,
+            ]);
+            $client = new Client();
 
-        // var_dump($item);
-        // die();
-        // $response = response()->json(['message' => 'Item created successfully', 'item' => $item]);
-        // dd($item->getAttributes()->ves_code);
-        $client = new Client();
+            $fields = [
+                "container_key" => $item->container_key,
+                "ves_id" => $item->ves_id,
+                "voy_no" => $item->voy_no,
+                "vessel_name" => $item->ves_name,
+                "container_no" => $item->container_no,
+                "ctr_status" => $item->ctr_status,
+                "ctr_intern_status" => $item->ctr_intern_status,
+                "ctr_type" => $item->ctr_type,
+                "ctr_opr" => $item->ctr_opr,
+                "ctr_size" => $item->ctr_size,
+                "disc_load_trans_shift" => $item->disc_load_trans_shift,
+                "load_port" => $item->load_port,
+                "disch_port" => $item->disch_port,
+                "fdisch_port" => "",
+                "bay_slot" => $item->bay_slot,
+                "bay_row" => $item->bay_row,
+                "bay_tier" => $item->bay_tier,
+                "gross" => $item->gross,
+                "iso_code" => $item->iso_code,
+            ];
+            // dd($fields, $item->getAttributes());
 
-        $fields = [
-            "container_key" => $item->container_key,
-            "ves_id" => $item->ves_id,
-            "voy_no" => $item->voy_no,
-            "vessel_name" => $item->ves_name,
-            "container_no" => $item->container_no,
-            "ctr_status" => $item->ctr_status,
-            "ctr_intern_status" => $item->ctr_intern_status,
-            "ctr_type" => $item->ctr_type,
-            "ctr_opr" => $item->ctr_opr,
-            "ctr_size" => $item->ctr_size,
-            "disc_load_trans_shift" => $item->disc_load_trans_shift,
-            "load_port" => $item->load_port,
-            "disch_port" => $item->disch_port,
-            "fdisch_port" => "",
-            "bay_slot" => $item->bay_slot,
-            "bay_row" => $item->bay_row,
-            "bay_tier" => $item->bay_tier,
-            "gross" => $item->gross,
-            "iso_code" => $item->iso_code,
-        ];
-        // dd($fields, $item->getAttributes());
+            $url = 'localhost:3013/delivery-service/container/create';
+            $req = $client->post(
+                $url,
+                [
+                    "json" => $fields
+                ]
+            );
+            $response = $req->getBody()->getContents();
+            $result = json_decode($response);
+            // dd($result);
+            if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+                // $item->save();
+                // return back();
+                return redirect('/planning/bayplan_import')->with('success', "Container Berhasil Dibuat");
+            } else {
+                return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.')->withInput();
+                
+            }
 
-        $url = 'localhost:3013/delivery-service/container/create';
-        $req = $client->post(
-            $url,
-            [
-                "json" => $fields
-            ]
-        );
-        $response = $req->getBody()->getContents();
-        $result = json_decode($response);
-        // dd($result);
-        if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-            $item->save();
-            return back();
-        } else {
-            return back();
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.')->withInput();
         }
 
-
-        // return back();
     }
 
     public function edit(Request $request)
@@ -269,8 +284,26 @@ class BayplanImportController extends Controller
     public function update_bayplanimport(Request $request)
     {
         $container_key = $request->container_key;
-        $item = Item::where('container_key', $container_key)->first();
-        $item->update([
+        $item = Item::where('container_key',$container_key)->first();
+        $request->validate([
+            'container_no'=> 'required|max:13',
+            'ves_id'=> 'required',
+            'gross'=> 'required',
+            'gross_class'=> 'required',
+            'commodity_name'=> 'required',
+            'load_port'=> 'required',
+            'disch_port'=> 'required',
+            'disc_load_seq'=> 'required',
+            'bay_slot'=> 'required',
+            'bay_row'=> 'required|max:2',
+            'bay_tier'=> 'required|max:2',
+            'iso_code'=> 'required',
+            'ctr_opr'=> 'required',
+
+
+        ]);
+        
+            $item->update([
             'container_no' => $request->container_no,
             'ves_id' => $request->ves_id,
             'ves_code' => $request->ves_code,
@@ -346,7 +379,6 @@ class BayplanImportController extends Controller
                 'success' => 400,
                 'message' => 'updated successfully!',
                 'data'    => $item,
-                // 'history' => $history_container,
             ]);
         } else {
             return back()->with('success', 'Data gagal disimpan!');

@@ -23,7 +23,7 @@ class VesselController extends Controller
     public function index()
     {
         $title = 'Vessel Schedule';
-        $vessel_voyage = VVoyage::orderBy('ves_id', 'desc')->get();
+        $vessel_voyage = VVoyage::orderBy('etd_date', 'desc')->get();
         return view('planning.vessel.main', compact('vessel_voyage', 'title'));
     }
 
@@ -158,25 +158,24 @@ class VesselController extends Controller
 
             'voy_in' => 'required|max:7',
             'voy_out' => 'required|max:7',
-           
+            'berth_no' => 'required',
             'berth_grid' => 'required|max:5',
-            'export_booking'=> 'required|max:11',
-
-          
+            'est_anchorage_date' => 'required',
+            'est_pilot_date' =>'required',
+            'est_start_work_date' =>'required',
+            'est_end_work_date' =>'required',
+            'eta_date' =>'required',
+            'etd_date' =>'required',
+            'est_berthing_date' =>'required',
+            'voyage_owner'=>'required|max:4'
         ],
         [
-
-            'ves_code.max' => 'vessel code  tidak boleh lebih dari 4 karakter.',
-          
-
+            'ves_code.max' => 'vessel code  tidak boleh lebih dari 4 karakter.', 
             'voy_in.max' => 'Kolom Voy In tidak boleh lebih dari 7 karakter.',
             'voy_out.max' => 'Kolom Voy Out tidak boleh lebih dari 7 karakter.',
-           
-           
             'berth_grid.max' => 'Kolom Berth Grid tidak boleh lebih dari 5 karakter.',
             'cy_code.max' => 'Kolom Cy Code tidak boleh lebih dari 1 karakter.',
             'no_ook.max' => 'Kolom No.PPK tidak boleh lebih dari 20 karakter.',
-
         ]    
     );
 
@@ -245,26 +244,40 @@ class VesselController extends Controller
            'open_stack_date'=>$request->open_stack_date,
         ]);
 
-        return redirect('/planning/vessel-schedule');
+        return redirect('/planning/vessel-schedule')->with('success', "Jadwal Berhasil Dibuat");
     }
 
     public function edit_schedule($ves_id){
         $title = 'Edit Schedule';
-
+        $bongkar_import = Item::where('ves_id', $ves_id)->where('ctr_i_e_t', '=', 'I')->where('ctr_intern_status','!=', '01' )->count();
         $users = User::all();
         $vessel_voyage = VVoyage::where('ves_id', $ves_id)->first();
         $currentDateTime = Carbon::now();
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
        
-        return view('planning.vessel.edit', compact('vessel_voyage', 'currentDateTimeString', 'title'));
+        return view('planning.vessel.edit', compact('vessel_voyage', 'currentDateTimeString', 'title', 'bongkar_import',));
     }
 
     public function update_schedule(Request $request, $ves_id)
     {
 
-        $this->validate($request, [
-            
-        ]);
+        $request->validate([
+            'act_anchorage_date' => 'required',
+            'act_pilot_date' =>'required',
+            'act_start_work_date' =>'required',
+            'act_end_work_date' =>'required',
+            'arrival_date' =>'required',
+            'deparature_date' =>'required',
+            'berthing_date' =>'required',
+
+          
+        ],
+        [
+
+
+        ]    
+    );
+
 
         VVoyage::where('ves_id', $ves_id)->update([
 
@@ -286,7 +299,7 @@ class VesselController extends Controller
         'no_bc11' => $request->no_bc11,
         'open_stack_date' =>$request->open_stack_date,
         ]);
-        return redirect('/planning/vessel-schedule');
+        return redirect('/planning/vessel-schedule')->with('success', "Jadwal Berhasil Diperbarui");
     }
 
 
@@ -294,6 +307,28 @@ class VesselController extends Controller
     {
         
         VVoyage::where('ves_id',$ves_id)->delete();
-        return back();
+        return back()->with('success', "Berhasil Dihapus");
+    }
+
+    public function refreshCounter(Request $request)
+    {
+        $ves_id = $request->input('ves_id');
+        $bongkar_import = Item::where('ves_id', $ves_id)
+            ->where('ctr_i_e_t', 'I')
+            ->where('ctr_intern_status', '!=', '01')
+            ->count();
+
+        $bongkar_export = Item::where('ves_id', $ves_id)
+            ->where('ctr_i_e_t', 'E')
+            ->where('ctr_intern_status', '!=', '01')
+            ->count();
+        
+     
+        
+        return response()->json([
+            'import_counter' => $bongkar_import,
+            'export_counter' => $bongkar_export,
+     
+        ]);
     }
 }

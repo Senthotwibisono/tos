@@ -60,7 +60,7 @@
         <button id="cetakpdf" class="btn btn-primary">Cetak PDF</button>
 
     <!-- Konten lainnya -->
-    <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
+    <table class="table" id="taabs">
         <thead>
             <tr>
                 <th>Bay</th>
@@ -161,7 +161,7 @@ $(function(){
         type: "GET",
         data: { ves_id: vesId },
         success: function(response) {
-            var tableBody = $('#table1 tbody');
+            var tableBody = $('#taabs tbody');
             tableBody.empty(); // Menghapus konten tabel sebelumnya
 
             // Memasukkan data container ke dalam tabel

@@ -6,8 +6,8 @@
         <div class="row match-height">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title">Multiple Column</h4>
+                <div class="card-header">
+                        <h1>Edit Schedule -Form</h1>
                     </div>
                     <div class="card-content">
                         <div class="card-body">
@@ -77,7 +77,7 @@
                                     <div class="col-md-6 col-12">
                                         <div class="form-group">
                                         <label for="-id-column">Liner/Tramp</label>
-                                            <<input type="text" id="first-name-vertical" class="form-control" name="ves_code" value="{{ $vessel_voyage->liner_tramp }}"  disabled>
+                                            <input type="text" id="first-name-vertical" class="form-control" name="ves_code" value="{{ $vessel_voyage->liner_tramp }}"  disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-12">
@@ -120,7 +120,7 @@
                                     <div class="col-md-12 col-12">
                                         <div class="form-group">
                                             <label for="-id-column">No BC 11</label>
-                                            <input type="text" id="first-name-vertical" class="form-control" name="no_bc11"  required>
+                                            <input type="text" id="first-name-vertical" class="form-control" name="no_bc11">
                                         </div>
                                     </div>
                                     <hr>
@@ -221,7 +221,7 @@
                                         </div>
                                     </div> -->
                                     <div class="table">
-                            <table class="table mb-0">
+                            <table class="table mb-0" id="counter">
                                 <thead class="thead-dark">
                                     <tr>
                                         <th><h4>Booking Information</h4></th>
@@ -234,15 +234,15 @@
                                 <tbody>
                                     <tr>
                                         <td class="text-bold-500"><h5>Booking</h5></td>
-                                        <td><input type="number"   name="import_booking" value="{{ $vessel_voyage->import_booking }}" class="form-control"></td>
+                                        <td><input type="number"   name="import_booking" value="{{$vessel_voyage->import_booking}}" class="form-control"></td>
                                         <td ><input type="number" name="export_booking"  value="{{ $vessel_voyage->export_booking }}" class="form-control"></td>
                                         <td>-</td>
                                     </tr>
                                     <tr>
                                         <td class="text-bold-500"><h5>Counter</h5></td>
-                                        <td><input type="number"   name="import_counter" class="form-control" readonly></td>
-                                        <td ><input type="number" name="export_counter" class="form-control" readonly></td>
-                                        <td><button type="refresh" class="btn btn-light-secondary me-1 mb-1">Refresh</button></td>
+                                        <td><input type="number"   id="import_counter" name="import_counter" class="form-control" value="{{$bongkar_import}}" readonly></td>
+                                        <td ><input type="number"  id="export_counter" name="export_counter" class="form-control"  readonly></td>
+                                        <td><button id="refresh" type="button" class="btn btn-outline-warning me-1 mb-1">Refresh</button></td>
                                     </tr>
                                     </tbody>
                             </table>
@@ -265,12 +265,12 @@
                                     <tr>
                                         <td class="text-bold-500"><h5>Arrival Date</h5></td>
                                         <td> <input type="datetime-local" id="first-name-vertical" class="form-control" name="ves_code" value="{{ $vessel_voyage->eta_date }}"  disabled></td>
-                                        <td ><input type="datetime-local"   name="arrival_date" class="form-control" value="{{ $vessel_voyage->eta_date }}"></td>
+                                        <td ><input type="datetime-local"   name="arrival_date" class="form-control"    value="{{ $vessel_voyage->arrival_date }}"></td>
                                     </tr>
                                     <tr>
                                         <td class="text-bold-500"><h5>Anchorage Date</h5></td>
                                         <td> <input type="datetime-local" id="first-name-vertical" class="form-control" name="ves_code" value="{{ $vessel_voyage->est_anchorage_date }}"  disabled></td>
-                                        <td><input type="datetime-local"  name="act_anchorage_date" class="form-control"value="{{ $vessel_voyage->eta_date }}"></td>
+                                        <td><input type="datetime-local"  name="act_anchorage_date" class="form-control" value="{{ $vessel_voyage->act_anchorage_date }}"></td>
                                     </tr>
                                     <tr>
                                         <td class="text-bold-500"><h5>Pilot Date</h5></td>
@@ -366,4 +366,27 @@
         </div>
     </section>
 
+@endsection
+ @section('custom_js')
+ <script>
+$(document).on('click', '#refresh', function() {
+    var ves_id = '{{ $vessel_voyage->ves_id }}';
+
+    $.ajax({
+        type: 'GET',
+        url: '/refresh_counter',
+        data: {
+            ves_id: ves_id
+        },
+        success: function(response) {
+            $('#import_counter').val(response.import_counter);
+            $('#export_counter').val(response.export_counter);
+        },
+        error: function(response) {
+            console.log('error:', response);
+        },
+    });
+});
+
+</script>
 @endsection

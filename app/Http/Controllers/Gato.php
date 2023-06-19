@@ -135,49 +135,59 @@ class Gato extends Controller
 
         $container_key = $request->container_key;
         $item = Item::where('container_key', $container_key)->first();
-
-
-
+        $request->validate([
+            'container_no'=> 'required',
+            'truck_no' => 'required',
+        ], [
+            'container_no.required' => 'Container Number is required.',
+            'truck_no.required' => 'Truck Number is required.',
+        ]);
+        
+        
+        if ($item->truck_no === $request->truck_no) {
         $item->update([
             'ctr_intern_status' => '09',
             'truck_no' => $request->truck_no,
-            'truck_out_date' => $request->truck_out_date
+            'truck_out_date' => $request->truck_out_date,
         ]);
-        $client = new Client();
+            $client = new Client();
 
-        $fields = [
-            "container_key" => $request->container_key,
-            "ctr_intern_status" => "09",
-        ];
-        // dd($fields, $item->getAttributes());
+            $fields = [
+                "container_key" => $request->container_key,
+                "ctr_intern_status" => "09",
+            ];
+            // dd($fields, $item->getAttributes());
 
-        $url = 'localhost:3013/delivery-service/container/confirmDisch';
-        $req = $client->post(
-            $url,
-            [
-                "json" => $fields
-            ]
-        );
-        $response = $req->getBody()->getContents();
-        $result = json_decode($response);
-        // var_dump($result);
-        // die();
-        if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-            // $item->save();
+            $url = 'localhost:3013/delivery-service/container/confirmDisch';
+            $req = $client->post(
+                $url,
+                [
+                    "json" => $fields
+                ]
+            );
+            $response = $req->getBody()->getContents();
+            $result = json_decode($response);
+            // var_dump($result);
+            // die();
+            if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+                // $item->save();
 
+                return response()->json([
+                    'success' => true,
+                    'message' => 'updated successfully!',
+                    'data'    => $item,
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Nomor Truck Berbeda Pada Saat Gate In !!',
+                ]);
+            }
+        }else {
             return response()->json([
-                'success' => true,
-                'message' => 'updated successfully!',
-                'data'    => $item,
+                'success' => false,
+                'message' => 'Nomor Truck Berbeda Pada Saat Gate In !!',
             ]);
-        } else {
-            return back();
         }
-
-        // return response()->json([
-        //     'success' => true,
-        //     'message' => 'Updated successfully!',
-        //     'item' => $item,
-        // ]);
     }
 }
