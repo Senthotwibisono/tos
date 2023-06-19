@@ -237,7 +237,7 @@
                                             <select class="form-select" id="vesid" name="ves_id">
                                             <option value="-">-</option>
                                                 @foreach($vessel_import as $vi)
-                                            <option value="{{$vi->ves_id}}">{{str_pad($vi->ves_id,4,'0', STR_PAD_LEFT)}}-{{$vi->ves_code}} Tiba Pada {{$vi->eta_date}}</option>
+                                            <option value="{{$vi->ves_id}}">{{str_pad($vi->ves_id,4,'0', STR_PAD_LEFT)}}-{{$vi->ves_code}} ==> {{$vi->voy_out}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -509,7 +509,7 @@
                                             <select class="form-select" id="vesid_edit" name="ves_id">
                                             <option value="-">-</option>
                                                 @foreach($vessel_voyage as $vy)
-                                            <option value="{{$vy->ves_id}}">{{str_pad($vi->ves_id,4,'0', STR_PAD_LEFT)}}-{{$vi->ves_code}} Tiba Pada {{$vi->eta_date}}</option>
+                                            <option value="{{$vy->ves_id}}">{{str_pad($vi->ves_id,4,'0', STR_PAD_LEFT)}}-{{$vi->ves_code}} ==> {{$vi->voy_out}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
