@@ -147,7 +147,7 @@ Route::post('/planning/update_bayplanimport', [BayplanImportController::class, '
 Route::delete('/planning/delete_item={container_key}', [BayplanImportController::class, 'delete_item']);
 
 //kotak-kotak
-Route::get('/disch-view-vessel', [DischargeView::class, 'index']);
+Route::get('/disch/view-vessel', [DischargeView::class, 'index']);
 Route::post('/get-ves', [DischargeView::class, 'get_ves']);
 Route::post('/get-bay', [DischargeView::class, 'get_bay']);
 Route::get('/get-container', [DischargeView::class, 'get_container']);
