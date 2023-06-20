@@ -1,3 +1,5 @@
+
+
 <?php $__env->startSection('content'); ?>
 
 <div class="page-heading">
@@ -48,12 +50,13 @@
                             <td><?php echo e($voyage->agent); ?></td>
                             <td><?php echo e($voyage->liner); ?></td>
                             <td><?php echo e($voyage->berthing_date); ?></td>
-                            <td><?php echo e($voyage->deparature_date); ?></td>
+                            <td><?php echo e($voyage->etd_date); ?></td>
                             <td>
-                            <form action="/planning/delete_schedule=<?php echo e($voyage->ves_id); ?>" method="POST">
+                            <form action="/planning/delete_schedule=<?php echo e($voyage->ves_id); ?>" method="POST" class="deleteForm">
                             <?php echo csrf_field(); ?>
                             <?php echo method_field('DELETE'); ?>
-                            <button type="submit" class="btn icon btn-danger"> <i class="bi bi-x"></i></button>
+                            <button type="button" class="btn icon btn-danger" onclick="confirmDelete(event)"> <i class="bi bi-x"></i></button>
+
                             <a href="/planning/schedule_schedule=<?php echo e($voyage->ves_id); ?>" class="btn icon btn-primary"><i class="bi bi-pencil"></i></a>
                             </form>
                         </tr>
@@ -65,6 +68,38 @@
 
     </section>
 </div>
+
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('custom_js'); ?>
+
+<script src="<?php echo e(asset('dist/assets/extensions/sweetalert2/sweetalert2.min.js')); ?>"></script>    
+    <script src="<?php echo e(asset('dist/assets/js/pages/sweetalert2.js')); ?>"></script>
+
+    <script>
+    <?php if(session('success')): ?>
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: "<?php echo e(session('success')); ?>"
+        });
+    <?php endif; ?>
+
+    function confirmDelete(event) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Confirmation',
+            text: 'Are you sure you want to delete this schedule?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+            cancelButtonText: 'Cancel',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                event.target.closest('.deleteForm').submit();
+            }
+        });
+    }
+</script>
 
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('partial.main', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\Fdw Files\CTOS\dev\frontend\tos-dev-local\resources\views/planning/vessel/main.blade.php ENDPATH**/ ?>

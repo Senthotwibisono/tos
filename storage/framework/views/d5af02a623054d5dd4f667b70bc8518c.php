@@ -1,7 +1,7 @@
 <ul class="menu">
   <li class="sidebar-title">Menu</li>
 
-  <li class="sidebar-item <?= $active == "Dashboard" ? "active" : "" ?>">
+  <li class="sidebar-item <?php if(Request::is('dashboard') || Request::is('/')): ?> active <?php endif; ?>">
     <a href="/dashboard" class='sidebar-link'>
       <i class="bi bi-grid-fill"></i>
       <span>Dashboard</span>
@@ -11,13 +11,13 @@
 
   <!-- planning -->
 
-  <li class="sidebar-item  has-sub <?= $active == "planning" ? "active" : "" ?>">
+  <li class="sidebar-item  has-sub <?php if(Request::is('planning/*')): ?> active <?php endif; ?>">
     <a href="#" class='sidebar-link'>
       <i class="fa-solid fa-ship"></i>
       <span>Planning</span>
     </a>
-    <ul class="submenu <?= $active == "planning" ? "active" : "" ?>">
-      <li class="submenu-item ">
+    <ul class="submenu <?php if(Request::is('planning/*')): ?> active <?php endif; ?>">
+      <li class="submenu-item <?php if(Request::is('planning/vessel-schedule') || Request::is('planning/create-schedule') || Request::is('planning/schedule_schedule=*')): ?> active <?php endif; ?>">
         <a href="/planning/vessel-schedule">Vessel Schedule</a>
       </li>
       <!-- <li class="submenu-item ">
@@ -32,14 +32,14 @@
                     <li class="submenu-item ">
                         <a href="form-element-checkbox.html">Load Planning - Bigger Vessel</a>
                     </li> -->
-      <li class="submenu-item <?= $subactive == "bayplanimport" ? "active" : "" ?>">
+      <li class="submenu-item <?php if(Request::is('planning/bayplan_import')): ?> active <?php endif; ?>">
         <a href="/planning/bayplan_import">Bay Plan Import</a>
       </li>
       <hr>
-      <li class="submenu-item ">
+      <li class="submenu-item <?php if(Request::is('planning/report')): ?> active <?php endif; ?>">
         <a href="/planning/report">Discharge List</a>
       </li>
-      <li class="submenu-item ">
+      <li class="submenu-item <?php if(Request::is('planning/realisasi-bongkar')): ?> active <?php endif; ?>">
         <a href="/planning/realisasi-bongkar">Realisasi Bongkar</a>
       </li>
       <!-- <li class="submenu-item ">
@@ -94,23 +94,23 @@
 
   <!-- disch/load -->
 
-  <li class="sidebar-item  has-sub <?= $active == "discharge" ? "active" : "" ?>">
+  <li class="sidebar-item  has-sub <?php if(Request::is('disch/*')): ?> active <?php endif; ?>">
     <a href="#" class='sidebar-link'>
       <i class="bi bi-collection-fill"></i>
       <span>Disch/Load</span>
     </a>
-    <ul class="submenu <?= $active == "discharge" ? "active" : "" ?>">
+    <ul class="submenu <?php if(Request::is('disch/*')): ?> active <?php endif; ?>">
       <!-- <li class="submenu-item ">
                         <a href="extra-component-avatar.html">Loading Confirm With Plan</a>
                     </li>
                     <li class="submenu-item ">
                         <a href="extra-component-sweetalert.html">Loading Confirm Without Plan</a>
                     </li> -->
-      <li class="submenu-item <?= $subactive == "confirm" ? "active" : "" ?>">
-        <a href="/disch/confrim_disch ">Discharge Confirm</a>
+      <li class="submenu-item <?php if(Request::is('disch/confirm_disch')): ?> active <?php endif; ?>">
+        <a href="/disch/confirm_disch">Discharge Confirm</a>
       </li>
-      <li class="submenu-item">
-        <a href="/disch-view-vessel">Discharge View</a>
+      <li class="submenu-item <?php if(Request::is('disch/view-vessel')): ?> active <?php endif; ?>">
+        <a href="/disch/view-vessel">Discharge View</a>
       </li>
       <!-- <li class="submenu-item ">
                         <a href="extra-component-rating.html">Entry Hatch Move</a>
@@ -145,12 +145,12 @@
 
   <!-- yard -->
 
-  <li class="sidebar-item  has-sub <?= $active == "yard" ? "active" : "" ?>">
+  <li class="sidebar-item  has-sub <?php if(Request::is('yard/*') || Request::is('stripping')): ?> active <?php endif; ?>">
     <a href="#" class='sidebar-link'>
       <i class="fa-solid fa-landmark-flag"></i>
       <span>Yard</span>
     </a>
-    <ul class="submenu <?= $active == "yard" ? "active" : "" ?>">
+    <ul class="submenu  <?php if(Request::is('yard/*') || Request::is('stripping')): ?> active <?php endif; ?>">
       <!-- <li class="submenu-item ">
                         <a href="form-element-input.html">Yard Operation Control</a>
                     </li>
@@ -165,14 +165,20 @@
                         <a href="form-element-radio.html">Karantina Control</a>
                     </li>
                     <hr> -->
-      <li class="submenu-item <?= $subactive == "placement" ? "active" : "" ?>">
+      <li class="submenu-item  <?php if(Request::is('yard/placement')): ?> active <?php endif; ?>">
         <a href="/yard/placement">Placement Container</a>
       </li>
       <!-- <li class="submenu-item ">
                         <a href="form-element-textarea.html">Yard Display</a>
                     </li>  -->
-      <li class="submenu-item ">
+      <li class="submenu-item  <?php if(Request::is('yard/rowtier')): ?> active <?php endif; ?>">
         <a href="/yard/rowtier">Yard View</a>
+      </li>
+
+      <hr>
+
+      <li class="submenu-item <?php if(Request::is('stripping')): ?> active <?php endif; ?>">
+        <a href="/stripping">Stripping</a>
       </li>
       <!-- <li class="submenu-item ">
                         <a href="form-element-textarea.html">Reefer Monitoring</a>
@@ -246,16 +252,16 @@
 
   <!-- gate -->
 
-  <li class="sidebar-item  has-sub <?= $active == "delivery" ? "active" : "" ?>">
+  <li class="sidebar-item  has-sub <?php if(Request::is('delivery/*')): ?> active <?php endif; ?>">
     <a href="#" class='sidebar-link'>
       <i class="fa-solid fa-torii-gate"></i>
       <span>Gate</span>
     </a>
-    <ul class="submenu <?= $active == "delivery" ? "active" : "" ?>">
-      <li class="submenu-item <?= $subactive == "gatein" ? "active" : "" ?>">
+    <ul class="submenu <?php if(Request::is('delivery/*')): ?> active <?php endif; ?>">
+      <li class="submenu-item <?php if(Request::is('delivery/gate-in')): ?> active <?php endif; ?>">
         <a href="/delivery/gate-in">Get in Delivery</a>
       </li>
-      <li class="submenu-item <?= $subactive == "gateout" ? "active" : "" ?>">
+      <li class="submenu-item <?php if(Request::is('delivery/gate-out')): ?> active <?php endif; ?>">
         <a href="/delivery/gate-out">Gate Out Delivery</a>
       </li>
 
@@ -281,8 +287,8 @@
       <i class="fa-solid fa-file"></i>
       <span>EDI</span>
     </a>
-    <ul class="submenu ">
-      <li class="submenu-item ">
+    <ul class="submenu <?php if(Request::is('edi/*')): ?> active <?php endif; ?>">
+      <li class="submenu-item <?php if(Request::is('edi/receiveed1')): ?> active <?php endif; ?>">
         <a href="/edi/receiveedi">Baplie Arrival</a>
       </li>
       <!-- <li class="submenu-item ">
@@ -323,14 +329,14 @@
       <i class="fa-solid fa-mobile"></i>
       <span>Android</span>
     </a>
-    <ul class="submenu ">
+    <ul class="submenu">
       <li class="submenu-item ">
-        <a href="/disch/confrim_disch">Confirm Disch</a>
+        <a href="/disch/confirm_disch">Confirm Disch</a>
       </li>
       <li class="submenu-item ">
         <a href="/yard/placement">Placement Container</a>
       </li>
-      <li class="submenu-item ">
+      <li class="submenu-item">
         <a href="/stripping">Stripping</a>
       </li>
 
@@ -354,8 +360,8 @@
       <i class="fa-solid fa-circle-info"></i>
       <span>Report and Information</span>
     </a>
-    <ul class="submenu">
-      <li class="submenu-item ">
+    <ul class="submenu <?php if(Request::is('reports/*')): ?> active <?php endif; ?>">
+      <li class="submenu-item <?php if(Request::is('reports/hist')): ?> active <?php endif; ?>">
         <a href="/reports/hist">History Container</a>
       </li>
       <!-- <li class="submenu-item ">
@@ -456,11 +462,11 @@
       < <i class="fa-solid fa-wrench"></i>
         <span>System</span>
     </a>
-    <ul class="submenu">
-      <li class="submenu-item ">
+    <ul class="submenu <?php if(Request::is('system/*')): ?> active <?php endif; ?>">
+      <li class="submenu-item <?php if(Request::is('system/user') || Request::is('system/user/create_user') ||  Request::is('system/edit_user=*')): ?> active <?php endif; ?>">
         <a href="/system/user">User</a>
       </li>
-      <li class="submenu-item ">
+      <li class="submenu-item <?php if(Request::is('system/role') || Request::is('system/role/addrole') || Request::is('system/edit_role=*')): ?> active <?php endif; ?>">
         <a href="/system/role">Role</a>
       </li>
     </ul>
@@ -479,12 +485,10 @@
     </a>
   </li>
 
-  <!-- Delivery SPPS -->
-
   <li class="sidebar-item">
     <a href="/spps" class='sidebar-link'>
       <i class="bi bi-currency-exchange"></i>
-      <span>Delivery SPPS</span>
+      <span>SPPS</span>
     </a>
   </li>
 
@@ -494,23 +498,23 @@
       <i class="bi bi-stack"></i>
       <span>Master</span>
     </a>
-    <ul class="submenu ">
-      <li class="submenu-item ">
+    <ul class="submenu <?php if(Request::is('master/*')): ?> active <?php endif; ?>">
+      <li class="submenu-item <?php if(Request::is('master/port')): ?> active <?php endif; ?>">
         <a href="/master/port">Port Maintenance</a>
       </li>
-      <li class="submenu-item ">
+      <li class="submenu-item <?php if(Request::is('master/berth')): ?> active <?php endif; ?>">
         <a href="/master/berth">Berth Maintenance</a>
       </li>
-      <li class="submenu-item ">
+      <li class="submenu-item <?php if(Request::is('master/vessel')): ?> active <?php endif; ?>">
         <a href="/master/vessel">Vessel Maintenance</a>
       </li>
-      <li class="submenu-item ">
+      <li class="submenu-item <?php if(Request::is('master/service')): ?> active <?php endif; ?>">
         <a href="/master/service">Vessel Service Maintenance</a>
       </li>
-      <li class="submenu-item ">
+      <li class="submenu-item <?php if(Request::is('master/block')): ?> active <?php endif; ?>">
         <a href="/master/block">Yard</a>
       </li>
-      <li class="submenu-item ">
+      <li class="submenu-item <?php if(Request::is('master/isocode')): ?> active <?php endif; ?>">
         <a href="/master/isocode">ISO Code Maintenance</a>
       </li>
     </ul>

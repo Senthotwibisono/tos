@@ -183,7 +183,7 @@
                         </div>
                         <div class="name ms-4">
                             <h5 class="mb-1"><?php echo e($voy->ves_name); ?></h5>
-                            <h6 class="text-muted mb-0"><?php echo e($voy->eta_date); ?></h6>
+                            <h6 class="text-muted mb-0"><?php echo e($voy->etd_date); ?></h6>
                         </div>
                     </div>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -224,6 +224,10 @@
                                             <td>
                                                 <?php if($history->operation_name === 'ANNI'): ?>
                                                 <p class=" mb-0">Recive container <b><?php echo e($history->container_no); ?></b> from ship <b><?php echo e($history->ves_code); ?></b> <br>
+                                                    at <?php echo e($history->update_time); ?></p>
+
+                                                <?php elseif($history->operation_name === 'CORANNI'): ?>
+                                                <p class=" mb-0">Edit container profile <b><?php echo e($history->container_no); ?></b> from ship <b><?php echo e($history->ves_code); ?></b> <br>
                                                     at <?php echo e($history->update_time); ?></p>
 
                                                 <?php elseif($history->operation_name === 'DISC'): ?>
@@ -377,4 +381,5 @@ var chartVisitorsProfile = new ApexCharts(document.getElementById('chart-visitor
 chartVisitorsProfile.render()
 </script>
 <?php $__env->stopSection(); ?>
+
 <?php echo $__env->make('partial.main', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\Fdw Files\CTOS\dev\frontend\tos-dev-local\resources\views/dashboard.blade.php ENDPATH**/ ?>
