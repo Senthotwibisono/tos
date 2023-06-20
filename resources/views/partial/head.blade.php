@@ -18,6 +18,8 @@
     <link rel="stylesheet" href="{{asset('dist/assets/extensions/sweetalert2/sweetalert2.min.css')}}">
     <link rel="stylesheet" href="{{ asset('select2/dist/css/select2.min.css') }}">
     <link rel="stylesheet" href="{{asset('dist/assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css')}}">
+    <link rel="stylesheet" href="{{asset('dist/assets/extensions/choices.js/public/assets/styles/choices.css')}}">
+    
     <style>
     .select2-container--default .select2-selection--single {
         border-radius:.3rem;

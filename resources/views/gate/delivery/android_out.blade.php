@@ -61,7 +61,7 @@
                         <div class="col-12">
                             <div class="form-group">
                                 <label for="first-name-vertical">Choose Container Number</label>
-                                <select style="width:100%;" class="form-control container" id="key" name="container_key" required>
+                                <select class="choices form-select" id="key" name="container_key" required>
                                     <option value="">Select Container</option>
                                     @foreach($containerKeys as $containerKey => $containerNo)
                                     <option value="{{ $containerKey }}">{{ $containerNo }}</option>

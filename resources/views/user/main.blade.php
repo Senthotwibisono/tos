@@ -93,7 +93,7 @@
 
                                     <div class="form-group">
                                         <label for="helperText">Password</label>
-                                        <input type="password" id="helperText" class="form-control" name="password" placeholder="Name" >
+                                        <input type="password" id="helperText" class="form-control" name="password" placeholder="Wajib Di Isi Kembali"  required>
 
                                     </div>
                                     <button type="submit" class="btn btn-success update_profil">Change</button>

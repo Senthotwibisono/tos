@@ -72,13 +72,13 @@
                                         <div class="col-12">
                                             <div class="form-group">
                                                 <label for="first-name-vertical">Choose Container Number</label>   
-                                                <select style="width:100%;"class="form-control container"  id="key" name="container_key" required>
+                                                <select class="choices form-select"  id="key" name="container_key" required>
                                                   <option value="">Select Container</option>
                                                   @foreach ($containerKeys as $container)
         <option value="{{ $container['value'] }}">{{ $container['text'] }}</option>
     @endforeach
                                                 </select>
-                                                <input type="text" id="container_no" class="form-control" name="container_no">                                             
+                                                <input type="hidden" id="container_no" class="form-control" name="container_no">                                             
                                             </div>
                                             {{ csrf_field()}}
                                         </div>
@@ -133,7 +133,7 @@
                                                 <div class="col-3">
                                                     <div class="form-group">
                                                         <label for="first-name-vertical">Blok</label>    
-                                                        <select style="width:100%;"class="form-control block"  id="block" name="yard_block" required>
+                                                        <select class="choices form-select"  id="block" name="yard_block" required>
                                                           <option value="">-</option>
                                                           @foreach($yard_block as $block)
                                                             <option value="{{$block}}">{{$block}}</option>
@@ -144,7 +144,7 @@
                                                 <div class="col-3">
                                                         <div class="form-group">
                                                             <label for="first-name-vertical">Slot</label>   
-                                                            <select style="width:100%;"class="form-control slot"  id="slot" name="yard_slot" required>
+                                                            <select class="choices form-select" id="slot" name="yard_slot" required>
                                                           <option value="">-</option>
                                                           @foreach($yard_slot as $slot)
                                                             <option value="{{$slot}}">{{$slot}}</option>
@@ -155,7 +155,7 @@
                                                    <div class="col-3">
                                                         <div class="form-group">
                                                             <label for="first-name-vertical">Row</label>   
-                                                            <select style="width:100%;"class="form-control yard_row"  id="row" name="yard_row" required>
+                                                            <select class="choices form-select" id="row" name="yard_row" required>
                                                           <option value="">-</option>
                                                           @foreach($yard_row as $row)
                                                             <option value="{{$row}}">{{$row}}</option>
@@ -166,7 +166,7 @@
                                                     <div class="col-3">
                                                         <div class="form-group">
                                                             <label for="first-name-vertical">Tier</label>   
-                                                            <select style="width:100%;"class="form-control tier"  id="tier" name="yard_tier" required>
+                                                            <select class="choices form-select" id="tier" name="yard_tier" required>
                                                           <option value="">-</option>
                                                           @foreach($yard_tier as $tier)
                                                             <option value="{{$tier}}">{{$tier}}</option>

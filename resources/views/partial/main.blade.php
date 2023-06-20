@@ -62,6 +62,8 @@
     <script src="{{ asset('vendor/components/jquery/jquery.min.js') }}"></script>
     <script src="{{asset('dist/assets/extensions/sweetalert2/sweetalert2.min.js')}}"></script>    
     <script src="{{asset('dist/assets/js/pages/sweetalert2.js')}}"></script>
+    <script src="{{asset('dist/assets/extensions/choices.js/public/assets/scripts/choices.js')}}"></script>
+    <script src="{{asset('dist/assets/js/pages/form-element-select.js')}}"></script>
     <!-- <script src="{{ asset('query-ui/jquery-ui.js') }}"></script>
     <script src="{{ asset('query-ui/jquery-ui.min.js') }}" type="text/javascript"></script>
     <script src="{{asset('jquery-3.6.4.min.js')}}" type="text/javascript"></script> -->
