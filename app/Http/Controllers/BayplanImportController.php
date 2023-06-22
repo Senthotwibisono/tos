@@ -293,52 +293,11 @@ class BayplanImportController extends Controller
             'user_id' => $request->user_id,
         ]);
 
-        $client = new Client();
-
-        $fields = [
-            "container_key" => $request->container_key,
-            "ves_id" => $request->ves_id,
-            "voy_no" => $request->voy_no,
-            "vessel_name" => $request->ves_name,
-            "container_no" => $request->container_no,
-            "ctr_status" => $request->ctr_status,
-            "ctr_intern_status" => "01",
-            "ctr_type" => $request->ctr_type,
-            "ctr_opr" => $request->ctr_opr,
-            "ctr_size" => $request->ctr_size,
-            "disc_load_trans_shift" => $request->disc_load_trans_shift,
-            "load_port" => $request->load_port,
-            "disch_port" => $request->disch_port,
-            "fdisch_port" => "",
-            "bay_slot" => $request->bay_slot,
-            "bay_row" => $request->bay_row,
-            "bay_tier" => $request->bay_tier,
-            "gross" => $request->gross,
-            "iso_code" => $request->iso_code,
-        ];
-        // var_dump($fields, $item);
-        // die();
-
-        $url = 'localhost:3013/delivery-service/container/update';
-        $req = $client->post(
-            $url,
-            [
-                "json" => $fields
-            ]
-        );
-        $response = $req->getBody()->getContents();
-        $result = json_decode($response);
-        // var_dump($result);
-        // die();
-        if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-            return response()->json([
-                'success' => 400,
-                'message' => 'updated successfully!',
-                'data'    => $item,
-            ]);
-        } else {
-            return back()->with('success', 'Data gagal disimpan!');
-        }
+        return response()->json([
+            'success' => 400,
+            'message' => 'updated successfully!',
+            'data'    => $item,
+        ]);
     }
 
     public function delete_item($container_key)
