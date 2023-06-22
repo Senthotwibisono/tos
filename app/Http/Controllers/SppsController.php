@@ -24,7 +24,7 @@ class SppsController extends Controller
 
         // // GET ALL INVOICE
         // // $url_invoice = getenv('API_URL') . '/customer-service/customerAll';
-        $url_invoice = 'localhost:3013/delivery-service/invoice/all';
+        $url_invoice = getenv('API_URL') . '/delivery-service/invoice/all';
         $req_invoice = $client->get($url_invoice);
         $response_invoice = $req_invoice->getBody()->getContents();
         $result_invoice = json_decode($response_invoice);
@@ -41,7 +41,7 @@ class SppsController extends Controller
         $client = new Client();
 
         // GET ALL FORM
-        $url_delivery = 'localhost:3013/delivery-service/form/all';
+        $url_delivery = getenv('API_URL') . '/delivery-service/form/all';
         $req_delivery = $client->get($url_delivery);
         $response_delivery = $req_delivery->getBody()->getContents();
         $result_delivery = json_decode($response_delivery);
@@ -58,7 +58,7 @@ class SppsController extends Controller
         $client = new Client();
 
         // GET ALL FORM
-        $url_master_tarif = 'localhost:3013/delivery-service/mastertarif/spps/all';
+        $url_master_tarif = getenv('API_URL') . '/delivery-service/mastertarif/spps/all';
         $req_master_tarif = $client->get($url_master_tarif);
         $response_master_tarif = $req_master_tarif->getBody()->getContents();
         $result_master_tarif = json_decode($response_master_tarif);
@@ -78,7 +78,7 @@ class SppsController extends Controller
         // dd($id_invoice);
 
         // GET SINGLE FORM
-        $url_single_invoice = 'localhost:3013/delivery-service/spps/single/' . $id_invoice;
+        $url_single_invoice = getenv('API_URL') . '/delivery-service/invoice/single/' . $id_invoice;
         $req_single_invoice = $client->get($url_single_invoice);
         $response_single_invoice = $req_single_invoice->getBody()->getContents();
         $result_single_invoice = json_decode($response_single_invoice);
@@ -98,7 +98,7 @@ class SppsController extends Controller
         // dd($id_invoice);
         //commited
         // GET SINGLE FORM
-        $url_single_invoice = 'localhost:3013/delivery-service/spps/single/' . $id_invoice;
+        $url_single_invoice = getenv('API_URL') . '/delivery-service/invoice/single/' . $id_invoice;
         $req_single_invoice = $client->get($url_single_invoice);
         $response_single_invoice = $req_single_invoice->getBody()->getContents();
         $result_single_invoice = json_decode($response_single_invoice);
@@ -117,7 +117,7 @@ class SppsController extends Controller
         // dd($id_invoice);
         //commited
         // GET SINGLE INVOICE FORM
-        $url_single_invoice = 'localhost:3013/delivery-service/spps/single/' . $id_invoice;
+        $url_single_invoice = getenv('API_URL') . '/delivery-service/invoice/single/' . $id_invoice;
         $req_single_invoice = $client->get($url_single_invoice);
         $response_single_invoice = $req_single_invoice->getBody()->getContents();
         $result_single_invoice = json_decode($response_single_invoice);
@@ -126,7 +126,7 @@ class SppsController extends Controller
         $id_delivery = $result_single_invoice->data->invoice->data6->deliveryid;
 
         // GET SINGLE DELIVERY FORM
-        $url_single_form = 'localhost:3013/delivery-service/form/container/' . $id_delivery;
+        $url_single_form = getenv('API_URL') . '/delivery-service/form/container/' . $id_delivery;
         $req_single_form = $client->get($url_single_form);
         $response_single_form = $req_single_form->getBody()->getContents();
         $result_single_form = json_decode($response_single_form);
@@ -149,7 +149,7 @@ class SppsController extends Controller
         ];
         // dd($fields);
 
-        $url = 'localhost:3013/delivery-service/job/conkey';
+        $url = getenv('API_URL') . '/delivery-service/job/conkey';
         $req = $client->get(
             $url,
             [
@@ -189,7 +189,7 @@ class SppsController extends Controller
         $client = new Client();
         // GET ALL CUSTOMER
         // $url_customer = getenv('API_URL') . '/customer-service/customerAll';
-        $url_customer = 'localhost:3013/delivery-service/customer/all';
+        $url_customer = getenv('API_URL') . '/delivery-service/customer/all';
         $req_customer = $client->get($url_customer);
         $response_customer = $req_customer->getBody()->getContents();
         $result_customer = json_decode($response_customer);
@@ -197,7 +197,7 @@ class SppsController extends Controller
 
         // GET ALL CONTAINER
         // $url_container = getenv('API_URL') . '/container-service/all';
-        $url_container = 'localhost:3013/delivery-service/container/all';
+        $url_container = getenv('API_URL') . '/delivery-service/container/all';
         $req_container = $client->get($url_container);
         $response_container = $req_container->getBody()->getContents();
         $result_container = json_decode($response_container);
@@ -220,7 +220,7 @@ class SppsController extends Controller
         // dd($id_param);
 
         // GET SINGLE FORM
-        $url_form = 'localhost:3013/delivery-service/form/single/' . $id_param;
+        $url_form = getenv('API_URL') . '/delivery-service/form/single/' . $id_param;
         $req_form = $client->get($url_form);
         $response_form = $req_form->getBody()->getContents();
         $result_form = json_decode($response_form);
@@ -228,7 +228,7 @@ class SppsController extends Controller
 
         // GET ALL CUSTOMER
         // $url_customer = getenv('API_URL') . '/customer-service/customerAll';
-        $url_customer = 'localhost:3013/delivery-service/customer/all';
+        $url_customer = getenv('API_URL') . '/delivery-service/customer/all';
         $req_customer = $client->get($url_customer);
         $response_customer = $req_customer->getBody()->getContents();
         $result_customer = json_decode($response_customer);
@@ -236,7 +236,7 @@ class SppsController extends Controller
 
         // GET ALL CONTAINER
         // $url_container = getenv('API_URL') . '/container-service/all';
-        $url_container = 'localhost:3013/delivery-service/container/all';
+        $url_container = getenv('API_URL') . '/delivery-service/container/all';
         $req_container = $client->get($url_container);
         $response_container = $req_container->getBody()->getContents();
         $result_container = json_decode($response_container);
@@ -269,11 +269,13 @@ class SppsController extends Controller
             "do_exp_date" => $do_exp_date,
             "boln" => $boln,
             "container" => $container,
+            "orderService" => "spps",
+
         ];
         // dd($fields);
         // Commit changes
 
-        $url = 'localhost:3013/delivery-service/form/create';
+        $url = getenv('API_URL') . '/delivery-service/form/create';
         $req = $client->post(
             $url,
             [
@@ -313,11 +315,13 @@ class SppsController extends Controller
             "do_exp_date" => $do_exp_date,
             "boln" => $boln,
             "container" => $container,
+            "orderService" => "spps",
+
         ];
         // dd($fields);
         // Commit changes
 
-        $url = 'localhost:3013/delivery-service/form/update/' . $id_param;
+        $url = getenv('API_URL') . '/delivery-service/form/update/' . $id_param;
         // dd($url);
         $req = $client->post(
             $url,
@@ -345,7 +349,7 @@ class SppsController extends Controller
         // dd($id_form);
 
         // GET SINGLE FORM
-        $url_single_form = 'localhost:3013/delivery-service/form/container/' . $id_form;
+        $url_single_form = getenv('API_URL') . '/delivery-service/form/container/' . $id_form;
         $req_single_form = $client->get($url_single_form);
         $response_single_form = $req_single_form->getBody()->getContents();
         $result_single_form = json_decode($response_single_form);
@@ -365,7 +369,7 @@ class SppsController extends Controller
             "containers" => $container_arr,
         ];
 
-        $url = 'localhost:3013/delivery-service/form/calculate';
+        $url = getenv('API_URL') . '/delivery-service/form/calculate';
         $req = $client->post(
             $url,
             [
@@ -379,7 +383,7 @@ class SppsController extends Controller
 
 
         $data["ccdelivery"] = $result->data;
-        $data["menuinv"] = ["Lift On", "Pass Truck", "Penumpukan Masa 1", "Penumpukan Masa 2", "Penumpukan Masa 3"];
+        $data["menuinv"] = ["Paket Stripping", "Pass Truck", "Penumpukan Masa 1", "Penumpukan Masa 2", "Penumpukan Masa 3"];
         $data["title"] = "Step 2 | Delivery Pranota";
         return view('spps/delivery_form/add_step_2', $data);
     }
@@ -410,7 +414,7 @@ class SppsController extends Controller
         ];
         // dd($fields);
 
-        $url = 'localhost:3013/delivery-service/spps/create';
+        $url = getenv('API_URL') . '/delivery-service/invoice/create';
         $req = $client->post(
             $url,
             [
@@ -433,7 +437,7 @@ class SppsController extends Controller
         $data = [];
         $client = new Client();
 
-        // $url_test = 'localhost:3013/delivery-service/form/all';
+        // $url_test = getenv('API_URL').'/delivery-service/form/all';
         // $req_test = $client->get($url_test);
         // $response_test = $req_test->getBody()->getContents();
         // $result_test = json_decode($response_test);
@@ -441,7 +445,7 @@ class SppsController extends Controller
 
         // GET ALL CUSTOMER
         // $url_customer = getenv('API_URL') . '/customer-service/customerAll';
-        $url_customer = 'localhost:3013/delivery-service/customer/all';
+        $url_customer = getenv('API_URL') . '/delivery-service/customer/all';
         $req_customer = $client->get($url_customer);
         $response_customer = $req_customer->getBody()->getContents();
         $result_customer = json_decode($response_customer);
@@ -483,7 +487,7 @@ class SppsController extends Controller
         ];
         // dd($fields);
 
-        $url = 'localhost:3013/delivery-service/customer/create';
+        $url = getenv('API_URL') . '/delivery-service/customer/create';
         $req = $client->post(
             $url,
             [
@@ -507,7 +511,7 @@ class SppsController extends Controller
 
         // GET ALL CONTAINER
         // $url_container = getenv('API_URL') . '/container-service/containerAll';
-        $url_container = 'localhost:3013/delivery-service/container/all';
+        $url_container = getenv('API_URL') . '/delivery-service/container/all';
         $req_container = $client->get($url_container);
         $response_container = $req_container->getBody()->getContents();
         $result_container = json_decode($response_container);
@@ -551,7 +555,7 @@ class SppsController extends Controller
         ];
         // dd($fields);
 
-        $url = 'localhost:3013/delivery-service/container/create';
+        $url = getenv('API_URL') . '/delivery-service/container/create';
         $req = $client->post(
             $url,
             [
@@ -575,7 +579,7 @@ class SppsController extends Controller
         $id = $request->id;
         // var_dump($id);
         // die();
-        $url_form = 'localhost:3013/delivery-service/spps/single/' . $id;
+        $url_form = getenv('API_URL') . '/delivery-service/invoice/single/' . $id;
         $req_form = $client->get($url_form);
         $response_form = $req_form->getBody()->getContents();
         // var_dump($response_form);
@@ -595,7 +599,7 @@ class SppsController extends Controller
             [
                 "isPaid" => 1,
             ];
-        $url = 'localhost:3013/delivery-service/spps/setPaid/' . $id;
+        $url = getenv('API_URL') . '/delivery-service/invoice/setPaid/' . $id;
         $req = $client->post(
             $url,
             [
@@ -620,7 +624,7 @@ class SppsController extends Controller
             [
                 "isPiutang" => 1,
             ];
-        $url = 'localhost:3013/delivery-service/spps/setPiutang/' . $id;
+        $url = getenv('API_URL') . '/delivery-service/invoice/setPiutang/' . $id;
         $req = $client->post(
             $url,
             [
@@ -641,7 +645,7 @@ class SppsController extends Controller
         $id = $request->id;
         // var_dump($id);
         // die();
-        $url_form = 'localhost:3013/delivery-service/mastertarif/spps/single/' . $id;
+        $url_form = getenv('API_URL') . '/delivery-service/mastertarif/spps/single/' . $id;
         $req_form = $client->get($url_form);
         $response_form = $req_form->getBody()->getContents();
         // var_dump($response_form);
@@ -698,7 +702,7 @@ class SppsController extends Controller
                 "monitoring" => $monitoring,
                 "administrasi" => $administrasi,
             ];
-        $url = 'localhost:3013/delivery-service/mastertarif/spps/update/' . $id;
+        $url = getenv('API_URL') . '/delivery-service/mastertarif/spps/update/' . $id;
         $req = $client->post(
             $url,
             [
@@ -760,7 +764,7 @@ class SppsController extends Controller
                 "monitoring" => $monitoring,
                 "administrasi" => $administrasi,
             ];
-        $url = 'localhost:3013/delivery-service/mastertarif/spps/create';
+        $url = getenv('API_URL') . '/delivery-service/mastertarif/spps/create';
         $req = $client->post(
             $url,
             [

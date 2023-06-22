@@ -138,24 +138,24 @@ class BayplanImportController extends Controller
     public function store(request $request)
     {
         $request->validate([
-            'container_no'=> 'required|max:13',
-            'ves_id'=> 'required',
-            'gross'=> 'required',
-            'gross_class'=> 'required',
-            'commodity_name'=> 'required',
-            'load_port'=> 'required',
-            'disch_port'=> 'required',
-            'disc_load_seq'=> 'required',
-            'bay_slot'=> 'required',
-            'bay_row'=> 'required|max:2',
-            'bay_tier'=> 'required|max:2',
-            'iso_code'=> 'required',
-            'ctr_opr'=> 'required',
+            'container_no' => 'required|max:13',
+            'ves_id' => 'required',
+            'gross' => 'required',
+            'gross_class' => 'required',
+            'commodity_name' => 'required',
+            'load_port' => 'required',
+            'disch_port' => 'required',
+            'disc_load_seq' => 'required',
+            'bay_slot' => 'required',
+            'bay_row' => 'required|max:2',
+            'bay_tier' => 'required|max:2',
+            'iso_code' => 'required',
+            'ctr_opr' => 'required',
 
 
         ]);
         try {
-        $item = Item::create([
+            $item = Item::create([
                 'container_no' => $request->container_no,
                 'ves_id' => $request->ves_id,
                 'ves_code' => $request->ves_code,
@@ -190,54 +190,10 @@ class BayplanImportController extends Controller
                 'ctr_opr' => $request->ctr_opr,
                 'user_id' => $request->user_id,
             ]);
-            $client = new Client();
-
-            $fields = [
-                "container_key" => $item->container_key,
-                "ves_id" => $item->ves_id,
-                "voy_no" => $item->voy_no,
-                "vessel_name" => $item->ves_name,
-                "container_no" => $item->container_no,
-                "ctr_status" => $item->ctr_status,
-                "ctr_intern_status" => $item->ctr_intern_status,
-                "ctr_type" => $item->ctr_type,
-                "ctr_opr" => $item->ctr_opr,
-                "ctr_size" => $item->ctr_size,
-                "disc_load_trans_shift" => $item->disc_load_trans_shift,
-                "load_port" => $item->load_port,
-                "disch_port" => $item->disch_port,
-                "fdisch_port" => "",
-                "bay_slot" => $item->bay_slot,
-                "bay_row" => $item->bay_row,
-                "bay_tier" => $item->bay_tier,
-                "gross" => $item->gross,
-                "iso_code" => $item->iso_code,
-            ];
-            // dd($fields, $item->getAttributes());
-
-            $url = 'localhost:3013/delivery-service/container/create';
-            $req = $client->post(
-                $url,
-                [
-                    "json" => $fields
-                ]
-            );
-            $response = $req->getBody()->getContents();
-            $result = json_decode($response);
-            // dd($result);
-            if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-                // $item->save();
-                // return back();
-                return redirect('/planning/bayplan_import')->with('success', "Container Berhasil Dibuat");
-            } else {
-                return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.')->withInput();
-                
-            }
-
+            return redirect('/planning/bayplan_import')->with('success', "Container Berhasil Dibuat");
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.')->withInput();
         }
-
     }
 
     public function edit(Request $request)
@@ -284,26 +240,26 @@ class BayplanImportController extends Controller
     public function update_bayplanimport(Request $request)
     {
         $container_key = $request->container_key;
-        $item = Item::where('container_key',$container_key)->first();
+        $item = Item::where('container_key', $container_key)->first();
         $request->validate([
-            'container_no'=> 'required|max:13',
-            'ves_id'=> 'required',
-            'gross'=> 'required',
-            'gross_class'=> 'required',
-            'commodity_name'=> 'required',
-            'load_port'=> 'required',
-            'disch_port'=> 'required',
-            'disc_load_seq'=> 'required',
-            'bay_slot'=> 'required',
-            'bay_row'=> 'required|max:2',
-            'bay_tier'=> 'required|max:2',
-            'iso_code'=> 'required',
-            'ctr_opr'=> 'required',
+            'container_no' => 'required|max:13',
+            'ves_id' => 'required',
+            'gross' => 'required',
+            'gross_class' => 'required',
+            'commodity_name' => 'required',
+            'load_port' => 'required',
+            'disch_port' => 'required',
+            'disc_load_seq' => 'required',
+            'bay_slot' => 'required',
+            'bay_row' => 'required|max:2',
+            'bay_tier' => 'required|max:2',
+            'iso_code' => 'required',
+            'ctr_opr' => 'required',
 
 
         ]);
-        
-            $item->update([
+
+        $item->update([
             'container_no' => $request->container_no,
             'ves_id' => $request->ves_id,
             'ves_code' => $request->ves_code,

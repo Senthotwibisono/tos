@@ -64,13 +64,14 @@
             <div class="col-12">
               <div class="form-group">
                 <label for="first-name-vertical">Choose Container Number</label>
-                <select style="width:100%;" class="form-control container" id="key" name="container_key" required>
-                  <option value="">Select Container</option>
-                  <!-- <?php $__currentLoopData = $containerKeys; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $containerKey => $containerNo): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?> -->
-                  <?php foreach ($jobContainers as $value) { ?>
-                    <option value="<?= $value->container_key ?>"><?= $value->container_no ?></option>
+                <select class="choices form-select" id="key" name="container_key" required>
+                  <option disabled selected value="">Select Container</option>
+                  <?php
+                  foreach ($jobContainers->container as $value) { ?>
+                    <?php if ($value->ctr_intern_status == "03") { ?>
+                      <option value="<?= $value->container_key ?>"><?= $value->container_no ?></option>
+                    <?php } ?>
                   <?php } ?>
-                  <!-- <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?> -->
                 </select>
                 <input type="hidden" id="container_no" class="form-control" name="container_no">
               </div>
@@ -122,7 +123,6 @@
 <script src="<?php echo e(asset('dist/assets/js/pages/sweetalert2.js')); ?>"></script>
 
 <script>
-  // In your Javascript (external .js resource or <script> tag)
   $(document).ready(function() {
     $('.container').select2({
       dropdownParent: '#success',
@@ -139,8 +139,6 @@
       'container_no': $('#container_no').val(),
       'truck_no': $('#tayo').val(),
       'truck_in_date': $('#datein').val(),
-      'job_no': $('#job').val(),
-      'invoice_no': $('#invoice').val(),
 
 
     }
@@ -160,7 +158,7 @@
     }).then((result) => {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
-        Swal.fire('Saved!', '', 'success')
+
 
         $.ajax({
           type: 'POST',
@@ -171,16 +169,30 @@
           success: function(response) {
             console.log(response);
             if (response.success) {
+              Swal.fire('Saved!', '', 'success')
               $('#load_ini').load(window.location.href + ' #load_ini');
               $('#place_cont').load(window.location.href + ' #place_cont', function() {
                 $(document).ready(function() {
+                  let choices = document.querySelectorAll('.choices');
+                  let initChoice;
+                  for (let i = 0; i < choices.length; i++) {
+                    if (choices[i].classList.contains("multiple-remove")) {
+                      initChoice = new Choices(choices[i], {
+                        delimiter: ',',
+                        editItems: true,
+                        maxItemCount: -1,
+                        removeItemButton: true,
+                      });
+                    } else {
+                      initChoice = new Choices(choices[i]);
+                    }
+                  }
                   $('.container').select2({
                     dropdownParent: '#success',
                   });
                   $(document).ready(function() {
                     $('#key').on('change', function() {
                       let id = $(this).val();
-                      // console.log(id);
                       $.ajax({
                         type: 'POST',
                         url: '/gati-data_container',
@@ -189,10 +201,7 @@
                         },
                         success: function(response) {
                           let res = JSON.parse(response);
-                          console.log(res.data);
-                          console.log(res.data.jobData.container_no);
-                          console.log(res.data.jobData.jobNumber);
-                          console.log(res.data.jobData.invoiceNumber);
+                          // console.log(res);
                           $('#container_no').val(res.data.jobData.container_no);
                           $('#job').val(res.data.jobData.jobNumber);
                           $('#invoice').val(res.data.jobData.invoiceNumber);
@@ -209,11 +218,28 @@
                 $('#load_ini').load(window.location.href + ' #load_ini');
               });
             } else {
-              Swal.fire('Error', response.message, 'error');
+              Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                text: response.message,
+              });
             }
           },
-          error: function(data) {
-            console.log('error:', data);
+          error: function(response) {
+            var errors = response.responseJSON.errors;
+            if (errors) {
+              var errorMessage = '';
+              $.each(errors, function(key, value) {
+                errorMessage += value[0] + '<br>';
+              });
+              Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                html: errorMessage,
+              });
+            } else {
+              console.log('error:', response);
+            }
           },
         });
 
@@ -233,32 +259,28 @@
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
       }
     });
-    // $(document).ready(function() {
-    $('#key').on('change', function() {
-      let id = $(this).val();
-      console.log(id);
-      $.ajax({
-        type: 'POST',
-        url: '/gati-data_container',
-        data: {
-          container_key: id
-        },
-        success: function(response) {
-          let res = JSON.parse(response);
-          console.log(res.data);
-          console.log(res.data.jobData.container_no);
-          console.log(res.data.jobData.jobNumber);
-          console.log(res.data.jobData.invoiceNumber);
-          $('#container_no').val(res.data.jobData.container_no);
-          $('#job').val(res.data.jobData.jobNumber);
-          $('#invoice').val(res.data.jobData.invoiceNumber);
-        },
-        error: function(data) {
-          console.log('error:', data);
-        },
+    $(document).ready(function() {
+      $('#key').on('change', function() {
+        let id = $(this).val();
+        $.ajax({
+          type: 'POST',
+          url: '/gati-data_container',
+          data: {
+            container_key: id
+          },
+          success: function(response) {
+            let res = JSON.parse(response);
+            // console.log(res);
+            $('#container_no').val(res.data.jobData.container_no);
+            $('#job').val(res.data.jobData.jobNumber);
+            $('#invoice').val(res.data.jobData.invoiceNumber);
+          },
+          error: function(data) {
+            console.log('error:', data);
+          },
+        });
       });
     });
-    // });
     // $(function(){
     //         $('#block'). on('change', function(){
     //             let yard_block = $('#block').val();

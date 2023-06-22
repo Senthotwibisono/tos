@@ -73,7 +73,9 @@
               <select name="container[]" class="js-example-basic-multiple form-control" style="height: 150%;" multiple="multiple">
                 <option disabled value="">Pilih Salah Satu</option>
                 <?php foreach ($container as $data) { ?>
-                  <option value="<?= $data->id ?>"><?= $data->container_no ?></option>
+                  <?php if ($data->ctr_intern_status == "03") { ?>
+                    <option value="<?= $data->id ?>"><?= $data->container_no ?></option>
+                  <?php } ?>
                 <?php } ?>
               </select>
             </div>

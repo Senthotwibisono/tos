@@ -79,15 +79,77 @@
                     <div class="card">
                         <div class="card-header">
                         
-                <a href="index.html"><img src="<?php echo e(asset('logo/ICON2.png')); ?>" alt="Logo"></a>
-           
+                        <a href=""><img class="logoicon2" style="position: absolute; left: -250px; top: -100px;" src="<?php echo e(asset('logo/ICON2.png')); ?>" alt="Logo"></a>
+                        <div  style="position:  top: -200px;" id="lottie-animation"></div>
                         </div>
                         <div class="card-body">
-                        <div  id="lottie-animation"></div>
+                        
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="col-12 col-lg-12">
+        <div class="card">
+                        <div class="card-header">
+                            <h4>Latest Activity</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-lg">
+                                    <thead>
+                                        <tr>
+                                            <th>Operational Name</th>
+                                            <th>Activity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php $__currentLoopData = $history_container; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $history): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <tr>
+                                            <td>
+                                            <p class=" mb-0"><?php echo e($history->oper_name); ?></p>
+                                            </td>
+                                            <td>
+                                                <?php if($history->operation_name === 'ANNI'): ?>
+                                                <p class=" mb-0">Recive container <b><?php echo e($history->container_no); ?></b> from ship <b><?php echo e($history->ves_code); ?></b> <br>
+                                                    at <?php echo e($history->update_time); ?></p>
+
+                                                <?php elseif($history->operation_name === 'CORANNI'): ?>
+                                                <p class=" mb-0">Edit container profile <b><?php echo e($history->container_no); ?></b> from ship <b><?php echo e($history->ves_code); ?></b> <br>
+                                                    at <?php echo e($history->update_time); ?></p>
+
+                                                <?php elseif($history->operation_name === 'DISC'): ?>
+                                                <p class=" mb-0">Confirm container <b><?php echo e($history->container_no); ?></b> from ship <b><?php echo e($history->ves_code); ?></b> <br>
+                                                    at <?php echo e($history->update_time); ?></p>
+
+                                                <?php elseif($history->operation_name === 'PLC'): ?>
+                                                <p class=" mb-0">Placed container <b><?php echo e($history->container_no); ?></b> to <b>Block <?php echo e($history->yard_blok); ?></b> <b>Slot <?php echo e($history->yard_slot); ?></b> <b>Row <?php echo e($history->yard_row); ?></b> <b>Tier <?php echo e($history->yard_tier); ?></b><br>
+                                                    at <?php echo e($history->update_time); ?></p>
+
+                                                <?php elseif($history->operation_name === 'STR'): ?>
+                                                <p class=" mb-0">Move container <b><?php echo e($history->container_no); ?></b> to <b>Block <?php echo e($history->yard_blok); ?></b> <b>Slot <?php echo e($history->yard_slot); ?></b> <b>Row <?php echo e($history->yard_row); ?></b> <b>Tier <?php echo e($history->yard_tier); ?></b><br>
+                                                    at <?php echo e($history->update_time); ?></p>
+
+                                                <?php elseif($history->operation_name === 'GATI'): ?>
+                                                <p class=" mb-0">Get permit truck <b><?php echo e($history->truck_no); ?></b> to take <b><?php echo e($history->container_no); ?></b> from <b>Block <?php echo e($history->yard_blok); ?></b> <b>Slot <?php echo e($history->yard_slot); ?></b> <b>Row <?php echo e($history->yard_row); ?></b> <b>Tier <?php echo e($history->yard_tier); ?></b><br>
+                                                    at <?php echo e($history->truck_in_date); ?></p>
+
+                                                <?php elseif($history->operation_name === 'GATO'): ?>
+                                                <p class=" mb-0">Allowed truck <b><?php echo e($history->truck_no); ?></b> to take out<b><?php echo e($history->container_no); ?></b> from <b>Block <?php echo e($history->yard_blok); ?></b> <b>Slot <?php echo e($history->yard_slot); ?></b> <b>Row <?php echo e($history->yard_row); ?></b> <b>Tier <?php echo e($history->yard_tier); ?></b><br>
+                                                    at <?php echo e($history->truck_out_date); ?></p>
+                                                    <?php endif; ?>
+                                            </td>
+                                            </td>
+                                        </tr>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    </tbody>
+                                </table>
+                                <div class="px-4">
+                        <a href="/reports/hist" class='btn btn-block btn-xl btn-outline-primary font-bold mt-3'>See More...</a>
+                    </div>
+                            </div>
+                        </div>
+                    </div>
+        </div>
             <div class="row">
                 <!-- <div class="col-12 col-xl-4">
                     <div class="card">
@@ -201,68 +263,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-lg-12">
-        <div class="card">
-                        <div class="card-header">
-                            <h4>Latest Activity</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-hover table-lg">
-                                    <thead>
-                                        <tr>
-                                            <th>Operational Name</th>
-                                            <th>Activity</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php $__currentLoopData = $history_container; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $history): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <tr>
-                                            <td>
-                                            <p class=" mb-0"><?php echo e($history->oper_name); ?></p>
-                                            </td>
-                                            <td>
-                                                <?php if($history->operation_name === 'ANNI'): ?>
-                                                <p class=" mb-0">Recive container <b><?php echo e($history->container_no); ?></b> from ship <b><?php echo e($history->ves_code); ?></b> <br>
-                                                    at <?php echo e($history->update_time); ?></p>
-
-                                                <?php elseif($history->operation_name === 'CORANNI'): ?>
-                                                <p class=" mb-0">Edit container profile <b><?php echo e($history->container_no); ?></b> from ship <b><?php echo e($history->ves_code); ?></b> <br>
-                                                    at <?php echo e($history->update_time); ?></p>
-
-                                                <?php elseif($history->operation_name === 'DISC'): ?>
-                                                <p class=" mb-0">Confirm container <b><?php echo e($history->container_no); ?></b> from ship <b><?php echo e($history->ves_code); ?></b> <br>
-                                                    at <?php echo e($history->update_time); ?></p>
-
-                                                <?php elseif($history->operation_name === 'PLC'): ?>
-                                                <p class=" mb-0">Placed container <b><?php echo e($history->container_no); ?></b> to <b>Block <?php echo e($history->yard_blok); ?></b> <b>Slot <?php echo e($history->yard_slot); ?></b> <b>Row <?php echo e($history->yard_row); ?></b> <b>Tier <?php echo e($history->yard_tier); ?></b><br>
-                                                    at <?php echo e($history->update_time); ?></p>
-
-                                                <?php elseif($history->operation_name === 'STR'): ?>
-                                                <p class=" mb-0">Move container <b><?php echo e($history->container_no); ?></b> to <b>Block <?php echo e($history->yard_blok); ?></b> <b>Slot <?php echo e($history->yard_slot); ?></b> <b>Row <?php echo e($history->yard_row); ?></b> <b>Tier <?php echo e($history->yard_tier); ?></b><br>
-                                                    at <?php echo e($history->update_time); ?></p>
-
-                                                <?php elseif($history->operation_name === 'GATI'): ?>
-                                                <p class=" mb-0">Get permit truck <b><?php echo e($history->truck_no); ?></b> to take <b><?php echo e($history->container_no); ?></b> from <b>Block <?php echo e($history->yard_blok); ?></b> <b>Slot <?php echo e($history->yard_slot); ?></b> <b>Row <?php echo e($history->yard_row); ?></b> <b>Tier <?php echo e($history->yard_tier); ?></b><br>
-                                                    at <?php echo e($history->truck_in_date); ?></p>
-
-                                                <?php elseif($history->operation_name === 'GATO'): ?>
-                                                <p class=" mb-0">Allowed truck <b><?php echo e($history->truck_no); ?></b> to take out<b><?php echo e($history->container_no); ?></b> from <b>Block <?php echo e($history->yard_blok); ?></b> <b>Slot <?php echo e($history->yard_slot); ?></b> <b>Row <?php echo e($history->yard_row); ?></b> <b>Tier <?php echo e($history->yard_tier); ?></b><br>
-                                                    at <?php echo e($history->truck_out_date); ?></p>
-                                                    <?php endif; ?>
-                                            </td>
-                                            </td>
-                                        </tr>
-                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                    </tbody>
-                                </table>
-                                <div class="px-4">
-                        <a href="/reports/hist" class='btn btn-block btn-xl btn-outline-primary font-bold mt-3'>See More...</a>
-                    </div>
-                            </div>
-                        </div>
-                    </div>
-        </div>
+        
     </section>
 
 <?php $__env->stopSection(); ?>

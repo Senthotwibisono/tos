@@ -102,66 +102,67 @@ class DischargeController extends Controller
     $name = Item::where('container_key', $container_key)->first();
 
     if ($name) {
-      return response()->json(['container_no' => $name->container_no, 'name' => $name->ves_name, 'slot' => $name->bay_slot, 'row' => $name->bay_row, 'tier' => $name->bay_tier,
-            "container_key" => $name->container_key,
-            "ves_id" => $name->ves_id,
-            "voy_no" => $name->voy_no,
-            "container_no" => $name->container_no,
-            "ctr_status" => $name->ctr_status,
-            "ctr_type" => $name->ctr_type,
-            "ctr_opr" => $name->ctr_opr,
-            "ctr_size" => $name->ctr_size,
-            "disc_load_trans_shift" => $name->disc_load_trans_shift,
-            "load_port" => $name->load_port,
-            "disch_port" => $name->disch_port,
-            "gross" => $name->gross,
-            "iso_code" => $name->iso_code,
-    
-    ]);
+      return response()->json([
+        'container_no' => $name->container_no, 'name' => $name->ves_name, 'slot' => $name->bay_slot, 'row' => $name->bay_row, 'tier' => $name->bay_tier,
+        "container_key" => $name->container_key,
+        "ves_id" => $name->ves_id,
+        "voy_no" => $name->voy_no,
+        "container_no" => $name->container_no,
+        "ctr_status" => $name->ctr_status,
+        "ctr_type" => $name->ctr_type,
+        "ctr_opr" => $name->ctr_opr,
+        "ctr_size" => $name->ctr_size,
+        "disc_load_trans_shift" => $name->disc_load_trans_shift,
+        "load_port" => $name->load_port,
+        "disch_port" => $name->disch_port,
+        "gross" => $name->gross,
+        "iso_code" => $name->iso_code,
+
+      ]);
     }
     return response()->json(['container_no' => 'data tidak ditemukan', 'name' => 'data tidak ditemukan', 'slot' => 'data tidak ditemukan', 'row' => 'data tidak ditemukan', 'tier' => 'data tidak ditemukan']);
   }
 
 
-    public function confirm(Request $request)
-    {
-        $container_key = $request->container_key;
-        $item = Item::where('container_key', $container_key)->first();
-        $request->validate([
-            'container_no'=> 'required',
-            'cc_tt_no' => 'required',
-            'cc_tt_oper' => 'required',
-        ], [
-            'container_no.required' => 'Container Number is required.',
-            'cc_tt_no.required' => 'Nomor Alat Number is required.',
-            'cc_tt_oper.required' => 'Operator Alat Number is required.',
-        ]);
-        Item::where('container_key', $container_key)->update([
-            'cc_tt_no' => $request->cc_tt_no,
-            'cc_tt_oper' => $request->cc_tt_oper,
-            'disc_date' => $request->disc_date,
-            'ctr_intern_status' => '02',
-            'wharf_yard_oa' => $request->wharf_yard_oa,       
-            'container_key' => $request->container_key,
-            'ves_id' => $request->ves_id,
-            'voy_no' => $request->voy_no,
-            'ves_name' => $request->ves_name,
-            'container_no' => $request->container_no,
-            'ctr_status' => $request->ctr_status,
-            'ctr_type' => $request->ctr_type,
-            'ctr_opr' => $request->ctr_opr,
-            'ctr_size' => $request->ctr_size,
-            'disc_load_trans_shift' => $request->disc_load_trans_shift,
-            'load_port' => $request->load_port,
-            'disch_port' => $request->disch_port,
-            'fdisch_port' => '',
-            'bay_slot' => $request->bay_slot,
-            'bay_row' => $request->bay_row,
-            'bay_tier' => $request->bay_tier,
-            'gross' => $request->gross,
-            'iso_code' => $request->iso_code,
+  public function confirm(Request $request)
+  {
+    $container_key = $request->container_key;
+    $item = Item::where('container_key', $container_key)->first();
+    $request->validate([
+      'container_no' => 'required',
+      'cc_tt_no' => 'required',
+      'cc_tt_oper' => 'required',
+    ], [
+      'container_no.required' => 'Container Number is required.',
+      'cc_tt_no.required' => 'Nomor Alat Number is required.',
+      'cc_tt_oper.required' => 'Operator Alat Number is required.',
+    ]);
+    Item::where('container_key', $container_key)->update([
+      'cc_tt_no' => $request->cc_tt_no,
+      'cc_tt_oper' => $request->cc_tt_oper,
+      'disc_date' => $request->disc_date,
+      'ctr_intern_status' => '02',
+      'wharf_yard_oa' => $request->wharf_yard_oa,
+      'container_key' => $request->container_key,
+      'ves_id' => $request->ves_id,
+      'voy_no' => $request->voy_no,
+      'ves_name' => $request->ves_name,
+      'container_no' => $request->container_no,
+      'ctr_status' => $request->ctr_status,
+      'ctr_type' => $request->ctr_type,
+      'ctr_opr' => $request->ctr_opr,
+      'ctr_size' => $request->ctr_size,
+      'disc_load_trans_shift' => $request->disc_load_trans_shift,
+      'load_port' => $request->load_port,
+      'disch_port' => $request->disch_port,
+      'fdisch_port' => '',
+      'bay_slot' => $request->bay_slot,
+      'bay_row' => $request->bay_row,
+      'bay_tier' => $request->bay_tier,
+      'gross' => $request->gross,
+      'iso_code' => $request->iso_code,
 
-        ]);
+    ]);
 
     $client = new Client();
 
@@ -169,16 +170,33 @@ class DischargeController extends Controller
       "container_key" => $request->container_key,
       "ctr_intern_status" => "02",
       "disc_date" => $request->disc_date,
+      "ves_id" => $request->ves_id,
+      "voy_no" => $request->voy_no,
+      "vessel_name" => $request->ves_name,
+      "container_no" => $request->container_no,
+      "ctr_status" => $request->ctr_status,
+      "ctr_type" => $request->ctr_type,
+      "ctr_size" => $request->ctr_size,
+      "ctr_opr" => $request->ctr_opr,
+      "disc_load_trans_shift" => $request->disc_load_trans_shift,
+      "load_port" => $request->load_port,
+      "disch_port" => $request->disch_port,
+      "fdisch_port" => "",
+      "bay_slot" => $request->bay_slot,
+      "bay_row" => $request->bay_row,
+      "bay_tier" => $request->bay_tier,
+      "gross" => $request->gross,
+      "iso_code" => $request->iso_code,
     ];
     // dd($fields, $item->getAttributes());
 
-    $url = 'localhost:3013/delivery-service/container/confirmDisch';
+    $url = getenv('API_URL') . '/delivery-service/container/create';
     $req = $client->post(
-        $url,
-        [
-          "json" => $fields
-        ]
-      );
+      $url,
+      [
+        "json" => $fields
+      ]
+    );
     $response = $req->getBody()->getContents();
     $result = json_decode($response);
     // dd($result);
@@ -193,6 +211,5 @@ class DischargeController extends Controller
     } else {
       return back();
     }
-    }
   }
-
+}
