@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\BapleiExc;
 use App\Models\Item;
-
 use App\Models\VVoyage;
 use Carbon\Carbon;
+use Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 
 
 class EdiController extends Controller
@@ -27,8 +30,8 @@ class EdiController extends Controller
     public function receiveedi()
     {
         $title= 'Edi Arrival';
-        $vessel_voyage = VVoyage::all();
-        $item = Item::where('ctr_intern_status','01')->get();
+        $vessel_voyage = VVoyage::whereDate('eta_date', '>=', now())->get();
+        $item = Item::where('ctr_intern_status','01')->orderBy('update_time', 'desc')->get();
 
         return view('edi.ediarrival', compact('vessel_voyage','item', 'title'));
     }
@@ -289,5 +292,33 @@ class EdiController extends Controller
         }
 
      } 
+
+     public function upload(Request $request)
+{
+    
+        $file = $request->file('excel');
+
+        $namaFile = $file->getClientOriginalName();
+        $file ->move('BapleiXCL', $namaFile);
+
+        $vesselVoyage = VVoyage::where('ves_id', $request->ves_id)->first();
+        $ves_name = $vesselVoyage->ves_name;
+        $voy_no = $vesselVoyage->voy_out;
+        $ves_code = $vesselVoyage->ves_code;
+        $import = new BapleiExc($request->ves_id, $request->user_id,
+                                $ves_name,
+                                $voy_no,
+                                $ves_code,);
+
+        Excel::import($import, public_path('/BapleiXCL/' . $namaFile));
+        
+ 
+         return back();
+   
+}
+
+
+
+
 
 }    

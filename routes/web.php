@@ -393,3 +393,6 @@ Route::post('/realisasi-get-ves', [ReportCont::class, 'get_ves_bongkar'])->name(
 Route::post('/realisasi-get-bay', [ReportCont::class, 'get_bay_bongkar'])->name('realisasi-bongkar.get-bay');
 Route::get('/realisasi-get-container', [ReportCont::class, 'get_container_bongkar'])->name('realisasi-bongkar.get-container');
 Route::get('/generate-pdf-bongkar', [ReportCont::class, 'generatePDF_bongkar'])->name('realisasi-bongkar.generate-pdf-bongkar');
+
+
+Route::post('/upload', [EdiController::class, 'upload'])->name('upload.submit');
