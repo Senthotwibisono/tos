@@ -57,8 +57,8 @@ class BapleiExc implements ToModel, WithStartRow, WithMapping
        $ctr_size = $isoCodeData->iso_size;
        $ctr_type = $isoCodeData->iso_type;
    } else {
-       $ctr_size = '-'; // Nilai default jika tidak ditemukan
-       $ctr_type = '-'; // Nilai default jika tidak ditemukan
+       $ctr_size = NULL; // Nilai default jika tidak ditemukan
+       $ctr_type = NULL; // Nilai default jika tidak ditemukan
    }
     return [
         'ves_id' => $this->ves_id,
