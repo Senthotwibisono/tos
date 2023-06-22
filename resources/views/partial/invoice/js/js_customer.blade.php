@@ -88,19 +88,19 @@
       success: function(response) {
         let res = JSON.parse(response);
         $('#editModal').modal('show');
-        console.log(response);
-        // console.log(res.data.data[7]);
-        $("#input_id").val(res.data.id);
-        $("#customer").val(res.data.data6.customer);
-        if (res.data.isPaid == 1) {
+        // console.log(response);
+        // console.log(res.data.invoice.data6.customer);
+        $("#input_id").val(res.data.invoice.id);
+        $("#customer").val(res.data.invoice.data6.customer);
+        if (res.data.invoice.isPaid == 1) {
           $("#isPaid").addClass("bg-success").text("Paid");
           $("#verifyPayment").prop("disabled", true).text("Already Paid");
         } else {
           $("#isPaid").addClass("bg-danger").text("Not Paid");
           $("#verifyPayment").prop("disabled", false).text("Verify This Payment");
         }
-        console.log(res.data.isPiutang);
-        if (res.data.isPiutang == 1) {
+        console.log(res.data.invoice.isPiutang);
+        if (res.data.invoice.isPiutang == 1) {
           $("#isPiutang").addClass("bg-warning").text("Piutang");
           $("#verifyPiutang").prop("disabled", true).text("Already Piutang");
           // $("#verifyPayment").style("display", "none");
@@ -118,7 +118,7 @@
           }).then((result) => {
             if (result.isConfirmed) {
               let fd = new FormData();
-              let id = res.data.id;
+              let id = res.data.invoice.id;
 
               fd.append('id', id);
               $.ajax({
@@ -173,7 +173,7 @@
           }).then((result) => {
             if (result.isConfirmed) {
               let fd = new FormData();
-              let id = res.data.id;
+              let id = res.data.invoice.id;
 
               fd.append('id', id);
               $.ajax({

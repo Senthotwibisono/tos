@@ -63,11 +63,11 @@ class Gati extends Controller
 
         $client = new Client();
         // GET ALL JOB_CONTAINER
-        $url_jobContainer = 'localhost:3013/delivery-service/job/all';
+        $url_jobContainer = getenv('API_URL') . '/delivery-service/job/all';
         $req_jobContainer = $client->get($url_jobContainer);
         $response_jobContainer = $req_jobContainer->getBody()->getContents();
         $result_jobContainer = json_decode($response_jobContainer);
-        // dd($result_jobContainer->data);
+        // dd($result_jobContainer);
         // dd($containerKeys);
 
         $data["active"] = "delivery";
@@ -144,7 +144,7 @@ class Gati extends Controller
         ];
         // dd($fields, $item->getAttributes());
 
-        $url = 'localhost:3013/delivery-service/job/containerbykey';
+        $url = getenv('API_URL') . '/delivery-service/job/containerbykey';
         $req = $client->post(
             $url,
             [
@@ -153,6 +153,8 @@ class Gati extends Controller
         );
         $response = $req->getBody()->getContents();
         $result = json_decode($response);
+        // var_dump($response);
+        // die();
         // dd($result);
         if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
             // $item->save();
@@ -171,7 +173,7 @@ class Gati extends Controller
         // var_dump($request->job_no);
         // die();
         $item = Item::where('container_key', $container_key)->first();
-        $cek_expired = Job::where('container_key', $container_key)->where('ACTIVE_TO','<=', $request->truck_in_date)->exists();
+        $cek_expired = Job::where('container_key', $container_key)->where('ACTIVE_TO', '<=', $request->truck_in_date)->exists();
 
         if ($cek_expired) {
             return response()->json([
@@ -181,7 +183,7 @@ class Gati extends Controller
         }
 
         $request->validate([
-            'container_no'=> 'required',
+            'container_no' => 'required',
             'truck_no' => 'required',
         ], [
             'container_no.required' => 'Container Number is required.',
@@ -204,7 +206,7 @@ class Gati extends Controller
         ];
         // dd($fields, $item->getAttributes());
 
-        $url = 'localhost:3013/delivery-service/container/confirmDisch';
+        $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
         $req = $client->post(
             $url,
             [

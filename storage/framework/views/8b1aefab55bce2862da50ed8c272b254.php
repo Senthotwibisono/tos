@@ -76,7 +76,7 @@
 
               <div class="col-6">
                 <div class="text-center">
-                  <img src="/images/logo/ICON2.png" class="img" alt="">
+                  <img src="/logo/ICON2.png" class="img" alt="">
                   <br>
                   <?= $qrcodes[$i] ?>
                   <br>
@@ -85,11 +85,10 @@
                   <p><?= $job->container_no ?></p>
                   <p><?= $job->ctr_size ?> / <?= $job->ctr_type ?> / <?= $job->ctr_status ?></p>
                   <p><?= $job->ves_name ?> / <?= $job->voy_no ?> </p>
-                  <p><?= $job->yard_block != "" ? $job->yard_block . " /" : "" ?> <?= $job->yard_slot != "" ? $job->yard_slot . " /" : "" ?> <?= $job->yard_row != "" ? $job->yard_row : "" ?></p>
-                  <p><?= $job->yard_tier ?></p>
+                  <p><?= $job->yard_block != "" ? $job->yard_block . " /" : "" ?> <?= $job->yard_slot != "" ? $job->yard_slot . " /" : "" ?> <?= $job->yard_row != "" ? $job->yard_row . " /" : "" ?> <?= $job->yard_tier != "" ? $job->yard_tier : "" ?></p>
                   <p><?= $job->bl_no ?></p>
                   <p><?= $job->consignee ?></p>
-                  <p>Active To <?= DateFormat($delivery->exp_date) ?></p>
+                  <p>Active to <?= DateFormat($delivery->exp_date) ?></p>
 
                 </div>
 

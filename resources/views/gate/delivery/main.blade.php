@@ -65,12 +65,13 @@
               <div class="form-group">
                 <label for="first-name-vertical">Choose Container Number</label>
                 <select class="choices form-select" id="key" name="container_key" required>
-                  <option value="">Select Container</option>
-                  <!-- @foreach($containerKeys as $containerKey => $containerNo) -->
-                  <?php foreach ($jobContainers as $value) { ?>
-                    <option value="<?= $value->container_key ?>"><?= $value->container_no ?></option>
+                  <option disabled selected value="">Select Container</option>
+                  <?php
+                  foreach ($jobContainers->container as $value) { ?>
+                    <?php if ($value->ctr_intern_status == "03") { ?>
+                      <option value="<?= $value->container_key ?>"><?= $value->container_no ?></option>
+                    <?php } ?>
                   <?php } ?>
-                  <!-- @endforeach -->
                 </select>
                 <input type="hidden" id="container_no" class="form-control" name="container_no">
               </div>
@@ -172,20 +173,19 @@
               $('#place_cont').load(window.location.href + ' #place_cont', function() {
                 $(document).ready(function() {
                   let choices = document.querySelectorAll('.choices');
-                                        let initChoice;
-                                        for(let i=0; i<choices.length;i++) {
-                                          if (choices[i].classList.contains("multiple-remove")) {
-                                            initChoice = new Choices(choices[i],
-                                              {
-                                                delimiter: ',',
-                                                editItems: true,
-                                                maxItemCount: -1,
-                                                removeItemButton: true,
-                                              });
-                                          }else{
-                                            initChoice = new Choices(choices[i]);
-                                          }
-                                        }
+                  let initChoice;
+                  for (let i = 0; i < choices.length; i++) {
+                    if (choices[i].classList.contains("multiple-remove")) {
+                      initChoice = new Choices(choices[i], {
+                        delimiter: ',',
+                        editItems: true,
+                        maxItemCount: -1,
+                        removeItemButton: true,
+                      });
+                    } else {
+                      initChoice = new Choices(choices[i]);
+                    }
+                  }
                   $('.container').select2({
                     dropdownParent: '#success',
                   });
@@ -199,10 +199,11 @@
                           container_key: id
                         },
                         success: function(response) {
-
-                          $('#container_no').val(response.container_no);
-                          $('#job').val(response.job);
-                          $('#invoice').val(response.invoice);
+                          let res = JSON.parse(response);
+                          // console.log(res);
+                          $('#container_no').val(res.data.jobData.container_no);
+                          $('#job').val(res.data.jobData.jobNumber);
+                          $('#invoice').val(res.data.jobData.invoiceNumber);
                         },
                         error: function(data) {
                           console.log('error:', data);
@@ -267,10 +268,11 @@
             container_key: id
           },
           success: function(response) {
-
-            $('#container_no').val(response.container_no);
-            $('#job').val(response.job);
-            $('#invoice').val(response.invoice);
+            let res = JSON.parse(response);
+            // console.log(res);
+            $('#container_no').val(res.data.jobData.container_no);
+            $('#job').val(res.data.jobData.jobNumber);
+            $('#invoice').val(res.data.jobData.invoiceNumber);
           },
           error: function(data) {
             console.log('error:', data);

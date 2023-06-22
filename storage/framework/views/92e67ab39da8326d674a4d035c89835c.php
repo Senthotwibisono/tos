@@ -4,4 +4,14 @@
     <link rel="stylesheet" href="<?php echo e(asset('dist/assets/css/main/app.css')); ?>">
     <link rel="stylesheet" href="<?php echo e(asset('dist/assets/css/pages/auth.css')); ?>">
     <link rel="shortcut icon" href="<?php echo e(asset('logo/icon.png')); ?>" type="image/x-icon">
-    <link rel="shortcut icon" href="<?php echo e(asset('logo/icon.png')); ?>" type="image/png"><?php /**PATH D:\Fdw Files\CTOS\dev\frontend\tos-dev-local\resources\views/partial/auth/header.blade.php ENDPATH**/ ?>
+    <link rel="shortcut icon" href="<?php echo e(asset('logo/icon.png')); ?>" type="image/png">
+
+<style>
+
+
+  .logoicon {
+    transform: scale(0.5);
+}
+
+</style>
+<?php /**PATH D:\Fdw Files\CTOS\dev\frontend\tos-dev-local\resources\views/partial/auth/header.blade.php ENDPATH**/ ?>
