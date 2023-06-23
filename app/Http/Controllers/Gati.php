@@ -115,7 +115,20 @@ class Gati extends Controller
         $yard_tier = Yard::distinct('yard_tier')->pluck('yard_tier');
         $currentDateTime = Carbon::now();
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
-        return view('gate.delivery.android_in', compact('confirmed', 'formattedData', 'title', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'));
+
+         $client = new Client();
+        // GET ALL JOB_CONTAINER
+        $url_jobContainer = getenv('API_URL') . '/delivery-service/job/all';
+        $req_jobContainer = $client->get($url_jobContainer);
+        $response_jobContainer = $req_jobContainer->getBody()->getContents();
+        $result_jobContainer = json_decode($response_jobContainer);
+        // dd($result_jobContainer);
+        // dd($containerKeys);
+
+        $data["active"] = "delivery";
+        $data["subactive"] = "gatein";
+        $data["jobContainers"] = $result_jobContainer->data;
+        return view('gate.delivery.android_in', compact('confirmed', 'formattedData', 'title', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'),$data);
     }
     // public function get_tipe(Request $request)
     // {
