@@ -270,16 +270,16 @@
               </div>
               <div class="form-group">
                 <label for="">Packet Stripping</label>
-                <input type="text" id="Packet_Stripping" class="form-control" value="kosong">
+                <input type="text" id="Packet_Stripping" class="form-control" placeholder="Enter Value Here..">
               </div>
-              <div class="form-group">
+              <!-- <div class="form-group">
                 <label for="">Lift On</label>
                 <input type="text" id="Lift_On" class="form-control" placeholder="Enter Value Here..">
               </div>
               <div class="form-group">
                 <label for="">Lift Off</label>
                 <input type="text" id="Lift_Off" class="form-control" placeholder="Enter Value Here..">
-              </div>
+              </div> -->
             </div>
             <div class="col-6">
               <div class="form-group">

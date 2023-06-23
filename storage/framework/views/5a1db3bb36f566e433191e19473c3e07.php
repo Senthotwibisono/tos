@@ -81,7 +81,7 @@
             <br>
             <div class="row">
               <div class="col-xs-12 col-8 my-auto">
-                <h2>Invoice<br>
+                <h2>Pranota<br>
                   <span class="small">Proforma No. #<?= $invoices->invoice->performaId ?></span>
                   <br>
                 </h2>
@@ -90,32 +90,69 @@
           </div>
           <hr>
           <div class="row">
-            <div class="col-xs-6">
+            <div class="col-xs-12 col-6">
               <address>
                 <strong>Billed To:</strong><br>
                 <?= $invoices->invoice->data6->customer ?><br>
               </address>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-xs-6">
+            <div class="col-xs-12 col-6">
+              <address>
+                <strong>Bill of Loading Number:</strong><br>
+                <?= $invoices->deliveryForm->data->boln ?>
+              </address>
+            </div>
+            <div class="col-xs-12 col-6">
+              <address>
+                <strong>Do Number:</strong><br>
+                <?= $invoices->deliveryForm->data->do_number ?>
+              </address>
+            </div>
+            <div class="col-xs-12 col-6">
+              <address>
+                <strong>Order Date:</strong><br>
+                <?= DateTimeFormat($invoices->invoice->createdAt) ?> WIB
+              </address>
+            </div>
+            <div class="col-xs-12 col-6">
+              <address>
+                <strong>Masa Penumpukan :</strong><br>
+                <?= DateFormat($invoices->deliveryForm->data->containers[0]->disc_date) ?> S.d <?= DateFormat($invoices->deliveryForm->data->exp_date) ?>
+              </address>
+            </div>
+            <div class="col-xs-12 col-6">
               <address>
                 <strong>Metode Pembayaran:</strong><br>
                 BCA rekening : 0788928819<br>
                 <!-- h.elaine@gmail.com<br> -->
               </address>
             </div>
-            <div class="col-xs-6 text-right">
-              <address>
-                <strong>Order Date:</strong><br>
-                <?= DateTimeFormat($invoices->invoice->createdAt) ?> WIB
-              </address>
-            </div>
-            <div class="col-xs-6 text-right">
-              <address>
-                <strong>Masa Penumpukan :</strong><br>
-                <?= DateFormat($invoices->deliveryForm->data->containers[0]->disc_date) ?> S.d <?= DateFormat($invoices->deliveryForm->data->exp_date) ?>
-              </address>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <h3>CONTAINER SUMMARY</h3>
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Container No</th>
+                    <th>Vessel Name</th>
+                    <th>Voyage Number</th>
+                    <th>Size</th>
+                    <th>Type</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php foreach ($invoices->deliveryForm->data->containers as $value) { ?>
+                    <tr>
+                      <td><?= $value->container_no ?></td>
+                      <td><?= $value->vessel_name ?></td>
+                      <td><?= $value->voy_no ?></td>
+                      <td><?= $value->ctr_size ?></td>
+                      <td><?= $value->ctr_type ?></td>
+                    </tr>
+                  <?php } ?>
+                </tbody>
+              </table>
             </div>
           </div>
           <div class="row">

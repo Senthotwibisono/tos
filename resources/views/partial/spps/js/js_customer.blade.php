@@ -303,8 +303,8 @@
               let masa3 = $("#Masa_3").val();
               let masa4 = $("#Masa_4").val();
               let paket_stripping = $("#Packet_Stripping").val();
-              let lift_on = $("#Lift_On").val();
-              let lift_off = $("#Lift_Off").val();
+              let lift_on = "0";
+              let lift_off = "0";
               let pass_truck = $("#Pass_Truck").val();
               let gate_pass_admin = $("#Gate_Pass_Admin").val();
               let cost_recovery = $("#Cost_Recovery").val();
@@ -410,8 +410,8 @@
           let masa3 = $("#Masa_3").val();
           let masa4 = $("#Masa_4").val();
           let paket_stripping = $("#Packet_Stripping").val();
-          let lift_on = $("#Lift_On").val();
-          let lift_off = $("#Lift_Off").val();
+          let lift_on = "0";
+          let lift_off = "0";
           let pass_truck = $("#Pass_Truck").val();
           let gate_pass_admin = $("#Gate_Pass_Admin").val();
           let cost_recovery = $("#Cost_Recovery").val();

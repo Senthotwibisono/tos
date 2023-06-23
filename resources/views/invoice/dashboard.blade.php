@@ -25,10 +25,6 @@
                 <a href="/invoice/delivery" type="button" class="btn btn-success">
                   Data Delivery
                 </a>
-                <a href=""></a>
-                <a href="/invoice/container" type="button" class="btn btn-primary">
-                  Data Container
-                </a>
                 <a href="/invoice/customer" type="button" class="btn btn-info">
                   Data Customer
                 </a>
@@ -45,7 +41,7 @@
     <div class="col-12">
       <div class="card">
         <div class="card-header">
-          <h4 class="card-title">Invoice Data Table</h4>
+          <h4 class="card-title">SP2 Billing Invoice Data Table</h4>
           <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
         </div>
         <div class="card-body">
