@@ -39,11 +39,11 @@ class BapleiExc implements ToModel, WithStartRow, WithMapping
 
     public function map($row): array
 {
-    $bay_slot = substr($row[5], 0, 2);
-    $bay_row = substr($row[5], 2, 2);
-    $bay_tier = substr($row[5], 4, 2);
+    $bay_slot = substr($row[2], 0, 2);
+    $bay_row = substr($row[2], 2, 2);
+    $bay_tier = substr($row[2], 4, 2);
 
-    $ctr_status = $row[9];
+    $ctr_status = $row[6];
     if ($ctr_status == 'FULL') {
         $ctr_status = 'FCL';
     }
@@ -51,7 +51,7 @@ class BapleiExc implements ToModel, WithStartRow, WithMapping
         $ctr_status = 'MTY';
     }
    
-    $iso_code = $row[7];
+    $iso_code = $row[4];
    $isoCodeData = Isocode::where('iso_code', $iso_code)->first();
    if ($isoCodeData) {
        $ctr_size = $isoCodeData->iso_size;
@@ -65,18 +65,18 @@ class BapleiExc implements ToModel, WithStartRow, WithMapping
             'ves_code' => $this->ves_code,
             'ves_name' => $this->ves_name,
             'voy_no' => $this->voy_no,
-             'disch_port' => $row[1],
-             'load_port' => $row[2],
+             'disch_port' => $row[0],
+             'load_port' => $row[1],
              'bay_slot'  => $bay_slot,
              'bay_row'   => $bay_row,
              'bay_tier'  => $bay_tier,
-             'container_no' => $row[6],
+             'container_no' => $row[3],
              'iso_code' => $iso_code,
              'ctr_size' => $ctr_size,
              'ctr_type' => $ctr_type,
-             'ctr_opr' => $row[8],
+             'ctr_opr' => $row[5],
              'ctr_status' => $ctr_status,
-             'gross' => $row[10],
+             'gross' => $row[7],
              'ctr_intern_status'=>'01',
              'ctr_i_e_t'=> 'I',                          
              'disc_load_trans_shift'=>'DISC',
