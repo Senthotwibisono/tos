@@ -8,9 +8,33 @@
       </a>
     </li>
     <li class="menu-item has-sub">
-      <a href="" class="menu-link">
+      <a href="/invoice" class="menu-link">
         <i class="fa-solid fa-ship"></i>
-        Billing System
+        SP2 Billing System
+      </a>
+      <div class="submenu">
+        <div class="submenu-group-wrapper">
+          <ul class="submenu-group">
+            <li class="submenu-item">
+              <a class="submenu-link" href="/invoice">Invoice</a>
+            </li>
+            <li class="submenu-item">
+              <a class="submenu-link" href="/invoice/delivery">Delivery</a>
+            </li>
+            <li class="submenu-item">
+              <a class="submenu-link" href="/invoice/customer">Customer</a>
+            </li>
+            <li class="submenu-item">
+              <a href="/invoice/mastertarif" class="submenu-link">Master Tarif</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </li>
+    <li class="menu-item has-sub">
+      <a href="/spps" class="menu-link">
+        <i class="fa-solid fa-ship"></i>
+        SPPS Billing System
       </a>
       <div class="submenu">
         <div class="submenu-group-wrapper">

@@ -31,7 +31,7 @@ class InvoiceController extends Controller
         // dd($url_invoice, $result_invoice->data);
 
         $data["invoices"] = $result_invoice->data;
-        $data["title"] = "Invoice Page";
+        $data["title"] = "SP2 Billing System";
         return view('invoice.dashboard', $data);
     }
 

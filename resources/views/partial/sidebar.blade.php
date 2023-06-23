@@ -485,12 +485,6 @@
     </a>
   </li>
 
-  <li class="sidebar-item">
-    <a href="/spps" class='sidebar-link'>
-      <i class="bi bi-currency-exchange"></i>
-      <span>SPPS</span>
-    </a>
-  </li>
 
   <!-- Master -->
   <li class="sidebar-item  has-sub @if(Request::is('master/*')) active @endif">
