@@ -81,7 +81,7 @@
               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
               <h4 class="modal-title">Upload EDI Baplie TXT File</h4>
             </div>
-            <form class="form-horizontal" action="/edi/receiveeditxt_store"" method="POST" enctype="multipart/form-data">
+            <form class="form-horizontal" action="/edi/receiveeditxt_store" method="POST" enctype="multipart/form-data">
             <?php echo csrf_field(); ?>
                 <div class="modal-body"> 
                     <div class="row">
@@ -127,7 +127,7 @@
               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
               <h4 class="modal-title">Upload Baplie XLS File</h4>
             </div>
-            <form class="form-horizontal" action="" method="POST" enctype="multipart/form-data">
+            <form class="form-horizontal" action="<?php echo e(route('upload.submit')); ?>" method="POST" enctype="multipart/form-data">
             <?php echo csrf_field(); ?>
                 <div class="modal-body"> 
                     <div class="row">
@@ -135,10 +135,10 @@
                         <div class="form-group">
                                 <label class="col-sm-3 control-label">Vessel</label>
                                <div class="col-sm-8">
-                                 <select class="form-control select2" name="TLOKASISANDAR_FK" style="width: 100%;" tabindex="-1" aria-hidden="true" >
+                                 <select class="form-control select2" name="ves_id" style="width: 100%;" tabindex="-1" aria-hidden="true" >
                                    <option value="">Choose Vessel</option>
                                     <?php $__currentLoopData = $vessel_voyage; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ves): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                       <option value="<?php echo e($ves->ves_id); ?>"><?php echo e($ves->ves_name); ?>.' '.<?php echo e($ves->voy_no); ?></option>
+                                       <option value="<?php echo e($ves->ves_id); ?>"><?php echo e($ves->ves_name); ?>.' / '.<?php echo e($ves->voy_out); ?></option>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                    </select>
                                </div>
@@ -148,7 +148,7 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">File</label>
                                 <div class="col-sm-8">
-                                    <input type="file" id="file-txt-input" name="filexls" />
+                                    <input type="file" name="excel" />
                                 </div>
                             </div>
                             
