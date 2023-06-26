@@ -67,18 +67,6 @@
                             <div class="form-body" id="modal-update">
                                     <div class="row">
                                     <div class="col-12">
-                                            <div class="form-group">
-                                                <label for="first-name-vertical">No Alat</label>   
-                                                <input type="text" id="no_alat" class="form-control" name="cc_tt_no" required>                                             
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="form-group">
-                                                <label for="first-name-vertical">Op Alat</label>   
-                                                <input type="text" id="operator" class="form-control" name="cc_tt_oper" required>
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
                                             <div class="form-group" >
                                                 <label for="first-name-vertical">Choose Container Number</label>   
                                                 <select class="choices form-select"  id="container_key" name="container_key" required>
@@ -90,6 +78,18 @@
                                             </div>
                                             {{ csrf_field()}}
                                           
+                                        </div>
+                                    <div class="col-12">
+                                            <div class="form-group">
+                                                <label for="first-name-vertical">No Alat</label>   
+                                                <input type="text" id="no_alat" class="form-control" name="cc_tt_no" required>                                             
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label for="first-name-vertical">Op Alat</label>   
+                                                <input type="text" id="operator" class="form-control" name="cc_tt_oper" required>
+                                            </div>
                                         </div>
                                         <div class="col-6" style="border:1px solid blue;">
                                             <div class="row">
