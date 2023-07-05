@@ -43,7 +43,7 @@ class BapleiExc implements ToModel, WithStartRow, WithMapping
     $bay_row = substr($row[2], 2, 2);
     $bay_tier = substr($row[2], 4, 2);
 
-    $ctr_status = $row[6];
+    $ctr_status = trim($row[6]);
     if ($ctr_status == 'FULL') {
         $ctr_status = 'FCL';
     }
