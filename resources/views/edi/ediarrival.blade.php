@@ -138,7 +138,7 @@
                                  <select class="form-control select2" name="ves_id" style="width: 100%;" tabindex="-1" aria-hidden="true" >
                                    <option value="">Choose Vessel</option>
                                     @foreach($vessel_voyage as $ves)
-                                       <option value="{{ $ves->ves_id }}">{{ $ves->ves_name }}.' / '.{{$ves->voy_out }}</option>
+                                        <option value="{{ $ves->ves_id }}">{{ $ves->ves_name.' / '.$ves->voy_out }}</option>
                                     @endforeach
                                    </select>
                                </div>
