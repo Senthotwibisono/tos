@@ -65,6 +65,16 @@
                 <input name="boln" required type="text" class="form-control" placeholder="Bill Of Loading Number">
               </div>
             </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label>Order Service</label>
+                <select name="order_service" class="form-select" required id="basicSelect">
+                  <option value="" default disabled selected>Pilih Salah Satu..</option>
+                  <option value="sp2">SP2</option>
+                  <option value="spps">SPPS</option>
+                </select>
+              </div>
+            </div>
           </div>
           <div class="row mt-5">
             <div class="col-12">

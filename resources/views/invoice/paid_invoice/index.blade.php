@@ -117,6 +117,12 @@
             </div>
             <div class="col-xs-12 col-6">
               <address>
+                <strong>Order Service:</strong><br>
+                <?= $invoices->deliveryForm->data->orderService ?>
+              </address>
+            </div>
+            <div class="col-xs-12 col-6">
+              <address>
                 <strong>Order Date:</strong><br>
                 <?= DateTimeFormat($invoices->invoice->createdAt) ?> WIB
               </address>
@@ -127,11 +133,21 @@
                 <?= DateFormat($invoices->deliveryForm->data->containers[0]->disc_date) ?> S.d <?= DateFormat($invoices->deliveryForm->data->exp_date) ?>
               </address>
             </div>
+            <?php if ($invoices->invoice->isExtended == "1") { ?>
+              <div class="col-xs-12 col-6">
+                <address>
+                  <strong>Masa Penumpukan Perpanjangan:</strong><br>
+                  <?= DateFormat($invoices->deliveryForm->data->exp_date) ?> S.d <?= DateFormat($invoices->deliveryForm->data->extended_exp_date) ?>
+                </address>
+              </div>
+            <?php } ?>
             <div class="col-xs-12 col-6">
               <address>
-                <strong>Metode Pembayaran:</strong><br>
-                BCA rekening : 0788928819<br>
-                <!-- h.elaine@gmail.com<br> -->
+                <strong>Metode Pembayaran</strong><br>
+                Nama Bank : <?= $payments->bank ?> <br>
+                Pemilik Rekening : <?= $payments->name ?> <br>
+                Kode Bank : <?= $payments->bankCode ?><br>
+                Nomor Rekening : <?= $payments->bankNumber ?><br>
               </address>
             </div>
           </div>
@@ -261,6 +277,9 @@
               <p><strong>Rp. <?= rupiah($invoices->invoice->data6->admin) ?>,00 ~</strong></p>
               <p><strong>Rp. <?= rupiah($invoices->invoice->data6->tax) ?>,00 ~</strong></p>
               <p><strong>Rp. <?= rupiah($invoices->invoice->data6->grandtotal) ?>,00 ~</strong></p>
+            </div>
+            <div class="col-12">
+              <p>Terbilang <strong>"<?= terbilang($invoices->invoice->data6->grandtotal) ?> Rupiah"</strong></p>
             </div>
           </div>
         </div>

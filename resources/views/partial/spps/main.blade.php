@@ -27,7 +27,7 @@
                     </div>
                 </div>
                 <nav class="main-navbar">
-                    @include('partial.spps.navbar')
+                    @include('partial.invoice.navbar')
                 </nav>
 
             </header>

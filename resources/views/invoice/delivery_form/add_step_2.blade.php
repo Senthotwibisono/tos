@@ -26,7 +26,16 @@
                 <input type="text" class="form-control" placeholder="09/05/2023" value="<?= $ccdelivery->deliveryForm->exp_date ?>" readonly>
               </div>
             </div>
-            <div class="col-2">
+            <?php if ($ccdelivery->deliveryForm->isExtended == "1") { ?>
+              <input type="hidden" value="1" name="isExtended">
+              <div class="col-4">
+                <label for="">Extended Expired Date</label>
+                <input type="text" class="form-control" placeholder="Select Hour" value="<?= $ccdelivery->deliveryForm->extended_exp_date ?>" readonly>
+              </div>
+            <?php } else { ?>
+              <input type="hidden" value="0" name="isExtended">
+            <?php } ?>
+            <div class="col-4">
               <label for="">Time</label>
               <input type="text" class="form-control" placeholder="Select Hour" value="<?= $ccdelivery->deliveryForm->time ?>" readonly>
             </div>
@@ -58,6 +67,12 @@
               <div class="form-group">
                 <label for="">Bill of Loading Number</label>
                 <input type="text" class="form-control" placeholder="Bill Of Loading Number" value="<?= $ccdelivery->deliveryForm->boln ?>" readonly>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label>Order Service</label>
+                <input type="text" class="form-control" value="<?= $ccdelivery->deliveryForm->orderService ?>" readonly>
               </div>
             </div>
           </div>
