@@ -41,42 +41,16 @@
     <div class="col-12">
       <div class="card">
         <div class="card-header">
-          <h4 class="card-title">SP2 Billing Invoice Data Table</h4>
+          <h4 class="card-title">Billing Invoice Data Table</h4>
           <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
         </div>
         <div class="card-body">
-          <!-- <div class="row">
-            <div class="col-12 col-md-4">
-              <div class="form-group">
-                <label for="">Performa No</label>
-                <input type="text" class="form-control" placeholder="Performa No">
-              </div>
-            </div>
-            <div class="col-12 col-md-4">
-              <div class="form-group">
-                <label for=""> From Date</label>
-                <input type="text" class="form-control" placeholder="Start">
-              </div>
-            </div>
-            <div class="col-12 col-md-3">
-              <div class="form-group">
-                <label for="">To Date</label>
-                <input type="text" class="form-control" placeholder="To">
-              </div>
-            </div>
-            <div class="col m-auto">
-              <div class="align-items-center mt-2">
-                <a href="" class="btn block btn-primary"><i class="fa fa-search"></i></a>
-              </div>
-            </div>
-
-          </div> -->
           <div class="row mt-5">
             <div class="col-12">
               <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
                 <thead>
                   <tr>
-                    <th>Performa No</th>
+                    <th>Proforma No</th>
                     <th>Customer</th>
                     <th>Order Service</th>
                     <th>Dibuat Pada</th>
@@ -90,7 +64,7 @@
                 </thead>
                 <tbody>
                   <?php foreach ($invoices as $value) { ?>
-                    <?php if ($value->orderService == "sp2") { ?>
+                    <?php if ($value->isExtended != "1") { ?>
 
                       <tr>
                         <td><?= $value->performaId ?></td>
@@ -200,7 +174,7 @@
             Verify This Payment
           </button>
           <button id="verifyPiutang" type="button" class="btn btn-warning ml-1" data-bs-dismiss="modal">
-            Piutang This Invoice
+            Piutang This Invoicess
           </button>
         </div>
       </form>

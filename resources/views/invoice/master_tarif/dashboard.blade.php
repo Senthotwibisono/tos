@@ -14,7 +14,7 @@
       <div class="card">
         <div class="card-header">
           <h4 class="card-title">
-            Data Management
+            Master Data Tarif SP2
           </h4>
           <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
         </div>
@@ -119,87 +119,94 @@
       </div>
       <form action="#">
         <div class="modal-body" style="height:auto;">
-          <div class="form-group">
-            <label>Id</label>
-            <input type="text" id="id" value="kosong" class="form-control" readonly>
-          </div>
-          <div class="form-group">
-            <label for="">Lokasi Sandar</label>
-            <input type="text" id="Lokasi_Sandar" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Type</label>
-            <input type="text" id="Type" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Size</label>
-            <input type="text" id="Size" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Status</label>
-            <input type="text" id="Status" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Masa 1</label>
-            <input type="text" id="Masa_1" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Masa 2</label>
-            <input type="text" id="Masa_2" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Masa 3</label>
-            <input type="text" id="Masa_3" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Masa 4</label>
-            <input type="text" id="Masa_4" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Lift On</label>
-            <input type="text" id="Lift_On" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Lift Off</label>
-            <input type="text" id="Lift_Off" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Pass Truck</label>
-            <input type="text" id="Pass_Truck" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Gate Pass Admin</label>
-            <input type="text" id="Gate_Pass_Admin" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Cost Recovery</label>
-            <input type="text" id="Cost_Recovery" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Surcharge</label>
-            <input type="text" id="Surcharge" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Packet PLP</label>
-            <input type="text" id="Packet_PLP" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Behandle</label>
-            <input type="text" id="Behandle" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Recooling</label>
-            <input type="text" id="Recooling" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Monitoring</label>
-            <input type="text" id="Monitoring" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Administrasi</label>
-            <input type="text" id="Administrasi" class="form-control" value="kosong">
-          </div>
+          <div class="row">
+            <div class="col-6">
 
+              <div class="form-group">
+                <label>Id</label>
+                <input type="text" id="id" value="kosong" class="form-control" readonly>
+              </div>
+              <div class="form-group">
+                <label for="">Lokasi Sandar</label>
+                <input type="text" id="Lokasi_Sandar" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Type</label>
+                <input type="text" id="Type" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Size</label>
+                <input type="text" id="Size" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Status</label>
+                <input type="text" id="Status" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Masa 1</label>
+                <input type="text" id="Masa_1" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Masa 2</label>
+                <input type="text" id="Masa_2" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Masa 3</label>
+                <input type="text" id="Masa_3" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Masa 4</label>
+                <input type="text" id="Masa_4" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Lift On</label>
+                <input type="text" id="Lift_On" class="form-control" value="kosong">
+              </div>
+
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="">Lift Off</label>
+                <input type="text" id="Lift_Off" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Pass Truck</label>
+                <input type="text" id="Pass_Truck" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Gate Pass Admin</label>
+                <input type="text" id="Gate_Pass_Admin" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Cost Recovery</label>
+                <input type="text" id="Cost_Recovery" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Surcharge</label>
+                <input type="text" id="Surcharge" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Packet PLP</label>
+                <input type="text" id="Packet_PLP" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Behandle</label>
+                <input type="text" id="Behandle" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Recooling</label>
+                <input type="text" id="Recooling" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Monitoring</label>
+                <input type="text" id="Monitoring" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Administrasi</label>
+                <input type="text" id="Administrasi" class="form-control" value="kosong">
+              </div>
+            </div>
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">

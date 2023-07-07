@@ -2,7 +2,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
-<title>SP2 | <?= $title ?></title>
+<title><?= $title ?> | Icon Sarana</title>
 
 <link rel="stylesheet" href="{{asset('dist/assets/css/main/app.css')}}">
 <link rel="shortcut icon" href="{{asset('logo/icon.png')}}" type="image/x-icon">

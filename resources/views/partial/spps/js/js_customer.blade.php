@@ -244,7 +244,7 @@
     console.log("MASSSOKKK");
     let id = tarifId;
     let fd = new FormData();
-    // console.log(id);
+
     // Retrieve the CSRF token value from the page's meta tag
     let csrfToken = $('meta[name="csrf-token"]').attr('content');
     fd.append('id', id);
@@ -260,8 +260,6 @@
       data: fd,
       success: function(response) {
         let res = JSON.parse(response);
-        // console.log(res);
-        // console.log(res.data.lokasi_sandar);
         $('#editModalTarif').modal('show');
         $("#id").val(res.data.id);
         $("#Lokasi_Sandar").val(res.data.lokasi_sandar);
@@ -284,14 +282,110 @@
         $("#Recooling").val(res.data.recooling);
         $("#Monitoring").val(res.data.monitoring);
         $("#Administrasi").val(res.data.administrasi);
+
         $("#editSubmit").click(function(event) {
           Swal.fire({
             icon: 'question',
             title: 'Are You Sure?',
-            text: 'You are about to do updating data!',
+            text: 'You are about to update the data!',
             showCancelButton: true,
           }).then((result) => {
             if (result.isConfirmed) {
+              // Validate each field before submitting
+              let fields = [{
+                  selector: "#Lokasi_Sandar",
+                  name: "Lokasi Sandar"
+                },
+                {
+                  selector: "#Type",
+                  name: "Type"
+                },
+                {
+                  selector: "#Size",
+                  name: "Size"
+                },
+                {
+                  selector: "#Status",
+                  name: "Status"
+                },
+                {
+                  selector: "#Masa_1",
+                  name: "Masa 1"
+                },
+                {
+                  selector: "#Masa_2",
+                  name: "Masa 2"
+                },
+                {
+                  selector: "#Masa_3",
+                  name: "Masa 3"
+                },
+                {
+                  selector: "#Masa_4",
+                  name: "Masa 4"
+                },
+                {
+                  selector: "#Packet_Stripping",
+                  name: "Packet Stripping"
+                },
+                {
+                  selector: "#Lift_On",
+                  name: "Lift On"
+                },
+                {
+                  selector: "#Lift_Off",
+                  name: "Lift Off"
+                },
+                {
+                  selector: "#Pass_Truck",
+                  name: "Pass Truck"
+                },
+                {
+                  selector: "#Gate_Pass_Admin",
+                  name: "Gate Pass Admin"
+                },
+                {
+                  selector: "#Cost_Recovery",
+                  name: "Cost Recovery"
+                },
+                {
+                  selector: "#Surcharge",
+                  name: "Surcharge"
+                },
+                {
+                  selector: "#Packet_PPLP",
+                  name: "Packet PLP"
+                },
+                {
+                  selector: "#Behandle",
+                  name: "Behandle"
+                },
+                {
+                  selector: "#Recooling",
+                  name: "Recooling"
+                },
+                {
+                  selector: "#Monitoring",
+                  name: "Monitoring"
+                },
+                {
+                  selector: "#Administrasi",
+                  name: "Administrasi"
+                }
+              ];
+
+              for (let i = 0; i < fields.length; i++) {
+                let value = $(fields[i].selector).val();
+                if (value.trim() === "") {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error!',
+                    text: fields[i].name + ' cannot be empty!',
+                  });
+                  return; // Stop execution if any field is empty
+                }
+              }
+
               let fd = new FormData();
               let id = res.data.id;
               let lokasi_sandar = $("#Lokasi_Sandar").val();
@@ -358,7 +452,6 @@
                       location.reload();
                     } else {
                       location.reload();
-
                     }
                   })
                 },
@@ -388,7 +481,7 @@
 <script>
   function createTarif() {
     $('#createModalTarif').modal('show');
-    $("#editSubmit").click(function(event) {
+    $("#createSubmit").click(function(event) {
 
       // Retrieve the CSRF token value from the page's meta tag
       let csrfToken = $('meta[name="csrf-token"]').attr('content');

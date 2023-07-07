@@ -45,7 +45,7 @@ Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])-
 // });  
 
 Route::get('/master/port', function () {
-    return view('master.port');
+  return view('master.port');
 });
 
 //Route::get('/invoice', function () {
@@ -59,82 +59,97 @@ Route::post('/unset-session/{key}', [SessionsController::class, 'unsetSession'])
 
 
 Route::prefix('invoice')->group(function () {
-    Route::get('/', [InvoiceController::class, 'index']);
-    Route::get('/test', [InvoiceController::class, 'test']);
-    Route::get('/delivery', [InvoiceController::class, 'deliveryForm']);
-    Route::prefix('add')->group(function () {
-        Route::get('/step1', [InvoiceController::class, 'addDataStep1']);
-        Route::get('/update_step1', [InvoiceController::class, 'updateDataStep1']);
-        Route::get('/step2', [InvoiceController::class, 'addDataStep2']);
-        Route::post('/storestep1', [InvoiceController::class, 'storeDataStep1']);
-        Route::post('/storeupdatestep1', [InvoiceController::class, 'storeUpdateDataStep1']);
-        Route::post('/storestep2', [InvoiceController::class, 'storeDataStep2']);
+  Route::get('/', [InvoiceController::class, 'index']);
+  Route::get('/test', [InvoiceController::class, 'test']);
+  Route::get('/delivery', [InvoiceController::class, 'deliveryForm']);
+  Route::prefix('add')->group(function () {
+    Route::prefix('/extend')->group(function () {
+      Route::get('/', [InvoiceController::class, 'extendIndex']);
+      Route::get('/step1', [InvoiceController::class, 'addDataExtendStep1']);
+      Route::get('/update_step1', [InvoiceController::class, 'updateDataExtendStep1']);
+      Route::get('/step2', [InvoiceController::class, 'addDataExtendStep2']);
+      Route::post('/storestep1', [InvoiceController::class, 'storeDataExtendStep1']);
+      Route::post('/storeupdatestep1', [InvoiceController::class, 'storeUpdateDataExtendStep1']);
+      Route::post('/storestep2', [InvoiceController::class, 'storeDataExtendStep2']);
     });
-    Route::get('/pranota', [InvoiceController::class, 'Pranota']);
-    Route::get('/paidinvoice', [InvoiceController::class, 'PaidInvoice']);
-    Route::get('/job', [InvoiceController::class, 'jobPage']);
+    Route::get('/step1', [InvoiceController::class, 'addDataStep1']);
+    Route::get('/update_step1', [InvoiceController::class, 'updateDataStep1']);
+    Route::get('/step2', [InvoiceController::class, 'addDataStep2']);
+    Route::post('/storestep1', [InvoiceController::class, 'storeDataStep1']);
+    Route::post('/storeupdatestep1', [InvoiceController::class, 'storeUpdateDataStep1']);
+    Route::post('/storestep2', [InvoiceController::class, 'storeDataStep2']);
+  });
+  Route::get('/pranota', [InvoiceController::class, 'Pranota']);
+  Route::get('/paidinvoice', [InvoiceController::class, 'PaidInvoice']);
+  Route::get('/job', [InvoiceController::class, 'jobPage']);
 
-    Route::prefix('customer')->group(function () {
-        Route::get('/', [InvoiceController::class, 'customerDashboard']);
-        Route::get('/add', [InvoiceController::class, 'addDataCustomer']);
-        Route::post('/store', [InvoiceController::class, 'storeDataCustomer'])->name('customer.store');
-    });
-    Route::prefix('container')->group(function () {
-        Route::get('/', [InvoiceController::class, 'containerDashboard']);
-        Route::get('/add', [InvoiceController::class, 'addDataContainer']);
-        Route::post('/store', [InvoiceController::class, 'storeDataContainer']);
-    });
+  Route::prefix('customer')->group(function () {
+    Route::get('/', [InvoiceController::class, 'customerDashboard']);
+    Route::get('/add', [InvoiceController::class, 'addDataCustomer']);
+    Route::post('/store', [InvoiceController::class, 'storeDataCustomer'])->name('customer.store');
+  });
+  Route::prefix('container')->group(function () {
+    Route::get('/', [InvoiceController::class, 'containerDashboard']);
+    Route::get('/add', [InvoiceController::class, 'addDataContainer']);
+    Route::post('/store', [InvoiceController::class, 'storeDataContainer']);
+  });
+  Route::prefix('singleData')->group(function () {
+    Route::post('/invoiceForm', [InvoiceController::class, 'singleInvoiceForm']);
+    Route::post('/verifyPayment', [InvoiceController::class, 'VerifyPayment']);
+    Route::post('/verifyPiutang', [InvoiceController::class, 'VerifyPiutang']);
+    Route::post('/mastertarif', [InvoiceController::class, 'singleMasterTarif']);
+    Route::post('/updateMasterTarif', [InvoiceController::class, 'updateMasterTarif']);
+    Route::post('/createMasterTarif', [InvoiceController::class, 'createMasterTarif']);
+  });
+  Route::prefix('mastertarif')->group(function () {
+    Route::get('/', [InvoiceController::class, 'masterTarif']);
+  });
+
+  Route::prefix('payment')->group(function () {
+    Route::get('/', [InvoiceController::class, 'paymentMethod']);
     Route::prefix('singleData')->group(function () {
-        Route::post('/invoiceForm', [InvoiceController::class, 'singleInvoiceForm']);
-        Route::post('/verifyPayment', [InvoiceController::class, 'VerifyPayment']);
-        Route::post('/verifyPiutang', [InvoiceController::class, 'VerifyPiutang']);
-        Route::post('/mastertarif', [InvoiceController::class, 'singleMasterTarif']);
-        Route::post('/updateMasterTarif', [InvoiceController::class, 'updateMasterTarif']);
-        Route::post('/createMasterTarif', [InvoiceController::class, 'createMasterTarif']);
+      Route::post('/paymentmethod', [InvoiceController::class, 'singlePaymentMethod']);
+      Route::post('/updatePaymentMethod', [InvoiceController::class, 'updatePaymentMethod']);
+      Route::post('/createPaymentMethod', [InvoiceController::class, 'storePaymentMethod']);
     });
-    Route::prefix('mastertarif')->group(function () {
-        Route::get('/', [InvoiceController::class, 'masterTarif']);
-    });
+  });
 });
 
 Route::prefix('spps')->group(function () {
-    Route::get('/', [SppsController::class, 'index']);
-    Route::get('/test', [SppsController::class, 'test']);
-    Route::get('/delivery', [SppsController::class, 'deliveryForm']);
-    Route::prefix('add')->group(function () {
-        Route::get('/step1', [SppsController::class, 'addDataStep1']);
-        Route::get('/update_step1', [SppsController::class, 'updateDataStep1']);
-        Route::get('/step2', [SppsController::class, 'addDataStep2']);
-        Route::post('/storestep1', [SppsController::class, 'storeDataStep1']);
-        Route::post('/storeupdatestep1', [SppsController::class, 'storeUpdateDataStep1']);
-        Route::post('/storestep2', [SppsController::class, 'storeDataStep2']);
-    });
-    Route::get('/pranota', [SppsController::class, 'Pranota']);
-    Route::get('/paidinvoice', [SppsController::class, 'PaidInvoice']);
-    Route::get('/job', [SppsController::class, 'jobPage']);
+  Route::get('/', [SppsController::class, 'index']);
+  Route::get('/test', [SppsController::class, 'test']);
+  Route::get('/delivery', [SppsController::class, 'deliveryForm']);
+  Route::prefix('add')->group(function () {
+    Route::get('/step1', [SppsController::class, 'addDataStep1']);
+    Route::get('/update_step1', [SppsController::class, 'updateDataStep1']);
+    Route::get('/step2', [SppsController::class, 'addDataStep2']);
+    Route::post('/storestep1', [SppsController::class, 'storeDataStep1']);
+    Route::post('/storeupdatestep1', [SppsController::class, 'storeUpdateDataStep1']);
+    Route::post('/storestep2', [SppsController::class, 'storeDataStep2']);
+  });
+  Route::get('/pranota', [SppsController::class, 'Pranota']);
+  Route::get('/paidinvoice', [SppsController::class, 'PaidInvoice']);
+  Route::get('/job', [SppsController::class, 'jobPage']);
 
-    Route::prefix('customer')->group(function () {
-        Route::get('/', [SppsController::class, 'customerDashboard']);
-        Route::get('/add', [SppsController::class, 'addDataCustomer']);
-        Route::post('/store', [SppsController::class, 'storeDataCustomer'])->name('customer.store');
-    });
-    // Route::prefix('container')->group(function () {
-    //     Route::get('/', [SppsController::class, 'containerDashboard']);
-    //     Route::get('/add', [SppsController::class, 'addDataContainer']);
-    //     Route::post('/store', [SppsController::class, 'storeDataContainer']);
-    // });
-    Route::prefix('singleData')->group(function () {
-        Route::post('/invoiceForm', [SppsController::class, 'singleInvoiceForm']);
-        Route::post('/verifyPayment', [SppsController::class, 'VerifyPayment']);
-        Route::post('/verifyPiutang', [SppsController::class, 'VerifyPiutang']);
-        Route::post('/mastertarif', [SppsController::class, 'singleMasterTarif']);
-        Route::post('/updateMasterTarif', [SppsController::class, 'updateMasterTarif']);
-        Route::post('/createMasterTarif', [SppsController::class, 'createMasterTarif']);
-    });
-    Route::prefix('mastertarif')->group(function () {
-        Route::get('/', [SppsController::class, 'masterTarif']);
-    });
+  Route::prefix('customer')->group(function () {
+    Route::get('/', [SppsController::class, 'customerDashboard']);
+    Route::get('/add', [SppsController::class, 'addDataCustomer']);
+    Route::post('/store', [SppsController::class, 'storeDataCustomer'])->name('customer.store');
+  });
+  Route::prefix('singleData')->group(function () {
+    Route::post('/invoiceForm', [SppsController::class, 'singleInvoiceForm']);
+    Route::post('/verifyPayment', [SppsController::class, 'VerifyPayment']);
+    Route::post('/verifyPiutang', [SppsController::class, 'VerifyPiutang']);
+    Route::post('/mastertarif', [SppsController::class, 'singleMasterTarif']);
+    Route::post('/updateMasterTarif', [SppsController::class, 'updateMasterTarif']);
+    Route::post('/createMasterTarif', [SppsController::class, 'createMasterTarif']);
+  });
+  Route::prefix('mastertarif')->group(function () {
+    Route::get('/', [SppsController::class, 'masterTarif']);
+  });
 });
+
+
 
 
 
@@ -300,25 +315,25 @@ Route::post('/gato-del', [Gato::class, 'gato_del']);
 
 // history
 Route::group([
-    'prefix' => 'reports',
-    'as' => 'reports.'
+  'prefix' => 'reports',
+  'as' => 'reports.'
 ], function () {
-    Route::post('/hist/get_cont', [
-        HistoryController::class,
-        'get_cont'
-    ])->name('hist.get_cont');
-    Route::post('/hist/get_cont_hist', [
-        HistoryController::class,
-        'get_cont_hist'
-    ])->name('hist.get_cont_hist');
-    Route::post('/hist/get_cont_job', [
-        HistoryController::class,
-        'get_cont_job'
-    ])->name('hist.get_cont_job');
-    Route::get('/blank', function () {
-        return view('reports.hist.blank');
-    })->name('hist.blank');
-    Route::resource('/hist', HistoryController::class);
+  Route::post('/hist/get_cont', [
+    HistoryController::class,
+    'get_cont'
+  ])->name('hist.get_cont');
+  Route::post('/hist/get_cont_hist', [
+    HistoryController::class,
+    'get_cont_hist'
+  ])->name('hist.get_cont_hist');
+  Route::post('/hist/get_cont_job', [
+    HistoryController::class,
+    'get_cont_job'
+  ])->name('hist.get_cont_job');
+  Route::get('/blank', function () {
+    return view('reports.hist.blank');
+  })->name('hist.blank');
+  Route::resource('/hist', HistoryController::class);
 });
 //role master Port
 Route::get('/master/port', [MasterController::class, 'port']);

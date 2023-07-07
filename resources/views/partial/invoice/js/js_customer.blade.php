@@ -5,7 +5,6 @@
   });
 
 
-
   function canceladdCustomer() {
     Swal.fire({
       icon: "question",
@@ -89,25 +88,39 @@
         let res = JSON.parse(response);
         $('#editModal').modal('show');
         // console.log(response);
-        // console.log(res.data.invoice.data6.customer);
+        console.log(res.data.invoice.isPiutang);
         $("#input_id").val(res.data.invoice.id);
         $("#customer").val(res.data.invoice.data6.customer);
-        if (res.data.invoice.isPaid == 1) {
+        if (res.data.invoice.isPaid == 1 && res.data.invoice.isPiutang == 0) {
           $("#isPaid").addClass("bg-success").text("Paid");
+          $("#isPiutang").addClass("bg-danger").text("Not Piutang");
+          $("#verifyPiutang").prop("disabled", true).text("Already Paid");
           $("#verifyPayment").prop("disabled", true).text("Already Paid");
-        } else {
-          $("#isPaid").addClass("bg-danger").text("Not Paid");
-          $("#verifyPayment").prop("disabled", false).text("Verify This Payment");
-        }
-        console.log(res.data.invoice.isPiutang);
-        if (res.data.invoice.isPiutang == 1) {
+        } else if (res.data.invoice.isPiutang == 1 && res.data.invoice.isPaid == 0) {
           $("#isPiutang").addClass("bg-warning").text("Piutang");
+          $("#isPaid").addClass("bg-danger").text("Not Paid");
           $("#verifyPiutang").prop("disabled", true).text("Already Piutang");
-          // $("#verifyPayment").style("display", "none");
+          $("#verifyPayment").prop("disabled", false).text("Verify This Payment");
+        } else if (res.data.invoice.isPiutang == 1 && res.data.invoice.isPaid == 1) {
+          $("#verifyPiutang").prop("disabled", true).text("Already Piutang");
+          $("#isPiutang").addClass("bg-warning").text("Piutang");
+          $("#verifyPayment").prop("disabled", true).text("Already Paid");
+          $("#isPaid").addClass("bg-success").text("Paid");
         } else {
           $("#isPiutang").addClass("bg-danger").text("Not Piutang");
+          $("#isPaid").addClass("bg-danger").text("Not Paid");
           $("#verifyPiutang").prop("disabled", false).text("Piutang This Invoice");
+          $("#verifyPaid").prop("disabled", false).text("Verify This Payment");
         }
+        // console.log(res.data.invoice.isPiutang);
+        // if (res.data.invoice.isPiutang == 1) {
+        //   $("#isPiutang").addClass("bg-warning").text("Piutang");
+        //   $("#verifyPiutang").prop("disabled", true).text("Already Piutang");
+        //   // $("#verifyPayment").style("display", "none");
+        // } else {
+        //   $("#isPiutang").addClass("bg-danger").text("Not Piutang");
+        //   $("#verifyPiutang").prop("disabled", false).text("Piutang This Invoice");
+        // }
 
         $("#verifyPayment").click(function(event) {
           Swal.fire({
@@ -259,7 +272,7 @@
       data: fd,
       success: function(response) {
         let res = JSON.parse(response);
-        console.log(res.data.lokasi_sandar);
+        // console.log(res.data.lokasi_sandar);
         $('#editModalTarif').modal('show');
         $("#id").val(res.data.id);
         $("#Lokasi_Sandar").val(res.data.lokasi_sandar);
@@ -281,14 +294,106 @@
         $("#Recooling").val(res.data.recooling);
         $("#Monitoring").val(res.data.monitoring);
         $("#Administrasi").val(res.data.administrasi);
+
         $("#editSubmit").click(function(event) {
           Swal.fire({
             icon: 'question',
             title: 'Are You Sure?',
-            text: 'You are about to do updating data!',
+            text: 'You are about to update the data!',
             showCancelButton: true,
           }).then((result) => {
             if (result.isConfirmed) {
+              // Validate each field before submitting
+              let fields = [{
+                  selector: "#Lokasi_Sandar",
+                  name: "Lokasi Sandar"
+                },
+                {
+                  selector: "#Type",
+                  name: "Type"
+                },
+                {
+                  selector: "#Size",
+                  name: "Size"
+                },
+                {
+                  selector: "#Status",
+                  name: "Status"
+                },
+                {
+                  selector: "#Masa_1",
+                  name: "Masa 1"
+                },
+                {
+                  selector: "#Masa_2",
+                  name: "Masa 2"
+                },
+                {
+                  selector: "#Masa_3",
+                  name: "Masa 3"
+                },
+                {
+                  selector: "#Masa_4",
+                  name: "Masa 4"
+                },
+                {
+                  selector: "#Lift_On",
+                  name: "Lift On"
+                },
+                {
+                  selector: "#Lift_Off",
+                  name: "Lift Off"
+                },
+                {
+                  selector: "#Pass_Truck",
+                  name: "Pass Truck"
+                },
+                {
+                  selector: "#Gate_Pass_Admin",
+                  name: "Gate Pass Admin"
+                },
+                {
+                  selector: "#Cost_Recovery",
+                  name: "Cost Recovery"
+                },
+                {
+                  selector: "#Surcharge",
+                  name: "Surcharge"
+                },
+                {
+                  selector: "#Packet_PLP",
+                  name: "Packet PLP"
+                },
+                {
+                  selector: "#Behandle",
+                  name: "Behandle"
+                },
+                {
+                  selector: "#Recooling",
+                  name: "Recooling"
+                },
+                {
+                  selector: "#Monitoring",
+                  name: "Monitoring"
+                },
+                {
+                  selector: "#Administrasi",
+                  name: "Administrasi"
+                }
+              ];
+
+              for (let i = 0; i < fields.length; i++) {
+                let value = $(fields[i].selector).val();
+                if (value.trim() === "") {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error!',
+                    text: fields[i].name + ' cannot be empty!',
+                  });
+                  return; // Stop execution if any field is empty
+                }
+              }
+
               let fd = new FormData();
               let id = res.data.id;
               let lokasi_sandar = $("#Lokasi_Sandar").val();
@@ -353,7 +458,6 @@
                       location.reload();
                     } else {
                       location.reload();
-
                     }
                   })
                 },
@@ -383,7 +487,7 @@
 <script>
   function createTarif() {
     $('#createModalTarif').modal('show');
-    $("#editSubmit").click(function(event) {
+    $("#createSubmit").click(function(event) {
 
       // Retrieve the CSRF token value from the page's meta tag
       let csrfToken = $('meta[name="csrf-token"]').attr('content');
@@ -480,4 +584,179 @@
       })
     });
   }
+</script>
+
+<script>
+  function methodpaymentConfig(paymentId) {
+    let id = paymentId;
+    let fd = new FormData();
+
+    // Retrieve the CSRF token value from the page's meta tag
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+    fd.append('id', id);
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+      },
+      type: "POST",
+      url: `/invoice/payment/singleData/paymentmethod`,
+      cache: false,
+      contentType: false,
+      processData: false,
+      data: fd,
+      success: function(response) {
+        let res = JSON.parse(response);
+        console.log(res);
+        $('#editModalPayment').modal('show');
+        $("#input_id").val(res.data.id);
+        $("#name").val(res.data.name);
+        $("#bankName").val(res.data.bank);
+        $("#bankCode").val(res.data.bankCode);
+        $("#bankNumber").val(res.data.bankNumber);
+        $("#status").val(res.data.isActive);
+
+        $("#editSubmitPayment").click(function(event) {
+          Swal.fire({
+            icon: 'question',
+            title: 'Are You Sure?',
+            text: 'You are about to update the data!',
+            showCancelButton: true,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // console.log(status);
+              let fd = new FormData();
+              let id = res.data.id;
+              let name = $("#name").val();
+              let bankName = $("#bankName").val();
+              let bankCode = $("#bankCode").val();
+              let bankNumber = $("#bankNumber").val();
+              // let is = res.data.is;
+
+              fd.append('id', id);
+              fd.append('name', name);
+              fd.append('bankCode', bankCode);
+              fd.append('bankNumber', bankNumber);
+              fd.append('bankName', bankName);
+              // fd.append('isActive', status);
+
+              $.ajax({
+                headers: {
+                  'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+                },
+                type: "POST",
+                url: `/invoice/payment/singleData/updatePaymentMethod`,
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: fd,
+                success: function(response) {
+                  let res = JSON.parse(response);
+                  console.log(res);
+                  Swal.fire({
+                    icon: 'success',
+                    title: 'Successfully Updated Data!',
+                    text: 'Please Check Again',
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      location.reload();
+                    } else {
+                      location.reload();
+                    }
+                  })
+                },
+                error(err) {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: 'Something wrong happened! #CSE15',
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      location.reload();
+                    } else {
+                      location.reload();
+                    }
+                  });
+                }
+              });
+            }
+          })
+        });
+
+      }
+    })
+  }
+</script>
+
+<script>
+  function createPaymentMethod() {
+    // $('#createModalPayment').modal('show');
+    Swal.fire({
+      icon: 'warning',
+      title: 'Mohon Maaf!',
+      text: 'Saat ini hanya bisa menampilkan 1 data saja!'
+    })
+  }
+
+  $(document).on('click', '#createSubmitPayment', function(event) {
+    // Retrieve the CSRF token value from the page's meta tag
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+    Swal.fire({
+      icon: 'question',
+      title: 'Are You Sure?',
+      showCancelButton: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        let fd = new FormData();
+        let name = $("#paymentname").val();
+        let bankCode = $("#paymentbankCode").val();
+        let bankNumber = $("#paymentbankNumber").val();
+        let bankName = $("#paymentbankName").val();
+        console.log(name);
+        fd.append('name', name);
+        fd.append('bankCode', bankCode);
+        fd.append('bankNumber', bankNumber);
+        fd.append('bankName', bankName);
+
+        $.ajax({
+          headers: {
+            'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+          },
+          type: "POST",
+          url: `/invoice/payment/singleData/createPaymentMethod`,
+          cache: false,
+          contentType: false,
+          processData: false,
+          data: fd,
+          success: function(response) {
+            let res = JSON.parse(response);
+            console.log(res);
+            Swal.fire({
+              icon: 'success',
+              title: 'Successfully Verify Payment!',
+              text: 'Please Check Again',
+            }).then((result) => {
+              if (result.isConfirmed) {
+                location.reload();
+              } else {
+                location.reload();
+              }
+            });
+          },
+          error: function(err) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops!',
+              text: 'Something wrong happened! #VE42i',
+            }).then((result) => {
+              if (result.isConfirmed) {
+                location.reload();
+              } else {
+                location.reload();
+              }
+            });
+          }
+        });
+      }
+    });
+  });
 </script>
