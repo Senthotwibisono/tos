@@ -30,7 +30,20 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    protected function redirectTo()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+            if ($user->hasRole('admin')) {
+                return '/';
+            } elseif ($user->hasRole('android')) {
+                return '/android-dashboard';
+            }
+        }
+
+        // Default fallback
+        return '/default-page';
+    }
 
     /**
      * Create a new controller instance.

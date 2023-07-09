@@ -21,10 +21,24 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
+                $user = Auth::guard($guard)->user();
+                $redirectTo = $this->getRedirectTo($user);
+
+                return redirect($redirectTo);
             }
         }
 
         return $next($request);
+    }
+
+    protected function getRedirectTo($user)
+    {
+        if ($user->hasRole('admin')) {
+            return '/';
+        } elseif ($user->hasRole('android')) {
+            return '/android-dashboard';
+        } else {
+            return '/default-page';
+        }
     }
 }
