@@ -209,7 +209,7 @@ class VesselController extends Controller
            'arrival_date' => $request->arrival_date,
            'etd_date' => $request->etd_date,
            'deparature_date' => $request->deparature_date,
-           'est_berthing_date' => $request->deparature_date,
+           'est_berthing_date' => $request->est_berthing_date,
            'berthing_date' => $request->berthing_date,
            'discharge_date' => $request->discharge_date,
            'loading_date' => $request->loading_date,
@@ -299,6 +299,8 @@ class VesselController extends Controller
         'no_bc11' => $request->no_bc11,
         'open_stack_date' =>$request->open_stack_date,
         ]);
+
+        
         return redirect('/planning/vessel-schedule')->with('success', "Jadwal Berhasil Diperbarui");
     }
 

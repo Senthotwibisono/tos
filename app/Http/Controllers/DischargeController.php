@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Models\VVoyage;
 use Carbon\Carbon;
 use App\Models\User;
 use GuzzleHttp\Client;
@@ -55,7 +56,8 @@ class DischargeController extends Controller
     $data["subactive"] = "confirm";
     $currentDateTime = Carbon::now();
     $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
-    return view('disch.main', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString'), $data);
+    $vessel_voyage = VVoyage::whereDate('arrival_date', '<=', now())->orderBy('arrival_date', 'desc')->get();
+    return view('disch.main', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'vessel_voyage'), $data);
   }
   //android
   public function android()
@@ -94,6 +96,15 @@ class DischargeController extends Controller
     $currentDateTime = Carbon::now();
     $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
     return view('disch.android', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString'));
+  }
+
+  public function get_cont(request $request)
+  {
+      $ves_id = $request->ves_id;
+      $container_key = Item::where('ves_id', $ves_id)->where('ctr_intern_status', '=', 01)->get();
+      foreach ($container_key as $kode) {
+          echo "<option value='$kode->container_key'>$kode->container_no</option>";
+      }
   }
 
   public function get_key(Request $request)
@@ -213,3 +224,4 @@ class DischargeController extends Controller
     }
   }
 }
+

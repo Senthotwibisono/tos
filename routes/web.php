@@ -21,6 +21,7 @@ use App\Http\Controllers\ProfileControllers;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportCont;
 use App\Http\Controllers\SessionsController;
+use App\Http\Controllers\CoparnController;
 
 
 /*
@@ -411,3 +412,9 @@ Route::get('/generate-pdf-bongkar', [ReportCont::class, 'generatePDF_bongkar'])-
 
 
 Route::post('/upload', [EdiController::class, 'upload'])->name('upload.submit');
+
+Route::post('/get-con-disch', [DischargeController::class, 'get_cont']);
+
+//Export
+
+Route::get('/edi/coparn', [CoparnController::class, 'index']);

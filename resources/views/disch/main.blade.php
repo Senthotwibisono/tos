@@ -80,13 +80,23 @@
                                         </div>
                                         <div class="col-12">
                                             <div class="form-group" >
-                                                <label for="first-name-vertical">Choose Container Number</label>   
-                                                <select class="choices form-select"  id="container_key" name="container_key" required>
-                                                  <option value="">Select Container</option>
-                                                  @foreach($items as $data)
-                                                    <option  value="{{$data->container_key}}">{{$data->container_no}}</option>
+                                                <label for="first-name-vertical">Choose Vessel</label>   
+                                                <select class="choices form-select"  id="id_kapal" name="ves_id" required>
+                                                  <option value="">Select Vessel</option>
+                                                  @foreach($vessel_voyage as $voy)
+                                                    <option  value="{{$voy->ves_id}}">{{$voy->ves_name}}--{{$voy->voy_out}}</option>
                                                   @endforeach
                                                 </select>
+                                            </div>
+                                            {{ csrf_field()}}
+                                          
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group" >
+                                                <label for="first-name-vertical">Choose Container Number</label>   
+                                                <select class="choices form-select"  id="container_key" name="container_key" required>
+                                                <option value="-">-</option>
+                                              </select>
                                             </div>
                                             {{ csrf_field()}}
                                           
@@ -366,6 +376,37 @@ $(function() {
                 });
             });
     });
+});
+
+$(function() {
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+
+    $(function() {
+      $('#id_kapal').on('change', function() {
+        let ves_id = $('#id_kapal').val();
+
+        $.ajax({
+          type: 'POST',
+          url: '/get-con-disch',
+          data: {
+            ves_id: ves_id
+          },
+          cache: false,
+
+          success: function(msg) {
+            $('#container_key').html(msg);
+
+          },
+          error: function(data) {
+            console.log('error:', data)
+          },
+        })
+    })   
+    })
 });
 
 </script>

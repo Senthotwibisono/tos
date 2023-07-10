@@ -309,37 +309,37 @@
                                     <tr>
                                         <td class="text-bold-500"><h5>Arrival Date</h5></td>
                                         <td><input type="datetime-local"   name="eta_date" class="form-control"></td>
-                                        <td ><input type="datetime-local" value="{{ $currentDateTimeString }}"  name="arrival_date" class="form-control"  readonly ></td>
+                                        <td ><input type="datetime-local" value="{{ $currentDateTimeString }}"  name="arrival_date" class="form-control"  disabled ></td>
                                     </tr>
                                     <tr>
                                         <td class="text-bold-500"><h5>Anchorage Date</h5></td>
                                         <td><input type="datetime-local"  name="est_anchorage_date" class="form-control"></td>
-                                        <td><input type="datetime-local" value="{{ $currentDateTimeString }}" name="act_anchorage_date" class="form-control" readonly ></td>
+                                        <td><input type="datetime-local" value="{{ $currentDateTimeString }}" name="act_anchorage_date" class="form-control" disabled ></td>
                                     </tr>
                                     <tr>
                                         <td class="text-bold-500"><h5>Pilot Date</h5></td>
                                         <td><input type="datetime-local"  name="est_pilot_date" class="form-control"></td>
-                                        <td ><input type="datetime-local" value="{{ $currentDateTimeString }}" name="act_pilot_date" class="form-control" readonly ></td>
+                                        <td ><input type="datetime-local" value="{{ $currentDateTimeString }}" name="act_pilot_date" class="form-control" disabled ></td>
                                     </tr>                                    
                                     <tr>
                                         <td class="text-bold-500"><h5>Berthing Date</h5></td>
                                         <td><input type="datetime-local"  name="est_berthing_date" class="form-control"></td>
-                                        <td ><input type="datetime-local" value="{{ $currentDateTimeString }}" name="berthing_date" class="form-control" readonly > </td>
+                                        <td ><input type="datetime-local" value="{{ $currentDateTimeString }}" name="berthing_date" class="form-control" disabled > </td>
                                     </tr>
                                     <tr>
                                         <td class="text-bold-500"><h5>Start Work Date</h5></td>
                                         <td><input type="datetime-local"  name="est_start_work_date" class="form-control"></td>
-                                        <td ><input type="datetime-local" value="{{ $currentDateTimeString }}" name="act_start_work_date" class="form-control" readonly ></td>
+                                        <td ><input type="datetime-local" value="{{ $currentDateTimeString }}" name="act_start_work_date" class="form-control" disabled ></td>
                                     </tr>
                                     <tr>
                                         <td class="text-bold-500"><h5>End Work Date</h5></td>
                                         <td><input type="datetime-local"  name="est_end_work_date" class="form-control"></td>
-                                        <td ><input type="datetime-local" value="{{ $currentDateTimeString }}" name="act_end_work_date" class="form-control" readonly ></td>
+                                        <td ><input type="datetime-local" value="{{ $currentDateTimeString }}" name="act_end_work_date" class="form-control" disabled ></td>
                                     </tr>
                                     <tr>
                                         <td class="text-bold-500"><h5>Deparature Date</h5></td>
                                         <td><input type="datetime-local"  name="etd_date" class="form-control"></td>
-                                        <td ><input type="datetime-local" value="{{ $currentDateTimeString }}" name="deparature_date" class="form-control" readonly ></td>
+                                        <td ><input type="datetime-local" value="{{ $currentDateTimeString }}" name="deparature_date" class="form-control" disabled ></td>
                                     </tr>
                                    
                                 </tbody>

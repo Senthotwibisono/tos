@@ -291,6 +291,9 @@
       <li class="submenu-item @if(Request::is('edi/receiveed1')) active @endif">
         <a href="/edi/receiveedi">Baplie Arrival</a>
       </li>
+      <li class="submenu-item @if(Request::is('edi/coparn')) active @endif">
+        <a href="/edi/coparn">Coparn</a>
+      </li>
       <!-- <li class="submenu-item ">
                         <a href="form-element-input-group.html">Baplie  Deparature</a>
                     </li> -->
