@@ -100,12 +100,34 @@ class DischargeController extends Controller
 
   public function get_cont(request $request)
   {
-      $ves_id = $request->ves_id;
-      $container_key = Item::where('ves_id', $ves_id)->where('ctr_intern_status', '=', 01)->get();
-      foreach ($container_key as $kode) {
-          echo "<option value='$kode->container_key'>$kode->container_no</option>";
-      }
+    $ves_id = $request->ves_id;
+    $container_key = Item::where('ves_id', $ves_id)->where('ctr_intern_status', '=', 01)->get();
+    foreach ($container_key as $kode) {
+      // echo "<option value='$kode->container_key'>$kode->container_no</option>";
+      $option[] = [
+        'value' => $kode->container_key,
+        'text' => $kode->container_no,
+      ];
+    }
+    return response()->json($option);
   }
+
+  // public function get_cont(Request $request)
+  // {
+  //   $ves_id = $request->ves_id;
+  //   $containerKey = Item::where('ves_id', $ves_id)->where('ctr_intern_status', '=', 01)->get();
+
+
+  //   $options = [];
+  //   foreach ($containerKey as $container) {
+  //     $options[] = [
+  //       'id' => $container->container_key,
+  //       'text' => $container->container_no
+  //     ];
+  //   }
+
+  //   return response()->json($options);
+  // }
 
   public function get_key(Request $request)
   {
@@ -224,4 +246,3 @@ class DischargeController extends Controller
     }
   }
 }
-
