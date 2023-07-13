@@ -83,10 +83,20 @@
                                             {{ csrf_field()}}
                                         </div>
                                         <div class="col-12">
+                                            <div class ="row">
+                                        <div class="col-6">
                                             <div class="form-group">
                                                 <label for="first-name-vertical">Type</label>   
                                                 <input type="text"  id="tipe" class="form-control" name="ctr_type"  disabled>                                               
                                             </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label for="first-name-vertical">Size</label>   
+                                                <input type="text"  id="size" class="form-control" name="ctr_size"  disabled>                                               
+                                            </div>
+                                        </div>
+                                        </div>
                                         </div>
                                         <div class="col-12">
                                             <div class="form-group">
@@ -277,6 +287,7 @@ $(document).on('click', '.update_status', function(e){
                                                             
                                                                     $('#container_no').val(response.container_no);
                                                                     $('#tipe').val(response.tipe);
+                                                                    $('#size').val(response.size);
                                                                     $('#coname').val(response.coname);
                                                                 },
                                                             error: function(data) {
@@ -339,6 +350,7 @@ $(function() {
                        
                             $('#container_no').val(response.container_no);
                             $('#tipe').val(response.tipe);
+                            $('#size').val(response.size);
                             $('#coname').val(response.coname);
                         },
                     error: function(data) {

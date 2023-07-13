@@ -27,7 +27,7 @@
     font-size: 1.25rem;
     min-height: calc(1.5em + 1rem + 2px);
     padding: .5rem 1rem;
-    background-color: #010f1c;
+    background-color: #1e1e2d;
   }
 
   .select2-container--default .select2-selection--single .select2-selection__rendered {
@@ -36,7 +36,7 @@
 
   .select2-container--default .select2-selection--single .select2-selection__arrow {
     height: calc(2.5rem + 2px);
-    background-color: #010f1c;
+    background-color: #1e1e2d;
   }
 
   .logoicon {

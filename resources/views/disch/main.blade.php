@@ -94,88 +94,81 @@
                         <div class="col-12">
                             <div class="form-group">
                                 <label for="first-name-vertical">Choose Container Number</label>
-                                <select class="choices form-select" id="container_key" name="container_key" required>
-                                    <option value="">Select Container</option>
+                                <br>
+                                <!-- <select class="choices form-select" id="container_key" name="container_key" required>
+                  <option value="-">-</option>
+                </select> -->
+                                <select id="container_key" class="select2 form-control">
+                                    <!-- Existing options or a default placeholder option -->
+                                    <option value="">Select a container</option>
                                 </select>
                             </div>
+                            {{ csrf_field()}}
+
                         </div>
-
-                        <!--<script src="{{ asset('vendor/components/jquery/jquery.min.js') }}"></script>
-                        <script src="{{ asset('select2/dist/js/select2.full.min.js') }}"></script>
-                        <script>
-                            $(document).ready(function() {
-                                $('#container_key').select2({
-                                    placeholder: "Search Container Number",
-                                    allowClear: true
-                                });
-                            });
-                        </script>
-                        -->
-
-
-                    </div>
-                    {{ csrf_field()}}
-
-                </div>
-                <div class="col-6" style="border:1px solid blue;">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label for="first-name-vertical">Kapal</label>
-                                <input type="text" id="name" class="form-control" name="ves_name" readonly>
+                        <div class="col-6" style="border:1px solid blue;">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="first-name-vertical">Kapal</label>
+                                        <input type="text" id="name" class="form-control" name="ves_name" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="first-name-vertical">Slot</label>
+                                        <input type="text" id="slot" class="form-control" name="bay_slot" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="first-name-vertical">Row</label>
+                                        <input type="text" id="row" class="form-control" name="bay_row" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="first-name-vertical">Tier</label>
+                                        <input type="text" id="tier" class="form-control" name="bay_tier" readonly>
+                                        <input type="hidden" id="container_key" name="container_key" class="form-control" required>
+                                        <input type="hidden" id="ves_id" name="ves_id" class="form-control" required>
+                                        <input type="hidden" id="voy_no" name="voy_no" class="form-control" required>
+                                        <input type="hidden" id="container_no" name="container_no" class="form-control" required>
+                                        <input type="hidden" id="ctr_status" name="ctr_status" class="form-control" required>
+                                        <input type="hidden" id="ctr_type" name="ctr_type" class="form-control" required>
+                                        <input type="hidden" id="ctr_opr" name="ctr_opr" class="form-control" required>
+                                        <input type="hidden" id="ctr_size" name="ctr_size" class="form-control" required>
+                                        <input type="hidden" id="disc_load_trans_shift" name="disc_load_trans_shift" class="form-control" required>
+                                        <input type="hidden" id="load_port" name="load_port" class="form-control" required>
+                                        <input type="hidden" id="disch_port" name="disch_port" class="form-control" required>
+                                        <input type="hidden" id="gross" name="gross" class="form-control" required>
+                                        <input type="hidden" id="iso_code" name="iso_code" class="form-control" required>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="form-group">
-                                <label for="first-name-vertical">Slot</label>
-                                <input type="text" id="slot" class="form-control" name="bay_slot" readonly>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label for="first-name-vertical">Row</label>
-                                <input type="text" id="row" class="form-control" name="bay_row" readonly>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label for="first-name-vertical">Tier</label>
-                                <input type="text" id="tier" class="form-control" name="bay_tier" readonly>
-                                <input type="hidden" id="container_key" name="container_key" class="form-control" required>
-                                <input type="hidden" id="ves_id" name="ves_id" class="form-control" required>
-                                <input type="hidden" id="voy_no" name="voy_no" class="form-control" required>
-                                <input type="hidden" id="container_no" name="container_no" class="form-control" required>
-                                <input type="hidden" id="ctr_status" name="ctr_status" class="form-control" required>
-                                <input type="hidden" id="ctr_type" name="ctr_type" class="form-control" required>
-                                <input type="hidden" id="ctr_opr" name="ctr_opr" class="form-control" required>
-                                <input type="hidden" id="ctr_size" name="ctr_size" class="form-control" required>
-                                <input type="hidden" id="disc_load_trans_shift" name="disc_load_trans_shift" class="form-control" required>
-                                <input type="hidden" id="load_port" name="load_port" class="form-control" required>
-                                <input type="hidden" id="disch_port" name="disch_port" class="form-control" required>
-                                <input type="hidden" id="gross" name="gross" class="form-control" required>
-                                <input type="hidden" id="iso_code" name="iso_code" class="form-control" required>
+                                <label for="first-name-vertical">Op Lapangan</label>
+                                <input type="text" id="user" class="form-control" value="{{ Auth::user()->name }}" name="wharf_yard_oa" readonly>
+                                <input type="datetime-local" id="tanggal" class="form-control" value="{{ $currentDateTimeString }}" name="disc_date" readonly>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-6">
-                    <div class="form-group">
-                        <label for="first-name-vertical">Op Lapangan</label>
-                        <input type="text" id="user" class="form-control" value="{{ Auth::user()->name }}" name="wharf_yard_oa" readonly>
-                        <input type="datetime-local" id="tanggal" class="form-control" value="{{ $currentDateTimeString }}" name="disc_date" readonly>
-                    </div>
-                </div>
-              </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i><span class="d-none d-sm-block">Close</span></button>
+                <button type="submit" class="btn btn-success ml-1 update_status"><i class="bx bx-check d-block d-sm-none"></i><span class="d-none d-sm-block">Confirm</span></button>
             </div>
         </div>
     </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i><span class="d-none d-sm-block">Close</span></button>
-        <button type="submit" class="btn btn-success ml-1 update_status"><i class="bx bx-check d-block d-sm-none"></i><span class="d-none d-sm-block">Confirm</span></button>
-    </div>
 </div>
-</div>
-</div>
+<style>
+    span.select2-container {
+        z-index: 10050;
+    }
+</style>
 @endsection
 @section('custom_js')
 <script src="{{ asset('vendor/components/jquery/jquery.min.js') }}"></script>
@@ -184,12 +177,19 @@
 <script src="{{asset('dist/assets/js/pages/sweetalert2.js')}}"></script>
 
 <script>
+    // $('.select2').select2();
+</script>
+<script>
     // In your Javascript (external .js resource or <script> tag)
-    $(document).ready(function() {
-        $('.container').select2({
-            dropdownParent: '#success',
-        });
+    // $('.container').select2({
+    //   dropdownParent: '#success',
+    // });
+    $("#container_key").select2({
+        dropdownParent: '#success',
+
+        // dropdownParent: "#modal-container"
     });
+    $(document).ready(function() {});
     $(document).on('click', '.update_status', function(e) {
         e.preventDefault(); // membatalkan perilaku default dari tombol submit
         // Menetapkan nilai input field pada saat modal ditampilkan
@@ -391,15 +391,12 @@
 
                     },
                     error: function(data) {
-                      console.log('error:', data);
+                        console.log('error:', data);
                     },
-                  });
                 });
-              });
-              $('#no_alat').val(localStorage.getItem('no_alat'));
-              $('#operator').val(localStorage.getItem('operator'));
-
             });
+        });
+    });
 
     $(function() {
         $.ajaxSetup({
@@ -409,7 +406,7 @@
         });
 
         $(function() {
-            $('#id_kapal').on('change', function() {
+            $("#id_kapal").change(function() {
                 let ves_id = $('#id_kapal').val();
 
                 $.ajax({
@@ -421,16 +418,49 @@
                     cache: false,
 
                     success: function(msg) {
-                        $('#container_key').html(msg);
-                        // commited 
-
+                        let res = msg;
+                        //console.log(res.length);
+                        var len = res.length;
+                        var optionsHtml = ''; // Variable to store the options HTML
+                        for (let i = 0; i < len; i++) {
+                            let id = res[i].value;
+                            let nama = res[i].text;
+                            //console.log(id, nama);
+                            optionsHtml += "<option value='" + id + "'>" + nama + "</option>"; // Append each option HTML
+                        }
+                        $("#container_key").html(optionsHtml); // Set the HTML of the select element
+                        $("#container_key").trigger('change'); // Update Select2 after modifying options
                     },
                     error: function(data) {
                         console.log('error:', data)
+                        //commited
                     },
-                })
-            })
-        })
+                });
+            });
+        });
+
+    });
+</script>
+
+<script>
+    $("#select_province").change(function() {
+        var province_id = $(this).val();
+        $.ajax({
+            url: 'https://dev.farizdotid.com/api/daerahindonesia/kota?id_provinsi=' + province_id,
+            type: 'get',
+            success: function(response) {
+                var len = response.kota_kabupaten.length;
+                $("#select_city").empty();
+                $("#select_kecamatan").empty();
+                $("#select_kelurahan").empty();
+                $("#select_city").append("<option disabled default selected> Pilih Kota </option>");
+                for (let i = 0; i < len; i++) {
+                    let id = response.kota_kabupaten[i].id;
+                    let nama = response.kota_kabupaten[i].nama;
+                    $("#select_city").append("<option value='" + id + "'>" + nama + "</option>");
+                }
+            }
+        });
     });
 </script>
 
