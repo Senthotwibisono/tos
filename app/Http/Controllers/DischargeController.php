@@ -59,12 +59,15 @@ class DischargeController extends Controller
     $vessel_voyage = VVoyage::whereDate('arrival_date', '<=', now())->orderBy('arrival_date', 'desc')->get();
     return view('disch.main', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'vessel_voyage'), $data);
   }
+  
   //android
   public function android()
   {
     $title = 'Confirm Disch';
+    $subtitle = 'Discharge Confirm';
     $confirmed = Item::where('ctr_intern_status', '=', 02,)->orderBy('update_time', 'desc')->get();
     $formattedData = [];
+    $data = [];
 
     foreach ($confirmed as $tem) {
       $now = Carbon::now();
@@ -93,9 +96,12 @@ class DischargeController extends Controller
     }
     $items = Item::where('ctr_intern_status', '=', 01)->get();
     $users = User::all();
+    $data["active"] = "discharge";
+    $data["subactive"] = "confirm";
     $currentDateTime = Carbon::now();
     $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
-    return view('disch.android', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString'));
+    $vessel_voyage = VVoyage::whereDate('arrival_date', '<=', now())->orderBy('arrival_date', 'desc')->get();
+    return view('disch.android', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'vessel_voyage'), $data);
   }
 
   public function get_cont(request $request)
