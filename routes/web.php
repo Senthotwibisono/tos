@@ -419,11 +419,26 @@ Route::post('/get-con-disch', [DischargeController::class, 'get_cont']);
 //Reports
 // Disch
 Route::get('/reports/disch', [ReportController::class, 'index'])->name('report.index');
-Route::post('/review-get-ves', [ReportController::class, 'get_ves'])->name('report.get-ves');
-Route::post('/review-get-bay', [ReportController::class, 'get_bay'])->name('report.get-bay');
-Route::get('/review-get-container', [ReportController::class, 'get_container'])->name('report.get-container');
+Route::post('/review-get-ves-disch', [ReportController::class, 'get_ves'])->name('report.get-ves');
+Route::post('/review-get-bay-disch', [ReportController::class, 'get_bay'])->name('report.get-bay');
+Route::get('/review-get-container-disch', [ReportController::class, 'get_container'])->name('report.get-container');
 Route::get('/generate-report-disch', [ReportController::class, 'generateREPT_disch'])->name('report.generate-report-disch');
-
+//PLC
+Route::get('/reports/plc', [ReportController::class, 'index_plc'])->name('report.index_plc');
+Route::get('/review-get-container-plc', [ReportController::class, 'get_container_plc'])->name('report.get-container-plc');
+Route::get('/generate-report-plc', [ReportController::class, 'generateREPT_plc'])->name('report.generate-report-plc');
+//STRIPPING
+Route::get('/reports/str', [ReportController::class, 'index_str'])->name('report.index_str');
+Route::get('/review-get-container-str', [ReportController::class, 'get_container_str'])->name('report.get-container-str');
+Route::get('/generate-report-str', [ReportController::class, 'generateREPT_str'])->name('report.generate-report-str');
+//GATI-DEL
+Route::get('/reports/gati-del', [ReportController::class, 'index_gati_del'])->name('report.index_gati_del');
+Route::get('/review-get-container-gati-del', [ReportController::class, 'get_container_gati_del'])->name('report.get-container-gati-del');
+Route::get('/generate-report-gati-del', [ReportController::class, 'generateREPT_gati_del'])->name('report.generate-report-gati-del');
+// GATO-DEL
+Route::get('/reports/gato-del', [ReportController::class, 'index_gato_del'])->name('report.index_gato-del');
+Route::get('/review-get-container-gato-del', [ReportController::class, 'get_container_gato_del'])->name('report.get-container-gato-del');
+Route::get('/generate-report-gato-del', [ReportController::class, 'generateREPT_gato_del'])->name('report.generate-report-gato-del');
 //Export
 
 Route::get('/edi/coparn', [CoparnController::class, 'index']);

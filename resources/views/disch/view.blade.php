@@ -59,13 +59,14 @@
         <div class="card-header">
           
              <div class="row">
-                    <div class="col-lg-3 mb-1">
+                    <div class="col-lg-4 mb-1">
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="">Choose Ves Id</span>
                                 <select class="form-select" id="vesid" name="ves_id">
                                     <option value="-">-</option>
                                     @foreach($item as $itm)
-                                    <option value="{{$itm}}">{{str_pad($itm,4,'0', STR_PAD_LEFT)}}</option>
+                                        
+                                    <option value="{{ $itm->ves_id }}">{{ $itm->ves_name }} - {{ $itm->voy_no }}</option>
                                     @endforeach
                                 </select>
                         </div>
@@ -90,7 +91,7 @@
                                 </select>
                          </div>
                     </div>
-                    <div class="col-lg-2 mb-1">
+                    <div class="col-lg-1 mb-1">
                         <a href="#" class="btn icon btn-info search"><i class="bi bi-search"></i></i></a>
                     </div>
             </div>

@@ -280,6 +280,11 @@
                                     }
                                 }
                             });
+                            $("#container_key").select2({
+        dropdownParent: '#success',
+
+        // dropdownParent: "#modal-container"
+    });
 
                             $(function() {
             $("#id_kapal").change(function() {

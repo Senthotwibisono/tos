@@ -21,7 +21,7 @@ public function index()
 {
     $title = 'Print Disch List';
     $confirmed = Item::where('ctr_intern_status', '=', 01,)->orderBy('update_time', 'desc')->get();
-   $item = Item::orderBy('ves_id', 'desc')->distinct('ves_id')->pluck('ves_id');
+    $item = Item::orderBy('ves_id', 'desc')->distinct('ves_id')->get(['ves_id', 'ves_name', 'voy_no']);
    $vesCodes = []; // Membuat array kosong untuk menampung ves_codes        
 
         return view('reports.report.review', compact('item', 'vesCodes', 'title'));

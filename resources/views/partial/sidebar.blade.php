@@ -367,6 +367,7 @@
       <li class="submenu-item @if(Request::is('reports/hist')) active @endif">
         <a href="/reports/hist">History Container</a>
       </li>
+      <hr>
       <li class="submenu-item @if(Request::is('reports/disch')) active @endif">
         <a href="/reports/disch">Disch Reports</a>
       </li>

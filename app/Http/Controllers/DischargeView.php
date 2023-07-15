@@ -14,7 +14,7 @@ class DischargeView extends Controller
     public function index()
     {
         $title = 'Vessel View';
-        $item = Item::distinct('ves_id')->pluck('ves_id');
+        $item = Item::orderBy('ves_id', 'desc')->distinct('ves_id')->get(['ves_id', 'ves_name', 'voy_no']);
         return view('disch.view', compact('item', 'title'));
     }
 
