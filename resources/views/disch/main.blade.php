@@ -281,7 +281,39 @@
                                 }
                             });
 
+                            $(function() {
+            $("#id_kapal").change(function() {
+                let ves_id = $('#id_kapal').val();
 
+                $.ajax({
+                    type: 'POST',
+                    url: '/get-con-disch',
+                    data: {
+                        ves_id: ves_id
+                    },
+                    cache: false,
+
+                    success: function(msg) {
+                        let res = msg;
+                        //console.log(res.length);
+                        var len = res.length;
+                        var optionsHtml = ''; // Variable to store the options HTML
+                        for (let i = 0; i < len; i++) {
+                            let id = res[i].value;
+                            let nama = res[i].text;
+                            //console.log(id, nama);
+                            optionsHtml += "<option value='" + id + "'>" + nama + "</option>"; // Append each option HTML
+                        }
+                        $("#container_key").html(optionsHtml); // Set the HTML of the select element
+                        $("#container_key").trigger('change'); // Update Select2 after modifying options
+                    },
+                    error: function(data) {
+                        console.log('error:', data)
+                        //commited
+                    },
+                });
+            });
+        });
                             $(document).ready(function() {
                                 $('#container_key').on('change', function() {
                                     let id = $(this).val();
