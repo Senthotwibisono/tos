@@ -22,6 +22,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportCont;
 use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\CoparnController;
+use App\Http\Controllers\ReportController;
 
 
 /*
@@ -414,6 +415,14 @@ Route::get('/generate-pdf-bongkar', [ReportCont::class, 'generatePDF_bongkar'])-
 Route::post('/upload', [EdiController::class, 'upload'])->name('upload.submit');
 
 Route::post('/get-con-disch', [DischargeController::class, 'get_cont']);
+
+//Reports
+// Disch
+Route::get('/reports/disch', [ReportController::class, 'index'])->name('report.index');
+Route::post('/review-get-ves', [ReportController::class, 'get_ves'])->name('report.get-ves');
+Route::post('/review-get-bay', [ReportController::class, 'get_bay'])->name('report.get-bay');
+Route::get('/review-get-container', [ReportController::class, 'get_container'])->name('report.get-container');
+Route::get('/generate-report-disch', [ReportController::class, 'generateREPT_disch'])->name('report.generate-report-disch');
 
 //Export
 
