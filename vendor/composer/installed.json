@@ -4674,6 +4674,7 @@
         },
         {
             "name": "phpunit/phpunit",
+<<<<<<< HEAD
             "version": "10.2.6",
             "version_normalized": "10.2.6.0",
             "source": {
@@ -4685,6 +4686,19 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/1c17815c129f133f3019cc18e8d0c8622e6d9bcd",
                 "reference": "1c17815c129f133f3019cc18e8d0c8622e6d9bcd",
+=======
+            "version": "10.2.4",
+            "version_normalized": "10.2.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/phpunit.git",
+                "reference": "68484779b5a2ed711fbdeba6ca01910d87acdff2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/68484779b5a2ed711fbdeba6ca01910d87acdff2",
+                "reference": "68484779b5a2ed711fbdeba6ca01910d87acdff2",
+>>>>>>> 55e8543d518c722d5bca6b09bbbd1b666fbade7a
                 "shasum": ""
             },
             "require": {
@@ -4718,7 +4732,11 @@
             "suggest": {
                 "ext-soap": "To be able to generate mocks based on WSDL files"
             },
+<<<<<<< HEAD
             "time": "2023-07-17T12:08:28+00:00",
+=======
+            "time": "2023-07-10T04:06:08+00:00",
+>>>>>>> 55e8543d518c722d5bca6b09bbbd1b666fbade7a
             "bin": [
                 "phpunit"
             ],
@@ -4758,7 +4776,11 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
+<<<<<<< HEAD
                 "source": "https://github.com/sebastianbergmann/phpunit/tree/10.2.6"
+=======
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.2.4"
+>>>>>>> 55e8543d518c722d5bca6b09bbbd1b666fbade7a
             },
             "funding": [
                 {

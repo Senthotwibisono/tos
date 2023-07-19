@@ -10,7 +10,7 @@
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item active" aria-current="page">Placement</li>
+                            <li class="breadcrumb-item active" aria-current="page">Yard Placement</li>
                         </ol>
                     </nav>
                 </div>
@@ -83,10 +83,20 @@
                                             {{ csrf_field()}}
                                         </div>
                                         <div class="col-12">
+                                            <div class ="row">
+                                        <div class="col-6">
                                             <div class="form-group">
                                                 <label for="first-name-vertical">Type</label>   
                                                 <input type="text"  id="tipe" class="form-control" name="ctr_type"  disabled>                                               
                                             </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label for="first-name-vertical">Size</label>   
+                                                <input type="text"  id="size" class="form-control" name="ctr_size"  disabled>                                               
+                                            </div>
+                                        </div>
+                                        </div>
                                         </div>
                                         <div class="col-12">
                                             <div class="form-group">
@@ -230,9 +240,9 @@ $(document).on('click', '.update_status', function(e){
                             cache: false,
                             dataType: 'json',
                             success: function(response) {
-                                Swal.fire('Saved!', '', 'success')
                                 console.log(response);
                                 if (response.success) {
+                                    Swal.fire('Saved!', '', 'success')
                                     $('#load_ini').load(window.location.href + ' #load_ini');
                                     $('#place_cont').load(window.location.href + ' #place_cont', function() {
                                         $(document).ready(function() {
@@ -267,25 +277,26 @@ $(document).on('click', '.update_status', function(e){
                                                 dropdownParent: '#success',
                                             });
                                             $(document).ready(function() {
-            $('#key').on('change', function() {
-                let id = $(this).val();
-                $.ajax({
-                    type: 'POST',
-                    url: '/container-tipe',
-                    data: { container_key : id },
-                    success: function(response) {
-                       
-                            $('#container_no').val(response.container_no);
-                            $('#tipe').val(response.tipe);
-                            $('#coname').val(response.coname);
-                        },
-                    error: function(data) {
-                        console.log('error:', data);
-                    },
-                });
-            });
-    });
-    // $
+                                                    $('#key').on('change', function() {
+                                                        let id = $(this).val();
+                                                        $.ajax({
+                                                            type: 'POST',
+                                                            url: '/container-tipe',
+                                                            data: { container_key : id },
+                                                            success: function(response) {
+                                                            
+                                                                    $('#container_no').val(response.container_no);
+                                                                    $('#tipe').val(response.tipe);
+                                                                    $('#size').val(response.size);
+                                                                    $('#coname').val(response.coname);
+                                                                },
+                                                            error: function(data) {
+                                                                console.log('error:', data);
+                                                            },
+                                                        });
+                                                    });
+                                            });
+                                            // $
                                         });
                                     
                                         $('#load_ini').load(window.location.href + ' #load_ini');
@@ -339,6 +350,7 @@ $(function() {
                        
                             $('#container_no').val(response.container_no);
                             $('#tipe').val(response.tipe);
+                            $('#size').val(response.size);
                             $('#coname').val(response.coname);
                         },
                     error: function(data) {

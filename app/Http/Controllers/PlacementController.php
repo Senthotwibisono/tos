@@ -128,7 +128,7 @@ class PlacementController extends Controller
         $name = Item::where('container_key', $container_key)->first();
 
         if ($name) {
-            return response()->json(['container_no' => $name->container_no, 'tipe' => $name->ctr_type, 'coname' => $name->commodity_name]);
+            return response()->json(['container_no' => $name->container_no, 'tipe' => $name->ctr_type, 'size' => $name->ctr_size, 'coname' => $name->commodity_name]);
         }
         return response()->json(['container_no' => 'data tidak ditemukan', 'tipe' => 'data tidak ditemukan', 'coname' => 'data tidak ditemukan']);
     }

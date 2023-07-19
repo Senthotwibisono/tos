@@ -28,7 +28,7 @@
                                     <option value="-">-</option>
                                     @foreach($item as $itm)
                                         
-                                    <option value="{{$itm}}">{{str_pad($itm,4,'0', STR_PAD_LEFT)}}</option>
+                                    <option value="{{ $itm->ves_id }}">{{ $itm->ves_name }} - {{ $itm->voy_no }}</option>
                                     @endforeach
                                 </select>
                         </div>
