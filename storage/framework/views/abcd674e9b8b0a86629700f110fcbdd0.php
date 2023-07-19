@@ -126,21 +126,23 @@
                 <?= DateFormat($invoices->deliveryForm->data->containers[0]->disc_date) ?> S.d <?= DateFormat($invoices->deliveryForm->data->exp_date) ?>
               </address>
             </div>
-            <?php if ($invoices->invoice->isExtended == "1") { ?>
-              <div class="col-xs-12 col-6">
-                <address>
-                  <strong>Masa Penumpukan Perpanjangan:</strong><br>
-                  <?= DateFormat($invoices->deliveryForm->data->exp_date) ?> S.d <?= DateFormat($invoices->deliveryForm->data->extended_exp_date) ?>
-                </address>
-              </div>
+            <?php if ($invoices->invoice->data1 != null) { ?>
+              <?php if ($invoices->invoice->data1[0]->amount == null) { ?>
+                <div class="col-xs-12 col-6">
+                  <address>
+                    <strong>Masa Penumpukan Perpanjangan:</strong><br>
+                    <?= DateFormat($invoices->deliveryForm->data->exp_date) ?> S.d <?= DateFormat($invoices->deliveryForm->data->extended_exp_date) ?>
+                  </address>
+                </div>
+              <?php } ?>
             <?php } ?>
             <div class="col-xs-12 col-6">
               <address>
                 <strong>Metode Pembayaran</strong><br>
                 Nama Bank : <?= $payments->bank ?> <br>
                 Pemilik Rekening : <?= $payments->name ?> <br>
-                Nomor Rekening : <?= $payments->bankNumber ?><br>
                 Kode Bank : <?= $payments->bankCode ?><br>
+                Nomor Rekening : <?= $payments->bankNumber ?><br>
                 <!-- h.elaine@gmail.com<br> -->
               </address>
             </div>
@@ -190,70 +192,81 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <?php foreach ($invoices->invoice->data1 as $value) { ?>
-                    <tr>
-                      <td><?= $value->title ?></td>
-                      <td><?= $value->jumlah ?></td>
-                      <td><?= $value->size ?></td>
-                      <td><?= $value->type ?></td>
-                      <td><?= $value->status ?></td>
-                      <td><?= $value->hari ?></td>
-                      <td>Rp. <?= rupiah($value->tarif) ?>,00 ~</td>
-                      <td>Rp. <?= rupiah($value->amount) ?>,00 ~</td>
+                  <?php if ($invoices->invoice->data1 != null) { ?>
+                    <?php foreach ($invoices->invoice->data1 as $value) { ?>
+                      <tr>
+                        <td><?= $value->title ?></td>
+                        <td><?= $value->jumlah ?></td>
+                        <td><?= $value->size ?></td>
+                        <td><?= $value->type ?></td>
+                        <td><?= $value->status ?></td>
+                        <td><?= $value->hari ?></td>
+                        <td>Rp. <?= rupiah($value->tarif) ?>,00 ~</td>
+                        <td>Rp. <?= rupiah($value->amount) ?>,00 ~</td>
 
-                    </tr>
+                      </tr>
+                    <?php } ?>
                   <?php } ?>
-                  <?php foreach ($invoices->invoice->data2 as $value) { ?>
-                    <tr>
-                      <td><?= $value->title ?></td>
-                      <td><?= $value->jumlah ?></td>
-                      <td><?= $value->size ?></td>
-                      <td><?= $value->type ?></td>
-                      <td><?= $value->status ?></td>
-                      <td><?= $value->hari ?></td>
-                      <td>Rp. <?= rupiah($value->tarif) ?>,00 ~ x 2 (In & Out)</td>
-                      <td>Rp. <?= rupiah($value->amount) ?>,00 ~</td>
+                  <?php if ($invoices->invoice->data2 != null) { ?>
+                    <?php foreach ($invoices->invoice->data2 as $value) { ?>
+                      <tr>
+                        <td><?= $value->title ?></td>
+                        <td><?= $value->jumlah ?></td>
+                        <td><?= $value->size ?></td>
+                        <td><?= $value->type ?></td>
+                        <td><?= $value->status ?></td>
+                        <td><?= $value->hari ?></td>
+                        <td>Rp. <?= rupiah($value->tarif) ?>,00 ~ x 2 (In & Out)</td>
+                        <td>Rp. <?= rupiah($value->amount) ?>,00 ~</td>
 
-                    </tr>
+                      </tr>
+                    <?php } ?>
                   <?php } ?>
-                  <?php foreach ($invoices->invoice->data3 as $value) { ?>
-                    <tr>
-                      <td><?= $value->title ?></td>
-                      <td><?= $value->jumlah ?></td>
-                      <td><?= $value->size ?></td>
-                      <td><?= $value->type ?></td>
-                      <td><?= $value->status ?></td>
-                      <td><?= $value->hari ?></td>
-                      <td>Rp. <?= rupiah($value->tarif) ?>,00 ~</td>
-                      <td>Rp. <?= rupiah($value->amount) ?>,00 ~</td>
+                  <?php if ($invoices->invoice->data3[0]->amount != 0) { ?>
+                    <?php foreach ($invoices->invoice->data3 as $value) { ?>
+                      <tr>
+                        <td><?= $value->title ?></td>
+                        <td><?= $value->jumlah ?></td>
+                        <td><?= $value->size ?></td>
+                        <td><?= $value->type ?></td>
+                        <td><?= $value->status ?></td>
+                        <td><?= $value->hari ?></td>
+                        <td>Rp. <?= rupiah($value->tarif) ?>,00 ~</td>
+                        <td>Rp. <?= rupiah($value->amount) ?>,00 ~</td>
 
-                    </tr>
+                      </tr>
+                    <?php } ?>
                   <?php } ?>
-                  <?php foreach ($invoices->invoice->data4 as $value) { ?>
-                    <tr>
-                      <td><?= $value->title ?></td>
-                      <td><?= $value->jumlah ?></td>
-                      <td><?= $value->size ?></td>
-                      <td><?= $value->type ?></td>
-                      <td><?= $value->status ?></td>
-                      <td><?= $value->hari ?></td>
-                      <td>Rp. <?= rupiah($value->tarif) ?>,00 ~</td>
-                      <td>Rp. <?= rupiah($value->amount) ?>,00 ~</td>
+                  <?php if ($invoices->invoice->data4[0]->amount != 0) { ?>
 
-                    </tr>
+                    <?php foreach ($invoices->invoice->data4 as $value) { ?>
+                      <tr>
+                        <td><?= $value->title ?></td>
+                        <td><?= $value->jumlah ?></td>
+                        <td><?= $value->size ?></td>
+                        <td><?= $value->type ?></td>
+                        <td><?= $value->status ?></td>
+                        <td><?= $value->hari ?></td>
+                        <td>Rp. <?= rupiah($value->tarif) ?>,00 ~</td>
+                        <td>Rp. <?= rupiah($value->amount) ?>,00 ~</td>
+
+                      </tr>
+                    <?php } ?>
                   <?php } ?>
-                  <?php foreach ($invoices->invoice->data5 as $value) { ?>
-                    <tr>
-                      <td><?= $value->title ?></td>
-                      <td><?= $value->jumlah ?></td>
-                      <td><?= $value->size ?></td>
-                      <td><?= $value->type ?></td>
-                      <td><?= $value->status ?></td>
-                      <td><?= $value->hari ?></td>
-                      <td>Rp. <?= rupiah($value->tarif) ?>,00 ~</td>
-                      <td>Rp. <?= rupiah($value->amount) ?>,00 ~</td>
+                  <?php if ($invoices->invoice->data5[0]->amount != 0) { ?>
+                    <?php foreach ($invoices->invoice->data5 as $value) { ?>
+                      <tr>
+                        <td><?= $value->title ?></td>
+                        <td><?= $value->jumlah ?></td>
+                        <td><?= $value->size ?></td>
+                        <td><?= $value->type ?></td>
+                        <td><?= $value->status ?></td>
+                        <td><?= $value->hari ?></td>
+                        <td>Rp. <?= rupiah($value->tarif) ?>,00 ~</td>
+                        <td>Rp. <?= rupiah($value->amount) ?>,00 ~</td>
 
-                    </tr>
+                      </tr>
+                    <?php } ?>
                   <?php } ?>
                 </tbody>
               </table>

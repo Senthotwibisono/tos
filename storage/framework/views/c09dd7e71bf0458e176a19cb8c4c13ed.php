@@ -23,6 +23,12 @@
                 <input type="text" class="form-control" placeholder="09/05/2023" value="<?= $ccdelivery->deliveryForm->exp_date ?>" readonly>
               </div>
             </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label for="">Disc Date</label>
+                <input type="text" class="form-control" value="<?= $ccdelivery->findContainer[0]->disc_date ?>" readonly>
+              </div>
+            </div>
             <?php if ($ccdelivery->deliveryForm->isExtended == "1") { ?>
               <input type="hidden" value="1" name="isExtended">
               <div class="col-4">
@@ -113,60 +119,66 @@
             <?php
             $i = 0;
             $index = 0;
+            $k = 2;
             foreach ($ccdelivery->tarifCheck as $data) {
             ?>
               <?php
               $data1 = array_slice($ccdelivery->tarifCheck, 0, $index); // Elements before the index
               $data2 = array_slice($ccdelivery->tarifCheck, $index); // Elements at and after the index
+
               ?>
               <?php
               foreach ($data2 as $data_arr) { ?>
-                <? //php dd($data2)
-                ?>
-                <input type="hidden" name="data1[<?= $index ?>][title]" value="<?= $menuinv[0] ?>">
-                <input type="hidden" name="data2[<?= $index ?>][title]" value="<?= $menuinv[1] ?>">
-                <input type="hidden" name="data3[<?= $index ?>][title]" value="<?= $menuinv[2] ?>">
-                <input type="hidden" name="data4[<?= $index ?>][title]" value="<?= $menuinv[3] ?>">
-                <input type="hidden" name="data5[<?= $index ?>][title]" value="<?= $menuinv[4] ?>">
+                <?php if ($ccdelivery->deliveryForm->isExtended != 1) { ?>
+                  <input type="hidden" name="data1[<?= $index ?>][title]" value="<?= $menuinv[0] ?>">
+                  <input type="hidden" name="data2[<?= $index ?>][title]" value="<?= $menuinv[1] ?>">
+                  <input type="hidden" name="data3[<?= $index ?>][title]" value="<?= $menuinv[2] ?>">
+                  <input type="hidden" name="data4[<?= $index ?>][title]" value="<?= $menuinv[3] ?>">
+                  <input type="hidden" name="data5[<?= $index ?>][title]" value="<?= $menuinv[4] ?>">
 
-                <input type="hidden" name="data1[<?= $index ?>][jumlah]" value="<?= $ccdelivery->findContainer[$i]->jml_cont ?>">
-                <input type="hidden" name="data2[<?= $index ?>][jumlah]" value="<?= $ccdelivery->findContainer[$i]->jml_cont ?>">
+                  <input type="hidden" name="data1[<?= $index ?>][jumlah]" value="<?= $ccdelivery->findContainer[$i]->jml_cont ?>">
+                  <input type="hidden" name="data2[<?= $index ?>][jumlah]" value="<?= $ccdelivery->findContainer[$i]->jml_cont ?>">
+                  <input type="hidden" name="data1[<?= $index ?>][size]" value="<?= $ccdelivery->findContainer[$i]->ctr_size ?>">
+                  <input type="hidden" name="data2[<?= $index ?>][size]" value="<?= $ccdelivery->findContainer[$i]->ctr_size ?>">
+                  <input type="hidden" name="data1[<?= $index ?>][type]" value="<?= $ccdelivery->findContainer[$i]->ctr_type ?>">
+                  <input type="hidden" name="data2[<?= $index ?>][type]" value="<?= $ccdelivery->findContainer[$i]->ctr_type ?>">
+                  <input type="hidden" name="data1[<?= $index ?>][status]" value="<?= $ccdelivery->findContainer[$i]->ctr_status ?>">
+                  <input type="hidden" name="data2[<?= $index ?>][status]" value="<?= $ccdelivery->findContainer[$i]->ctr_status ?>">
+                  <input type="hidden" name="data1[<?= $index ?>][hari]" value="0">
+                  <input type="hidden" name="data2[<?= $index ?>][hari]" value="0">
+                  <input type="hidden" name="data1[<?= $index ?>][amount]" value="<?= $ccdelivery->grandTotal[$i]->liftOn ?>">
+                  <input type="hidden" name="data2[<?= $index ?>][amount]" value="<?= $ccdelivery->grandTotal[$i]->passTruck ?>">
+                  <input type="hidden" name="data1[<?= $index ?>][tarif]" value="<?= $data->lift_on ?>">
+                  <input type="hidden" name="data2[<?= $index ?>][tarif]" value="<?= $data->pass_truck ?>">
+                <?php } ?>
+                <input type="hidden" name="data3[<?= $index ?>][title]" value="Penumpukan Masa 1">
+                <input type="hidden" name="data4[<?= $index ?>][title]" value="Penumpukan Masa 2">
+                <input type="hidden" name="data5[<?= $index ?>][title]" value="Penumpukan Masa 3">
+
                 <input type="hidden" name="data3[<?= $index ?>][jumlah]" value="<?= $ccdelivery->findContainer[$i]->jml_cont ?>">
                 <input type="hidden" name="data4[<?= $index ?>][jumlah]" value="<?= $ccdelivery->findContainer[$i]->jml_cont ?>">
                 <input type="hidden" name="data5[<?= $index ?>][jumlah]" value="<?= $ccdelivery->findContainer[$i]->jml_cont ?>">
 
-                <input type="hidden" name="data1[<?= $index ?>][size]" value="<?= $ccdelivery->findContainer[$i]->ctr_size ?>">
-                <input type="hidden" name="data2[<?= $index ?>][size]" value="<?= $ccdelivery->findContainer[$i]->ctr_size ?>">
                 <input type="hidden" name="data3[<?= $index ?>][size]" value="<?= $ccdelivery->findContainer[$i]->ctr_size ?>">
                 <input type="hidden" name="data4[<?= $index ?>][size]" value="<?= $ccdelivery->findContainer[$i]->ctr_size ?>">
                 <input type="hidden" name="data5[<?= $index ?>][size]" value="<?= $ccdelivery->findContainer[$i]->ctr_size ?>">
 
-                <input type="hidden" name="data1[<?= $index ?>][type]" value="<?= $ccdelivery->findContainer[$i]->ctr_type ?>">
-                <input type="hidden" name="data2[<?= $index ?>][type]" value="<?= $ccdelivery->findContainer[$i]->ctr_type ?>">
                 <input type="hidden" name="data3[<?= $index ?>][type]" value="<?= $ccdelivery->findContainer[$i]->ctr_type ?>">
                 <input type="hidden" name="data4[<?= $index ?>][type]" value="<?= $ccdelivery->findContainer[$i]->ctr_type ?>">
                 <input type="hidden" name="data5[<?= $index ?>][type]" value="<?= $ccdelivery->findContainer[$i]->ctr_type ?>">
 
-                <input type="hidden" name="data1[<?= $index ?>][status]" value="<?= $ccdelivery->findContainer[$i]->ctr_status ?>">
-                <input type="hidden" name="data2[<?= $index ?>][status]" value="<?= $ccdelivery->findContainer[$i]->ctr_status ?>">
                 <input type="hidden" name="data3[<?= $index ?>][status]" value="<?= $ccdelivery->findContainer[$i]->ctr_status ?>">
                 <input type="hidden" name="data4[<?= $index ?>][status]" value="<?= $ccdelivery->findContainer[$i]->ctr_status ?>">
                 <input type="hidden" name="data5[<?= $index ?>][status]" value="<?= $ccdelivery->findContainer[$i]->ctr_status ?>">
 
-                <input type="hidden" name="data1[<?= $index ?>][hari]" value="0">
-                <input type="hidden" name="data2[<?= $index ?>][hari]" value="0">
                 <input type="hidden" name="data3[<?= $index ?>][hari]" value="<?= $ccdelivery->diffInDays[$i]->masa1 ?>">
                 <input type="hidden" name="data4[<?= $index ?>][hari]" value="<?= $ccdelivery->diffInDays[$i]->masa2 ?>">
                 <input type="hidden" name="data5[<?= $index ?>][hari]" value="<?= $ccdelivery->diffInDays[$i]->masa3 ?>">
 
-                <input type="hidden" name="data1[<?= $index ?>][tarif]" value="<?= $data->lift_on ?>">
-                <input type="hidden" name="data2[<?= $index ?>][tarif]" value="<?= $data->pass_truck ?>">
                 <input type="hidden" name="data3[<?= $index ?>][tarif]" value="<?= $data->masa1 ?>">
                 <input type="hidden" name="data4[<?= $index ?>][tarif]" value="<?= $data->masa2 ?>">
                 <input type="hidden" name="data5[<?= $index ?>][tarif]" value="<?= $data->masa3 ?>">
 
-                <input type="hidden" name="data1[<?= $index ?>][amount]" value="<?= $ccdelivery->grandTotal[$i]->liftOn ?>">
-                <input type="hidden" name="data2[<?= $index ?>][amount]" value="<?= $ccdelivery->grandTotal[$i]->passTruck ?>">
                 <input type="hidden" name="data3[<?= $index ?>][amount]" value="<?= $ccdelivery->grandTotal[$i]->penumpukanMasa1 ?>">
                 <input type="hidden" name="data4[<?= $index ?>][amount]" value="<?= $ccdelivery->grandTotal[$i]->penumpukanMasa2 ?>">
                 <input type="hidden" name="data5[<?= $index ?>][amount]" value="<?= $ccdelivery->grandTotal[$i]->penumpukanMasa3 ?>">
@@ -197,26 +209,29 @@
                     <?php
                     // $i = 0;
                     foreach ($menuinv as $value) { ?>
-
-                      <?php
-                      // dd("DATA GRAND TOTAL data PERTAMA", rupiah($grand_total[0]), "DATA GRAND TOTAL", rupiah($total_grand)); 
-                      ?>
                       <tr>
+
                         <td><?= $value ?></td>
                         <td><?= $ccdelivery->findContainer[$i]->jml_cont ?></td>
                         <td><?= $ccdelivery->findContainer[$i]->ctr_size ?></td>
                         <td><?= $ccdelivery->findContainer[$i]->ctr_type ?></td>
                         <td><?= $ccdelivery->findContainer[$i]->ctr_status ?></td>
 
-                        <?php if ($value == "Lift On") {  ?>
-                          <td>0 Hari</td>
-                          <td>Rp. <?= rupiah($data->lift_on) ?></td>
-                          <td>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->liftOn) ?></td>
-                        <?php } else if ($value == "Pass Truck") {  ?>
-                          <td>0 Hari</td>
-                          <td>Rp. <?= rupiah($data->pass_truck) ?> x 2 (In & Out)</td>
-                          <td>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->passTruck) ?> </td>
-                        <?php } else if ($value == "Penumpukan Masa 1") {  ?>
+                        <?php if ($ccdelivery->deliveryForm->isExtended != 1) { ?>
+                          <?php if ($value == "Lift On") {  ?>
+                            <td>0 Hari</td>
+                            <td>Rp. <?= rupiah($data->lift_on) ?></td>
+                            <td>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->liftOn) ?></td>
+                          <?php } else if ($value == "Pass Truck") {  ?>
+                            <td>0 Hari</td>
+                            <td>Rp. <?= rupiah($data->pass_truck) ?> x 2 (In & Out)</td>
+                            <td>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->passTruck) ?> </td>
+                          <?php }  ?>
+
+                        <?php } ?>
+
+
+                        <?php if ($value == "Penumpukan Masa 1" && $ccdelivery->grandTotal[$i]->penumpukanMasa1 != 0) {  ?>
                           <td><?= $ccdelivery->diffInDays[$i]->masa1 ?> Hari</td>
                           <td>Rp. <?= rupiah($data->masa1) ?></td>
                           <td>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->penumpukanMasa1) ?></td>
@@ -230,9 +245,11 @@
                           <td>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->penumpukanMasa3) ?></td>
 
                         <?php } else { ?>
-                          <td>0</td>
-                          <td>Rp. 0</td>
-                          <td>Rp. 0</td>
+                          <?php if ($ccdelivery->deliveryForm->isExtended == 1) { ?>
+                            <td>0</td>
+                            <td>Rp. 0</td>
+                            <td>Rp. 0</td>
+                          <?php } ?>
                         <?php } ?>
                       </tr>
                     <?php } ?>
@@ -246,6 +263,7 @@
             <?php
               $i++;
               $index++; // Increment the index variable for each iteration
+              $k++; // Increment the index variable for each iteration
 
             } ?>
           </div>
