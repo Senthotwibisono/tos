@@ -367,6 +367,22 @@
       <li class="submenu-item <?php if(Request::is('reports/hist')): ?> active <?php endif; ?>">
         <a href="/reports/hist">History Container</a>
       </li>
+      <hr>
+      <li class="submenu-item <?php if(Request::is('reports/disch')): ?> active <?php endif; ?>">
+        <a href="/reports/disch">Disch Reports</a>
+      </li>
+      <li class="submenu-item <?php if(Request::is('reports/plc')): ?> active <?php endif; ?>">
+        <a href="/reports/plc">PLC Reports</a>
+      </li>
+      <li class="submenu-item <?php if(Request::is('reports/str')): ?> active <?php endif; ?>">
+        <a href="/reports/str">Srtipping Reports</a>
+      </li>
+      <li class="submenu-item <?php if(Request::is('reports/gati-del')): ?> active <?php endif; ?>">
+        <a href="/reports/gati-del">Gati-Del Reports</a>
+      </li>
+      <li class="submenu-item <?php if(Request::is('reports/gato-del')): ?> active <?php endif; ?>">
+        <a href="/reports/gato-del">Gato-Del Reports</a>
+      </li>
       <!-- <li class="submenu-item ">
                         <a href="layout-vertical-1-column.html">History Container Equal</a>
                     </li>
