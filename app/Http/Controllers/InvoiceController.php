@@ -418,9 +418,37 @@ class InvoiceController extends Controller
     // dd($result);
     $data = [];
 
-
+    $isExtended = $result->data->deliveryForm->isExtended;
+    $diffInDays = $result->data->diffInDays[0];
     $data["ccdelivery"] = $result->data;
-    $data["menuinv"] = ["Lift On", "Pass Truck", "Penumpukan Masa 1", "Penumpukan Masa 2", "Penumpukan Masa 3"];
+    if ($result->data->deliveryForm->isExtended != 1) {
+      $data["menuinv"] = [$isExtended != 1 ? "Lift On" : "", $isExtended != 1 ? "Pass Truck" : "", $diffInDays->masa1 > 0 ? "Penumpukan Masa 1" : "", $diffInDays->masa2 > 0 ? "Penumpukan Masa 2" : "", $diffInDays->masa3 > 0 ? "Penumpukan Masa 3" : ""];
+    } else if ($diffInDays->masa1 != 0 && $diffInDays->masa2 != 0 && $diffInDays->masa3 != 0) {
+      $data["menuinv"] = ["Penumpukan Masa 1", "Penumpukan Masa 2", "Penumpukan Masa 3"];
+    } else if ($diffInDays->masa1 != 0 && $diffInDays->masa2 != 0) {
+      $data["menuinv"] = ["Penumpukan Masa 1", "Penumpukan Masa 2"];
+    } else if ($diffInDays->masa1 != 0 && $diffInDays->masa3 != 0) {
+      $data["menuinv"] = ["Penumpukan Masa 1", "Penumpukan Masa 3"];
+    } else if ($diffInDays->masa2 != 0 && $diffInDays->masa3 != 0) {
+      $data["menuinv"] = ["Penumpukan Masa 2", "Penumpukan Masa 3"];
+    } else if ($diffInDays->masa1 == 0 && $diffInDays->masa2 != 0) {
+      $data["menuinv"] = ["Penumpukan Masa 2"];
+    } else if ($diffInDays->masa1 == 0 && $diffInDays->masa3 != 0) {
+      $data["menuinv"] = ["Penumpukan Masa 3"];
+    } else if ($diffInDays->masa2 == 0 && $diffInDays->masa1 != 0) {
+      $data["menuinv"] = ["Penumpukan Masa 1"];
+    } else if ($diffInDays->masa3 == 0 && $diffInDays->masa2 != 0) {
+      $data["menuinv"] = ["Penumpukan Masa 2"];
+    } else if ($diffInDays->masa1 == 0) {
+      $data["menuinv"] = ["Penumpukan Masa 2", "Penumpukan Masa 3"];
+    } else if ($diffInDays->masa2 == 0) {
+      $data["menuinv"] = ["Penumpukan Masa 1", "Penumpukan Masa 3"];
+    } else if ($diffInDays->masa3 == 0) {
+      $data["menuinv"] = ["Penumpukan Masa 1", "Penumpukan Masa 2"];
+    }
+    // dd($data["menuinv"]);
+    $data["isExtended"] = $isExtended;
+    $data["diffInDays"] = $diffInDays;
     $data["title"] = "Step 2 | Delivery Pranota";
     return view('invoice/delivery_form/add_step_2', $data);
   }
@@ -465,7 +493,11 @@ class InvoiceController extends Controller
     // dd($result);
 
     if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-      return redirect('/invoice')->with('success', 'Invoice berhasil dibuat & disimpan!');
+      if ($isExtended == "1") {
+        return redirect('/invoice/add/extend')->with('success', 'Invoice berhasil dibuat & disimpan!');
+      } else {
+        return redirect('/invoice')->with('success', 'Invoice berhasil dibuat & disimpan!');
+      }
     } else {
       return redirect('/invoice')->with('error', 'Data gagal disimpan! kode error : #st2del');
     }
