@@ -4,11 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-<<<<<<< HEAD
     "content-hash": "391d04c4862f65cece55a6ff3c492a5b",
-=======
-    "content-hash": "e0e0b3af40c34b8846cd187ecb089417",
->>>>>>> 55e8543d518c722d5bca6b09bbbd1b666fbade7a
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -7925,7 +7921,6 @@
         },
         {
             "name": "phpunit/phpunit",
-<<<<<<< HEAD
             "version": "10.2.6",
             "source": {
                 "type": "git",
@@ -7936,18 +7931,6 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/1c17815c129f133f3019cc18e8d0c8622e6d9bcd",
                 "reference": "1c17815c129f133f3019cc18e8d0c8622e6d9bcd",
-=======
-            "version": "10.2.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "68484779b5a2ed711fbdeba6ca01910d87acdff2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/68484779b5a2ed711fbdeba6ca01910d87acdff2",
-                "reference": "68484779b5a2ed711fbdeba6ca01910d87acdff2",
->>>>>>> 55e8543d518c722d5bca6b09bbbd1b666fbade7a
                 "shasum": ""
             },
             "require": {
@@ -8019,11 +8002,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-<<<<<<< HEAD
                 "source": "https://github.com/sebastianbergmann/phpunit/tree/10.2.6"
-=======
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.2.4"
->>>>>>> 55e8543d518c722d5bca6b09bbbd1b666fbade7a
             },
             "funding": [
                 {
@@ -8039,11 +8018,7 @@
                     "type": "tidelift"
                 }
             ],
-<<<<<<< HEAD
             "time": "2023-07-17T12:08:28+00:00"
-=======
-            "time": "2023-07-10T04:06:08+00:00"
->>>>>>> 55e8543d518c722d5bca6b09bbbd1b666fbade7a
         },
         {
             "name": "sebastian/cli-parser",
