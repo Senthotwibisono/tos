@@ -167,7 +167,7 @@
           <ul class="submenu-group">
 
             <li class="submenu-item  ">
-              <a href="layout-default.html" class='submenu-link'>Do Online Check</a>
+              <a href="/do" class='submenu-link'>Do Online Check</a>
 
 
             </li>

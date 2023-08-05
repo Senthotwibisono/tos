@@ -4,7 +4,7 @@
   <h3><?= $title ?></h3>
   <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
 </div>
-<div class="page content mb-5">
+<div class="page-content mb-5">
   <section class="row">
     <form action="/invoice/add/storestep1" method="POST" enctype="multipart/form-data">
       <?php echo csrf_field(); ?>

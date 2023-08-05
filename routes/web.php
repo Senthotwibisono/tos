@@ -6,6 +6,7 @@ use App\Http\Controllers\VesselController;
 use App\Http\Controllers\BayplanImportController;
 use App\Http\Controllers\DischargeController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\DoOnlineController;
 use App\Http\Controllers\SppsController;
 use App\Http\Controllers\PlacementController;
 use App\Http\Controllers\AndroidController;
@@ -64,6 +65,7 @@ Route::prefix('invoice')->group(function () {
   Route::get('/', [InvoiceController::class, 'index']);
   Route::get('/test', [InvoiceController::class, 'test']);
   Route::get('/delivery', [InvoiceController::class, 'deliveryForm']);
+  Route::post('/export', [InvoiceController::class, 'exportActiveTo']);
   Route::prefix('add')->group(function () {
     Route::prefix('/extend')->group(function () {
       Route::get('/', [InvoiceController::class, 'extendIndex']);
@@ -115,6 +117,12 @@ Route::prefix('invoice')->group(function () {
       Route::post('/createPaymentMethod', [InvoiceController::class, 'storePaymentMethod']);
     });
   });
+});
+
+Route::prefix('do')->group(function () {
+  route::get('/', [DoOnlineController::class, 'index']);
+  route::get('/create', [DoOnlineController::class, 'create']);
+  route::post('/store', [DoOnlineController::class, 'store']);
 });
 
 Route::prefix('spps')->group(function () {

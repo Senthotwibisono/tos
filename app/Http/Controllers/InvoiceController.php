@@ -7,6 +7,9 @@ use Config\Services;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\DataTableExport;
+
 
 
 class InvoiceController extends Controller
@@ -422,7 +425,11 @@ class InvoiceController extends Controller
     $diffInDays = $result->data->diffInDays[0];
     $data["ccdelivery"] = $result->data;
     if ($result->data->deliveryForm->isExtended != 1) {
-      $data["menuinv"] = [$isExtended != 1 ? "Lift On" : "", $isExtended != 1 ? "Pass Truck" : "", $diffInDays->masa1 > 0 ? "Penumpukan Masa 1" : "", $diffInDays->masa2 > 0 ? "Penumpukan Masa 2" : "", $diffInDays->masa3 > 0 ? "Penumpukan Masa 3" : ""];
+      if ($result->data->deliveryForm->orderService != "spps") {
+        $data["menuinv"] = [$isExtended != 1 ? "Lift On" : "", $isExtended != 1 ? "Pass Truck" : "", $diffInDays->masa1 > 0 ? "Penumpukan Masa 1" : "", $diffInDays->masa2 > 0 ? "Penumpukan Masa 2" : "", $diffInDays->masa3 > 0 ? "Penumpukan Masa 3" : ""];
+      } else {
+        $data["menuinv"] = [$isExtended != 1 ? "Paket Stripping" : "", $isExtended != 1 ? "Pass Truck" : "", $diffInDays->masa1 > 0 ? "Penumpukan Masa 1" : "", $diffInDays->masa2 > 0 ? "Penumpukan Masa 2" : "", $diffInDays->masa3 > 0 ? "Penumpukan Masa 3" : ""];
+      }
     } else if ($diffInDays->masa1 != 0 && $diffInDays->masa2 != 0 && $diffInDays->masa3 != 0) {
       $data["menuinv"] = ["Penumpukan Masa 1", "Penumpukan Masa 2", "Penumpukan Masa 3"];
     } else if ($diffInDays->masa1 != 0 && $diffInDays->masa2 != 0) {
@@ -466,8 +473,9 @@ class InvoiceController extends Controller
     $data5 = $request->input('data5');
     $data6 = $request->input('data6');
     $isExtended = $request->input('isExtended');
+    $active_to = $request->input('active_to');
     // $data7 = $request->input('data7');
-
+    $orderService = $request->input('orderService');
     $fields = [
       "data1" => $data1,
       "data2" => $data2,
@@ -477,7 +485,8 @@ class InvoiceController extends Controller
       "data6" => $data6,
       "isExtended" => $isExtended,
       // "data7" => $data7,
-      "orderService" => "sp2",
+      "orderService" => $orderService,
+      "active_to" => $active_to,
     ];
     // dd($fields);
 
@@ -1006,5 +1015,35 @@ class InvoiceController extends Controller
     // die();
 
     echo $response;
+  }
+
+  public function exportActiveTo(Request $request)
+  {
+    // Get the start and end dates from the request
+    $client = new Client();
+
+    $startDate = $request->input('start');
+    $endDate = $request->input('end');
+
+    $fields = [
+      "startdate" => $startDate,
+      "enddate" => $endDate
+    ];
+
+    // dd($fields);
+    $url = getenv('API_URL') . '/delivery-service/invoice/activeto';
+    $req = $client->post(
+      $url,
+      [
+        "json" => $fields
+      ]
+    );
+    $response = $req->getBody()->getContents();
+    $result = json_decode($response);
+    dd($result);
+
+
+    // Call the Excel facade to export the data
+    // return Excel::download(new DataTableExport($result->data), 'data.xlsx');
   }
 }

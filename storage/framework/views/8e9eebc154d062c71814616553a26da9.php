@@ -62,6 +62,17 @@
 
   <!-- flatpickr js -->
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+  <!-- Dropify Inject -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js" integrity="sha512-8QFTrG0oeOiyWo/VM9Y8kgxdlCryqhIxVeRpWSezdRRAvarxVtwLnGroJgnVW9/XBRduxO/z1GblzPrMQoeuew==" crossorigin="anonymous"></script>
+
+  <!-- date-range-picker  -->
+  <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+
+  <!-- moment.js  -->
+  <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+
+
   <?php echo $__env->yieldContent('custom_js'); ?>
 
   <?php if(\Session::has('success')): ?>
@@ -146,6 +157,17 @@
     rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
     return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
   }
+</script>
+
+<script>
+  $('.dropify').dropify({
+    messages: {
+      'default': 'Drag and drop a file here or click',
+      'replace': 'Drag and drop or click to replace',
+      'remove': 'Remove',
+      'error': 'Ooops, something wrong happended.'
+    }
+  });
 </script>
 
 <?php echo $__env->make('partial.invoice.js.js_customer', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>

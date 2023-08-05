@@ -759,4 +759,12 @@
       }
     });
   });
+</script>
+
+<script>
+  $('#submit').click(function() {
+    // console.log("clicked");
+    let date = $('#date').val();
+    console.log(date);
+  })
 </script><?php /**PATH E:\Fdw File Storage 1\CTOS\dev\frontend\tos-dev-local\resources\views/partial/invoice/js/js_customer.blade.php ENDPATH**/ ?>

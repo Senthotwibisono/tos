@@ -760,3 +760,11 @@
     });
   });
 </script>
+
+<script>
+  $('#submit').click(function() {
+    // console.log("clicked");
+    let date = $('#date').val();
+    console.log(date);
+  })
+</script>

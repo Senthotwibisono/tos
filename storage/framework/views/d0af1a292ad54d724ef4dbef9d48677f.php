@@ -1,3 +1,6 @@
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> -->
+
+
 <?php $__env->startSection('content'); ?>
 
 <div class="page-heading">
@@ -42,7 +45,30 @@
           <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
         </div>
         <div class="card-body">
+          <form action="/invoice/export" method="POST" enctype="multipart/form-data">
+            <?php echo csrf_field(); ?>
+            <div class="row">
+
+              <div class="col-4">
+                <div class="form-group">
+                  <label>Pick Start Date Range</label>
+                  <input name="start" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label>Pick End Date Range</label>
+                  <input name="end" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
+                </div>
+              </div>
+              <div class="col-4 mt-4">
+                <button class="btn btn-primary" type="submit"><i class=" fa fa-file"></i> Export Active Invoice to Excel</button>
+              </div>
+            </div>
+          </form>
+
           <div class="row mt-5">
+
             <div class="col-12">
               <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
                 <thead>
@@ -178,6 +204,47 @@
   </div>
 </div>
 <!-- end of Edit Modal Single Data Table  -->
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script> -->
+<!-- <script>
+  // Initialize Flatpickr with the "range" mode
+  flatpickr("#date", {
+    mode: "range",
+    dateFormat: "d/m/Y", // Set the date format (optional)
+    // Add any other options you may need
+  });
+</script> -->
+
+<!-- <script>
+  $("#date").flatpickr({
+    mode: "range",
+    dateFormat: "d/m/Y",
+    onClose: function(selectedDates, dateStr, instance) {
+      // Get the start and end dates from the dateStr
+      const [start, end] = dateStr.split(" to ");
+
+      // Format the dates to "YYYY-MM-DD" format
+      const startDate = formatDate(start);
+      const endDate = formatDate(end);
+
+      // Create the object with formatted dates
+      const data = {
+        startdate: startDate,
+        enddate: endDate
+      };
+
+      console.log(data); // Check the formatted data in the console
+    }
+  });
+
+  // Function to format the date from "DD/MM/YYYY" to "YYYY-MM-DD" format
+  function formatDate(dateStr) {
+    const [day, month, year] = dateStr.split("/");
+    return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+  }
+</script> -->
+
+
 
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('partial.invoice.main', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\Fdw File Storage 1\CTOS\dev\frontend\tos-dev-local\resources\views/invoice/dashboard.blade.php ENDPATH**/ ?>
