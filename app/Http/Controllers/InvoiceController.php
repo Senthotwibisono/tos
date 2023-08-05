@@ -8,7 +8,10 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\DataTableExport;
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Illuminate\Support\Collection;
+use App\Http\Controllers\DataExport;
 
 
 
@@ -1025,9 +1028,8 @@ class InvoiceController extends Controller
     echo $response;
   }
 
-  public function exportActiveTo(Request $request)
+  public function exportToExcel(Request $request)
   {
-    // Get the start and end dates from the request
     $client = new Client();
 
     $startDate = $request->input('start');
@@ -1038,7 +1040,6 @@ class InvoiceController extends Controller
       "enddate" => $endDate
     ];
 
-    // dd($fields);
     $url = getenv('API_URL') . '/delivery-service/invoice/activeto';
     $req = $client->post(
       $url,
@@ -1046,13 +1047,36 @@ class InvoiceController extends Controller
         "json" => $fields
       ]
     );
+
     $response = $req->getBody()->getContents();
-    $result = json_decode($response);
-    dd($result);
+    $jsonData = json_decode($response, true)['data'];
 
+    // Manually extract the desired data fields for export
+    $exportData = collect($jsonData)->map(function ($item) {
+      return [
+        'Performa ID' => $item['performaId'],
+        'Invoice Number' => $item['invoiceNumber'],
+        'Order Service' => $item['orderService'],
+        'Job Number' => $item['jobNumber'],
+        'Is Paid' => $item['isPaid'],
+        'Active To' => $item['active_to'],
+        // 'Is Active' => $item['isActive'],
+      ];
+    });
 
-    // Call the Excel facade to export the data
-    // return Excel::download(new DataTableExport($result->data), 'data.xlsx');
+    // Define the column headings for the Excel sheet
+    $headings = [
+      'Performa ID',
+      'Invoice Number',
+      'Order Service',
+      'Job Number',
+      'Is Paid',
+      'Active To',
+      // 'Is Active',
+    ];
+
+    // Export the data to Excel
+    return Excel::download(new DataExport($exportData, $headings), 'data.xlsx');
   }
 
   public function findContainer(Request $request)
