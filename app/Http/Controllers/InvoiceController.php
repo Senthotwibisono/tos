@@ -243,8 +243,16 @@ class InvoiceController extends Controller
     $result_container = json_decode($response_container);
     // dd($result_container);
 
+    // GET ALL DO NUMBER
+    $url_do = getenv('API_URL') . '/delivery-service/do/groupall';
+    $req_do = $client->get($url_do);
+    $response_do = $req_do->getBody()->getContents();
+    $result_do = json_decode($response_do);
+    // dd($result_do);
+
     $data["customer"] = $result_customer->data;
     $data["container"] = $result_container->data;
+    $data["do"] = $result_do->data;
     return view('invoice/delivery_form/add_step_1', $data);
   }
 
@@ -1045,5 +1053,25 @@ class InvoiceController extends Controller
 
     // Call the Excel facade to export the data
     // return Excel::download(new DataTableExport($result->data), 'data.xlsx');
+  }
+
+  public function findContainer(Request $request)
+  {
+    $client = new Client();
+
+    $do_no = $request->do_no;
+    // var_dump($do_no);
+    // die();
+
+
+    $url = getenv('API_URL') . '/delivery-service/do/groupsingle/' . $do_no;
+    $req = $client->get(
+      $url
+    );
+    $response = $req->getBody()->getContents();
+    // var_dump($response);
+    // die();
+
+    echo $response;
   }
 }

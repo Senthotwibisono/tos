@@ -104,6 +104,7 @@ Route::prefix('invoice')->group(function () {
     Route::post('/mastertarif', [InvoiceController::class, 'singleMasterTarif']);
     Route::post('/updateMasterTarif', [InvoiceController::class, 'updateMasterTarif']);
     Route::post('/createMasterTarif', [InvoiceController::class, 'createMasterTarif']);
+    Route::post('/findContainer', [InvoiceController::class, 'findContainer']);
   });
   Route::prefix('mastertarif')->group(function () {
     Route::get('/', [InvoiceController::class, 'masterTarif']);

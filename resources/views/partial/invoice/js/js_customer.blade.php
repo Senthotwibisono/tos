@@ -768,3 +768,67 @@
     console.log(date);
   })
 </script>
+
+<script>
+  $("#manual").click(function() {
+    console.log("manual!");
+    $("#do_manual").css("display", "block");
+    $("#do_auto").css("display", "none");
+  })
+  $("#auto").click(function() {
+    console.log("auto!");
+    $("#do_auto").css("display", "block");
+    $("#do_manual").css("display", "none");
+  })
+</script>
+
+<script>
+  const doNumberSelect = $("#do_number_auto");
+  const containerSelect = $("#containerSelector");
+
+  function fetchContainers(selectedDoNoId) {
+    console.log(selectedDoNoId);
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+    let formData = new FormData();
+    formData.append("do_no", selectedDoNoId);
+
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+      },
+      type: "POST",
+      url: `/invoice/singleData/findContainer`,
+      cache: false,
+      contentType: false,
+      processData: false,
+      data: formData,
+      success: function(response) {
+        containerSelect.innerHTML = ''; // Clear previous options
+        const responseData = JSON.parse(response);
+        if (responseData.hasOwnProperty('data')) {
+          const containers = responseData.data;
+          containers.forEach((container) => {
+            $("#containerSelector").append(`<option selected value="${container.container_no}">${container.container_no}</option>`)
+          });
+        } else {
+          console.error('Invalid response format:', response);
+        }
+      },
+      error(err) {
+        console.log(err);
+      }
+    });
+  }
+
+  $("#do_number_auto").on('change', function() {
+    console.log("CHANGED!");
+    const selectedDoNo = this.value;
+    const selectedDoNoId = this.options[this.selectedIndex].getAttribute('data-id');
+
+    if (selectedDoNo !== "") {
+      fetchContainers(selectedDoNoId);
+    } else {
+      containerSelect.innerHTML = ''; // Clear options when no "do_no" is selected
+    }
+  });
+</script>
