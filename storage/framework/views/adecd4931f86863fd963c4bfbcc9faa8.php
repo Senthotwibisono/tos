@@ -767,4 +767,212 @@
     let date = $('#date').val();
     console.log(date);
   })
+</script>
+
+<script>
+  $("#manual").click(function() {
+    console.log("manual!");
+    $("#do_manual").css("display", "block");
+    $("#do_auto").css("display", "none");
+  })
+  $("#auto").click(function() {
+    console.log("auto!");
+    $("#do_auto").css("display", "block");
+    $("#do_manual").css("display", "none");
+  })
+</script>
+
+<script>
+  const doNumberSelect = $("#do_number_auto");
+  const containerSelect = $("#containerSelector");
+
+  function fetchContainers(selectedDoNoId) {
+    console.log(selectedDoNoId);
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+    let formData = new FormData();
+    formData.append("do_no", selectedDoNoId);
+
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+      },
+      type: "POST",
+      url: `/invoice/singleData/findContainer`,
+      cache: false,
+      contentType: false,
+      processData: false,
+      data: formData,
+      success: function(response) {
+        containerSelect.innerHTML = ''; // Clear previous options
+        const responseData = JSON.parse(response);
+        console.log(responseData);
+        if (responseData.hasOwnProperty('data')) {
+          const containers = responseData.data;
+          // $("#do_exp_date").val(formattedDate(containers.do_expired)).attr("readonly", "true");
+          // $("#boln").val(containers.bl_no).attr("readonly", "true");
+          containers.forEach((container) => {
+            $("#containerSelector").append(`<option selected value="${container.container_no}">${container.container_no}</option>`)
+          });
+        } else {
+          console.error('Invalid response format:', response);
+        }
+      },
+      error(err) {
+        console.log(err);
+      }
+    });
+  }
+
+  $("#do_number_auto").on('change', function() {
+    console.log("CHANGED!");
+    const selectedDoNo = this.value;
+    const selectedDoNoId = this.options[this.selectedIndex].getAttribute('data-id');
+    $("#containerSelector").attr("disabled", "true");
+    if (selectedDoNo !== "") {
+      fetchContainers(selectedDoNoId);
+    } else {
+      containerSelect.innerHTML = ''; // Clear options when no "do_no" is selected
+    }
+  });
+</script>
+
+<script>
+  function fetchContainersBooking(selectedDoNoId) {
+    console.log(selectedDoNoId);
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+    let formData = new FormData();
+    formData.append("booking", selectedDoNoId);
+
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+      },
+      type: "POST",
+      url: `/invoice/singleData/findContainerBooking`,
+      cache: false,
+      contentType: false,
+      processData: false,
+      data: formData,
+      success: function(response) {
+        containerSelect.innerHTML = ''; // Clear previous options
+        const responseData = JSON.parse(response);
+        console.log(responseData);
+        let ctr = 0;
+        if (responseData.hasOwnProperty('data')) {
+          const containers = responseData.data;
+          // $("#do_exp_date").val(formattedDate(containers.do_expired)).attr("readonly", "true");
+          // $("#boln").val(containers.bl_no).attr("readonly", "true");
+          containers.forEach((container) => {
+            ctr++;
+            $("#containerSelector").append(`<option selected value="${container.container_no}">${container.container_no}</option>`)
+          });
+          $("#ctr").val(ctr).attr("readonly", "true");
+          $("#pod").val(containers[0].pod).attr("readonly", "true");
+
+        } else {
+          console.error('Invalid response format:', response);
+        }
+      },
+      error(err) {
+        console.log(err);
+      }
+    });
+  }
+
+  $("#booking").on('change', function() {
+    console.log("CHANGED!");
+    const selectedDoNo = this.value;
+    const selectedDoNoId = this.options[this.selectedIndex].getAttribute('data-id');
+    // $("#containerSelector").attr("disabled", "true");
+    if (selectedDoNo !== "") {
+      fetchContainersBooking(selectedDoNoId);
+    } else {
+      containerSelect.innerHTML = ''; // Clear options when no "do_no" is selected
+    }
+  });
+</script>
+
+
+
+<script>
+  $("#vessel").on('change', function() {
+    console.log("CHANGED!");
+    const selectedDoNo = this.value;
+    const selectedDoNoId = this.options[this.selectedIndex].getAttribute('data-id');
+    console.log(selectedDoNoId);
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+    let formData = new FormData();
+    formData.append("ves_id", selectedDoNoId);
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+      },
+      type: "POST",
+      url: `/coparn/findSingleVessel`,
+      cache: false,
+      contentType: false,
+      processData: false,
+      data: formData,
+      success: function(response) {
+        let res = JSON.parse(response);
+        data = res.data;
+        $("#voyage").val(res.data.voy_out).attr("readonly", "true");
+        $("#vesselcode").val(res.data.ves_code).attr("readonly", "true");
+        $("#closing").val(formattedDate(res.data.clossing_date)).attr("readonly", "true");
+        $("#arrival").val(formattedDate(res.data.arrival_date)).attr("readonly", "true");
+        $("#departure").val(formattedDate(res.data.deparature_date));
+      }
+    })
+  })
+</script>
+
+<script>
+  $("#customer").on('change', function() {
+    console.log("CHANGED!");
+    const selectedDoNo = this.value;
+    const selectedDoNoId = this.options[this.selectedIndex].getAttribute('data-id');
+    console.log(selectedDoNoId);
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+    let formData = new FormData();
+    formData.append("id", selectedDoNoId);
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+      },
+      type: "POST",
+      url: `/invoice/singleData/findSingleCustomer`,
+      cache: false,
+      contentType: false,
+      processData: false,
+      data: formData,
+      success: function(response) {
+        let res = JSON.parse(response);
+        data = res.data;
+        console.log(data);
+        $("#npwp").val(res.data.npwp).attr("readonly", "true");
+        $("#address").val(res.data.address).attr("readonly", "true");
+      }
+    })
+  })
+</script>
+
+<script>
+  function formattedDate(date) {
+    // Assuming your date is stored in result.data.tgl_request
+    var originalDate = date;
+
+    // Convert the original date string to a JavaScript Date object
+    var dateObject = new Date(originalDate);
+
+    // Function to pad single digits with a leading zero
+    function pad(number) {
+      return (number < 10) ? '0' + number : number;
+    }
+
+    // Format the date as yyyy-MM-dd
+    var formattedDate = dateObject.getFullYear() + "-" + pad(dateObject.getMonth() + 1) + "-" + pad(dateObject.getDate());
+
+    // console.log(formattedDate); // Output: "2023-07-24"
+    return formattedDate;
+  };
 </script><?php /**PATH E:\Fdw File Storage 1\CTOS\dev\frontend\tos-dev-local\resources\views/partial/invoice/js/js_customer.blade.php ENDPATH**/ ?>

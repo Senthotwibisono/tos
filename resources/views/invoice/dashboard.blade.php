@@ -206,44 +206,6 @@
 </div>
 <!-- end of Edit Modal Single Data Table  -->
 
-<!-- <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script> -->
-<!-- <script>
-  // Initialize Flatpickr with the "range" mode
-  flatpickr("#date", {
-    mode: "range",
-    dateFormat: "d/m/Y", // Set the date format (optional)
-    // Add any other options you may need
-  });
-</script> -->
-
-<!-- <script>
-  $("#date").flatpickr({
-    mode: "range",
-    dateFormat: "d/m/Y",
-    onClose: function(selectedDates, dateStr, instance) {
-      // Get the start and end dates from the dateStr
-      const [start, end] = dateStr.split(" to ");
-
-      // Format the dates to "YYYY-MM-DD" format
-      const startDate = formatDate(start);
-      const endDate = formatDate(end);
-
-      // Create the object with formatted dates
-      const data = {
-        startdate: startDate,
-        enddate: endDate
-      };
-
-      console.log(data); // Check the formatted data in the console
-    }
-  });
-
-  // Function to format the date from "DD/MM/YYYY" to "YYYY-MM-DD" format
-  function formatDate(dateStr) {
-    const [day, month, year] = dateStr.split("/");
-    return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-  }
-</script> -->
 
 
 

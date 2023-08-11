@@ -21,6 +21,14 @@ class InvoiceController extends Controller
   {
     $this->middleware('auth');
   }
+
+  public function menuindex()
+  {
+    $data = [];
+    $data["title"] = "Menu Billing System";
+
+    return view('invoice.menu', $data);
+  }
   public function index()
   {
     // dd("Masuk");
@@ -307,7 +315,7 @@ class InvoiceController extends Controller
     $exp_date = $request->exp_date;
     $exp_time = $request->exp_time;
     $customer = $request->customer;
-    $do_number = $request->do_number;
+    $do_number = $request->do_number ?? $request->do_number_auto;
     $do_exp_date = $request->do_exp_date;
     $boln = $request->boln;
     $container = $request->container;
@@ -419,8 +427,12 @@ class InvoiceController extends Controller
       "containers" => $container_arr,
     ];
     // dd($fields);
+    if ($result_single_form->data->orderService == "sp2") {
+      $url = getenv('API_URL') . '/delivery-service/form/calculate/sp2';
+    } else {
+      $url = getenv('API_URL') . '/delivery-service/form/calculate/spps';
+    }
 
-    $url = getenv('API_URL') . '/delivery-service/form/calculate';
     $req = $client->post(
       $url,
       [
@@ -439,7 +451,7 @@ class InvoiceController extends Controller
       if ($result->data->deliveryForm->orderService != "spps") {
         $data["menuinv"] = [$isExtended != 1 ? "Lift On" : "", $isExtended != 1 ? "Pass Truck" : "", $diffInDays->masa1 > 0 ? "Penumpukan Masa 1" : "", $diffInDays->masa2 > 0 ? "Penumpukan Masa 2" : "", $diffInDays->masa3 > 0 ? "Penumpukan Masa 3" : ""];
       } else {
-        $data["menuinv"] = [$isExtended != 1 ? "Paket Stripping" : "", $isExtended != 1 ? "Pass Truck" : "", $diffInDays->masa1 > 0 ? "Penumpukan Masa 1" : "", $diffInDays->masa2 > 0 ? "Penumpukan Masa 2" : "", $diffInDays->masa3 > 0 ? "Penumpukan Masa 3" : ""];
+        $data["menuinv"] = [$isExtended != 1 ? "Paket Stripping" : "", $isExtended != 1 ? "Pass Truck" : "", $diffInDays->masa1 > 0 ? "Penumpukan Masa 1" : "Penumpukan Masa 1", $diffInDays->masa2 > 0 ? "Penumpukan Masa 2" : "Penumpukan Masa 2", $diffInDays->masa3 > 0 ? "Penumpukan Masa 3" : "Penumpukan Masa 3"];
       }
     } else if ($diffInDays->masa1 != 0 && $diffInDays->masa2 != 0 && $diffInDays->masa3 != 0) {
       $data["menuinv"] = ["Penumpukan Masa 1", "Penumpukan Masa 2", "Penumpukan Masa 3"];
@@ -516,7 +528,11 @@ class InvoiceController extends Controller
       if ($isExtended == "1") {
         return redirect('/invoice/add/extend')->with('success', 'Invoice berhasil dibuat & disimpan!');
       } else {
-        return redirect('/invoice')->with('success', 'Invoice berhasil dibuat & disimpan!');
+        if ($orderService == "export") {
+          return redirect('/export')->with('success', 'Invoice berhasil dibuat & disimpan!');
+        } else {
+          return redirect('/invoice')->with('success', 'Invoice berhasil dibuat & disimpan!');
+        }
       }
     } else {
       return redirect('/invoice')->with('error', 'Data gagal disimpan! kode error : #st2del');
@@ -1082,11 +1098,7 @@ class InvoiceController extends Controller
   public function findContainer(Request $request)
   {
     $client = new Client();
-
     $do_no = $request->do_no;
-    // var_dump($do_no);
-    // die();
-
 
     $url = getenv('API_URL') . '/delivery-service/do/groupsingle/' . $do_no;
     $req = $client->get(
@@ -1095,7 +1107,36 @@ class InvoiceController extends Controller
     $response = $req->getBody()->getContents();
     // var_dump($response);
     // die();
+    echo $response;
+  }
 
+  public function findSingleCustomer(Request $request)
+  {
+    $client = new Client();
+    $id = $request->id;
+
+    $url = getenv('API_URL') . '/delivery-service/customer/single/' . $id;
+    $req = $client->get(
+      $url
+    );
+    $response = $req->getBody()->getContents();
+    // var_dump($response);
+    // die();
+    echo $response;
+  }
+
+  public function findContainerBooking(Request $request)
+  {
+    $client = new Client();
+    $id = $request->booking;
+
+    $url = getenv('API_URL') . '/delivery-service/container/booking/' . $id;
+    $req = $client->get(
+      $url
+    );
+    $response = $req->getBody()->getContents();
+    // var_dump($response);
+    // die();
     echo $response;
   }
 }
