@@ -911,6 +911,31 @@ class InvoiceController extends Controller
     echo $response;
   }
 
+  public function VerifyPayment2(Request $request)
+  {
+    $client = new Client();
+
+    $id = $request->id;
+    // var_dump($id);
+    // die();
+    $fields =
+      [
+        "isPaid" => 1,
+      ];
+    $url = getenv('API_URL') . '/delivery-service/invoice/setPaid2/' . $id;
+    $req = $client->post(
+      $url,
+      [
+        "json" => $fields
+      ]
+    );
+    $response = $req->getBody()->getContents();
+    // var_dump($response);
+    // die();
+
+    echo $response;
+  }
+
   public function VerifyPiutang(Request $request)
   {
     $client = new Client();

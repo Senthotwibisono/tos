@@ -104,6 +104,7 @@ Route::prefix('invoice')->group(function () {
   Route::prefix('singleData')->group(function () {
     Route::post('/invoiceForm', [InvoiceController::class, 'singleInvoiceForm']);
     Route::post('/verifyPayment', [InvoiceController::class, 'VerifyPayment']);
+    Route::post('/verifyPayment2', [InvoiceController::class, 'VerifyPayment2']);
     Route::post('/verifyPiutang', [InvoiceController::class, 'VerifyPiutang']);
     Route::post('/mastertarif', [InvoiceController::class, 'singleMasterTarif']);
     Route::post('/updateMasterTarif', [InvoiceController::class, 'updateMasterTarif']);
@@ -163,6 +164,11 @@ Route::prefix('export')->group(function () {
       Route::post('/storeupdatestep1', [ExportController::class, 'storeUpdateDataStepStuffing1']);
       Route::post('/storestep2', [ExportController::class, 'storeDataStepStuffing2']);
     });
+    Route::get('/pranota1', [ExportController::class, 'Pranota1']);
+    Route::get('/pranota2', [ExportController::class, 'Pranota2']);
+    Route::get('/paidinvoice1', [ExportController::class, 'PaidInvoice1']);
+    Route::get('/paidinvoice2', [ExportController::class, 'PaidInvoice2']);
+    Route::get('/job', [ExportController::class, 'jobPage']);
   });
 });
 

@@ -563,8 +563,8 @@ class ExportController extends Controller
         $isExtended = $result->data->deliveryForm->isExtended;
         $diffInDays = $result->data->diffInDays[0];
         $data["ccdelivery"] = $result->data;
-        $data["menuinv"] = ["Lift Off Empty", "Pass Truck"];
-        $data["menuinv2"] = ["Lift On", "Pass Truck", "Penumpukan Masa 1"];
+        $data["menuinv"] = ["Lift On Empty", ""];
+        $data["menuinv2"] = ["Lift Off Full", "Pass Truck", "Penumpukan Masa 1"];
         $data["isExtended"] = $isExtended;
         $data["diffInDays"] = $diffInDays;
         $data["title"] = "Step 2 | Stuffing Pranota";
@@ -583,6 +583,7 @@ class ExportController extends Controller
         $data5 = $request->input('data5');
         $data6 = $request->input('data6');
         $data7 = $request->input('data7');
+        $data8 = $request->input('data8');
         $isExtended = $request->input('isExtended');
         $active_to = $request->input('active_to');
         $orderService = $request->input('orderService');
@@ -594,6 +595,7 @@ class ExportController extends Controller
             "data5" => $data5,
             "data6" => $data6,
             "data7" => $data7,
+            "data8" => $data8,
             "isExtended" => $isExtended,
             "orderService" => $orderService,
             "active_to" => $active_to,
@@ -616,5 +618,157 @@ class ExportController extends Controller
         } else {
             return redirect('/export/stuffing')->with('error', 'Data gagal disimpan! kode error : #st2del');
         }
+    }
+
+    public function Pranota1(Request $request)
+    {
+        $data = [];
+        $client = new Client();
+
+        $id_invoice = $request->id;
+        // dd($id_invoice);
+
+        // GET SINGLE FORM
+        $url_single_invoice = getenv('API_URL') . '/delivery-service/invoice/single/' . $id_invoice;
+        $req_single_invoice = $client->get($url_single_invoice);
+        $response_single_invoice = $req_single_invoice->getBody()->getContents();
+        $result_single_invoice = json_decode($response_single_invoice);
+        // dd($result_single_invoice);
+
+        // GET SINGLE PAYMENT METHODS
+        $url_single_payment = getenv('API_URL') . '/delivery-service/payment/single/e5b8b2e5-2445-4798-8c77-b85d24eeae2b';
+        $req_single_payment = $client->get($url_single_payment);
+        $response_single_payment = $req_single_payment->getBody()->getContents();
+        $result_single_payment = json_decode($response_single_payment);
+        // dd($result_single_payment);
+
+        $data["payments"] = $result_single_payment->data;
+        $data["invoices"] = $result_single_invoice->data;
+        $data["title"] = "Pranota Data";
+        return view('/export/stuffing/pranota/index', $data);
+    }
+
+    public function PaidInvoice1(Request $request)
+    {
+        $data = [];
+        $client = new Client();
+
+        $id_invoice = $request->id;
+        // dd($id_invoice);
+        //commited
+        // GET SINGLE FORM
+        $url_single_invoice = getenv('API_URL') . '/delivery-service/invoice/single/' . $id_invoice;
+        $req_single_invoice = $client->get($url_single_invoice);
+        $response_single_invoice = $req_single_invoice->getBody()->getContents();
+        $result_single_invoice = json_decode($response_single_invoice);
+        // dd($result_single_invoice);
+
+        // GET SINGLE PAYMENT METHODS
+        $url_single_payment = getenv('API_URL') . '/delivery-service/payment/single/e5b8b2e5-2445-4798-8c77-b85d24eeae2b';
+        $req_single_payment = $client->get($url_single_payment);
+        $response_single_payment = $req_single_payment->getBody()->getContents();
+        $result_single_payment = json_decode($response_single_payment);
+        // dd($result_single_payment);
+
+        $data["payments"] = $result_single_payment->data;
+        $data["invoices"] = $result_single_invoice->data;
+        $data["title"] = "Invoice " . $result_single_invoice->data->invoice->invoiceNumber;
+        return view('export/stuffing/paid_invoice/index1', $data);
+    }
+
+    public function PaidInvoice2(Request $request)
+    {
+        $data = [];
+        $client = new Client();
+
+        $id_invoice = $request->id;
+        // dd($id_invoice);
+        //commited
+        // GET SINGLE FORM
+        $url_single_invoice = getenv('API_URL') . '/delivery-service/invoice/single/' . $id_invoice;
+        $req_single_invoice = $client->get($url_single_invoice);
+        $response_single_invoice = $req_single_invoice->getBody()->getContents();
+        $result_single_invoice = json_decode($response_single_invoice);
+        // dd($result_single_invoice);
+
+        // GET SINGLE PAYMENT METHODS
+        $url_single_payment = getenv('API_URL') . '/delivery-service/payment/single/e5b8b2e5-2445-4798-8c77-b85d24eeae2b';
+        $req_single_payment = $client->get($url_single_payment);
+        $response_single_payment = $req_single_payment->getBody()->getContents();
+        $result_single_payment = json_decode($response_single_payment);
+        // dd($result_single_payment);
+
+        $data["payments"] = $result_single_payment->data;
+        $data["invoices"] = $result_single_invoice->data;
+        $data["title"] = "Invoice " . $result_single_invoice->data->invoice->invoiceNumber;
+        return view('export/stuffing/paid_invoice/index2', $data);
+    }
+
+    public function jobPage(Request $request)
+    {
+        $client = new Client();
+
+        $id_invoice = $request->id;
+        // dd($id_invoice);
+        //commited
+        // GET SINGLE INVOICE FORM
+        $url_single_invoice = getenv('API_URL') . '/delivery-service/invoice/single/' . $id_invoice;
+        $req_single_invoice = $client->get($url_single_invoice);
+        $response_single_invoice = $req_single_invoice->getBody()->getContents();
+        $result_single_invoice = json_decode($response_single_invoice);
+        // dd($result_single_invoice);
+
+        $id_delivery = $result_single_invoice->data->invoice->data6->deliveryid;
+
+        // GET SINGLE DELIVERY FORM
+        $url_single_form = getenv('API_URL') . '/delivery-service/form/container/' . $id_delivery;
+        $req_single_form = $client->get($url_single_form);
+        $response_single_form = $req_single_form->getBody()->getContents();
+        $result_single_form = json_decode($response_single_form);
+        // dd($result_single_form);
+        $container = $result_single_form->data->containers;
+        // dd($container);
+        $container_arr = [];
+        foreach ($container as $data) {
+            array_push($container_arr, [
+                // "banner_url" => $banner_url_file_1,
+                $data->container_no
+            ]);
+        }
+        // dd($container_arr);
+        $jobNumber = $result_single_invoice->data->invoice->jobNumber;
+        // dd($jobNumber);
+        $fields = [
+            "containers" => $container_arr,
+            "jobNumber" => $jobNumber,
+        ];
+        // dd($fields);
+
+        $url = getenv('API_URL') . '/delivery-service/job/conkey';
+        $req = $client->get(
+            $url,
+            [
+                "json" => $fields
+            ]
+        );
+        $response = $req->getBody()->getContents();
+        $result = json_decode($response);
+        // dd($result);
+        $data = [];
+        $jobData = $result->data->jobData;
+        // dd($jobData);
+        $qrcodes = [];
+        foreach ($jobData as $value) {
+            array_push(
+                $qrcodes,
+                QrCode::size(100)->generate($value->container_no)
+            );
+        }
+        // dd($qrcodes);
+        $data["jobs"] = $jobData;
+        $data["invoice"] = $result_single_invoice->data;
+        $data["delivery"] = $result_single_form->data;
+        $data["title"] = "Job Page";
+        return view('invoice/jobPage/index', $data, compact('qrcodes'));
     }
 }

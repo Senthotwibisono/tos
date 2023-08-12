@@ -91,26 +91,34 @@
         console.log(res.data.invoice.isPiutang);
         $("#input_id").val(res.data.invoice.id);
         $("#customer").val(res.data.invoice.data6.customer);
-        if (res.data.invoice.isPaid == 1 && res.data.invoice.isPiutang == 0) {
-          $("#isPaid").addClass("bg-success").text("Paid");
+        if (res.data.invoice.isPaid == 1 && res.data.invoice.isPaid2 == 1 && res.data.invoice.isPiutang == 0) {
+          $("#isPaid1").addClass("bg-success").text("Paid");
+          $("#isPaid2").addClass("bg-success").text("Paid");
           $("#isPiutang").addClass("bg-danger").text("Not Piutang");
           $("#verifyPiutang").prop("disabled", true).text("Already Paid");
-          $("#verifyPayment").prop("disabled", true).text("Already Paid");
-        } else if (res.data.invoice.isPiutang == 1 && res.data.invoice.isPaid == 0) {
+          $("#verifyPayment1").prop("disabled", true).text("Already Paid");
+          $("#verifyPayment2").prop("disabled", true).text("Already Paid");
+        } else if (res.data.invoice.isPiutang == 1 && res.data.invoice.isPaid == 0 && res.data.invoice.isPaid2 == 1) {
           $("#isPiutang").addClass("bg-warning").text("Piutang");
-          $("#isPaid").addClass("bg-danger").text("Not Paid");
+          $("#isPaid1").addClass("bg-danger").text("Not Paid");
+          $("#isPaid2").addClass("bg-success").text("Paid");
           $("#verifyPiutang").prop("disabled", true).text("Already Piutang");
-          $("#verifyPayment").prop("disabled", false).text("Verify This Payment");
-        } else if (res.data.invoice.isPiutang == 1 && res.data.invoice.isPaid == 1) {
+          $("#verifyPayment1").prop("disabled", false).text("Verify This Payment");
+          $("#verifyPayment2").prop("disabled", true).text("Already Paid");
+        } else if (res.data.invoice.isPiutang == 1 && res.data.invoice.isPaid == 1 && res.data.invoice.isPaid2 == 0) {
           $("#verifyPiutang").prop("disabled", true).text("Already Piutang");
           $("#isPiutang").addClass("bg-warning").text("Piutang");
-          $("#verifyPayment").prop("disabled", true).text("Already Paid");
-          $("#isPaid").addClass("bg-success").text("Paid");
+          $("#verifyPayment1").prop("disabled", true).text("Already Paid");
+          $("#verifyPayment2").prop("disabled", false).text("Verify This Payment");
+          $("#isPaid1").addClass("bg-success").text("Paid");
+          $("#isPaid2").addClass("bg-danger").text("Not Paid");
         } else {
           $("#isPiutang").addClass("bg-danger").text("Not Piutang");
-          $("#isPaid").addClass("bg-danger").text("Not Paid");
+          $("#isPaid1").addClass("bg-danger").text("Not Paid");
+          $("#isPaid2").addClass("bg-danger").text("Not Paid");
           $("#verifyPiutang").prop("disabled", false).text("Piutang This Invoice");
-          $("#verifyPaid").prop("disabled", false).text("Verify This Payment");
+          $("#verifyPayement1").prop("disabled", false).text("Verify This Payment");
+          $("#verifyPayement2").prop("disabled", false).text("Verify This Payment");
         }
         // console.log(res.data.invoice.isPiutang);
         // if (res.data.invoice.isPiutang == 1) {
@@ -122,7 +130,7 @@
         //   $("#verifyPiutang").prop("disabled", false).text("Piutang This Invoice");
         // }
 
-        $("#verifyPayment").click(function(event) {
+        $("#verifyPayment1").click(function(event) {
           Swal.fire({
             icon: 'question',
             title: 'Are You Sure?',
@@ -140,6 +148,62 @@
                 },
                 type: "POST",
                 url: `/invoice/singleData/verifyPayment`,
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: fd,
+                success: function(response) {
+                  let res = JSON.parse(response);
+                  console.log(res);
+                  Swal.fire({
+                    icon: 'success',
+                    title: 'Successfully Verify Payment!',
+                    text: 'Please Check Again',
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      location.reload();
+                    } else {
+                      location.reload();
+
+                    }
+                  })
+                },
+                error(err) {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: 'Something wrong happened! #VE42i',
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      location.reload();
+                    } else {
+                      location.reload();
+                    }
+                  });
+                }
+              });
+            }
+          })
+        });
+
+        $("#verifyPayment2").click(function(event) {
+          Swal.fire({
+            icon: 'question',
+            title: 'Are You Sure?',
+            text: 'You are about to do verifying this payment, and cannot be reverted!',
+            showCancelButton: true,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              let fd = new FormData();
+              let id = res.data.invoice.id;
+
+              fd.append('id', id);
+              $.ajax({
+                headers: {
+                  'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+                },
+                type: "POST",
+                url: `/invoice/singleData/verifyPayment2`,
                 cache: false,
                 contentType: false,
                 processData: false,
