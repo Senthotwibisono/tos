@@ -91,26 +91,34 @@
         console.log(res.data.invoice.isPiutang);
         $("#input_id").val(res.data.invoice.id);
         $("#customer").val(res.data.invoice.data6.customer);
-        if (res.data.invoice.isPaid == 1 && res.data.invoice.isPiutang == 0) {
-          $("#isPaid").addClass("bg-success").text("Paid");
+        if (res.data.invoice.isPaid == 1 && res.data.invoice.isPaid2 == 1 && res.data.invoice.isPiutang == 0) {
+          $("#isPaid1").addClass("bg-success").text("Paid");
+          $("#isPaid2").addClass("bg-success").text("Paid");
           $("#isPiutang").addClass("bg-danger").text("Not Piutang");
           $("#verifyPiutang").prop("disabled", true).text("Already Paid");
-          $("#verifyPayment").prop("disabled", true).text("Already Paid");
-        } else if (res.data.invoice.isPiutang == 1 && res.data.invoice.isPaid == 0) {
+          $("#verifyPayment1").prop("disabled", true).text("Already Paid");
+          $("#verifyPayment2").prop("disabled", true).text("Already Paid");
+        } else if (res.data.invoice.isPiutang == 1 && res.data.invoice.isPaid == 0 && res.data.invoice.isPaid2 == 1) {
           $("#isPiutang").addClass("bg-warning").text("Piutang");
-          $("#isPaid").addClass("bg-danger").text("Not Paid");
+          $("#isPaid1").addClass("bg-danger").text("Not Paid");
+          $("#isPaid2").addClass("bg-success").text("Paid");
           $("#verifyPiutang").prop("disabled", true).text("Already Piutang");
-          $("#verifyPayment").prop("disabled", false).text("Verify This Payment");
-        } else if (res.data.invoice.isPiutang == 1 && res.data.invoice.isPaid == 1) {
+          $("#verifyPayment1").prop("disabled", false).text("Verify This Payment");
+          $("#verifyPayment2").prop("disabled", true).text("Already Paid");
+        } else if (res.data.invoice.isPiutang == 1 && res.data.invoice.isPaid == 1 && res.data.invoice.isPaid2 == 0) {
           $("#verifyPiutang").prop("disabled", true).text("Already Piutang");
           $("#isPiutang").addClass("bg-warning").text("Piutang");
-          $("#verifyPayment").prop("disabled", true).text("Already Paid");
-          $("#isPaid").addClass("bg-success").text("Paid");
+          $("#verifyPayment1").prop("disabled", true).text("Already Paid");
+          $("#verifyPayment2").prop("disabled", false).text("Verify This Payment");
+          $("#isPaid1").addClass("bg-success").text("Paid");
+          $("#isPaid2").addClass("bg-danger").text("Not Paid");
         } else {
           $("#isPiutang").addClass("bg-danger").text("Not Piutang");
-          $("#isPaid").addClass("bg-danger").text("Not Paid");
+          $("#isPaid1").addClass("bg-danger").text("Not Paid");
+          $("#isPaid2").addClass("bg-danger").text("Not Paid");
           $("#verifyPiutang").prop("disabled", false).text("Piutang This Invoice");
-          $("#verifyPaid").prop("disabled", false).text("Verify This Payment");
+          $("#verifyPayement1").prop("disabled", false).text("Verify This Payment");
+          $("#verifyPayement2").prop("disabled", false).text("Verify This Payment");
         }
         // console.log(res.data.invoice.isPiutang);
         // if (res.data.invoice.isPiutang == 1) {
@@ -122,7 +130,7 @@
         //   $("#verifyPiutang").prop("disabled", false).text("Piutang This Invoice");
         // }
 
-        $("#verifyPayment").click(function(event) {
+        $("#verifyPayment1").click(function(event) {
           Swal.fire({
             icon: 'question',
             title: 'Are You Sure?',
@@ -140,6 +148,62 @@
                 },
                 type: "POST",
                 url: `/invoice/singleData/verifyPayment`,
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: fd,
+                success: function(response) {
+                  let res = JSON.parse(response);
+                  console.log(res);
+                  Swal.fire({
+                    icon: 'success',
+                    title: 'Successfully Verify Payment!',
+                    text: 'Please Check Again',
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      location.reload();
+                    } else {
+                      location.reload();
+
+                    }
+                  })
+                },
+                error(err) {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: 'Something wrong happened! #VE42i',
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      location.reload();
+                    } else {
+                      location.reload();
+                    }
+                  });
+                }
+              });
+            }
+          })
+        });
+
+        $("#verifyPayment2").click(function(event) {
+          Swal.fire({
+            icon: 'question',
+            title: 'Are You Sure?',
+            text: 'You are about to do verifying this payment, and cannot be reverted!',
+            showCancelButton: true,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              let fd = new FormData();
+              let id = res.data.invoice.id;
+
+              fd.append('id', id);
+              $.ajax({
+                headers: {
+                  'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+                },
+                type: "POST",
+                url: `/invoice/singleData/verifyPayment2`,
                 cache: false,
                 contentType: false,
                 processData: false,
@@ -759,4 +823,220 @@
       }
     });
   });
+</script>
+
+<script>
+  $('#submit').click(function() {
+    // console.log("clicked");
+    let date = $('#date').val();
+    console.log(date);
+  })
+</script>
+
+<script>
+  $("#manual").click(function() {
+    console.log("manual!");
+    $("#do_manual").css("display", "block");
+    $("#do_auto").css("display", "none");
+  })
+  $("#auto").click(function() {
+    console.log("auto!");
+    $("#do_auto").css("display", "block");
+    $("#do_manual").css("display", "none");
+  })
+</script>
+
+<script>
+  const doNumberSelect = $("#do_number_auto");
+  const containerSelect = $("#containerSelector");
+
+  function fetchContainers(selectedDoNoId) {
+    console.log(selectedDoNoId);
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+    let formData = new FormData();
+    formData.append("do_no", selectedDoNoId);
+
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+      },
+      type: "POST",
+      url: `/invoice/singleData/findContainer`,
+      cache: false,
+      contentType: false,
+      processData: false,
+      data: formData,
+      success: function(response) {
+        containerSelect.innerHTML = ''; // Clear previous options
+        const responseData = JSON.parse(response);
+        console.log(responseData);
+        if (responseData.hasOwnProperty('data')) {
+          const containers = responseData.data;
+          // $("#do_exp_date").val(formattedDate(containers.do_expired)).attr("readonly", "true");
+          // $("#boln").val(containers.bl_no).attr("readonly", "true");
+          containers.forEach((container) => {
+            $("#containerSelector").append(`<option selected value="${container.container_no}">${container.container_no}</option>`)
+          });
+        } else {
+          console.error('Invalid response format:', response);
+        }
+      },
+      error(err) {
+        console.log(err);
+      }
+    });
+  }
+
+  $("#do_number_auto").on('change', function() {
+    console.log("CHANGED!");
+    const selectedDoNo = this.value;
+    const selectedDoNoId = this.options[this.selectedIndex].getAttribute('data-id');
+    $("#containerSelector").attr("disabled", "true");
+    if (selectedDoNo !== "") {
+      fetchContainers(selectedDoNoId);
+    } else {
+      containerSelect.innerHTML = ''; // Clear options when no "do_no" is selected
+    }
+  });
+</script>
+
+<script>
+  function fetchContainersBooking(selectedDoNoId) {
+    console.log(selectedDoNoId);
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+    let formData = new FormData();
+    formData.append("booking", selectedDoNoId);
+
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+      },
+      type: "POST",
+      url: `/invoice/singleData/findContainerBooking`,
+      cache: false,
+      contentType: false,
+      processData: false,
+      data: formData,
+      success: function(response) {
+        containerSelect.innerHTML = ''; // Clear previous options
+        const responseData = JSON.parse(response);
+        console.log(responseData);
+        let ctr = 0;
+        if (responseData.hasOwnProperty('data')) {
+          const containers = responseData.data;
+          // $("#do_exp_date").val(formattedDate(containers.do_expired)).attr("readonly", "true");
+          // $("#boln").val(containers.bl_no).attr("readonly", "true");
+          containers.forEach((container) => {
+            ctr++;
+            $("#containerSelector").append(`<option selected value="${container.container_no}">${container.container_no}</option>`)
+          });
+          $("#ctr").val(ctr).attr("readonly", "true");
+          $("#pod").val(containers[0].pod).attr("readonly", "true");
+
+        } else {
+          console.error('Invalid response format:', response);
+        }
+      },
+      error(err) {
+        console.log(err);
+      }
+    });
+  }
+
+  $("#booking").on('change', function() {
+    console.log("CHANGED!");
+    const selectedDoNo = this.value;
+    const selectedDoNoId = this.options[this.selectedIndex].getAttribute('data-id');
+    // $("#containerSelector").attr("disabled", "true");
+    if (selectedDoNo !== "") {
+      fetchContainersBooking(selectedDoNoId);
+    } else {
+      containerSelect.innerHTML = ''; // Clear options when no "do_no" is selected
+    }
+  });
+</script>
+
+
+
+<script>
+  $("#vessel").on('change', function() {
+    console.log("CHANGED!");
+    const selectedDoNo = this.value;
+    const selectedDoNoId = this.options[this.selectedIndex].getAttribute('data-id');
+    console.log(selectedDoNoId);
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+    let formData = new FormData();
+    formData.append("ves_id", selectedDoNoId);
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+      },
+      type: "POST",
+      url: `/coparn/findSingleVessel`,
+      cache: false,
+      contentType: false,
+      processData: false,
+      data: formData,
+      success: function(response) {
+        let res = JSON.parse(response);
+        data = res.data;
+        $("#voyage").val(res.data.voy_out).attr("readonly", "true");
+        $("#vesselcode").val(res.data.ves_code).attr("readonly", "true");
+        $("#closing").val(formattedDate(res.data.clossing_date)).attr("readonly", "true");
+        $("#arrival").val(formattedDate(res.data.arrival_date)).attr("readonly", "true");
+        $("#departure").val(formattedDate(res.data.deparature_date));
+      }
+    })
+  })
+</script>
+
+<script>
+  $("#customer").on('change', function() {
+    console.log("CHANGED!");
+    const selectedDoNo = this.value;
+    const selectedDoNoId = this.options[this.selectedIndex].getAttribute('data-id');
+    console.log(selectedDoNoId);
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+    let formData = new FormData();
+    formData.append("id", selectedDoNoId);
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+      },
+      type: "POST",
+      url: `/invoice/singleData/findSingleCustomer`,
+      cache: false,
+      contentType: false,
+      processData: false,
+      data: formData,
+      success: function(response) {
+        let res = JSON.parse(response);
+        data = res.data;
+        console.log(data);
+        $("#npwp").val(res.data.npwp).attr("readonly", "true");
+        $("#address").val(res.data.address).attr("readonly", "true");
+      }
+    })
+  })
+</script>
+
+<script>
+  function formattedDate(date) {
+    // Assuming your date is stored in result.data.tgl_request
+    var originalDate = date;
+
+    // Convert the original date string to a JavaScript Date object
+    var dateObject = new Date(originalDate);
+
+    // Function to pad single digits with a leading zero
+    function pad(number) {
+      return (number < 10) ? '0' + number : number;
+    }
+
+    // Format the date as yyyy-MM-dd
+    var formattedDate = dateObject.getFullYear() + "-" + pad(dateObject.getMonth() + 1) + "-" + pad(dateObject.getDate());
+
+    // console.log(formattedDate); // Output: "2023-07-24"
+    return formattedDate;
+  };
 </script>

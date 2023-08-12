@@ -98,14 +98,15 @@
             </div>
             <div class="col-xs-12 col-6">
               <address>
-                <strong>Bill of Loading Number:</strong><br>
-                <?= $invoices->deliveryForm->data->boln ?>
+                <?= $invoices->deliveryForm->data->boln != "" ? "<strong>Bill of Loading Number:</strong><br>" .
+                  $invoices->deliveryForm->data->boln  : "<strong>Booking Number:</strong><br>" . $invoices->deliveryForm->data->booking_no ?>
+
               </address>
             </div>
             <div class="col-xs-12 col-6">
               <address>
-                <strong>Do Number:</strong><br>
-                <?= $invoices->deliveryForm->data->do_number ?>
+                <?= $invoices->deliveryForm->data->do_number != "" ? "<strong>Do Number:</strong><br>" . $invoices->deliveryForm->data->do_number : "" ?>
+
               </address>
             </div>
             <div class="col-xs-12 col-6">

@@ -146,11 +146,23 @@
                   <input type="hidden" name="data2[<?= $index ?>][status]" value="<?= $ccdelivery->findContainer[$i]->ctr_status ?>">
                   <input type="hidden" name="data1[<?= $index ?>][hari]" value="0">
                   <input type="hidden" name="data2[<?= $index ?>][hari]" value="0">
-                  <input type="hidden" name="data1[<?= $index ?>][amount]" value="<?= $ccdelivery->grandTotal[$i]->liftOn ?>">
+                  <?php if ($ccdelivery->deliveryForm->orderService == "sp2") { ?>
+                    <input type="hidden" name="data1[<?= $index ?>][amount]" value="<?= $ccdelivery->grandTotal[$i]->liftOn ?>">
+                    <input type="hidden" name="data1[<?= $index ?>][tarif]" value="<?= $data->lift_on ?>">
+
+                    <input type="hidden" name="orderService" value="sp2">
+                  <?php } else { ?>
+                    <input type="hidden" name="data1[<?= $index ?>][tarif]" value="<?= $data->paket_stripping ?>">
+                    <input type="hidden" name="data1[<?= $index ?>][amount]" value="<?= $ccdelivery->grandTotal[$i]->paketStripping ?>">
+                    <input type="hidden" name="orderService" value="spps">
+                  <?php }
+                  ?>
                   <input type="hidden" name="data2[<?= $index ?>][amount]" value="<?= $ccdelivery->grandTotal[$i]->passTruck ?>">
-                  <input type="hidden" name="data1[<?= $index ?>][tarif]" value="<?= $data->lift_on ?>">
                   <input type="hidden" name="data2[<?= $index ?>][tarif]" value="<?= $data->pass_truck ?>">
                 <?php } ?>
+
+                <input type="hidden" name="active_to" value="<?= $ccdelivery->deliveryForm->exp_date ?>">
+
                 <input type="hidden" name="data3[<?= $index ?>][title]" value="Penumpukan Masa 1">
                 <input type="hidden" name="data4[<?= $index ?>][title]" value="Penumpukan Masa 2">
                 <input type="hidden" name="data5[<?= $index ?>][title]" value="Penumpukan Masa 3">
@@ -218,15 +230,29 @@
                         <td><?= $ccdelivery->findContainer[$i]->ctr_status ?></td>
 
                         <?php if ($ccdelivery->deliveryForm->isExtended != 1) { ?>
-                          <?php if ($value == "Lift On") {  ?>
-                            <td>0 Hari</td>
-                            <td>Rp. <?= rupiah($data->lift_on) ?></td>
-                            <td>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->liftOn) ?></td>
-                          <?php } else if ($value == "Pass Truck") {  ?>
-                            <td>0 Hari</td>
-                            <td>Rp. <?= rupiah($data->pass_truck) ?> x 2 (In & Out)</td>
-                            <td>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->passTruck) ?> </td>
-                          <?php }  ?>
+                          <?php if ($ccdelivery->deliveryForm->orderService == "sp2") { ?>
+                            <?php if ($value == "Lift On") {  ?>
+                              <td>0 Hari</td>
+                              <td>Rp. <?= rupiah($data->lift_on) ?></td>
+                              <td>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->liftOn) ?></td>
+                            <?php } else if ($value == "Pass Truck") {  ?>
+                              <td>0 Hari</td>
+                              <td>Rp. <?= rupiah($data->pass_truck) ?> x 2 (In & Out)</td>
+                              <td>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->passTruck) ?> </td>
+                            <?php }  ?>
+                          <?php } else { ?>
+                            <?php if ($value == "Paket Stripping") {  ?>
+                              <td>0 Hari</td>
+                              <td>Rp. <?= rupiah($data->paket_stripping) ?></td>
+                              <td>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->paketStripping) ?></td>
+                            <?php } else if ($value == "Pass Truck") {  ?>
+                              <td>0 Hari</td>
+                              <td>Rp. <?= rupiah($data->pass_truck) ?> x 2 (In & Out)</td>
+                              <td>Rp. <?= rupiah($ccdelivery->grandTotal[$i]->passTruck) ?> </td>
+                            <?php }  ?>
+                          <?php }
+                          ?>
+
 
                         <?php } ?>
 

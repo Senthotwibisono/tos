@@ -8,7 +8,7 @@
       </a>
     </li>
     <li class="menu-item has-sub">
-      <a href="" class="menu-link">
+      <a href="/invoice" class="menu-link">
         <i class="fa-solid fa-ship"></i>
         Billing System
       </a>
@@ -19,18 +19,57 @@
               <a class="submenu-link" href="/invoice">Invoice</a>
             </li>
             <li class="submenu-item">
-              <a class="submenu-link" href="#">Delivery</a>
+              <a class="submenu-link" href="/invoice/delivery">Delivery</a>
             </li>
             <li class="submenu-item">
-              <a class="submenu-link" href="/customer">Customer</a>
+              <a class="submenu-link" href="/invoice/add/extend">Delivery Extend</a>
             </li>
             <li class="submenu-item">
-              <a class="submenu-link" href="/container">Container</a>
+              <a class="submenu-link" href="/invoice/customer">Customer</a>
+            </li>
+            <li class="submenu-item has-sub">
+              <a type="button" class="submenu-link">Master Tarif</a>
+              <ul class="subsubmenu">
+                <li class="subsubmenu-item">
+                  <a href="/invoice/mastertarif" class="subsubmenu-link">Master Tarif SP2</a>
+                </li>
+                <li class="subsubmenu-item">
+                  <a href="/spps/mastertarif" class="subsubmenu-link">Master Tarif SPPS</a>
+                </li>
+              </ul>
+            </li>
+            <li class="submenu-item">
+              <a href="/invoice/payment" class="submenu-link">Metode Pembayaran</a>
             </li>
           </ul>
         </div>
       </div>
     </li>
+
+    <!-- <li class="menu-item has-sub">
+      <a href="/spps" class="menu-link">
+        <i class="fa-solid fa-ship"></i>
+        SPPS Billing System
+      </a>
+      <div class="submenu">
+        <div class="submenu-group-wrapper">
+          <ul class="submenu-group">
+            <li class="submenu-item">
+              <a class="submenu-link" href="/spps">Invoice</a>
+            </li>
+            <li class="submenu-item">
+              <a class="submenu-link" href="/spps/delivery">Delivery</a>
+            </li>
+            <li class="submenu-item">
+              <a class="submenu-link" href="/spps/customer">Customer</a>
+            </li>
+            <li class="submenu-item">
+              <a href="/spps/mastertarif" class="submenu-link">Master Tarif</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </li> -->
 
 
 
@@ -128,7 +167,7 @@
           <ul class="submenu-group">
 
             <li class="submenu-item  ">
-              <a href="layout-default.html" class='submenu-link'>Do Online Check</a>
+              <a href="/do" class='submenu-link'>Do Online Check</a>
 
 
             </li>
