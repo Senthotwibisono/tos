@@ -172,7 +172,7 @@
           </div>
           <div class="row">
             <div class="col-md-12">
-              <h3>ORDER SUMMARY</h3>
+              <h3>ORDER SUMMARY 1</h3>
               <table class="table table-striped">
                 <thead>
                   <tr class="line">
@@ -226,7 +226,6 @@
               <p>Terbilang <strong>"<?= terbilang($invoices->invoice->data6->grandtotal) ?> Rupiah"</strong></p>
             </div>
           </div>
-
 
         </div>
       </div>

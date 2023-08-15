@@ -27,7 +27,7 @@
                     <select name="vessel" id="vessel" class="js-example-basic-multiple form-control" style="height: 150%;">
                       <option value="" disabled selected>Pilih Salah Satu</option>
                       <?php foreach ($vessel as $data) { ?>
-                        <option value="<?= $data->ves_name ?>" data-id="<?= $data->id ?>"><?= $data->ves_name ?></option>
+                        <option value="<?= $data->ves_name ?>" data-id="<?= $data->ves_id ?>"><?= $data->ves_name ?></option>
                       <?php } ?>
                     </select>
                   </div>

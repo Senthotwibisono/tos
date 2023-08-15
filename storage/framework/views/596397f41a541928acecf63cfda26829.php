@@ -45,7 +45,7 @@
                 <select required name="vessel" id="vessel" class="js-example-basic-multiple form-control" style="height: 150%;">
                   <option value="" disabled selected>Pilih Salah Satu</option>
                   <?php foreach ($vessel as $data) { ?>
-                    <option value="<?= $data->ves_name ?>" data-id="<?= $data->id ?>"><?= $data->ves_name ?></option>
+                    <option value="<?= $data->ves_name ?>" data-id="<?= $data->ves_id ?>"><?= $data->ves_name ?></option>
                   <?php } ?>
                 </select>
               </div>
@@ -106,7 +106,7 @@
               <select name="container[]" id="containerSelector" class="js-example-basic-multiple form-control" style="height: 150%;" multiple="multiple">
                 <option disabled value="">Pilih Salah Satu</option>
                 <?php foreach ($container as $data) { ?>
-                  <?php if ($data->ctr_intern_status == "04") { ?>
+                  <?php if ($data->ctr_intern_status == "04" && $data->isChoosen != "1") { ?>
                     <option value="<?= $data->id ?>"><?= $data->container_no ?></option>
                   <?php } ?>
                 <?php } ?>

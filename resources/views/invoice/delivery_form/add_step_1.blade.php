@@ -83,13 +83,13 @@
             <div class="col-12 col-md-4">
               <div class="form-group">
                 <label for="">Do Expired</label>
-                <input name="do_exp_date" required type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023" id="doexpired">
+                <input name="do_exp_date" id="do_exp_date" required type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023" id="doexpired">
               </div>
             </div>
             <div class="col-12 col-md-4">
               <div class="form-group">
                 <label for="">Bill of Loading Number</label>
-                <input name="boln" required type="text" class="form-control" placeholder="Bill Of Loading Number">
+                <input name="boln" id="boln" required type="text" class="form-control" placeholder="Bill Of Loading Number">
               </div>
             </div>
             <div class="col-12">
