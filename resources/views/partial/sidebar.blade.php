@@ -35,6 +35,9 @@
       <li class="submenu-item @if(Request::is('planning/bayplan_import')) active @endif">
         <a href="/planning/bayplan_import">Bay Plan Import</a>
       </li>
+      <li class="submenu-item @if(Request::is('planning/ship_planning')) active @endif">
+        <a href="/planning/ship_planning">Ship Planning</a>
+      </li>
       <hr>
       <li class="submenu-item @if(Request::is('planning/report')) active @endif">
         <a href="/planning/report">Discharge List</a>
@@ -94,12 +97,12 @@
 
   <!-- disch/load -->
 
-  <li class="sidebar-item  has-sub @if(Request::is('disch/*')) active @endif">
+  <li class="sidebar-item  has-sub @if(Request::is('disch/*') || Request::is('load/*')) active @endif">
     <a href="#" class='sidebar-link'>
       <i class="bi bi-collection-fill"></i>
       <span>Disch/Load</span>
     </a>
-    <ul class="submenu @if(Request::is('disch/*')) active @endif">
+    <ul class="submenu @if(Request::is('disch/*') || Request::is('load/*')) active @endif">
       <!-- <li class="submenu-item ">
                         <a href="extra-component-avatar.html">Loading Confirm With Plan</a>
                     </li>
@@ -111,6 +114,13 @@
       </li>
       <li class="submenu-item @if(Request::is('disch/view-vessel')) active @endif">
         <a href="/disch/view-vessel">Discharge View</a>
+      </li>
+      <hr>
+      <li class="submenu-item @if(Request::is('load/confirm_load')) active @endif">
+        <a href="/load/confirm_load">Load Confirm</a>
+      </li>
+      <li class="submenu-item @if(Request::is('load/container_loading')) active @endif">
+        <a href="/load/container_loading">Container On Loading</a>
       </li>
       <!-- <li class="submenu-item ">
                         <a href="extra-component-rating.html">Entry Hatch Move</a>
@@ -145,12 +155,12 @@
 
   <!-- yard -->
 
-  <li class="sidebar-item  has-sub @if(Request::is('yard/*') || Request::is('stripping')) active @endif">
+  <li class="sidebar-item  has-sub @if(Request::is('yard/*') || Request::is('stripping') || Request::is('stuffing')) active @endif">
     <a href="#" class='sidebar-link'>
       <i class="fa-solid fa-landmark-flag"></i>
       <span>Yard</span>
     </a>
-    <ul class="submenu  @if(Request::is('yard/*') || Request::is('stripping')) active @endif">
+    <ul class="submenu  @if(Request::is('yard/*') || Request::is('stripping') || Request::is('stuffing')) active @endif">
       <!-- <li class="submenu-item ">
                         <a href="form-element-input.html">Yard Operation Control</a>
                     </li>
@@ -179,6 +189,9 @@
 
       <li class="submenu-item @if(Request::is('stripping')) active @endif">
         <a href="/stripping">Stripping</a>
+      </li>
+      <li class="submenu-item @if(Request::is('stuffing')) active @endif">
+        <a href="/stuffing">Stuffing</a>
       </li>
       <!-- <li class="submenu-item ">
                         <a href="form-element-textarea.html">Reefer Monitoring</a>
@@ -252,12 +265,12 @@
 
   <!-- gate -->
 
-  <li class="sidebar-item  has-sub @if(Request::is('delivery/*')) active @endif">
+  <li class="sidebar-item  has-sub @if(Request::is('delivery/*') || Request::is('reciving/*'))) active @endif">
     <a href="#" class='sidebar-link'>
       <i class="fa-solid fa-torii-gate"></i>
       <span>Gate</span>
     </a>
-    <ul class="submenu @if(Request::is('delivery/*')) active @endif">
+    <ul class="submenu @if(Request::is('delivery/*') || Request::is('reciving/*'))) active @endif">
       <li class="submenu-item @if(Request::is('delivery/gate-in')) active @endif">
         <a href="/delivery/gate-in">Get in Delivery</a>
       </li>
@@ -266,6 +279,13 @@
       </li>
 
       <hr>
+
+      <li class="submenu-item @if(Request::is('reciving/gate-in')) active @endif">
+        <a href="/reciving/gate-in">Get in Reciving</a>
+      </li>
+      <li class="submenu-item @if(Request::is('reciving/gate-out')) active @endif">
+        <a href="/reciving/gate-out">Gate Out Reciving</a>
+      </li>
 
 
       <!-- <li class="submenu-item ">

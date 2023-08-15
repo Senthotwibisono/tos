@@ -13,6 +13,7 @@ use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\YardrotController;
 use App\Http\Controllers\DischargeView;
 use App\Http\Controllers\Stripping;
+use App\Http\Controllers\Stuffing;
 use App\Http\Controllers\Gati;
 use App\Http\Controllers\Gato;
 use App\Http\Controllers\MasterController;
@@ -23,6 +24,8 @@ use App\Http\Controllers\ReportCont;
 use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\CoparnController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ShipPlanController;
+use App\Http\Controllers\LoadController;
 
 
 /*
@@ -442,3 +445,33 @@ Route::get('/generate-report-gato-del', [ReportController::class, 'generateREPT_
 //Export
 
 Route::get('/edi/coparn', [CoparnController::class, 'index']);
+
+
+                                      //Export
+
+//gate
+Route::get('/reciving/gate-in', [Gati::class, 'index_rec']);
+Route::post('/gati-data_container-rec', [Gati::class, 'data_container_rec']);
+Route::post('/gati-rec', [Gati::class, 'gati_rec']);
+Route::post('/gati-iso-rec', [Gati::class, 'gati_iso_rec']);
+
+Route::get('/delivery/gate-out', [Gato::class, 'index']);
+Route::post('/gato-data_container', [Gato::class, 'data_container']);
+Route::post('/gato-del', [Gato::class, 'gato_del']);
+
+
+//Ship Plan
+Route::get('/planning/ship_planning', [ShipPlanController::class, 'index']);
+Route::get('/planning/plan-ves-{ves_id}', [ShipPlanController::class, 'plan']);
+
+// Stuffing
+Route::get('/stuffing', [Stuffing::class, 'index']);
+Route::post('/get-stuffing', [Stuffing::class, 'get_stuffing']);
+Route::post('/stuffing-place', [Stuffing::class, 'stuffing_place']);
+
+// Load
+Route::get('/load/confirm_load', [LoadController::class, 'index']);
+Route::post('/search-container', [LoadController::class, 'container']);
+Route::post('/get-container-key-load', [LoadController::class, 'get_key']);
+Route::post('/confirm', [LoadController::class, 'confirm']);
+Route::post('/get-con-load', [LoadController::class, 'get_cont']);
