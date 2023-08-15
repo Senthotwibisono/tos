@@ -132,6 +132,7 @@
               ?>
               <?php
               foreach ($data2 as $data_arr) { ?>
+                <!-- update for prod -->
                 <input type="hidden" name="orderService" value="stuffing">
                 <input type="hidden" name="active_to" value="<?= $ccdelivery->deliveryForm->exp_date ?>">
 

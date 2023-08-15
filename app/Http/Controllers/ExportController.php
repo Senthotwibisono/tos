@@ -12,6 +12,8 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Illuminate\Support\Collection;
 use App\Http\Controllers\DataExport;
+use App\Models\VVoyage;
+
 
 
 class ExportController extends Controller
@@ -446,11 +448,13 @@ class ExportController extends Controller
         // dd($result_do);
 
         // GET ALL VESSEL
-        $url_vessel = getenv('API_URL') . '/delivery-service/vessel/all';
-        $req_vessel = $client->get($url_vessel);
-        $response_vessel = $req_vessel->getBody()->getContents();
-        $result_vessel = json_decode($response_vessel);
+        // $url_vessel = getenv('API_URL') . '/delivery-service/vessel/all';
+        // $req_vessel = $client->get($url_vessel);
+        // $response_vessel = $req_vessel->getBody()->getContents();
+        // $result_vessel = json_decode($response_vessel);
         // dd($result_vessel);
+        $vessel_voyage = VVoyage::whereDate('deparature_date', '>=', now())->orderBy('deparature_date', 'desc')->get();
+
 
         // GET ALL BOOKING
         // $url_booking = getenv('API_URL') . '/delivery-service/container/booking/all';
@@ -461,7 +465,7 @@ class ExportController extends Controller
 
         // $data["booking"] = $result_booking->data;
         $data["customer"] = $result_customer->data;
-        $data["vessel"] = $result_vessel->data;
+        $data["vessel"] = $vessel_voyage;
         $data["container"] = $result_container->data;
         // $data["do"] = $result_do->data;
         return view('export/stuffing/add_step_1', $data);
@@ -700,7 +704,7 @@ class ExportController extends Controller
 
         $data["payments"] = $result_single_payment->data;
         $data["invoices"] = $result_single_invoice->data;
-        $data["title"] = "Invoice " . $result_single_invoice->data->invoice->invoiceNumber;
+        $data["title"] = "Invoice " . $result_single_invoice->data->invoice->invoiceNumber2;
         return view('export/stuffing/paid_invoice/index2', $data);
     }
 

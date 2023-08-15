@@ -53,15 +53,9 @@ class DoOnlineController extends Controller
     // dd($request->all());
     $client = new Client();
 
-    $request->validate([
-      'storedo' => 'required|mimes:xls',
-    ]);
-
-    $filePath = $request->file('storedo')->getPathname();
-    // dd($filePath);
-    // Read the uploaded XLS file and convert it to JSON
-    $data = Excel::toArray([], $filePath)[0];
-    // dd($data);
+    $path1 = $request->file('storedo')->store('temp');
+    $path = storage_path('app') . '/' . $path1;
+    $data = Excel::toArray([], $path)[0];
 
     if (count($data) > 1) {
       $columns = $data[0];

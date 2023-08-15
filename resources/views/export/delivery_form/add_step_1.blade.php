@@ -42,89 +42,91 @@
                 <input required type="text" class="form-control" id="address" name="address" placeholder="address">
               </div>
             </div>
-            <div class="col-2 mt-2">
-              <div class="form-group">
-                <label for="">Vessel</label>
-                <select required name="vessel" id="vessel" class="js-example-basic-multiple form-control" style="height: 150%;">
-                  <option value="" disabled selected>Pilih Salah Satu</option>
-                  <?php foreach ($vessel as $data) { ?>
-                    <option value="<?= $data->ves_name ?>" data-id="<?= $data->id ?>"><?= $data->ves_name ?></option>
-                  <?php } ?>
-                </select>
-              </div>
-            </div>
-            <div class="col-2">
-              <div class="form-group">
-                <label>Voyage</label>
-                <input required type="text" id="voyage" name="voyage" class="form-control" placeholder="Voyage..">
-              </div>
-            </div>
 
-            <div class="col-2">
-              <div class="form-group">
-                <label>Vessel Code</label>
-                <input required type="text" id="vesselcode" name="vesselcode" class="form-control" placeholder="Vessel Code..">
+            <div class="row mt-5">
+              <div class="col-12">
+                <h5>Information Shipping Agent</h5>
+                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
               </div>
-            </div>
-
-            <div class="col-2">
-              <div class="form-group">
-                <label>Closing Time</label>
-                <input required name="closingtime" id="closing" type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023" id="closingtime">
-              </div>
-            </div>
-
-            <input type="hidden" name="exp_time" value="12:00">
-
-            <div class="col-2">
-              <div class="form-group">
-                <label>Arival Date</label>
-                <input required name="arrival" id="arrival" type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023" id="arrival">
-              </div>
-            </div>
-
-            <div class="col-2">
-              <div class="form-group">
-                <label>Departure Date</label>
-                <input required name="departure" id="departure" type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023" id="departure">
-              </div>
-            </div>
-          </div>
-          <div class="row mt-5">
-            <div class="col-12">
-              <h5>Information Shipping Agent</h5>
-              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
-            </div>
-            <div class="col-12">
-              <div class="row">
-                <div class="col-6">
-                  <div class="form-group">
-                    <label for="">Booking Number</label>
-                    <select name="booking" id="booking" class="js-example-basic-multiple form-control" style="height: 150%;">
-                      <option value="" disabled selected>Pilih Salah Satu</option>
-                      <?php foreach ($booking as $data) { ?>
-                        <option value="<?= $data->booking_no ?>" data-id="<?= $data->booking_no ?>"><?= $data->booking_no ?></option>
-                      <?php } ?>
-                    </select>
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label for="">Booking Number</label>
+                      <select name="booking" id="booking" class="js-example-basic-multiple form-control" style="height: 150%;">
+                        <option value="" disabled selected>Pilih Salah Satu</option>
+                        <?php foreach ($booking as $data) { ?>
+                          <option value="<?= $data->booking_no ?>" data-id="<?= $data->booking_no ?>"><?= $data->booking_no ?></option>
+                        <?php } ?>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-2">
+                    <div class="form-group">
+                      <label for="">Ctr Count</label>
+                      <input name="ctr" type="text" id="ctr" class="form-control" required placeholder="Ctr Count">
+                    </div>
+                  </div>
+                  <div class="col-2">
+                    <div class="form-group">
+                      <label for="">Pod</label>
+                      <input name="pod" type="text" id="pod" class="form-control" required placeholder="pod">
+                    </div>
+                  </div>
+                  <div class="col-2">
+                    <div class="form-group">
+                      <label for="">Fpod</label>
+                      <input name="fpod" type="text" id="fpod" class="form-control" required placeholder="fpod">
+                    </div>
                   </div>
                 </div>
-                <div class="col-2">
-                  <div class="form-group">
-                    <label for="">Ctr Count</label>
-                    <input name="ctr" type="text" id="ctr" class="form-control" required placeholder="Ctr Count">
-                  </div>
+              </div>
+              <div class="col-2 mt-2">
+                <div class="form-group">
+                  <label for="">Vessel</label>
+                  <!-- <select required name="vessel" id="vessel" class="js-example-basic-multiple form-control" style="height: 150%;">
+                    <option value="" disabled selected>Pilih Salah Satu</option>
+                    <?php foreach ($vessel as $data) { ?>
+                      <option value="<?= $data->ves_name ?>" data-id="<?= $data->id ?>"><?= $data->ves_name ?></option>
+                    <?php } ?>
+                  </select> -->
+                  <input type="text" id="vesselBN" name="vessel" class="form-control" placeholder="Vessel" required>
                 </div>
-                <div class="col-2">
-                  <div class="form-group">
-                    <label for="">Pod</label>
-                    <input name="pod" type="text" id="pod" class="form-control" required placeholder="pod">
-                  </div>
+              </div>
+              <div class="col-2">
+                <div class="form-group">
+                  <label>Voyage</label>
+                  <input required type="text" id="voyage" name="voyage" class="form-control" placeholder="Voyage..">
                 </div>
-                <div class="col-2">
-                  <div class="form-group">
-                    <label for="">Fpod</label>
-                    <input name="fpod" type="text" id="fpod" class="form-control" required placeholder="fpod">
-                  </div>
+              </div>
+
+              <div class="col-2">
+                <div class="form-group">
+                  <label>Vessel Code</label>
+                  <input required type="text" id="vesselcode" name="vesselcode" class="form-control" placeholder="Vessel Code..">
+                </div>
+              </div>
+
+              <div class="col-2">
+                <div class="form-group">
+                  <label>Closing Time</label>
+                  <input required name="closingtime" id="closing" type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023" id="closingtime">
+                </div>
+              </div>
+
+              <input type="hidden" name="exp_time" value="12:00">
+
+              <div class="col-2">
+                <div class="form-group">
+                  <label>Arival Date</label>
+                  <input required name="arrival" id="arrival" type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023" id="arrival">
+                </div>
+              </div>
+
+              <div class="col-2">
+                <div class="form-group">
+                  <label>Departure Date</label>
+                  <input required name="departure" id="departure" type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023" id="departure">
                 </div>
               </div>
             </div>

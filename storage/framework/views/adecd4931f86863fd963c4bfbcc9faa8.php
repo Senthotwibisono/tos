@@ -872,11 +872,40 @@
         console.log(responseData);
         if (responseData.hasOwnProperty('data')) {
           const containers = responseData.data;
+          let doBDate = containers[0].do_expired;
+
+          // Convert the date string to a Date object
+          let doDate = new Date(doBDate);
+
+          // Get the current date
+          const today = new Date();
+          today.setHours(0, 0, 0, 0); // Reset time components for accurate comparison
+
           // $("#do_exp_date").val(formattedDate(containers.do_expired)).attr("readonly", "true");
           // $("#boln").val(containers.bl_no).attr("readonly", "true");
-          containers.forEach((container) => {
-            $("#containerSelector").append(`<option selected value="${container.container_no}">${container.container_no}</option>`)
-          });
+          // console.log(todayDate);
+          console.log(doDate);
+          if (doDate <= today) {
+            console.log("im here bro 1");
+            Swal.fire({
+              icon: 'warning',
+              title: 'Oops!',
+              text: 'Tanggal DO Expired sudah melebihi hari ini, silahkan pilih ulang DO Number!'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                location.reload();
+              } else {
+                location.reload();
+              }
+            })
+          } else {
+            console.log("im here bro 2");
+            containers.forEach((container) => {
+              $("#containerSelector").append(`<option selected value="${container.container_no}">${container.container_no}</option>`)
+            });
+            $("#do_exp_date").val(containers[0].do_expired).attr("readonly", "true");
+            $("#boln").val(containers[0].bl_no).attr("readonly", "true");
+          }
         } else {
           console.error('Invalid response format:', response);
         }
@@ -891,7 +920,7 @@
     console.log("CHANGED!");
     const selectedDoNo = this.value;
     const selectedDoNoId = this.options[this.selectedIndex].getAttribute('data-id');
-    $("#containerSelector").attr("disabled", "true");
+    // $("#containerSelector").attr("disabled", "true");
     if (selectedDoNo !== "") {
       fetchContainers(selectedDoNoId);
     } else {
@@ -932,6 +961,12 @@
           });
           $("#ctr").val(ctr).attr("readonly", "true");
           $("#pod").val(containers[0].pod).attr("readonly", "true");
+          $("#vesselBN").val(containers[0].vessel_name).attr("readonly", "true");
+          $("#voyage").val(containers[0].voy_no).attr("readonly", "true");
+          $("#vesselcode").val(containers[0].ves_code).attr("readonly", "true");
+          $("#closing").val(formattedDate(containers[0].closing_date)).attr("readonly", "true");
+          $("#arrival").val(formattedDate(containers[0].arrival_date)).attr("readonly", "true");
+          $("#departure").val(formattedDate(containers[0].departure_date)).attr("readonly", "true");
 
         } else {
           console.error('Invalid response format:', response);
@@ -979,12 +1014,14 @@
       data: formData,
       success: function(response) {
         let res = JSON.parse(response);
-        data = res.data;
-        $("#voyage").val(res.data.voy_out).attr("readonly", "true");
-        $("#vesselcode").val(res.data.ves_code).attr("readonly", "true");
-        $("#closing").val(formattedDate(res.data.clossing_date)).attr("readonly", "true");
-        $("#arrival").val(formattedDate(res.data.arrival_date)).attr("readonly", "true");
-        $("#departure").val(formattedDate(res.data.deparature_date));
+        // console.log(res);
+        data = res[0];
+        // console.log(res.arrival_date);
+        $("#voyage").val(data.voy_out).attr("readonly", "true");
+        $("#vesselcode").val(data.ves_code).attr("readonly", "true");
+        $("#closing").val(formattedDate(data.clossing_date)).attr("readonly", "true");
+        $("#arrival").val(formattedDate(data.arrival_date)).attr("readonly", "true");
+        $("#departure").val(formattedDate(data.deparature_date)).attr("readonly", "true");
       }
     })
   })

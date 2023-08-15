@@ -7,6 +7,9 @@ use Config\Services;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Models\VMaster;
+use App\Models\VVoyage;
+
 
 
 class CoparnsController extends Controller
@@ -31,14 +34,17 @@ class CoparnsController extends Controller
         $client = new Client();
         $data = [];
 
-        // GET ALL VESSEL
-        $url_vessel = getenv('API_URL') . '/delivery-service/vessel/all';
-        $req_vessel = $client->get($url_vessel);
-        $response_vessel = $req_vessel->getBody()->getContents();
-        $result_vessel = json_decode($response_vessel);
-        // dd($result_vessel);
+        // // GET ALL VESSEL
+        // $url_vessel = getenv('API_URL') . '/delivery-service/vessel/all';
+        // $req_vessel = $client->get($url_vessel);
+        // $response_vessel = $req_vessel->getBody()->getContents();
+        // $result_vessel = json_decode($response_vessel);
+        // // dd($result_vessel);
 
-        $data["vessel"] = $result_vessel->data;
+        // $data["vessel"] = $result_vessel->data;
+        $vessel_voyage = VVoyage::whereDate('deparature_date', '>=', now())->orderBy('deparature_date', 'desc')->get();
+        // dd($vessel_voyage);
+        $data["vessel"] = $vessel_voyage;
 
         $data["title"] = "Upload Coparn Document";
         return view('coparn.create', $data);
@@ -49,14 +55,18 @@ class CoparnsController extends Controller
         $client = new Client();
         $data = [];
 
-        // GET ALL VESSEL
-        $url_vessel = getenv('API_URL') . '/delivery-service/vessel/all';
-        $req_vessel = $client->get($url_vessel);
-        $response_vessel = $req_vessel->getBody()->getContents();
-        $result_vessel = json_decode($response_vessel);
-        // dd($result_vessel);
+        // // GET ALL VESSEL
+        // $url_vessel = getenv('API_URL') . '/delivery-service/vessel/all';
+        // $req_vessel = $client->get($url_vessel);
+        // $response_vessel = $req_vessel->getBody()->getContents();
+        // $result_vessel = json_decode($response_vessel);
+        // // dd($result_vessel);
 
-        $data["vessel"] = $result_vessel->data;
+        // $data["vessel"] = $result_vessel->data;
+
+        $vessel_voyage = VVoyage::whereDate('deparature_date', '>=', now())->orderBy('deparature_date', 'desc')->get();
+        // dd($vessel_voyage);
+        $data["vessel"] = $vessel_voyage;
 
         $data["title"] = "Create Single Coparn Document";
         return view('coparn.create_single', $data);
@@ -76,15 +86,9 @@ class CoparnsController extends Controller
         $arrival = $request->arrival;
         $departure = $request->departure;
 
-        $request->validate([
-            'storecoparn' => 'required|mimes:xls',
-        ]);
-
-        $filePath = $request->file('storecoparn')->getPathname();
-        // dd($filePath);
-        // Read the uploaded XLS file and convert it to JSON
-        $data = Excel::toArray([], $filePath)[0];
-        // dd($data);
+        $path1 = $request->file('storecoparn')->store('temp');
+        $path = storage_path('app') . '/' . $path1;
+        $data = Excel::toArray([], $path)[0];
 
         if (count($data) > 1) {
             $columns = $data[0];
@@ -201,13 +205,17 @@ class CoparnsController extends Controller
         $client = new Client();
         $data = [];
         $id = $request->ves_id;
-
+        // var_dump($id);
+        // die();
         // GET ALL VESSEL
-        $url_vessel = getenv('API_URL') . '/delivery-service/vessel/single/' . $id;
-        $req_vessel = $client->get($url_vessel);
-        $response_vessel = $req_vessel->getBody()->getContents();
+        // $url_vessel = getenv('API_URL') . '/delivery-service/vessel/single/' . $id;
+        // $req_vessel = $client->get($url_vessel);
+        // $response_vessel = $req_vessel->getBody()->getContents();
         // $result_vessel = json_decode($response_vessel);
         // dd($result_vessel);
+        $response_vessel = VVoyage::where('ves_id', '=', $id)->get();
+        // var_dump($confirmed);
+        // die();
 
         echo $response_vessel;
     }
