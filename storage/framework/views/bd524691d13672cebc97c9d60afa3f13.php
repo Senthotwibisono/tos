@@ -2,7 +2,7 @@
   <ul>
 
     <li class="menu-item  ">
-      <a href="/invoice" class='menu-link'>
+      <a href="/invoice/menu" class='menu-link'>
         <i class="bi bi-grid-fill"></i>
         <span>Dashboard</span>
       </a>
@@ -23,6 +23,12 @@
             </li>
             <li class="submenu-item">
               <a class="submenu-link" href="/invoice/add/extend">Delivery Extend</a>
+            </li>
+            <li class="submenu-item">
+              <a class="submenu-link" href="/export">Export</a>
+            </li>
+            <li class="submenu-item">
+              <a class="submenu-link" href="/export/stuffing">Export Stuffing</a>
             </li>
             <li class="submenu-item">
               <a class="submenu-link" href="/invoice/customer">Customer</a>
@@ -167,7 +173,7 @@
           <ul class="submenu-group">
 
             <li class="submenu-item  ">
-              <a href="layout-default.html" class='submenu-link'>Do Online Check</a>
+              <a href="/do" class='submenu-link'>Do Online Check</a>
 
 
             </li>
@@ -175,7 +181,7 @@
 
 
             <li class="submenu-item  ">
-              <a href="layout-vertical-1-column.html" class='submenu-link'>Upload Coparn</a>
+              <a href="/coparn" class='submenu-link'>Upload Coparn</a>
 
 
             </li>

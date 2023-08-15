@@ -7,6 +7,12 @@ use Config\Services;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Illuminate\Support\Collection;
+use App\Http\Controllers\DataExport;
+
 
 
 class InvoiceController extends Controller
@@ -14,6 +20,14 @@ class InvoiceController extends Controller
   public function __construct()
   {
     $this->middleware('auth');
+  }
+
+  public function menuindex()
+  {
+    $data = [];
+    $data["title"] = "Menu Billing System";
+
+    return view('invoice.menu', $data);
   }
   public function index()
   {
@@ -240,8 +254,16 @@ class InvoiceController extends Controller
     $result_container = json_decode($response_container);
     // dd($result_container);
 
+    // GET ALL DO NUMBER
+    $url_do = getenv('API_URL') . '/delivery-service/do/groupall';
+    $req_do = $client->get($url_do);
+    $response_do = $req_do->getBody()->getContents();
+    $result_do = json_decode($response_do);
+    // dd($result_do);
+
     $data["customer"] = $result_customer->data;
     $data["container"] = $result_container->data;
+    $data["do"] = $result_do->data;
     return view('invoice/delivery_form/add_step_1', $data);
   }
 
@@ -293,7 +315,7 @@ class InvoiceController extends Controller
     $exp_date = $request->exp_date;
     $exp_time = $request->exp_time;
     $customer = $request->customer;
-    $do_number = $request->do_number;
+    $do_number = $request->do_number ?? $request->do_number_auto;
     $do_exp_date = $request->do_exp_date;
     $boln = $request->boln;
     $container = $request->container;
@@ -405,8 +427,12 @@ class InvoiceController extends Controller
       "containers" => $container_arr,
     ];
     // dd($fields);
+    if ($result_single_form->data->orderService == "sp2") {
+      $url = getenv('API_URL') . '/delivery-service/form/calculate/sp2';
+    } else {
+      $url = getenv('API_URL') . '/delivery-service/form/calculate/spps';
+    }
 
-    $url = getenv('API_URL') . '/delivery-service/form/calculate';
     $req = $client->post(
       $url,
       [
@@ -422,7 +448,11 @@ class InvoiceController extends Controller
     $diffInDays = $result->data->diffInDays[0];
     $data["ccdelivery"] = $result->data;
     if ($result->data->deliveryForm->isExtended != 1) {
-      $data["menuinv"] = [$isExtended != 1 ? "Lift On" : "", $isExtended != 1 ? "Pass Truck" : "", $diffInDays->masa1 > 0 ? "Penumpukan Masa 1" : "", $diffInDays->masa2 > 0 ? "Penumpukan Masa 2" : "", $diffInDays->masa3 > 0 ? "Penumpukan Masa 3" : ""];
+      if ($result->data->deliveryForm->orderService != "spps") {
+        $data["menuinv"] = [$isExtended != 1 ? "Lift On" : "", $isExtended != 1 ? "Pass Truck" : "", $diffInDays->masa1 > 0 ? "Penumpukan Masa 1" : "", $diffInDays->masa2 > 0 ? "Penumpukan Masa 2" : "", $diffInDays->masa3 > 0 ? "Penumpukan Masa 3" : ""];
+      } else {
+        $data["menuinv"] = [$isExtended != 1 ? "Paket Stripping" : "", $isExtended != 1 ? "Pass Truck" : "", $diffInDays->masa1 > 0 ? "Penumpukan Masa 1" : "Penumpukan Masa 1", $diffInDays->masa2 > 0 ? "Penumpukan Masa 2" : "Penumpukan Masa 2", $diffInDays->masa3 > 0 ? "Penumpukan Masa 3" : "Penumpukan Masa 3"];
+      }
     } else if ($diffInDays->masa1 != 0 && $diffInDays->masa2 != 0 && $diffInDays->masa3 != 0) {
       $data["menuinv"] = ["Penumpukan Masa 1", "Penumpukan Masa 2", "Penumpukan Masa 3"];
     } else if ($diffInDays->masa1 != 0 && $diffInDays->masa2 != 0) {
@@ -466,8 +496,9 @@ class InvoiceController extends Controller
     $data5 = $request->input('data5');
     $data6 = $request->input('data6');
     $isExtended = $request->input('isExtended');
+    $active_to = $request->input('active_to');
     // $data7 = $request->input('data7');
-
+    $orderService = $request->input('orderService');
     $fields = [
       "data1" => $data1,
       "data2" => $data2,
@@ -477,7 +508,8 @@ class InvoiceController extends Controller
       "data6" => $data6,
       "isExtended" => $isExtended,
       // "data7" => $data7,
-      "orderService" => "sp2",
+      "orderService" => $orderService,
+      "active_to" => $active_to,
     ];
     // dd($fields);
 
@@ -496,7 +528,11 @@ class InvoiceController extends Controller
       if ($isExtended == "1") {
         return redirect('/invoice/add/extend')->with('success', 'Invoice berhasil dibuat & disimpan!');
       } else {
-        return redirect('/invoice')->with('success', 'Invoice berhasil dibuat & disimpan!');
+        if ($orderService == "export") {
+          return redirect('/export')->with('success', 'Invoice berhasil dibuat & disimpan!');
+        } else {
+          return redirect('/invoice')->with('success', 'Invoice berhasil dibuat & disimpan!');
+        }
       }
     } else {
       return redirect('/invoice')->with('error', 'Data gagal disimpan! kode error : #st2del');
@@ -875,6 +911,31 @@ class InvoiceController extends Controller
     echo $response;
   }
 
+  public function VerifyPayment2(Request $request)
+  {
+    $client = new Client();
+
+    $id = $request->id;
+    // var_dump($id);
+    // die();
+    $fields =
+      [
+        "isPaid" => 1,
+      ];
+    $url = getenv('API_URL') . '/delivery-service/invoice/setPaid2/' . $id;
+    $req = $client->post(
+      $url,
+      [
+        "json" => $fields
+      ]
+    );
+    $response = $req->getBody()->getContents();
+    // var_dump($response);
+    // die();
+
+    echo $response;
+  }
+
   public function VerifyPiutang(Request $request)
   {
     $client = new Client();
@@ -1005,6 +1066,102 @@ class InvoiceController extends Controller
     // var_dump($response);
     // die();
 
+    echo $response;
+  }
+
+  public function exportToExcel(Request $request)
+  {
+    $client = new Client();
+
+    $startDate = $request->input('start');
+    $endDate = $request->input('end');
+
+    $fields = [
+      "startdate" => $startDate,
+      "enddate" => $endDate
+    ];
+
+    $url = getenv('API_URL') . '/delivery-service/invoice/activeto';
+    $req = $client->post(
+      $url,
+      [
+        "json" => $fields
+      ]
+    );
+
+    $response = $req->getBody()->getContents();
+    $jsonData = json_decode($response, true)['data'];
+
+    // Manually extract the desired data fields for export
+    $exportData = collect($jsonData)->map(function ($item) {
+      return [
+        'Performa ID' => $item['performaId'],
+        'Invoice Number' => $item['invoiceNumber'],
+        'Order Service' => $item['orderService'],
+        'Job Number' => $item['jobNumber'],
+        'Is Paid' => $item['isPaid'],
+        'Active To' => $item['active_to'],
+        // 'Is Active' => $item['isActive'],
+      ];
+    });
+
+    // Define the column headings for the Excel sheet
+    $headings = [
+      'Performa ID',
+      'Invoice Number',
+      'Order Service',
+      'Job Number',
+      'Is Paid',
+      'Active To',
+      // 'Is Active',
+    ];
+
+    // Export the data to Excel
+    return Excel::download(new DataExport($exportData, $headings), 'data.xlsx');
+  }
+
+  public function findContainer(Request $request)
+  {
+    $client = new Client();
+    $do_no = $request->do_no;
+
+    $url = getenv('API_URL') . '/delivery-service/do/groupsingle/' . $do_no;
+    $req = $client->get(
+      $url
+    );
+    $response = $req->getBody()->getContents();
+    // var_dump($response);
+    // die();
+    echo $response;
+  }
+
+  public function findSingleCustomer(Request $request)
+  {
+    $client = new Client();
+    $id = $request->id;
+
+    $url = getenv('API_URL') . '/delivery-service/customer/single/' . $id;
+    $req = $client->get(
+      $url
+    );
+    $response = $req->getBody()->getContents();
+    // var_dump($response);
+    // die();
+    echo $response;
+  }
+
+  public function findContainerBooking(Request $request)
+  {
+    $client = new Client();
+    $id = $request->booking;
+
+    $url = getenv('API_URL') . '/delivery-service/container/booking/' . $id;
+    $req = $client->get(
+      $url
+    );
+    $response = $req->getBody()->getContents();
+    // var_dump($response);
+    // die();
     echo $response;
   }
 }

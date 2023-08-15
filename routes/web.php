@@ -6,6 +6,10 @@ use App\Http\Controllers\VesselController;
 use App\Http\Controllers\BayplanImportController;
 use App\Http\Controllers\DischargeController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\DoOnlineController;
+use App\Http\Controllers\CoparnsController;
+use App\Http\Controllers\ExportInvoice;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\SppsController;
 use App\Http\Controllers\PlacementController;
 use App\Http\Controllers\AndroidController;
@@ -65,8 +69,10 @@ Route::post('/unset-session/{key}', [SessionsController::class, 'unsetSession'])
 
 Route::prefix('invoice')->group(function () {
   Route::get('/', [InvoiceController::class, 'index']);
+  Route::get('/menu', [InvoiceController::class, 'menuindex']);
   Route::get('/test', [InvoiceController::class, 'test']);
   Route::get('/delivery', [InvoiceController::class, 'deliveryForm']);
+  Route::post('/export', [InvoiceController::class, 'exportToExcel']);
   Route::prefix('add')->group(function () {
     Route::prefix('/extend')->group(function () {
       Route::get('/', [InvoiceController::class, 'extendIndex']);
@@ -101,10 +107,14 @@ Route::prefix('invoice')->group(function () {
   Route::prefix('singleData')->group(function () {
     Route::post('/invoiceForm', [InvoiceController::class, 'singleInvoiceForm']);
     Route::post('/verifyPayment', [InvoiceController::class, 'VerifyPayment']);
+    Route::post('/verifyPayment2', [InvoiceController::class, 'VerifyPayment2']);
     Route::post('/verifyPiutang', [InvoiceController::class, 'VerifyPiutang']);
     Route::post('/mastertarif', [InvoiceController::class, 'singleMasterTarif']);
     Route::post('/updateMasterTarif', [InvoiceController::class, 'updateMasterTarif']);
     Route::post('/createMasterTarif', [InvoiceController::class, 'createMasterTarif']);
+    Route::post('/findContainer', [InvoiceController::class, 'findContainer']);
+    Route::post('/findSingleCustomer', [InvoiceController::class, 'findSingleCustomer']);
+    Route::post('/findContainerBooking', [InvoiceController::class, 'findContainerBooking']);
   });
   Route::prefix('mastertarif')->group(function () {
     Route::get('/', [InvoiceController::class, 'masterTarif']);
@@ -117,6 +127,51 @@ Route::prefix('invoice')->group(function () {
       Route::post('/updatePaymentMethod', [InvoiceController::class, 'updatePaymentMethod']);
       Route::post('/createPaymentMethod', [InvoiceController::class, 'storePaymentMethod']);
     });
+  });
+});
+
+Route::prefix('do')->group(function () {
+  route::get('/', [DoOnlineController::class, 'index']);
+  route::get('/create', [DoOnlineController::class, 'create']);
+  route::post('/store', [DoOnlineController::class, 'store']);
+});
+
+Route::prefix('coparn')->group(function () {
+  route::get('/', [CoparnsController::class, 'index']);
+  route::get('/create', [CoparnsController::class, 'create']);
+  route::get('/singlecreate', [CoparnsController::class, 'singleCreate']);
+  route::post('/store', [CoparnsController::class, 'store']);
+  route::post('/singlestore', [CoparnsController::class, 'singlestore']);
+  Route::post('/findSingleVessel', [CoparnsController::class, 'findSingleVessel']);
+});
+
+Route::prefix('export')->group(function () {
+  route::get('/', [ExportController::class, 'index']);
+  Route::get('/delivery', [ExportController::class, 'deliveryForm']);
+  Route::prefix('add')->group(function () {
+    Route::get('/step1', [ExportController::class, 'addDataStep1']);
+    Route::get('/update_step1', [ExportController::class, 'updateDataStep1']);
+    Route::get('/step2', [ExportController::class, 'addDataStep2']);
+    Route::post('/storestep1', [ExportController::class, 'storeDataStep1']);
+    Route::post('/storeupdatestep1', [ExportController::class, 'storeUpdateDataStep1']);
+    Route::post('/storestep2', [ExportController::class, 'storeDataStep2']);
+  });
+  Route::prefix('/stuffing')->group(function () {
+    route::get('/', [ExportController::class, 'indexStuffing']);
+    Route::get('/delivery', [ExportController::class, 'deliveryFormStuffing']);
+    Route::prefix('add')->group(function () {
+      Route::get('/step1', [ExportController::class, 'addDataStepStuffing1']);
+      Route::get('/update_step1', [ExportController::class, 'updateDataStepStuffing1']);
+      Route::get('/step2', [ExportController::class, 'addDataStepStuffing2']);
+      Route::post('/storestep1', [ExportController::class, 'storeDataStepStuffing1']);
+      Route::post('/storeupdatestep1', [ExportController::class, 'storeUpdateDataStepStuffing1']);
+      Route::post('/storestep2', [ExportController::class, 'storeDataStepStuffing2']);
+    });
+    Route::get('/pranota1', [ExportController::class, 'Pranota1']);
+    Route::get('/pranota2', [ExportController::class, 'Pranota2']);
+    Route::get('/paidinvoice1', [ExportController::class, 'PaidInvoice1']);
+    Route::get('/paidinvoice2', [ExportController::class, 'PaidInvoice2']);
+    Route::get('/job', [ExportController::class, 'jobPage']);
   });
 });
 

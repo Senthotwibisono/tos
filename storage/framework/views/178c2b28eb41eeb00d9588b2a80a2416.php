@@ -13,7 +13,7 @@
         <div class="header-top">
           <div class="container">
             <div class="logo">
-              <a href="/invoice"><img src="<?php echo e(asset('dist/assets/images/logo/logo.svg')); ?>" alt="Logo"></a>
+              <a href="/"><img class="logoicon" src="<?php echo e(asset('logo/ICON2.png')); ?>" alt="Logo"></a>
             </div>
             <div class="header-top-right">
 
@@ -55,12 +55,24 @@
   <script src="<?php echo e(asset('vendor/components/jquery/jquery.min.js')); ?>"></script>
   <script src="<?php echo e(asset('dist/assets/extensions/sweetalert2/sweetalert2.min.js')); ?>"></script>
   <script src="<?php echo e(asset('dist/assets/js/pages/sweetalert2.js')); ?>"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 
   <!-- select 2 js  -->
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
   <!-- flatpickr js -->
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+  <!-- Dropify Inject -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js" integrity="sha512-8QFTrG0oeOiyWo/VM9Y8kgxdlCryqhIxVeRpWSezdRRAvarxVtwLnGroJgnVW9/XBRduxO/z1GblzPrMQoeuew==" crossorigin="anonymous"></script>
+
+  <!-- date-range-picker  -->
+  <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+
+  <!-- moment.js  -->
+  <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+
+
   <?php echo $__env->yieldContent('custom_js'); ?>
 
   <?php if(\Session::has('success')): ?>
@@ -120,6 +132,41 @@
       enableTime: true,
       dateFormat: 'h:i K'
     });
+  });
+</script>
+<script>
+  $(document).ready(function() {
+    $('table.display').DataTable();
+  });
+</script>
+
+<script>
+  function formatRupiah(angka, prefix) {
+    var number_string = angka.replace(/[^,\d]/g, '').toString(),
+      split = number_string.split(','),
+      sisa = split[0].length % 3,
+      rupiah = split[0].substr(0, sisa),
+      ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+    // tambahkan titik jika yang di input sudah menjadi angka ribuan
+    if (ribuan) {
+      separator = sisa ? '.' : '';
+      rupiah += separator + ribuan.join('.');
+    }
+
+    rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+    return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+  }
+</script>
+
+<script>
+  $('.dropify').dropify({
+    messages: {
+      'default': 'Drag and drop a file here or click',
+      'replace': 'Drag and drop or click to replace',
+      'remove': 'Remove',
+      'error': 'Ooops, something wrong happended.'
+    }
   });
 </script>
 

@@ -518,7 +518,7 @@
   <!-- invoice -->
 
   <li class="sidebar-item">
-    <a href="/invoice" class='sidebar-link'>
+    <a href="/invoice/menu" class='sidebar-link'>
       <i class="bi bi-currency-exchange"></i>
       <span>Invoice</span>
     </a>

@@ -371,7 +371,7 @@ class SppsController extends Controller
             "containers" => $container_arr,
         ];
 
-        $url = getenv('API_URL') . '/delivery-service/form/calculate';
+        $url = getenv('API_URL') . '/delivery-service/form/calculate/spps';
         $req = $client->post(
             $url,
             [
