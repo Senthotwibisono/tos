@@ -245,7 +245,7 @@
             <div><i class="fa fa-ship"></i></div>
           </div>
           <div class="name ms-4">
-            <h5 class="mb-1"><?php echo e($voy->ves_name); ?></h5>
+            <h5 class="mb-1"><?php echo e($voy->ves_name); ?> -- <?php echo e($voy->voy_out); ?></h5>
             <h6 class="text-muted mb-0"><?php echo e($voy->etd_date); ?></h6>
           </div>
         </div>

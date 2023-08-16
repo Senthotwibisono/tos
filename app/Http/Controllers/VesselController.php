@@ -23,7 +23,7 @@ class VesselController extends Controller
     public function index()
     {
         $title = 'Vessel Schedule';
-        $vessel_voyage = VVoyage::orderBy('etd_date', 'desc')->get();
+        $vessel_voyage = VVoyage::orderBy('deparature_date', 'desc')->get();
         return view('planning.vessel.main', compact('vessel_voyage', 'title'));
     }
 
@@ -198,19 +198,19 @@ class VesselController extends Controller
            'btoa_side' => $request->btoa_side,
            'berth_grid' => $request->berth_grid,
            'est_anchorage_date' => $request->est_anchorage_date,
-           'act_anchorage_date'=> $request->act_anchorage_date,
+           'act_anchorage_date'=> $request->est_anchorage_date,
            'est_pilot_date' => $request->est_pilot_date,
-           'act_pilot_date' => $request->act_pilot_date,
+           'act_pilot_date' => $request->est_pilot_date,
            'est_start_work_date' => $request->est_start_work_date,
-           'act_start_work_date' => $request->act_start_work_date,
+           'act_start_work_date' => $request->est_start_work_date,
            'est_end_work_date' => $request->est_end_work_date,
-           'act_end_work_date' => $request->act_end_work_date,
+           'act_end_work_date' => $request->est_end_work_date,
            'eta_date' => $request->eta_date,
-           'arrival_date' => $request->arrival_date,
+           'arrival_date' => $request->eta_date,
            'etd_date' => $request->etd_date,
-           'deparature_date' => $request->deparature_date,
+           'deparature_date' => $request->etd_date,
            'est_berthing_date' => $request->est_berthing_date,
-           'berthing_date' => $request->berthing_date,
+           'berthing_date' => $request->est_berthing_date,
            'discharge_date' => $request->discharge_date,
            'loading_date' => $request->loading_date,
            'exit_date' => $request->exit_date,

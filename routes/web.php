@@ -528,5 +528,5 @@ Route::post('/stuffing-place', [Stuffing::class, 'stuffing_place']);
 Route::get('/load/confirm_load', [LoadController::class, 'index']);
 Route::post('/search-container', [LoadController::class, 'container']);
 Route::post('/get-container-key-load', [LoadController::class, 'get_key']);
-Route::post('/confirm', [LoadController::class, 'confirm']);
+Route::post('/confirm-load', [LoadController::class, 'confirm']);
 Route::post('/get-con-load', [LoadController::class, 'get_cont']);

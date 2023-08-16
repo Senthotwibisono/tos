@@ -56,7 +56,7 @@ class DischargeController extends Controller
     $data["subactive"] = "confirm";
     $currentDateTime = Carbon::now();
     $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
-    $vessel_voyage = VVoyage::whereDate('arrival_date', '<=', now())->orderBy('arrival_date', 'desc')->get();
+    $vessel_voyage = VVoyage::whereDate('deparature_date', '>=', now())->orderBy('deparature_date', 'desc')->get();
     return view('disch.main', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'vessel_voyage'), $data);
   }
   

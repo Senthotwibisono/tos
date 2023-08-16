@@ -498,7 +498,7 @@
 
   <li class="sidebar-item has-sub @if(Request::is('system/*')) active @endif">
     <a href="#" class='sidebar-link'>
-      < <i class="fa-solid fa-wrench"></i>
+      <i class="fa-solid fa-wrench"></i>
         <span>System</span>
     </a>
     <ul class="submenu @if(Request::is('system/*')) active @endif">

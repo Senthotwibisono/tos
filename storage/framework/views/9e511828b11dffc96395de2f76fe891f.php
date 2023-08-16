@@ -498,7 +498,7 @@
 
   <li class="sidebar-item has-sub <?php if(Request::is('system/*')): ?> active <?php endif; ?>">
     <a href="#" class='sidebar-link'>
-      < <i class="fa-solid fa-wrench"></i>
+      <i class="fa-solid fa-wrench"></i>
         <span>System</span>
     </a>
     <ul class="submenu <?php if(Request::is('system/*')): ?> active <?php endif; ?>">
@@ -518,7 +518,7 @@
   <!-- invoice -->
 
   <li class="sidebar-item">
-    <a href="/invoice" class='sidebar-link'>
+    <a href="/invoice/menu" class='sidebar-link'>
       <i class="bi bi-currency-exchange"></i>
       <span>Invoice</span>
     </a>

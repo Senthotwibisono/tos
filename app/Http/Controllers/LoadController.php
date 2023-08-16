@@ -48,7 +48,8 @@ class LoadController extends Controller
           'cc_tt_no' => $tem->cc_tt_no,
           'cc_tt_oper' => $tem->cc_tt_oper,
           'disc_date' => $diff . ' yang lalu',
-          'container_key' => $tem->container_key
+          'ves_name' => $tem->ves_name,
+          'voy_no' => $tem->voy_no,
         ];
       }
       $items = Item::where('ctr_intern_status', '=', [51, 53])->get();
@@ -173,23 +174,20 @@ class LoadController extends Controller
         'bay_slot' => $request->bay_slot,
         'bay_row' => $request->bay_row,
         'bay_tier' => $request->bay_tier,
-
+        'load_date' => $request->load_date,
+        'cc_tt_no'  =>$request->cc_tt_no,
+        'cc_tt_oper'  =>$request->cc_tt_oper,
+        'ctr_intern_status' => '56',
   
       ]);
   
-      $response = $req->getBody()->getContents();
-      $result = json_decode($response);
-      // dd($result);
-      if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-        // $item->save();
+    
   
         return response()->json([
           'success' => 400,
           'message' => 'updated successfully!',
           'data'    => $item,
         ]);
-      } else {
-        return back();
-      }
+     
     }
 }

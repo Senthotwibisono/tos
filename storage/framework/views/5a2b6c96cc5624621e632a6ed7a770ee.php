@@ -120,32 +120,21 @@
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="first-name-vertical">Slot</label>
-                                        <input type="text" id="slot" class="form-control" name="bay_slot" readonly>
+                                        <input type="text" id="slot" class="form-control" name="bay_slot">
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="first-name-vertical">Row</label>
-                                        <input type="text" id="row" class="form-control" name="bay_row" readonly>
+                                        <input type="text" id="row" class="form-control" name="bay_row" >
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="first-name-vertical">Tier</label>
-                                        <input type="text" id="tier" class="form-control" name="bay_tier" readonly>
+                                        <input type="text" id="tier" class="form-control" name="bay_tier">
                                         <input type="hidden" id="container_key" name="container_key" class="form-control" required>
-                                        <input type="hidden" id="ves_id" name="ves_id" class="form-control" required>
-                                        <input type="hidden" id="voy_no" name="voy_no" class="form-control" required>
                                         <input type="hidden" id="container_no" name="container_no" class="form-control" required>
-                                        <input type="hidden" id="ctr_status" name="ctr_status" class="form-control" required>
-                                        <input type="hidden" id="ctr_type" name="ctr_type" class="form-control" required>
-                                        <input type="hidden" id="ctr_opr" name="ctr_opr" class="form-control" required>
-                                        <input type="hidden" id="ctr_size" name="ctr_size" class="form-control" required>
-                                        <input type="hidden" id="disc_load_trans_shift" name="disc_load_trans_shift" class="form-control" required>
-                                        <input type="hidden" id="load_port" name="load_port" class="form-control" required>
-                                        <input type="hidden" id="disch_port" name="disch_port" class="form-control" required>
-                                        <input type="hidden" id="gross" name="gross" class="form-control" required>
-                                        <input type="hidden" id="iso_code" name="iso_code" class="form-control" required>
                                     </div>
                                 </div>
                             </div>
@@ -154,7 +143,7 @@
                             <div class="form-group">
                                 <label for="first-name-vertical">Op Lapangan</label>
                                 <input type="text" id="user" class="form-control" value="<?php echo e(Auth::user()->name); ?>" name="wharf_yard_oa" readonly>
-                                <input type="datetime-local" id="tanggal" class="form-control" value="<?php echo e($currentDateTimeString); ?>" name="disc_date" readonly>
+                                <input type="datetime-local" id="tanggal" class="form-control" value="<?php echo e($currentDateTimeString); ?>" name="load_date" readonly>
                             </div>
                         </div>
                     </div>
@@ -217,22 +206,11 @@
             'cc_tt_oper': $('#operator').val(),
             'cc_tt_no': $('#no_alat').val(),
             'wharf_yard_oa': $('#user').val(),
-            'disc_date': $('#tanggal').val(),
+            'load_date': $('#tanggal').val(),
             'ves_name': $('#name').val(),
             'bay_slot': $('#slot').val(),
             'bay_row': $('#row').val(),
             'bay_tier': $('#tier').val(),
-            'ves_id': $('#ves_id').val(),
-            'voy_no': $('#voy_no').val(),
-            'ctr_status': $('#ctr_status').val(),
-            'ctr_type': $('#ctr_type').val(),
-            'ctr_opr': $('#ctr_opr').val(),
-            'ctr_size': $('#ctr_size').val(),
-            'disc_load_trans_shift': $('#disc_load_trans_shift').val(),
-            'load_port': $('#load_port').val(),
-            'disch_port': $('#disch_port').val(),
-            'gross': $('#gross').val(),
-            'iso_code': $('#iso_code').val(),
 
         }
         $.ajaxSetup({
