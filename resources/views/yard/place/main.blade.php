@@ -1,4 +1,13 @@
 @extends('partial.main')
+@section('custom_styles')
+<style>
+    .border {
+        border: 2px solid #D3D3D3; /* Warna abu-abu muda (#D3D3D3) */
+        border-radius: 10px; /* Membuat border menjadi rounded dengan radius 10px */
+        padding: 10px; /* Tambahkan padding agar konten tidak terlalu dekat dengan border */
+    }
+</style>
+@endsection
 @section('content')
 <div class="page-heading">
         <div class="page-title">
@@ -17,7 +26,7 @@
             </div>
         </div>
         <section class="section">
-            <div class="card" id="load_ini">
+            <div class="card" >
                 <div class="card-header">
                     <button class="btn icon icon-left btn-success" data-bs-toggle="modal"data-bs-target="#success">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit">
@@ -26,32 +35,116 @@
                         </svg> Confirmed</button>
                 </div>
                 <div class="card-body">
-                    <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
-                        <thead>
-                            <tr>
-                                <th>Container No</th>
-                                <th>Type</th>
-                                <th>Blok</th>
-                                <th>Slot</th>
-                                <th>Row</th>
-                                <th>Tier</th>
-                                <th>Placemented At</th>
-                            </tr>
-                        </thead>
-                        <tbody>          
-                        @foreach($formattedData as $d)
-                        <tr>
-                            <td>{{$d['container_no']}}</td>
-                            <td>{{$d['ctr_type']}}</td>
-                            <td>{{$d['yard_block']}}</td>
-                            <td>{{$d['yard_slot']}}</td>
-                            <td>{{$d['yard_row']}}</td>
-                            <td>{{$d['yard_tier']}}</td>
-                            <td>{{$d['update_time']}}</td>
-                        </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            <div class="list-group list-group-horizontal-sm mb-1 text-center" role="tablist">
+                                <a class="list-group-item list-group-item-action active" id="list-sunday-list" data-bs-toggle="list" href="#import" role="tab">Import</a>
+                                <a class="list-group-item list-group-item-action" id="list-monday-list" data-bs-toggle="list" href="#export" role="tab">Export</a>
+                                <a class="list-group-item list-group-item-action" id="list-tuesday-list" data-bs-toggle="list" href="#exstrip" role="tab">Empty/Ex-Stripping</a>
+                            </div>
+                            <div class="tab-content text-justify" id="load_ini">
+                    <div class="tab-pane fade show active" id="import" role="tabpanel" aria-labelledby="list-sunday-list">
+                        <div class="col-12 border">
+                        <div class="card-body">
+                            <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
+                                <thead>
+                                    <tr>
+                                        <th>Container No</th>
+                                        <th>Type</th>
+                                        <th>Blok</th>
+                                        <th>Slot</th>
+                                        <th>Row</th>
+                                        <th>Tier</th>
+                                        <th>Placemented At</th>
+                                    </tr>
+                                </thead>
+                                <tbody>          
+                                @foreach($formattedData as $d)
+                                @if($d['ctr_intern_status'] === '03')
+                                <tr>
+                                    <td>{{$d['container_no']}}</td>
+                                    <td>{{$d['ctr_type']}}</td>
+                                    <td>{{$d['yard_block']}}</td>
+                                    <td>{{$d['yard_slot']}}</td>
+                                    <td>{{$d['yard_row']}}</td>
+                                    <td>{{$d['yard_tier']}}</td>
+                                    <td>{{$d['update_time']}}</td>
+                                </tr>
+                                @endif
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            </div>
+                            </div>
+                    </div>
+                    <div class="tab-pane fade" id="export" role="tabpanel"aria-labelledby="list-monday-list">
+                        <div class="col-12 border">
+                        <div class="card-body">
+                      
+                        <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table2">
+                                <thead>
+                                    <tr>
+                                        <th>Container No</th>
+                                        <th>Type</th>
+                                        <th>Blok</th>
+                                        <th>Slot</th>
+                                        <th>Row</th>
+                                        <th>Tier</th>
+                                        <th>Placemented At</th>
+                                    </tr>
+                                </thead>
+                                <tbody>          
+                                @foreach($formattedData as $d)
+                                @if($d['ctr_intern_status'] === '51')
+                                <tr>
+                                    <td>{{$d['container_no']}}</td>
+                                    <td>{{$d['ctr_type']}}</td>
+                                    <td>{{$d['yard_block']}}</td>
+                                    <td>{{$d['yard_slot']}}</td>
+                                    <td>{{$d['yard_row']}}</td>
+                                    <td>{{$d['yard_tier']}}</td>
+                                    <td>{{$d['update_time']}}</td>
+                                </tr>
+                                @endif
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            </div>
+                            </div>
+                            
+                    </div>
+                    <div class="tab-pane fade" id="exstrip" role="tabpanel"aria-labelledby="list-tuesday-list">
+                        <div class="col-12 border">
+                        <div class="card-body">
+                        <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table3">
+                                <thead>
+                                    <tr>
+                                        <th>Container No</th>
+                                        <th>Type</th>
+                                        <th>Blok</th>
+                                        <th>Slot</th>
+                                        <th>Row</th>
+                                        <th>Tier</th>
+                                        <th>Placemented At</th>
+                                    </tr>
+                                </thead>
+                                <tbody>          
+                                @foreach($formattedData as $d)
+                                @if($d['ctr_intern_status'] === '04')
+                                <tr>
+                                    <td>{{$d['container_no']}}</td>
+                                    <td>{{$d['ctr_type']}}</td>
+                                    <td>{{$d['yard_block']}}</td>
+                                    <td>{{$d['yard_slot']}}</td>
+                                    <td>{{$d['yard_row']}}</td>
+                                    <td>{{$d['yard_tier']}}</td>
+                                    <td>{{$d['update_time']}}</td>
+                                </tr>
+                                @endif
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            </div>
+                            </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -178,6 +271,8 @@
 <script src="{{ asset('select2/dist/js/select2.full.min.js') }}"></script>
 <script src="{{asset('dist/assets/extensions/sweetalert2/sweetalert2.min.js')}}"></script>    
 <script src="{{asset('dist/assets/js/pages/sweetalert2.js')}}"></script>
+<script src="{{ asset('dist/assets/js/pages/new/tablei.js') }}"></script>
+<script src="{{ asset('dist/assets/js/pages/new/tablee.js') }}"></script>
 
 <script>
 // In your Javascript (external .js resource or <script> tag)
@@ -243,64 +338,10 @@ $(document).on('click', '.update_status', function(e){
                                 console.log(response);
                                 if (response.success) {
                                     Swal.fire('Saved!', '', 'success')
-                                    $('#load_ini').load(window.location.href + ' #load_ini');
-                                    $('#place_cont').load(window.location.href + ' #place_cont', function() {
-                                        $(document).ready(function() {
-                                            let choices = document.querySelectorAll('.choices');
-                                        let initChoice;
-                                        for(let i=0; i<choices.length;i++) {
-                                          if (choices[i].classList.contains("multiple-remove")) {
-                                            initChoice = new Choices(choices[i],
-                                              {
-                                                delimiter: ',',
-                                                editItems: true,
-                                                maxItemCount: -1,
-                                                removeItemButton: true,
-                                              });
-                                          }else{
-                                            initChoice = new Choices(choices[i]);
-                                          }
-                                        }
-                                            $('.container').select2({
-                                                dropdownParent: '#success',
-                                            });
-                                            $('.block').select2({
-                                                dropdownParent: '#success',
-                                            });
-                                            $('.slot').select2({
-                                                dropdownParent: '#success',
-                                            });
-                                            $('.yard_row').select2({
-                                                dropdownParent: '#success',
-                                            });
-                                            $('.tier').select2({
-                                                dropdownParent: '#success',
-                                            });
-                                            $(document).ready(function() {
-                                                    $('#key').on('change', function() {
-                                                        let id = $(this).val();
-                                                        $.ajax({
-                                                            type: 'POST',
-                                                            url: '/container-tipe',
-                                                            data: { container_key : id },
-                                                            success: function(response) {
-                                                            
-                                                                    $('#container_no').val(response.container_no);
-                                                                    $('#tipe').val(response.tipe);
-                                                                    $('#size').val(response.size);
-                                                                    $('#coname').val(response.coname);
-                                                                },
-                                                            error: function(data) {
-                                                                console.log('error:', data);
-                                                            },
-                                                        });
-                                                    });
-                                            });
-                                            // $
-                                        });
-                                    
-                                        $('#load_ini').load(window.location.href + ' #load_ini');
-                                    });
+                                    .then(() => {
+                            // Memuat ulang halaman setelah berhasil menyimpan data
+                            window.location.reload();
+                        });
                                 } else {
                                     Swal.fire('Error', response.message, 'error');
                                 }

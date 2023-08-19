@@ -505,7 +505,7 @@
                               <select class="form-select" id="vesid_edit" name="ves_id">
                                 <option value="-">-</option>
                                 @foreach($vessel_voyage as $vy)
-                                <option value="{{$vy->ves_id}}">{{str_pad($vi->ves_id,4,'0', STR_PAD_LEFT)}}-{{$vi->ves_code}} Tiba Pada {{$vi->eta_date}}</option>
+                                <option value="{{$vy->ves_id}}">{{str_pad($vy->ves_id,4,'0', STR_PAD_LEFT)}}-{{$vy->ves_code}} Tiba Pada {{$vy->eta_date}}</option>
                                 @endforeach
                               </select>
                             </div>

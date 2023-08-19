@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Yard;
 use App\Models\Job;
+use App\Models\Isocode;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -247,5 +248,128 @@ class Gati extends Controller
         //     'message' => 'Updated successfully!',
         //     'item' => $item,
         // ]);
+    }
+
+    //Reciving
+    public function index_rec()
+    {
+        $title = 'Gate In Delivery';
+        $confirmed = Item::where('ctr_intern_status', '=', 50,)->orderBy('truck_in_date', 'desc')->get();
+        $formattedData = [];
+        $data = [];
+
+        foreach ($confirmed as $tem) {
+            $now = Carbon::now();
+            $updatedAt = Carbon::parse($tem->truck_in_date);
+
+            // Perhitungan selisih waktu
+            $diff = $updatedAt->diffForHumans($now);
+
+            // Jika selisih waktu kurang dari 1 hari, maka tampilkan format jam
+            if ($updatedAt->diffInDays($now) < 1) {
+                $diff = $updatedAt->diffForHumans($now, true);
+                $diff = str_replace(['hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
+            } else {
+                // Jika selisih waktu lebih dari 1 hari, maka tampilkan format hari dan jam
+                $diff = $updatedAt->diffForHumans($now, true);
+                $diff = str_replace(['days', 'day', 'hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['hari', 'hari', 'jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
+            }
+
+            $formattedData[] = [
+                'container_no' => $tem->container_no,
+                'truck_no' => $tem->truck_no,
+                'truck_in_date' => $diff . ' yang lalu',
+                'container_key' => $tem->container_key
+            ];
+        }
+        $containerKeys = Item::where('ctr_intern_status', '49')
+            ->whereNotNull('job_no')
+            ->pluck('container_no', 'container_key');
+        $users = User::all();
+        $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
+        $yard_slot = Yard::distinct('yard_slot')->pluck('yard_slot');
+        $yard_row = Yard::distinct('yard_row')->pluck('yard_row');
+        $yard_tier = Yard::distinct('yard_tier')->pluck('yard_tier');
+        $currentDateTime = Carbon::now();
+        $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
+        $isocode = Isocode::all();
+
+       
+
+      
+        return view('gate.recive.main', $data, compact('confirmed', 'formattedData', 'title', 'users','isocode', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'), $data);
+    }
+
+    public function data_container_rec(Request $request)
+    {
+        $container_key = $request->container_key;
+        $name = Item::where('container_key', $container_key)->first();
+
+        if ($name) {
+            return response()->json(['container_no' => $name->container_no, 'gross' => $name->gross, 'iso_code' => $name->iso_code, 'seal_no' => $name->seal_no, 'bl_no' => $name->bl_no, 'size' => $name->ctr_size, 'type' => $name->ctr_type, 'stat' => $name->ctr_status,
+            'vessel'=>$name->ves_name,
+            'voy'=>$name->voy_no,
+            'imo'=>$name->imo_code,
+            'gross'=>$name->gross,
+            'class'=>$name->gross_class,
+            'pod'=>$name->disch_port,
+            'seal'=>$name->seal_no,
+            'oh'=>$name->over_height,
+            'ow'=>$name->over_weight,
+            'ol'=>$name->over_length
+        ]);
+        }
+        return response()->json(['container_no' => 'data tidak ditemukan', 'gross' => 'data tidak ditemukan', 'iso_code' => 'data tidak ditemukan', 'bl_no' => 'data tidak ditemukan']);
+       
+    }
+    public function gati_iso_rec(Request $request)
+    {
+        $iso_code = $request->iso_code;
+        $type = Isocode::where('iso_code', $iso_code)->first();
+
+        if ($type) {
+            return response()->json(['type' => $type->iso_type, 'size' => $type->iso_size]);
+        }
+        return response()->json(['size' => 'data tidak ditemukan', 'type' => 'data tidak ditemukan']);
+    }
+
+    public function gati_rec(Request $request)
+    {
+
+
+        $container_key = $request->container_key;
+        // var_dump($request->job_no);
+        // die();
+        $item = Item::where('container_key', $container_key)->first();
+        
+        $request->validate([
+            'container_no' => 'required',
+            'truck_no' => 'required',
+        ], [
+            'container_no.required' => 'Container Number is required.',
+            'truck_no.required' => 'Truck Number is required.',
+        ]);
+        $item->update([
+            'container_no' => $request->container_no,
+            'ctr_intern_status' => 50,
+            'truck_no' => $request->truck_no,
+            'truck_in_date' => $request->truck_in_date,
+            'gross' => $request->gross,
+            'iso_code' => $request->iso_code,
+            'bl_no' => $request->bl_no,
+            'seal_no' => $request->seal_no,
+            'ctr_type' => $request->ctr_type,
+            'ctr_size' => $request->ctr_size,
+            'ctr_status' => $request->ctr_status,
+        ]);
+        // var_dump($item);
+        // die();
+       
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Updated successfully!',
+            'item' => $item,
+        ]);
     }
 }
