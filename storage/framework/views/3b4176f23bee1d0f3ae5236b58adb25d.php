@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
     <?php echo $__env->make('partial.head', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 </head>
 
@@ -11,10 +12,9 @@
             <div class="sidebar-wrapper active">
                 <div class="sidebar-header position-relative">
                     <div class="d-flex justify-content-between align-items-center">
-                        <div class="logo">
-                            <a href="/dashboard"><img src="<?php echo e(asset('dist/assets/images/logo/logo.svg')); ?>" alt="Logo" srcset=""></a>
+                        <div class="logoicon">
+                            <a href="/dashboard"><img src="<?php echo e(asset('logo/ICON2.png')); ?>" alt="Logo" srcset=""></a>
                         </div>
-
                         <!-- Dark or Light mode -->
 
                         <div class="theme-toggle d-flex gap-2  align-items-center mt-2">
@@ -72,11 +72,17 @@
     <script src="<?php echo e(asset('vendor/components/jquery/jquery.min.js')); ?>"></script>
     <script src="<?php echo e(asset('dist/assets/extensions/sweetalert2/sweetalert2.min.js')); ?>"></script>
     <script src="<?php echo e(asset('dist/assets/js/pages/sweetalert2.js')); ?>"></script>
+    <script src="<?php echo e(asset('dist/assets/extensions/choices.js/public/assets/scripts/choices.js')); ?>"></script>
+    <script src="<?php echo e(asset('dist/assets/js/pages/form-element-select.js')); ?>"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/dt-1.12.1/datatables.min.js"></script>
+
+    <script>new simpleDatatables.DataTable('#table2');</script>
+    <script>new simpleDatatables.DataTable('#table3');</script>
     <!-- <script src="<?php echo e(asset('query-ui/jquery-ui.js')); ?>"></script>
     <script src="<?php echo e(asset('query-ui/jquery-ui.min.js')); ?>" type="text/javascript"></script>
     <script src="<?php echo e(asset('jquery-3.6.4.min.js')); ?>" type="text/javascript"></script> -->
     <?php echo $__env->yieldContent('custom_js'); ?>
-
 </body>
 
 

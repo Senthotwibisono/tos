@@ -26,12 +26,12 @@
                 <input type="text" class="form-control" placeholder="09/05/2023" value="<?= $ccdelivery->deliveryForm->exp_date ?>" readonly>
               </div>
             </div>
-            <div class="col-4">
+            <!-- <div class="col-4">
               <div class="form-group">
                 <label for="">Disc Date</label>
                 <input type="text" class="form-control" value="<?= $ccdelivery->findContainer[0]->disc_date ?>" readonly>
               </div>
-            </div>
+            </div> -->
             <?php if ($ccdelivery->deliveryForm->isExtended == "1") { ?>
               <input type="hidden" value="1" name="isExtended">
               <div class="col-4">

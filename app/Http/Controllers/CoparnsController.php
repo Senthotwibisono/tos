@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\VMaster;
 use App\Models\VVoyage;
+use App\Models\Isocode;
 
 
 
@@ -33,13 +34,6 @@ class CoparnsController extends Controller
     {
         $client = new Client();
         $data = [];
-
-        // // GET ALL VESSEL
-        // $url_vessel = getenv('API_URL') . '/delivery-service/vessel/all';
-        // $req_vessel = $client->get($url_vessel);
-        // $response_vessel = $req_vessel->getBody()->getContents();
-        // $result_vessel = json_decode($response_vessel);
-        // // dd($result_vessel);
 
         // $data["vessel"] = $result_vessel->data;
         $vessel_voyage = VVoyage::whereDate('deparature_date', '>=', now())->orderBy('deparature_date', 'desc')->get();
@@ -95,7 +89,7 @@ class CoparnsController extends Controller
             $rows = array_slice($data, 1);
 
             $formattedData = [];
-
+            //  column3 = isocode 
             foreach ($rows as $row) {
                 $formattedRow = [];
                 foreach ($columns as $index => $column) {
@@ -108,9 +102,19 @@ class CoparnsController extends Controller
                 $formattedRow['column24'] = $closing;
                 $formattedRow['column25'] = $vessel;
                 // $formattedRow['column26'] = "";
+                $iso_code = Isocode::where('iso_code', '=', $formattedRow['column3'])->get();
+                // dd($iso_code[0]);
+                $formattedRow['column26'] = $iso_code[0]->iso_size;
+                $formattedRow['column27'] = $iso_code[0]->iso_type;
+                $formattedRow['column28'] = $iso_code[0]->iso_weight;
+                if ($formattedRow['column4'] == "F") {
+                    $formattedRow['column29'] = "FCL";
+                } else {
+                    $formattedRow['column29'] = "MTY";
+                }
+                $formattedRow['column30'] = "48";
                 $formattedData[] = $formattedRow;
             }
-
 
             // Wrap the data under a "data" key
             $jsonData = [
