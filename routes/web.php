@@ -30,7 +30,8 @@ use App\Http\Controllers\CoparnController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ShipPlanController;
 use App\Http\Controllers\LoadController;
-
+use App\Http\Controllers\BeaController;
+use App\Http\Controllers\SoapController;
 
 /*
 |--------------------------------------------------------------------------
@@ -530,3 +531,9 @@ Route::post('/search-container', [LoadController::class, 'container']);
 Route::post('/get-container-key-load', [LoadController::class, 'get_key']);
 Route::post('/confirm-load', [LoadController::class, 'confirm']);
 Route::post('/get-con-load', [LoadController::class, 'get_cont']);
+
+//BeaCukai
+Route::get('/bea/req-dok', [BeaController::class, 'index']);
+Route::post('/download-sppb', [SoapController::class, 'GetImpor_SPPB']);
+Route::post('/download-npe', [SoapController::class, 'GetEkspor_NPE']);
+Route::post('/download-Pabean', [SoapController::class, 'GetDokumenPabean_OnDemand']);

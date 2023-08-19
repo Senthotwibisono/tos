@@ -1,9 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.13.1@086b94371304750d1c673315321a55d15fc59015">
+<files psalm-version="5.14.1@b9d355e0829c397b9b3b47d0c0ed042a8a70284d">
   <file src="src/Event/Dispatcher/DirectDispatcher.php">
     <UndefinedInterfaceMethod>
       <code>notify</code>
     </UndefinedInterfaceMethod>
+  </file>
+  <file src="src/Event/Emitter/DispatchingEmitter.php">
+    <ArgumentTypeCoercion>
+      <code>$file</code>
+      <code>$file</code>
+      <code>$file</code>
+      <code>$file</code>
+      <code>$file</code>
+      <code>$file</code>
+      <code>$file</code>
+      <code>$line</code>
+      <code>$line</code>
+      <code>$line</code>
+      <code>$line</code>
+      <code>$line</code>
+      <code>$line</code>
+      <code>$line</code>
+      <code>$message</code>
+      <code>$message</code>
+      <code>$message</code>
+      <code>$message</code>
+      <code>$message</code>
+      <code>$message</code>
+      <code>$message</code>
+      <code>$message</code>
+    </ArgumentTypeCoercion>
   </file>
   <file src="src/Event/Events/Test/HookMethod/AfterLastTestMethodFinished.php">
     <PropertyTypeCoercion>
@@ -75,7 +101,11 @@
   </file>
   <file src="src/Event/Value/Telemetry/Php83GarbageCollectorStatusProvider.php">
     <InvalidArrayOffset>
+      <code><![CDATA[$status['application_time']]]></code>
       <code><![CDATA[$status['buffer_size']]]></code>
+      <code><![CDATA[$status['collector_time']]]></code>
+      <code><![CDATA[$status['destructor_time']]]></code>
+      <code><![CDATA[$status['free_time']]]></code>
       <code><![CDATA[$status['full']]]></code>
       <code><![CDATA[$status['protected']]]></code>
       <code><![CDATA[$status['running']]]></code>
@@ -134,6 +164,11 @@
       <code><![CDATA[$e->getCode()]]></code>
     </PossiblyInvalidArgument>
   </file>
+  <file src="src/Framework/Constraint/Exception/ExceptionMessageMatchesRegularExpression.php">
+    <ArgumentTypeCoercion>
+      <code><![CDATA[$this->regularExpression]]></code>
+    </ArgumentTypeCoercion>
+  </file>
   <file src="src/Framework/Constraint/Object/ObjectEquals.php">
     <MissingThrowsDocblock>
       <code>getMethod</code>
@@ -157,6 +192,19 @@
       <code>bool</code>
     </InvalidArgument>
   </file>
+  <file src="src/Framework/Constraint/String/RegularExpression.php">
+    <ArgumentTypeCoercion>
+      <code><![CDATA[$this->pattern]]></code>
+    </ArgumentTypeCoercion>
+  </file>
+  <file src="src/Framework/Constraint/String/StringMatchesFormatDescription.php">
+    <ArgumentTypeCoercion>
+      <code>$line</code>
+      <code><![CDATA[$this->regularExpressionForFormatDescription(
+                $this->convertNewlines($this->formatDescription),
+            )]]></code>
+    </ArgumentTypeCoercion>
+  </file>
   <file src="src/Framework/Constraint/Traversable/TraversableContainsOnly.php">
     <ArgumentTypeCoercion>
       <code>$type</code>
@@ -174,12 +222,7 @@
       <code><![CDATA[list<ExecutionOrderDependency>]]></code>
     </MoreSpecificReturnType>
   </file>
-  <file src="src/Framework/MockObject/Builder/InvocationMocker.php">
-    <PropertyTypeCoercion>
-      <code>$configurableMethods</code>
-    </PropertyTypeCoercion>
-  </file>
-  <file src="src/Framework/MockObject/Generator.php">
+  <file src="src/Framework/MockObject/Generator/Generator.php">
     <ArgumentTypeCoercion>
       <code>$className</code>
       <code>$className</code>
@@ -200,19 +243,25 @@
       <code><![CDATA[$client->__getFunctions()]]></code>
     </PossiblyNullArgument>
   </file>
-  <file src="src/Framework/MockObject/Invocation.php">
-    <ArgumentTypeCoercion>
-      <code><![CDATA[$this->returnType]]></code>
-      <code>$types</code>
-    </ArgumentTypeCoercion>
-  </file>
-  <file src="src/Framework/MockObject/Matcher.php">
-    <InvalidNullableReturnType>
-      <code>MethodName</code>
-    </InvalidNullableReturnType>
-    <NullableReturnStatement>
-      <code><![CDATA[$this->methodNameRule]]></code>
-    </NullableReturnStatement>
+  <file src="src/Framework/MockObject/Generator/MockMethod.php">
+    <InvalidArgument>
+      <code><![CDATA[[
+                'arguments_decl'     => $this->argumentsForDeclaration,
+                'arguments_call'     => $this->argumentsForCall,
+                'return_declaration' => !empty($this->returnType->asString()) ? (': ' . $this->returnType->asString()) : '',
+                'return_type'        => $this->returnType->asString(),
+                'arguments_count'    => !empty($this->argumentsForCall) ? substr_count($this->argumentsForCall, ',') + 1 : 0,
+                'class_name'         => $this->className,
+                'method_name'        => $this->methodName,
+                'modifier'           => $this->modifier,
+                'reference'          => $this->reference,
+                'clone_arguments'    => $this->cloneArguments ? 'true' : 'false',
+                'deprecation'        => $deprecation,
+            ]]]></code>
+    </InvalidArgument>
+    <PossiblyFalseOperand>
+      <code><![CDATA[strpos($parameterAsString, '<optional> ')]]></code>
+    </PossiblyFalseOperand>
   </file>
   <file src="src/Framework/MockObject/MockBuilder.php">
     <ArgumentTypeCoercion>
@@ -233,35 +282,35 @@
       <code><![CDATA[MockObject&MockedType]]></code>
     </InvalidReturnType>
   </file>
-  <file src="src/Framework/MockObject/MockMethod.php">
-    <InvalidArgument>
-      <code><![CDATA[[
-                'arguments_decl'     => $this->argumentsForDeclaration,
-                'arguments_call'     => $this->argumentsForCall,
-                'return_declaration' => !empty($this->returnType->asString()) ? (': ' . $this->returnType->asString()) : '',
-                'return_type'        => $this->returnType->asString(),
-                'arguments_count'    => !empty($this->argumentsForCall) ? substr_count($this->argumentsForCall, ',') + 1 : 0,
-                'class_name'         => $this->className,
-                'method_name'        => $this->methodName,
-                'modifier'           => $this->modifier,
-                'reference'          => $this->reference,
-                'clone_arguments'    => $this->cloneArguments ? 'true' : 'false',
-                'deprecation'        => $deprecation,
-            ]]]></code>
-    </InvalidArgument>
-    <PossiblyFalseOperand>
-      <code><![CDATA[strpos($parameterAsString, '<optional> ')]]></code>
-    </PossiblyFalseOperand>
+  <file src="src/Framework/MockObject/Runtime/Builder/InvocationMocker.php">
+    <PropertyTypeCoercion>
+      <code>$configurableMethods</code>
+    </PropertyTypeCoercion>
   </file>
-  <file src="src/Framework/MockObject/Rule/Parameters.php">
+  <file src="src/Framework/MockObject/Runtime/Matcher.php">
+    <InvalidNullableReturnType>
+      <code>MethodName</code>
+    </InvalidNullableReturnType>
+    <NullableReturnStatement>
+      <code><![CDATA[$this->methodNameRule]]></code>
+    </NullableReturnStatement>
+  </file>
+  <file src="src/Framework/MockObject/Runtime/ReturnValueGenerator.php">
+    <ArgumentTypeCoercion>
+      <code>$returnType</code>
+      <code>$types</code>
+    </ArgumentTypeCoercion>
+    <LessSpecificReturnStatement>
+      <code><![CDATA[(new ReflectionClass($stubClassName))->newInstanceWithoutConstructor()]]></code>
+    </LessSpecificReturnStatement>
+    <MoreSpecificReturnType>
+      <code>MockObject</code>
+    </MoreSpecificReturnType>
+  </file>
+  <file src="src/Framework/MockObject/Runtime/Rule/Parameters.php">
     <PropertyNotSetInConstructor>
       <code>$parameterVerificationResult</code>
     </PropertyNotSetInConstructor>
-  </file>
-  <file src="src/Framework/MockObject/Stub/ReturnCallback.php">
-    <PossiblyInvalidOperand>
-      <code><![CDATA[$this->callback]]></code>
-    </PossiblyInvalidOperand>
   </file>
   <file src="src/Framework/TestCase.php">
     <ArgumentTypeCoercion>
@@ -521,6 +570,10 @@
     </PropertyTypeCoercion>
   </file>
   <file src="src/Runner/Filter/NameFilterIterator.php">
+    <ArgumentTypeCoercion>
+      <code>$filter</code>
+      <code><![CDATA[$this->filter]]></code>
+    </ArgumentTypeCoercion>
     <MissingTemplateParam>
       <code>NameFilterIterator</code>
     </MissingTemplateParam>
@@ -612,6 +665,10 @@
     </ArgumentTypeCoercion>
   </file>
   <file src="src/TextUI/Configuration/Cli/Configuration.php">
+    <DeprecatedMethod>
+      <code>hasCacheResultFile</code>
+      <code>hasCoverageCacheDirectory</code>
+    </DeprecatedMethod>
     <InvalidNullableReturnType>
       <code>bool</code>
       <code>string</code>
@@ -645,8 +702,13 @@
     <DeprecatedMethod>
       <code>cacheDirectory</code>
       <code>cacheResultFile</code>
+      <code>cacheResultFile</code>
+      <code>coverageCacheDirectory</code>
+      <code>coverageCacheDirectory</code>
       <code>hasCacheDirectory</code>
       <code>hasCacheResultFile</code>
+      <code>hasCacheResultFile</code>
+      <code>hasCoverageCacheDirectory</code>
     </DeprecatedMethod>
     <MissingThrowsDocblock>
       <code>detect</code>

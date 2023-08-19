@@ -283,7 +283,6 @@ class Gati extends Controller
             ];
         }
         $containerKeys = Item::where('ctr_intern_status', '49')
-            ->whereNotNull('job_no')
             ->pluck('container_no', 'container_key');
         $users = User::all();
         $yard_block = Yard::distinct('yard_block')->pluck('yard_block');

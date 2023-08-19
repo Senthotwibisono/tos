@@ -65,15 +65,15 @@ class Stuffing extends Controller
 
         // GET ALL JOB_CONTAINER
 
-        $client = new Client();
-        $url_jobContainer = getenv('API_URL') . '/delivery-service/job/all';
-        $req_jobContainer = $client->get($url_jobContainer);
-        $response_jobContainer = $req_jobContainer->getBody()->getContents();
-        $result_jobContainer = json_decode($response_jobContainer);
+        // $client = new Client();
+        // $url_jobContainer = getenv('API_URL') . '/delivery-service/job/all';
+        // $req_jobContainer = $client->get($url_jobContainer);
+        // $response_jobContainer = $req_jobContainer->getBody()->getContents();
+        // $result_jobContainer = json_decode($response_jobContainer);
         // dd($result_jobContainer);
         // dd($containerKeys);
 
-        $data["jobContainers"] = $result_jobContainer->data;
+        // $data["jobContainers"] = $result_jobContainer->data;
 
 
         return view('stuffing.main', $data, compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'));

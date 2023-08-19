@@ -22,20 +22,13 @@ use PHPUnit\Event\Telemetry\MemoryUsage;
 use PHPUnit\Event\Telemetry\Snapshot;
 use PHPUnit\Event\Test\BeforeFirstTestMethodErrored;
 use PHPUnit\Event\Test\ConsideredRisky;
-use PHPUnit\Event\Test\DeprecationTriggered;
 use PHPUnit\Event\Test\Errored;
-use PHPUnit\Event\Test\ErrorTriggered;
 use PHPUnit\Event\Test\Failed;
 use PHPUnit\Event\Test\MarkedIncomplete;
-use PHPUnit\Event\Test\NoticeTriggered;
-use PHPUnit\Event\Test\PhpDeprecationTriggered;
-use PHPUnit\Event\Test\PhpNoticeTriggered;
 use PHPUnit\Event\Test\PhpunitDeprecationTriggered;
 use PHPUnit\Event\Test\PhpunitErrorTriggered;
 use PHPUnit\Event\Test\PhpunitWarningTriggered;
-use PHPUnit\Event\Test\PhpWarningTriggered;
 use PHPUnit\Event\Test\Skipped as TestSkipped;
-use PHPUnit\Event\Test\WarningTriggered;
 use PHPUnit\Event\TestData\TestDataCollection;
 use PHPUnit\Event\TestRunner\DeprecationTriggered as TestRunnerDeprecationTriggered;
 use PHPUnit\Event\TestRunner\WarningTriggered as TestRunnerWarningTriggered;
@@ -47,6 +40,7 @@ use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\IncompleteTestError;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Metadata\MetadataCollection;
+use PHPUnit\TestRunner\TestResult\Issues\Issue;
 use PHPUnit\TestRunner\TestResult\TestResult;
 use PHPUnit\TextUI\Output\Printer;
 use PHPUnit\TextUI\Output\SummaryPrinter;
@@ -184,17 +178,13 @@ final class ResultPrinterTest extends TestCase
             'successful test that triggers deprecation' => [
                 __DIR__ . '/expectations/successful_test_with_deprecation.txt',
                 self::createTestResult(
-                    testTriggeredDeprecationEvents: [
-                        'Foo::testBar' => [
-                            new DeprecationTriggered(
-                                self::telemetryInfo(),
-                                self::testMethod(),
-                                'message',
-                                'Foo.php',
-                                1,
-                                false,
-                            ),
-                        ],
+                    deprecations: [
+                        Issue::from(
+                            'Foo.php',
+                            1,
+                            'message',
+                            self::testMethod(),
+                        ),
                     ],
                 ),
             ],
@@ -202,26 +192,27 @@ final class ResultPrinterTest extends TestCase
             'successful test that triggers PHP deprecation' => [
                 __DIR__ . '/expectations/successful_test_with_php_deprecation.txt',
                 self::createTestResult(
-                    testTriggeredPhpDeprecationEvents: [
-                        'Foo::testBar' => [
-                            new PhpDeprecationTriggered(
-                                self::telemetryInfo(),
-                                self::testMethod(),
-                                'message',
-                                'Foo.php',
-                                1,
-                                false,
-                            ),
-                            new PhpDeprecationTriggered(
-                                self::telemetryInfo(),
-                                self::testMethod(),
-                                'another message',
-                                'Foo.php',
-                                2,
-                                false,
-                            ),
-                        ],
+                    phpDeprecations: [
+                        Issue::from(
+                            'Foo.php',
+                            1,
+                            'message',
+                            self::testMethod(),
+                        ),
+                        Issue::from(
+                            'Foo.php',
+                            2,
+                            'another message',
+                            self::testMethod(),
+                        ),
                     ],
+                ),
+            ],
+
+            'successful test that triggers the same PHP deprecation multiple times' => [
+                __DIR__ . '/expectations/successful_test_with_php_deprecation_multiple.txt',
+                self::createTestResult(
+                    phpDeprecations: self::samePhpDeprecationsTriggeredTwice(),
                 ),
             ],
 
@@ -249,17 +240,13 @@ final class ResultPrinterTest extends TestCase
             'successful test that triggers error' => [
                 __DIR__ . '/expectations/successful_test_with_error.txt',
                 self::createTestResult(
-                    testTriggeredErrorEvents: [
-                        'Foo::testBar' => [
-                            new ErrorTriggered(
-                                self::telemetryInfo(),
-                                self::testMethod(),
-                                'message',
-                                'Foo.php',
-                                1,
-                                false,
-                            ),
-                        ],
+                    errors: [
+                        Issue::from(
+                            'Foo.php',
+                            1,
+                            'message',
+                            self::testMethod(),
+                        ),
                     ],
                 ),
             ],
@@ -267,17 +254,13 @@ final class ResultPrinterTest extends TestCase
             'successful test that triggers notice' => [
                 __DIR__ . '/expectations/successful_test_with_notice.txt',
                 self::createTestResult(
-                    testTriggeredNoticeEvents: [
-                        'Foo::testBar' => [
-                            new NoticeTriggered(
-                                self::telemetryInfo(),
-                                self::testMethod(),
-                                'message',
-                                'Foo.php',
-                                1,
-                                false,
-                            ),
-                        ],
+                    notices: [
+                        Issue::from(
+                            'Foo.php',
+                            1,
+                            'message',
+                            self::testMethod(),
+                        ),
                     ],
                 ),
             ],
@@ -285,17 +268,13 @@ final class ResultPrinterTest extends TestCase
             'successful test that triggers PHP notice' => [
                 __DIR__ . '/expectations/successful_test_with_php_notice.txt',
                 self::createTestResult(
-                    testTriggeredPhpNoticeEvents: [
-                        'Foo::testBar' => [
-                            new PhpNoticeTriggered(
-                                self::telemetryInfo(),
-                                self::testMethod(),
-                                'message',
-                                'Foo.php',
-                                1,
-                                false,
-                            ),
-                        ],
+                    phpNotices: [
+                        Issue::from(
+                            'Foo.php',
+                            1,
+                            'message',
+                            self::testMethod(),
+                        ),
                     ],
                 ),
             ],
@@ -303,17 +282,13 @@ final class ResultPrinterTest extends TestCase
             'successful test that triggers warning' => [
                 __DIR__ . '/expectations/successful_test_with_warning.txt',
                 self::createTestResult(
-                    testTriggeredWarningEvents: [
-                        'Foo::testBar' => [
-                            new WarningTriggered(
-                                self::telemetryInfo(),
-                                self::testMethod(),
-                                'message',
-                                'Foo.php',
-                                1,
-                                false,
-                            ),
-                        ],
+                    warnings: [
+                        Issue::from(
+                            'Foo.php',
+                            1,
+                            'message',
+                            self::testMethod(),
+                        ),
                     ],
                 ),
             ],
@@ -321,17 +296,13 @@ final class ResultPrinterTest extends TestCase
             'successful test that triggers PHP warning' => [
                 __DIR__ . '/expectations/successful_test_with_php_warning.txt',
                 self::createTestResult(
-                    testTriggeredPhpWarningEvents: [
-                        'Foo::testBar' => [
-                            new PhpWarningTriggered(
-                                self::telemetryInfo(),
-                                self::testMethod(),
-                                'message',
-                                'Foo.php',
-                                1,
-                                false,
-                            ),
-                        ],
+                    phpWarnings: [
+                        Issue::from(
+                            'Foo.php',
+                            1,
+                            'message',
+                            self::testMethod(),
+                        ),
                     ],
                 ),
             ],
@@ -440,20 +411,20 @@ final class ResultPrinterTest extends TestCase
      * @psalm-param list<TestSuiteSkipped> $testSuiteSkippedEvents
      * @psalm-param list<TestSkipped> $testSkippedEvents
      * @psalm-param list<MarkedIncomplete> $testMarkedIncompleteEvents
-     * @psalm-param array<string,list<DeprecationTriggered>> $testTriggeredDeprecationEvents
-     * @psalm-param array<string,list<PhpDeprecationTriggered>> $testTriggeredPhpDeprecationEvents
+     * @psalm-param list<Issue> $deprecations
+     * @psalm-param list<Issue> $phpDeprecations
      * @psalm-param array<string,list<PhpunitDeprecationTriggered>> $testTriggeredPhpunitDeprecationEvents
-     * @psalm-param array<string,list<ErrorTriggered>> $testTriggeredErrorEvents
-     * @psalm-param array<string,list<NoticeTriggered>> $testTriggeredNoticeEvents
-     * @psalm-param array<string,list<PhpNoticeTriggered>> $testTriggeredPhpNoticeEvents
-     * @psalm-param array<string,list<WarningTriggered>> $testTriggeredWarningEvents
-     * @psalm-param array<string,list<PhpWarningTriggered>> $testTriggeredPhpWarningEvents
+     * @psalm-param list<Issue> $errors
+     * @psalm-param list<Issue> $notices
+     * @psalm-param list<Issue> $phpNotices
+     * @psalm-param list<Issue> $warnings
+     * @psalm-param list<Issue> $phpWarnings
      * @psalm-param array<string,list<PhpunitErrorTriggered>> $testTriggeredPhpunitErrorEvents
      * @psalm-param array<string,list<PhpunitWarningTriggered>> $testTriggeredPhpunitWarningEvents
      * @psalm-param list<TestRunnerDeprecationTriggered> $testRunnerTriggeredDeprecationEvents
      * @psalm-param list<TestRunnerWarningTriggered> $testRunnerTriggeredWarningEvents
      */
-    private static function createTestResult(int $numberOfTests = 1, int $numberOfTestsRun = 1, int $numberOfAssertions = 1, array $testErroredEvents = [], array $testFailedEvents = [], array $testConsideredRiskyEvents = [], array $testSuiteSkippedEvents = [], array $testSkippedEvents = [], array $testMarkedIncompleteEvents = [], array $testTriggeredDeprecationEvents = [], array $testTriggeredPhpDeprecationEvents = [], array $testTriggeredPhpunitDeprecationEvents = [], array $testTriggeredErrorEvents = [], array $testTriggeredNoticeEvents = [], array $testTriggeredPhpNoticeEvents = [], array $testTriggeredWarningEvents = [], array $testTriggeredPhpWarningEvents = [], array $testTriggeredPhpunitErrorEvents = [], array $testTriggeredPhpunitWarningEvents = [], array $testRunnerTriggeredDeprecationEvents = [], array $testRunnerTriggeredWarningEvents = []): TestResult
+    private static function createTestResult(int $numberOfTests = 1, int $numberOfTestsRun = 1, int $numberOfAssertions = 1, array $testErroredEvents = [], array $testFailedEvents = [], array $testConsideredRiskyEvents = [], array $testSuiteSkippedEvents = [], array $testSkippedEvents = [], array $testMarkedIncompleteEvents = [], array $deprecations = [], array $phpDeprecations = [], array $testTriggeredPhpunitDeprecationEvents = [], array $errors = [], array $notices = [], array $phpNotices = [], array $warnings = [], array $phpWarnings = [], array $testTriggeredPhpunitErrorEvents = [], array $testTriggeredPhpunitWarningEvents = [], array $testRunnerTriggeredDeprecationEvents = [], array $testRunnerTriggeredWarningEvents = []): TestResult
     {
         return new TestResult(
             $numberOfTests,
@@ -465,18 +436,18 @@ final class ResultPrinterTest extends TestCase
             $testSuiteSkippedEvents,
             $testSkippedEvents,
             $testMarkedIncompleteEvents,
-            $testTriggeredDeprecationEvents,
-            $testTriggeredPhpDeprecationEvents,
             $testTriggeredPhpunitDeprecationEvents,
-            $testTriggeredErrorEvents,
-            $testTriggeredNoticeEvents,
-            $testTriggeredPhpNoticeEvents,
-            $testTriggeredWarningEvents,
-            $testTriggeredPhpWarningEvents,
             $testTriggeredPhpunitErrorEvents,
             $testTriggeredPhpunitWarningEvents,
             $testRunnerTriggeredDeprecationEvents,
             $testRunnerTriggeredWarningEvents,
+            $errors,
+            $deprecations,
+            $notices,
+            $warnings,
+            $phpDeprecations,
+            $phpNotices,
+            $phpWarnings,
         );
     }
 
@@ -532,12 +503,26 @@ final class ResultPrinterTest extends TestCase
                 HRTime::fromSecondsAndNanoseconds(...hrtime(false)),
                 MemoryUsage::fromBytes(1000),
                 MemoryUsage::fromBytes(2000),
-                new GarbageCollectorStatus(0, 0, 0, 0, false, false, false, 0),
+                new GarbageCollectorStatus(0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, false, false, false, 0),
             ),
             Duration::fromSecondsAndNanoseconds(123, 456),
             MemoryUsage::fromBytes(2000),
             Duration::fromSecondsAndNanoseconds(234, 567),
             MemoryUsage::fromBytes(3000),
         );
+    }
+
+    private static function samePhpDeprecationsTriggeredTwice(): array
+    {
+        $issue = Issue::from(
+            'Foo.php',
+            1,
+            'message',
+            self::testMethod(),
+        );
+
+        $issue->triggeredBy(self::testMethod());
+
+        return [$issue];
     }
 }

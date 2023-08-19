@@ -1,10 +1,12 @@
-There was 1 error:
+1 test triggered 1 error:
 
-1) FooTest::testBar
+1) Foo.php:1
 message
-Foo.php:1
 
-FooTest.php:1
+Triggered by:
 
-OK, but there are issues!
+* FooTest::testBar
+  FooTest.php:1
+
+OK, but there were issues!
 Tests: 1, Assertions: 1, Errors: 1.
