@@ -901,7 +901,7 @@
           } else {
             console.log("im here bro 2");
             containers.forEach((container) => {
-              $("#containerSelector").append(`<option selected value="${container.container_no}">${container.container_no}</option>`)
+              $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
             });
             $("#do_exp_date").val(containers[0].do_expired).attr("readonly", "true");
             $("#boln").val(containers[0].bl_no).attr("readonly", "true");
@@ -957,7 +957,7 @@
           // $("#boln").val(containers.bl_no).attr("readonly", "true");
           containers.forEach((container) => {
             ctr++;
-            $("#containerSelector").append(`<option selected value="${container.container_no}">${container.container_no}</option>`)
+            $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
           });
           $("#ctr").val(ctr).attr("readonly", "true");
           $("#pod").val(containers[0].pod).attr("readonly", "true");
