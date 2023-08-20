@@ -1044,13 +1044,38 @@
           });
           $("#ctr").val(ctr).attr("readonly", "true");
           $("#pod").val(containers[0].pod).attr("readonly", "true");
-          $("#vesselBN").val(containers[0].vessel_name).attr("readonly", "true");
-          $("#voyage").val(containers[0].voy_no).attr("readonly", "true");
-          $("#vesselcode").val(containers[0].ves_code).attr("readonly", "true");
-          $("#closing").val(formattedDate(containers[0].closing_date)).attr("readonly", "true");
-          $("#arrival").val(formattedDate(containers[0].arrival_date)).attr("readonly", "true");
-          $("#departure").val(formattedDate(containers[0].departure_date)).attr("readonly", "true");
-
+          // $("#vesselBN").val(containers[0].vessel_name).attr("readonly", "true");
+          // $("#voyage").val(containers[0].voy_no).attr("readonly", "true");
+          // $("#vesselcode").val(containers[0].ves_code).attr("readonly", "true");
+          // $("#closing").val(formattedDate(containers[0].closing_date)).attr("readonly", "true");
+          // $("#arrival").val(formattedDate(containers[0].arrival_date)).attr("readonly", "true");
+          // $("#departure").val(formattedDate(containers[0].departure_date)).attr("readonly", "true");
+          let csrfToken = $('meta[name="csrf-token"]').attr('content');
+          let formData = new FormData();
+          formData.append("ves_id", containers[0].ves_id);
+          $.ajax({
+            headers: {
+              'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+            },
+            type: "POST",
+            url: `/coparn/findSingleVessel`,
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: formData,
+            success: function(response) {
+              let res = JSON.parse(response);
+              console.log(res);
+              data = res[0];
+              // console.log(res.arrival_date);
+              $("#vesselBN").val(data.ves_id).attr("readonly", "true");
+              $("#voyage").val(data.voy_out).attr("readonly", "true");
+              $("#vesselcode").val(data.ves_code).attr("readonly", "true");
+              $("#closing").val(formattedDate(data.clossing_date)).attr("readonly", "true");
+              $("#arrival").val(formattedDate(data.arrival_date)).attr("readonly", "true");
+              $("#departure").val(formattedDate(data.deparature_date)).attr("readonly", "true");
+            }
+          })
         } else {
           console.error('Invalid response format:', response);
         }
@@ -1074,10 +1099,10 @@
   });
 </script>
 
-
-
 <script>
-  $("#vessel").on('change', function() {
+  $("#vesselCoparn").on('change', function() {
+    var sweet_loader = '<div class="spinner-border text-info" role="status"><span class="sr-only">Loading...</span></div>';
+
     console.log("CHANGED!");
     const selectedDoNo = this.value;
     const selectedDoNoId = this.options[this.selectedIndex].getAttribute('data-id');
@@ -1095,9 +1120,88 @@
       contentType: false,
       processData: false,
       data: formData,
+      xhr: function() {
+        var xhr = $.ajaxSettings.xhr();
+        xhr.upload.onprogress = function(e) {
+          Swal.fire({
+            html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
+            showConfirmButton: false,
+
+          });
+        }
+        return xhr;
+      },
       success: function(response) {
+        Swal.close();
+
         let res = JSON.parse(response);
-        // console.log(res);
+        console.log(res);
+        data = res[0];
+        // console.log(res.arrival_date);
+        $("#voyage").val(data.voy_out).attr("readonly", "true");
+        $("#ves_id").val(data.ves_id).attr("readonly", "true");
+        $("#vesselcode").val(data.ves_code).attr("readonly", "true");
+        $("#closing").val(formattedDate(data.clossing_date)).attr("readonly", "true");
+        $("#arrival").val(formattedDate(data.arrival_date)).attr("readonly", "true");
+        $("#departure").val(formattedDate(data.deparature_date)).attr("readonly", "true");
+      },
+      error: function(error) {
+        setTimeout(function() {
+          let res = JSON.parse(response);
+          // console.log(res);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops !',
+            text: 'Something occured Happened, Please try again later',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              location.reload();
+            } else {
+              location.reload();
+            }
+          })
+        }, 700);
+      }
+    })
+  })
+</script>
+
+<script>
+  $("#vessel").on('change', function() {
+    var sweet_loader = '<div class="spinner-border text-info" role="status"><span class="sr-only">Loading...</span></div>';
+
+    console.log("CHANGED!");
+    const selectedDoNo = this.value;
+    const selectedDoNoId = this.options[this.selectedIndex].getAttribute('data-id');
+    console.log(selectedDoNoId);
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+    let formData = new FormData();
+    formData.append("ves_id", selectedDoNoId);
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+      },
+      type: "POST",
+      url: `/coparn/findSingleVessel`,
+      cache: false,
+      contentType: false,
+      processData: false,
+      data: formData,
+      xhr: function() {
+        var xhr = $.ajaxSettings.xhr();
+        xhr.upload.onprogress = function(e) {
+          Swal.fire({
+            html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
+            showConfirmButton: false,
+
+          });
+        }
+        return xhr;
+      },
+      success: function(response) {
+        Swal.close();
+        let res = JSON.parse(response);
+        console.log(res);
         data = res[0];
         // console.log(res.arrival_date);
         $("#voyage").val(data.voy_out).attr("readonly", "true");
@@ -1105,6 +1209,23 @@
         $("#closing").val(formattedDate(data.clossing_date)).attr("readonly", "true");
         $("#arrival").val(formattedDate(data.arrival_date)).attr("readonly", "true");
         $("#departure").val(formattedDate(data.deparature_date)).attr("readonly", "true");
+      },
+      error: function(error) {
+        setTimeout(function() {
+          let res = JSON.parse(response);
+          // console.log(res);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops !',
+            text: 'Something occured Happened, Please try again later',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              location.reload();
+            } else {
+              location.reload();
+            }
+          })
+        }, 700);
       }
     })
   })
@@ -1112,6 +1233,8 @@
 
 <script>
   $("#customer").on('change', function() {
+    var sweet_loader = '<div class="spinner-border text-info" role="status"><span class="sr-only">Loading...</span></div>';
+
     console.log("CHANGED!");
     const selectedDoNo = this.value;
     const selectedDoNoId = this.options[this.selectedIndex].getAttribute('data-id');
@@ -1129,15 +1252,322 @@
       contentType: false,
       processData: false,
       data: formData,
+      xhr: function() {
+        var xhr = $.ajaxSettings.xhr();
+        xhr.upload.onprogress = function(e) {
+          Swal.fire({
+            html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
+            showConfirmButton: false,
+
+          });
+        }
+        return xhr;
+      },
       success: function(response) {
+        Swal.close();
+
         let res = JSON.parse(response);
         data = res.data;
         console.log(data);
         $("#npwp").val(res.data.npwp).attr("readonly", "true");
         $("#address").val(res.data.address).attr("readonly", "true");
+      },
+      error: function(error) {
+        setTimeout(function() {
+          let res = JSON.parse(response);
+          // console.log(res);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops !',
+            text: 'Something occured Happened, Please try again later',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              location.reload();
+            } else {
+              location.reload();
+            }
+          })
+        }, 700);
       }
     })
   })
+</script>
+
+<script>
+  $("#nondomestic").click(function() {
+    $("#beacukaiForm").css("display", "flex");
+    $("#domestic").css("opacity", "50%");
+    $("#nondomestic").css("opacity", "100%");
+    $("#documentNumber").attr("required", true);
+    $("#documentType").attr("required", true);
+    $("#documentDate").attr("required", true);
+  })
+  $("#domestic").click(function() {
+    $("#beacukaiForm").css("display", "none");
+    $("#nondomestic").css("opacity", "50%");
+    $("#domestic").css("opacity", "100%");
+    $("#documentNumber").attr("required", false);
+    $("#documentType").attr("required", false);
+    $("#documentDate").attr("required", false);
+  })
+
+  function checkBeacukaiImport() {
+    var sweet_loader = '<div class="spinner-border text-info" role="status"><span class="sr-only">Loading...</span></div>';
+    let docNumber = $("#documentNumber").val();
+    const selectContainer = $("#containerSelector").val();
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+    if (selectContainer != "") {
+      var container = [];
+      $('#containerSelector option:selected').each(function() {
+        container.push($(this).text());
+      });
+      // console.log(container);
+      // console.log(container);
+      if (docNumber != "") {
+        let fd = new FormData();
+        fd.append("docNumber", docNumber);
+        $.ajax({
+          headers: {
+            'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+          },
+          type: "POST",
+          url: `/beacukaiImportCheck`,
+          cache: false,
+          contentType: false,
+          processData: false,
+          data: fd,
+          xhr: function() {
+            var xhr = $.ajaxSettings.xhr();
+            xhr.upload.onprogress = function(e) {
+              Swal.fire({
+                html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
+                showConfirmButton: false,
+
+              });
+            }
+            return xhr;
+          },
+          success: function(response) {
+            let res = JSON.parse(response);
+            // console.log(res);
+            let docBeacukai = res[0];
+            let contBeacukai = res[1];
+            // console.log(contBeacukai);
+            // console.log(container);
+            if (docBeacukai.docResultTrueStatus == true && docBeacukai.contResultTrueStatus == true) {
+              if (contBeacukai != container) {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Data Container Tidak Cocok!',
+                  text: 'Silahkan cek kembali data dan coba ulangi lagi!'
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    location.reload();
+                  } else {
+                    location.reload();
+
+                  }
+                });
+              } else {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Document Number Found!',
+                  text: 'You can proceed'
+                });
+                $("#documentType").val(docBeacukai.docType);
+                $("#documentDate").val(docBeacukai.docDate);
+              }
+            } else if (docBeacukai.docResultTrueStatus != true) {
+              Swal.fire({
+                icon: 'error',
+                title: 'Document Number Not Found!',
+                text: 'Please Try Again Later or Double Check your Data!'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  location.reload();
+                } else {
+                  location.reload();
+
+                }
+              })
+            } else if (docBeacukai.contResultTrueStatus == true) {
+              Swal.fire({
+                icon: 'error',
+                title: 'Container Not Found!',
+                text: 'Please Try Again Later or Double Check your Data!'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  location.reload();
+                } else {
+                  location.reload();
+
+                }
+              })
+            }
+          },
+          error: function(error) {
+            setTimeout(function() {
+              let res = JSON.parse(response);
+              // console.log(res);
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops !',
+                text: 'Something occured Happened, Please try again later',
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  location.reload();
+                } else {
+                  location.reload();
+                }
+              })
+            }, 700);
+          }
+        })
+      } else {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Form Beacukai Belum Lengkap!',
+          text: 'Harap Isi Document Number Terlebih Dahulu!'
+        })
+      }
+    } else {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Form Container Belum Lengkap!',
+        text: 'Harap Isi Container Terlebih Dahulu!'
+      })
+    }
+
+  }
+
+  function checkBeacukaiExport() {
+    var sweet_loader = '<div class="spinner-border text-info" role="status"><span class="sr-only">Loading...</span></div>';
+    let docNumber = $("#documentNumber").val();
+    const selectContainer = $("#containerSelector").val();
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+    if (selectContainer != "") {
+      var container = [];
+      $('#containerSelector option:selected').each(function() {
+        container.push($(this).text());
+      });
+      // console.log(container);
+      // console.log(container);
+      if (docNumber != "") {
+        let fd = new FormData();
+        fd.append("docNumber", docNumber);
+        $.ajax({
+          headers: {
+            'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+          },
+          type: "POST",
+          url: `/beacukaiExportCheck`,
+          cache: false,
+          contentType: false,
+          processData: false,
+          data: fd,
+          xhr: function() {
+            var xhr = $.ajaxSettings.xhr();
+            xhr.upload.onprogress = function(e) {
+              Swal.fire({
+                html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
+                showConfirmButton: false,
+
+              });
+            }
+            return xhr;
+          },
+          success: function(response) {
+            let res = JSON.parse(response);
+            // console.log(res);
+            let docBeacukai = res[0];
+            let contBeacukai = res[1];
+            // console.log(contBeacukai);
+            // console.log(container);
+            if (docBeacukai.docResultTrueStatus == true && docBeacukai.contResultTrueStatus == true) {
+              if (contBeacukai != container) {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Data Container Tidak Cocok!',
+                  text: 'Silahkan cek kembali data dan coba ulangi lagi!'
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    location.reload();
+                  } else {
+                    location.reload();
+
+                  }
+                });
+              } else {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Document Number Found!',
+                  text: 'You can proceed'
+                });
+                $("#documentType").val(docBeacukai.docType);
+                $("#documentDate").val(docBeacukai.docDate);
+              }
+            } else if (docBeacukai.docResultTrueStatus != true) {
+              Swal.fire({
+                icon: 'error',
+                title: 'Document Number Not Found!',
+                text: 'Please Try Again Later or Double Check your Data!'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  location.reload();
+                } else {
+                  location.reload();
+
+                }
+              })
+            } else if (docBeacukai.contResultTrueStatus == true) {
+              Swal.fire({
+                icon: 'error',
+                title: 'Container Not Found!',
+                text: 'Please Try Again Later or Double Check your Data!'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  location.reload();
+                } else {
+                  location.reload();
+
+                }
+              })
+            }
+          },
+          error: function(error) {
+            setTimeout(function() {
+              let res = JSON.parse(response);
+              // console.log(res);
+              Swal.fire({
+                icon: 'error',
+                title: 'Oops !',
+                text: 'Something occured Happened, Please try again later',
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  location.reload();
+                } else {
+                  location.reload();
+                }
+              })
+            }, 700);
+          }
+        })
+      } else {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Form Beacukai Belum Lengkap!',
+          text: 'Harap Isi Document Number Terlebih Dahulu!'
+        })
+      }
+    } else {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Form Container Belum Lengkap!',
+        text: 'Harap Isi Container Terlebih Dahulu!'
+      })
+    }
+
+  }
 </script>
 
 <script>

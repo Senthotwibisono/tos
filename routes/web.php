@@ -9,6 +9,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\DoOnlineController;
 use App\Http\Controllers\CoparnsController;
 use App\Http\Controllers\ExportInvoice;
+use App\Http\Controllers\BeaCukaiController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\SppsController;
 use App\Http\Controllers\PlacementController;
@@ -68,6 +69,8 @@ Route::post('/unset-session/{key}', [SessionsController::class, 'unsetSession'])
 
 
 
+Route::post('/beacukaiImportCheck', [BeacukaiController::class, 'beacukaiImportCheck']);
+Route::post('/beacukaiExportCheck', [BeacukaiController::class, 'beacukaiExportCheck']);
 Route::prefix('invoice')->group(function () {
   Route::get('/', [InvoiceController::class, 'index']);
   Route::get('/menu', [InvoiceController::class, 'menuindex']);
@@ -503,7 +506,7 @@ Route::get('/generate-report-gato-del', [ReportController::class, 'generateREPT_
 Route::get('/edi/coparn', [CoparnController::class, 'index']);
 
 
-                                      //Export
+//Export
 
 //gate
 Route::get('/reciving/gate-in', [Gati::class, 'index_rec']);

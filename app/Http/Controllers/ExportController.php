@@ -90,10 +90,13 @@ class ExportController extends Controller
         // dd($result_do);
 
         // GET ALL VESSEL
-        $url_vessel = getenv('API_URL') . '/delivery-service/vessel/all';
-        $req_vessel = $client->get($url_vessel);
-        $response_vessel = $req_vessel->getBody()->getContents();
-        $result_vessel = json_decode($response_vessel);
+        // $url_vessel = getenv('API_URL') . '/delivery-service/vessel/all';
+        // $req_vessel = $client->get($url_vessel);
+        // $response_vessel = $req_vessel->getBody()->getContents();
+        // $result_vessel = json_decode($response_vessel);
+
+        $vessel_voyage = VVoyage::whereDate('deparature_date', '>=', now())->orderBy('deparature_date', 'desc')->get();
+
         // dd($result_vessel);
 
         // GET ALL BOOKING
@@ -105,7 +108,7 @@ class ExportController extends Controller
         $data["booking"] = $result_booking->data;
 
         $data["customer"] = $result_customer->data;
-        $data["vessel"] = $result_vessel->data;
+        $data["vessel"] = $vessel_voyage;
         $data["container"] = $result_container->data;
         $data["do"] = $result_do->data;
         return view('export/delivery_form/add_step_1', $data);

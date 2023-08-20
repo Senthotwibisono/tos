@@ -24,7 +24,7 @@
                 <div class="col-6">
                   <div class="form-group">
                     <label>Vessel Name</label>
-                    <select name="vessel" id="vessel" class="js-example-basic-multiple form-control" style="height: 150%;">
+                    <select name="vesselCoparn" id="vessel" class="js-example-basic-multiple form-control" style="height: 150%;">
                       <option value="" disabled selected>Pilih Salah Satu</option>
                       <?php foreach ($vessel as $data) { ?>
                         <option value="<?= $data->ves_name ?>" data-id="<?= $data->ves_id ?>"><?= $data->ves_name ?></option>
@@ -64,6 +64,7 @@
                   <div class="form-group">
                     <label>Departure Date</label>
                     <input name="departure" id="departure" required type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023" id="departure">
+                    <input type="hidden" name="ves_id" id="ves_id" required value="">
                   </div>
                 </div>
               </div>
