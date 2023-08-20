@@ -12,6 +12,23 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Illuminate\Support\Collection;
 use App\Http\Controllers\DataExport;
+use App\Models\TpsSppbPib; // check doc number import
+use App\Models\TpsSppbBc; // check doc import bc
+use App\Models\TpsDokPabean; // check doc lainya
+use App\Models\TpsSppbPibCont; // check container
+use App\Models\TpsSppbBcCont; // check container bc
+use App\Models\TpsDokPabeanCont; // check container pabean
+
+// cari doc number, type & date
+// 1. check TpsSppbPib (NO_SPPB)
+// 2. kalo ga nemu ke yg TpsSppbBc (NO_SPPB)
+// 3. kalo masi ga nemu ke yg TpsDokPabean (NO_DOC_INOUT)
+
+// cari container
+// 1. check TpsSppbPibCont (_CONT)
+// 2. kalo ga nemu ke yg TpsSppbBcCont (_CONT)
+// 3. kalo masi ga nemu ke yg TpsDokPabeanCont (_CONT)
+
 
 
 

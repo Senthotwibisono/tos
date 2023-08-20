@@ -79,6 +79,8 @@ class CoparnsController extends Controller
         $closing = $request->closingtime;
         $arrival = $request->arrival;
         $departure = $request->departure;
+        $ves_id = $request->ves_id;
+        // dd($ves_id);
 
         $path1 = $request->file('storecoparn')->store('temp');
         $path = storage_path('app') . '/' . $path1;
@@ -103,7 +105,7 @@ class CoparnsController extends Controller
                 $formattedRow['column25'] = $vessel;
                 // $formattedRow['column26'] = "";
                 $iso_code = Isocode::where('iso_code', '=', $formattedRow['column3'])->get();
-                // dd($iso_code[0]);
+                // dd($iso_code);
                 $formattedRow['column26'] = $iso_code[0]->iso_size;
                 $formattedRow['column27'] = $iso_code[0]->iso_type;
                 $formattedRow['column28'] = $iso_code[0]->iso_weight;
@@ -113,6 +115,7 @@ class CoparnsController extends Controller
                     $formattedRow['column29'] = "MTY";
                 }
                 $formattedRow['column30'] = "48";
+                $formattedRow['column31'] = $ves_id;
                 $formattedData[] = $formattedRow;
             }
 
@@ -217,7 +220,8 @@ class CoparnsController extends Controller
         // $response_vessel = $req_vessel->getBody()->getContents();
         // $result_vessel = json_decode($response_vessel);
         // dd($result_vessel);
-        $response_vessel = VVoyage::where('ves_id', '=', $id)->get();
+        // $response_vessel = VVoyage::where('ves_id', '=', $id)->get();
+        $response_vessel = VVoyage::where('ves_id', '=', '17')->get();
         // var_dump($confirmed);
         // die();
 
