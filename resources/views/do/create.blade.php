@@ -22,7 +22,7 @@
           <div class="card-body">
             <div class="row">
               <div class="col-6">
-                <input id="storedo" type="file" name="storedo" class="dropify" data-height="270" data-max-file-size="3M" data-allowed-file-extensions="xls" />
+                <input id="storedo" type="file" name="storedo" class="dropify" data-height="270" data-max-file-size="3M" />
               </div>
             </div>
             <div class="row mt-3">

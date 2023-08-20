@@ -82,9 +82,11 @@ class CoparnsController extends Controller
         $ves_id = $request->ves_id;
         // dd($ves_id);
 
+
         $path1 = $request->file('storecoparn')->store('temp');
         $path = storage_path('app') . '/' . $path1;
         $data = Excel::toArray([], $path)[0];
+        // dd($data);
 
         if (count($data) > 1) {
             $columns = $data[0];
