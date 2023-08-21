@@ -149,7 +149,7 @@
               <h5>Add Container</h5>
               <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
             </div>
-            <div class="col-12">
+            <div class="col-12" id="selector">
               <label for="">Container Number</label>
               <select name="container[]" id="containerSelector" class="js-example-basic-multiple form-control" style="height: 150%;" multiple="multiple">
                 <option disabled value="">Pilih Salah Satu</option>
@@ -158,6 +158,12 @@
                     <option value="<?= $data->id ?>"><?= $data->container_no ?></option>
                   <?php } ?>
                 <?php } ?> -->
+              </select>
+
+            </div>
+            <div class="col-12" id="selectorView" style="display: none !important;">
+              <select name="" id="containerSelectorView" disabled class="js-example-basic-multiple form-control" style="height: 150%;" multiple="multiple">
+                <option disabled value="">Pilih Salah Satu</option>
               </select>
             </div>
           </div>

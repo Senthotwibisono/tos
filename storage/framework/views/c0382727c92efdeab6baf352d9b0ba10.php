@@ -11,7 +11,7 @@
       <div class="card">
         <div class="card-header">
           <h4 class="card-title">
-            Data Management
+            Master Data Tarif SPPS
           </h4>
           <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
         </div>
@@ -19,7 +19,7 @@
           <div class="row">
             <div class="col-12">
               <div class="btn-group mb-3" role="group" aria-label="Basic example">
-                <a onclick="createTarif();" type="button" class="btn btn-success">
+                <a href="/spps/mastertarif/add" type="button" class="btn btn-success">
                   Tambah Master Tarif SPPS
                 </a>
               </div>
@@ -71,7 +71,7 @@
                 <tbody>
                   <?php foreach ($mastertarif as $value) { ?>
                     <tr>
-                      <td><a type="button" onclick="tarifConfig(`<?= $value->id ?>`)" class="btn btn-sm btn-success"><i class="fa fa-pencil"></i></a></td>
+                      <td><a type="button" href="/spps/mastertarif/edit?id=<?= $value->id ?>" class="btn btn-sm btn-success"><i class="fa fa-pencil"></i></a></td>
                       <td><?= $value->lokasi_sandar ?></td>
                       <td><?= $value->type ?></td>
                       <td><?= $value->size ?></td>
@@ -111,98 +111,101 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Edit Data Master Tarif SP2</h5>
+        <h5 class="modal-title">Edit Data Master Tarif SPPS</h5>
         <button type="button" class="close rounded-pill" data-bs-dismiss="modal" aria-label="Close">
           <i data-feather="x"></i>
         </button>
       </div>
       <form action="#">
         <div class="modal-body" style="height:auto;">
-          <div class="form-group">
-            <label>Id</label>
-            <input type="text" id="id" value="kosong" class="form-control" readonly>
-          </div>
-          <div class="form-group">
-            <label for="">Lokasi Sandar</label>
-            <input type="text" id="Lokasi_Sandar" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Type</label>
-            <input type="text" id="Type" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Size</label>
-            <input type="text" id="Size" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Status</label>
-            <input type="text" id="Status" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Masa 1</label>
-            <input type="text" id="Masa_1" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Masa 2</label>
-            <input type="text" id="Masa_2" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Masa 3</label>
-            <input type="text" id="Masa_3" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Masa 4</label>
-            <input type="text" id="Masa_4" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Packet Stripping</label>
-            <input type="text" id="Packet_Stripping" class="form-control" value="kosong">
-          </div>
-          <!-- <div class="form-group">
-            <label for="">Lift On</label>
-            <input type="text" id="Lift_On" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Lift Off</label>
-            <input type="text" id="Lift_Off" class="form-control" value="kosong">
-          </div> -->
-          <div class="form-group">
-            <label for="">Pass Truck</label>
-            <input type="text" id="Pass_Truck" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Gate Pass Admin</label>
-            <input type="text" id="Gate_Pass_Admin" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Cost Recovery</label>
-            <input type="text" id="Cost_Recovery" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Surcharge</label>
-            <input type="text" id="Surcharge" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Packet PLP</label>
-            <input type="text" id="Packet_PLP" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Behandle</label>
-            <input type="text" id="Behandle" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Recooling</label>
-            <input type="text" id="Recooling" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Monitoring</label>
-            <input type="text" id="Monitoring" class="form-control" value="kosong">
-          </div>
-          <div class="form-group">
-            <label for="">Administrasi</label>
-            <input type="text" id="Administrasi" class="form-control" value="kosong">
-          </div>
+          <div class="row">
+            <div class="col-6">
 
+              <div class="form-group">
+                <label>Id</label>
+                <input type="text" id="id" value="kosong" class="form-control" readonly>
+              </div>
+              <div class="form-group">
+                <label for="">Lokasi Sandar</label>
+                <input type="text" id="Lokasi_Sandar" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Type</label>
+                <input type="text" id="Type" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Size</label>
+                <input type="text" id="Size" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Status</label>
+                <input type="text" id="Status" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Masa 1</label>
+                <input type="text" id="Masa_1" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Masa 2</label>
+                <input type="text" id="Masa_2" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Masa 3</label>
+                <input type="text" id="Masa_3" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Masa 4</label>
+                <input type="text" id="Masa_4" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Lift On</label>
+                <input type="text" id="Lift_On" class="form-control" value="kosong">
+              </div>
+
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="">Lift Off</label>
+                <input type="text" id="Lift_Off" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Pass Truck</label>
+                <input type="text" id="Pass_Truck" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Gate Pass Admin</label>
+                <input type="text" id="Gate_Pass_Admin" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Cost Recovery</label>
+                <input type="text" id="Cost_Recovery" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Surcharge</label>
+                <input type="text" id="Surcharge" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Packet PLP</label>
+                <input type="text" id="Packet_PLP" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Behandle</label>
+                <input type="text" id="Behandle" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Recooling</label>
+                <input type="text" id="Recooling" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Monitoring</label>
+                <input type="text" id="Monitoring" class="form-control" value="kosong">
+              </div>
+              <div class="form-group">
+                <label for="">Administrasi</label>
+                <input type="text" id="Administrasi" class="form-control" value="kosong">
+              </div>
+            </div>
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
@@ -224,7 +227,7 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Create Data Master Tarif SP2</h5>
+        <h5 class="modal-title">Create Data Master Tarif SPPS</h5>
         <button type="button" class="close rounded-pill" data-bs-dismiss="modal" aria-label="Close">
           <i data-feather="x"></i>
         </button>
@@ -266,17 +269,13 @@
                 <input type="text" id="Masa_4" class="form-control" placeholder="Enter Value Here..">
               </div>
               <div class="form-group">
-                <label for="">Packet Stripping</label>
-                <input type="text" id="Packet_Stripping" class="form-control" placeholder="Enter Value Here..">
-              </div>
-              <!-- <div class="form-group">
                 <label for="">Lift On</label>
                 <input type="text" id="Lift_On" class="form-control" placeholder="Enter Value Here..">
               </div>
               <div class="form-group">
                 <label for="">Lift Off</label>
                 <input type="text" id="Lift_Off" class="form-control" placeholder="Enter Value Here..">
-              </div> -->
+              </div>
             </div>
             <div class="col-6">
               <div class="form-group">
@@ -337,4 +336,4 @@
 <!-- end of Create Modal Single Data Table  -->
 
 <?php $__env->stopSection(); ?>
-<?php echo $__env->make('partial.spps.main', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\Fdw File Storage 1\CTOS\dev\frontend\tos-dev-local\resources\views/spps/master_tarif/dashboard.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('partial.invoice.main', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\Fdw File Storage 1\CTOS\dev\frontend\tos-dev-local\resources\views/spps/master_tarif/dashboard.blade.php ENDPATH**/ ?>

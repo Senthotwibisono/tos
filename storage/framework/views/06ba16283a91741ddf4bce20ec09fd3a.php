@@ -78,6 +78,10 @@
                 <div class="text-center">
                   <img src="/logo/ICON2.png" class="img" alt="">
                   <br>
+                  <?php if ($delivery->orderService == "export") { ?>
+                    <p>Export Card</p>
+                  <?php } ?>
+                  <br>
                   <?= $qrcodes[$i] ?>
                   <br>
                   <br>
