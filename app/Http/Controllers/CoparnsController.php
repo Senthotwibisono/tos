@@ -25,7 +25,14 @@ class CoparnsController extends Controller
         $data = [];
         $client = new Client();
 
-
+        // GET ALL CONTAINER
+        // $url_container = getenv('API_URL') . '/container-service/all';
+        $url_container = getenv('API_URL') . '/delivery-service/container/all';
+        $req_container = $client->get($url_container);
+        $response_container = $req_container->getBody()->getContents();
+        $result_container = json_decode($response_container);
+        // dd($result_container);
+        $data["container"] = $result_container->data;
         $data["title"] = "Dashboard | Upload Coparn";
         return view('coparn/dashboard', $data);
     }

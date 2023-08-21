@@ -1,6 +1,3 @@
-
-
-
 <?php $__env->startSection('content'); ?>
 
 <div class="page-heading">
@@ -30,6 +27,54 @@
                   Create Single Coparn Document
                 </a>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">
+            Table Coparn Online
+          </h3>
+          <p>Lorem Ipsum</p>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-12">
+              <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Container No</th>
+                    <th>Booking No</th>
+                    <th>Arrival Date</th>
+                    <th>Departure Date</th>
+                    <th>Closing Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php
+                  $i = 1;
+                  foreach ($container as $data) { ?>
+                    <?php if ($data->booking_no != "") { ?>
+                      <tr>
+                        <td><?= $i ?></td>
+                        <td><?= $data->container_no ?></td>
+                        <td><?= $data->booking_no ?? "Data Tidak Tersedia" ?></td>
+                        <td><?= DateFormat($data->arrival_date) ?? "Data Tidak Tersedia" ?></td>
+                        <td><?= DateFormat($data->departure_date) ?? "Data Tidak Tersedia" ?></td>
+                        <td><?= DateFormat($data->closing_date) ?? "Data Tidak Tersedia" ?></td>
+                      </tr>
+                    <?php } ?>
+                  <?php
+                    $i++;
+                  } ?>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

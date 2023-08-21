@@ -109,7 +109,7 @@
             <div class="card-content">
               <img src="{{asset('/images/container1.jpg')}}" class="card-img-top img-fluid">
               <div class="card-body">
-                <h4 class="card-title">Billing System Delivery Export</h4>
+                <h4 class="card-title">Billing System Receiving</h4>
                 <p class="card-text">
                   Jelly-o sesame snaps cheesecake topping. Cupcake
                   fruitcake macaroon donut pastry.

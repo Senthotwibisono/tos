@@ -39,7 +39,7 @@ class ExportController extends Controller
         // dd($result_invoice);
 
         $data["invoices"] = $result_invoice->data;
-        $data["title"] = "Export | Billing System";
+        $data["title"] = "Receiving | Billing System";
         return view('export.dashboard', $data);
     }
 
@@ -56,7 +56,7 @@ class ExportController extends Controller
         // dd($result_delivery);
 
         $data["deliveries"] = $result_delivery->data;
-        $data["title"] = "Delivery Form Data";
+        $data["title"] = "Receiving Form Data";
         return view('export/delivery_form/dashboard', $data);
     }
 
@@ -117,7 +117,7 @@ class ExportController extends Controller
     public function updateDataStep1(Request $request)
     {
         $data = [];
-        $data["title"] = "Update Data Step 1 | Devivery Form Update Data";
+        $data["title"] = "Update Data Step 1 | Receiving Form Update Data";
 
         $client = new Client();
 
@@ -334,7 +334,7 @@ class ExportController extends Controller
         // dd($data["menuinv"]);
         $data["isExtended"] = $isExtended;
         $data["diffInDays"] = $diffInDays;
-        $data["title"] = "Step 2 | Delivery Pranota";
+        $data["title"] = "Step 2 | Receiving Pranota";
         return view('export/delivery_form/add_step_2', $data);
     }
 
@@ -462,13 +462,13 @@ class ExportController extends Controller
 
 
         // GET ALL BOOKING
-        // $url_booking = getenv('API_URL') . '/delivery-service/container/booking/all';
-        // $req_booking = $client->get($url_booking);
-        // $response_booking = $req_booking->getBody()->getContents();
-        // $result_booking = json_decode($response_booking);
+        $url_booking = getenv('API_URL') . '/delivery-service/container/booking/all';
+        $req_booking = $client->get($url_booking);
+        $response_booking = $req_booking->getBody()->getContents();
+        $result_booking = json_decode($response_booking);
         // dd($result_booking);
 
-        // $data["booking"] = $result_booking->data;
+        $data["booking"] = $result_booking->data;
         $data["customer"] = $result_customer->data;
         $data["vessel"] = $vessel_voyage;
         $data["container"] = $result_container->data;

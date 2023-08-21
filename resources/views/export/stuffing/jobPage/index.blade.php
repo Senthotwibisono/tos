@@ -77,6 +77,9 @@
               <div class="col-6">
                 <div class="text-center">
                   <img src="/logo/ICON2.png" class="img" alt="">
+                  <?php if ($delivery->orderService == "export" || $delivery->orderService == "stuffing") { ?>
+                    <p>Export Card</p>
+                  <?php } ?>
                   <br>
                   <?= $qrcodes[$i] ?>
                   <br>
@@ -89,7 +92,9 @@
                   <p><?= $job->bl_no ?></p>
                   <p><?= $job->consignee ?></p>
                   <p>Active to <?= DateFormat($delivery->exp_date) ?></p>
-
+                  <?php if ($delivery->orderService == "export" || $delivery->orderService == "stuffing") { ?>
+                    <p>Closing time <?= DateFormat($delivery->closingtime) ?></p>
+                  <?php } ?>
                 </div>
 
               </div>
