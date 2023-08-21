@@ -73,13 +73,13 @@ class CoparnsController extends Controller
         // dd($request->all());
         $client = new Client();
 
-        $vessel = $request->vessel;
+        $vessel = $request->vesselCoparn;
         $voyage = $request->voyage;
         $ves_code = $request->vesselcode;
         $closing = $request->closingtime;
         $arrival = $request->arrival;
         $departure = $request->departure;
-        $ves_id = $request->ves_id;
+        $ves_id = $request->vesselid;
         // dd($ves_id);
 
 
@@ -222,9 +222,9 @@ class CoparnsController extends Controller
         // $response_vessel = $req_vessel->getBody()->getContents();
         // $result_vessel = json_decode($response_vessel);
         // dd($result_vessel);
-        // $response_vessel = VVoyage::where('ves_id', '=', $id)->get();
-        $response_vessel = VVoyage::where('ves_id', '=', '17')->get();
-        // var_dump($confirmed);
+        $response_vessel = VVoyage::where('ves_id', '=', $id)->get();
+        // $response_vessel = VVoyage::where('ves_id', '=', '17')->get();
+        // var_dump($response_vessel);
         // die();
 
         echo $response_vessel;

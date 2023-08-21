@@ -78,15 +78,15 @@
     </li> -->
 
 
-
+<!-- 
     <li class="menu-item  has-sub">
       <a href="#" class='menu-link'>
         <i class="bi bi-stack"></i>
         <span>E-Job Order</span>
       </a>
-      <div class="submenu ">
+      <div class="submenu "> -->
         <!-- Wrap to submenu-group-wrapper if you want 3-level submenu. Otherwise remove it. -->
-        <div class="submenu-group-wrapper">
+        <!-- <div class="submenu-group-wrapper">
 
 
           <ul class="submenu-group">
@@ -156,7 +156,7 @@
           </ul>
         </div>
       </div>
-    </li>
+    </li> -->
 
 
 
@@ -219,14 +219,14 @@
 
 
 
-    <li class="menu-item  has-sub">
+    <!-- <li class="menu-item  has-sub">
       <a href="#" class='menu-link'>
         <i class="bi bi-file-earmark-medical-fill"></i>
         <span>Monitoring</span>
       </a>
-      <div class="submenu ">
+      <div class="submenu "> -->
         <!-- Wrap to submenu-group-wrapper if you want 3-level submenu. Otherwise remove it. -->
-        <div class="submenu-group-wrapper">
+        <!-- <div class="submenu-group-wrapper">
 
 
           <ul class="submenu-group">
@@ -241,7 +241,7 @@
               <a href="form-layout.html" class='submenu-link'>Monitoring Job Dry Port</a>
 
 
-            </li>
+            </li> -->
           </ul>
 
 

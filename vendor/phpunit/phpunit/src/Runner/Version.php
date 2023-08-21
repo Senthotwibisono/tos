@@ -34,11 +34,7 @@ final class Version
         }
 
         if (self::$version === '') {
-<<<<<<< HEAD
             self::$version = (new VersionId('10.3.2', dirname(__DIR__, 2)))->asString();
-=======
-            self::$version = (new VersionId('10.3.1', dirname(__DIR__, 2)))->asString();
->>>>>>> f4586e80 (pull merge)
         }
 
         return self::$version;

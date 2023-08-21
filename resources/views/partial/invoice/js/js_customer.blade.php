@@ -953,10 +953,39 @@
         containerSelect.innerHTML = ''; // Clear previous options
         const responseData = JSON.parse(response);
         console.log(responseData);
+        console.log(responseData);
+        var cont = [];
+        var selcont = [];
+        let checking = "";
         if (responseData.hasOwnProperty('data')) {
           const containers = responseData.data;
-          let doBDate = containers[0].do_expired;
 
+          let doBDate = containers[0].do_expired;
+          containers.forEach(value => {
+            cont.push(value.container_no);
+          });
+          $.ajax({
+            headers: {
+              'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+            },
+            type: "POST",
+            url: `/allContainerImport`,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+              let res = JSON.parse(response);
+              var data = res.data;
+              console.log(data);
+              data.forEach(value => {
+                if (value.ctr_intern_status == "03") {
+                  selcont.push(value.container_no);
+                }
+              });
+            }
+          });
+          console.log(cont);
+          console.log(selcont);
           // Convert the date string to a Date object
           let doDate = new Date(doBDate);
 
@@ -983,11 +1012,39 @@
             })
           } else {
             console.log("im here bro 2");
-            containers.forEach((container) => {
-              $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
-            });
-            $("#do_exp_date").val(containers[0].do_expired).attr("readonly", "true");
-            $("#boln").val(containers[0].bl_no).attr("readonly", "true");
+            for (let i = 0; i < cont.length; i++) {
+              if ($.inArray(cont[i], selcont) === -1) {
+                checking = false;
+                break; // Exit the loop as soon as a mismatch is found
+              } else {
+                checking = true;
+              }
+            }
+            console.log(checking);
+            if (checking != true) {
+              Swal.fire({
+                icon: 'error',
+                title: 'Data Container Tidak Cocok!',
+                text: 'Silahkan cek kembali data dan coba ulangi lagi!'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  location.reload();
+                } else {
+                  location.reload();
+                }
+              });
+            } else {
+              Swal.fire({
+                icon: 'success',
+                title: 'Container Data Found!',
+                text: 'You can proceed'
+              });
+              containers.forEach((container) => {
+                $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+              });
+              $("#do_exp_date").val(containers[0].do_expired).attr("readonly", "true");
+              $("#boln").val(containers[0].bl_no).attr("readonly", "true");
+            }
           }
         } else {
           console.error('Invalid response format:', response);
@@ -1103,10 +1160,10 @@
   $("#vesselCoparn").on('change', function() {
     var sweet_loader = '<div class="spinner-border text-info" role="status"><span class="sr-only">Loading...</span></div>';
 
-    console.log("CHANGED!");
+    // console.log("CHANGED!");
     const selectedDoNo = this.value;
     const selectedDoNoId = this.options[this.selectedIndex].getAttribute('data-id');
-    console.log(selectedDoNoId);
+    // console.log(selectedDoNoId);
     let csrfToken = $('meta[name="csrf-token"]').attr('content');
     let formData = new FormData();
     formData.append("ves_id", selectedDoNoId);
@@ -1135,11 +1192,15 @@
         Swal.close();
 
         let res = JSON.parse(response);
+        console.log("BEFORE LOG");
         console.log(res);
+        // console.log(res.data[0].ves_id);
+        // console.log(res.data[0]);
         data = res[0];
+        // console.log(data.ves_id);
         // console.log(res.arrival_date);
         $("#voyage").val(data.voy_out).attr("readonly", "true");
-        $("#ves_id").val(data.ves_id).attr("readonly", "true");
+        $("#vesselid").val(data.ves_id).attr("readonly", "true");
         $("#vesselcode").val(data.ves_code).attr("readonly", "true");
         $("#closing").val(formattedDate(data.clossing_date)).attr("readonly", "true");
         $("#arrival").val(formattedDate(data.arrival_date)).attr("readonly", "true");
@@ -1301,6 +1362,7 @@
     $("#documentNumber").attr("required", true);
     $("#documentType").attr("required", true);
     $("#documentDate").attr("required", true);
+    $("#beacukaiChecking").val("false");
   })
   $("#domestic").click(function() {
     $("#beacukaiForm").css("display", "none");
@@ -1309,6 +1371,7 @@
     $("#documentNumber").attr("required", false);
     $("#documentType").attr("required", false);
     $("#documentDate").attr("required", false);
+    $("#beacukaiChecking").val("true");
   })
 
   function checkBeacukaiImport() {
@@ -1352,10 +1415,20 @@
             // console.log(res);
             let docBeacukai = res[0];
             let contBeacukai = res[1];
+            let checking = "";
+
             // console.log(contBeacukai);
             // console.log(container);
             if (docBeacukai.docResultTrueStatus == true && docBeacukai.contResultTrueStatus == true) {
-              if (contBeacukai != container) {
+              for (var i = 0; i < contBeacukai.length; i++) {
+                if (contBeacukai[i] !== container[i]) {
+                  checking = false
+                } else {
+                  checking = true
+                }
+              }
+              // console.log(checking);
+              if (checking != true) {
                 Swal.fire({
                   icon: 'error',
                   title: 'Data Container Tidak Cocok!',
@@ -1365,7 +1438,6 @@
                     location.reload();
                   } else {
                     location.reload();
-
                   }
                 });
               } else {
@@ -1376,6 +1448,7 @@
                 });
                 $("#documentType").val(docBeacukai.docType);
                 $("#documentDate").val(docBeacukai.docDate);
+                $("#beacukaiChecking").val("true");
               }
             } else if (docBeacukai.docResultTrueStatus != true) {
               Swal.fire({
@@ -1481,10 +1554,19 @@
             // console.log(res);
             let docBeacukai = res[0];
             let contBeacukai = res[1];
+            let checking = "";
             // console.log(contBeacukai);
-            // console.log(container);
+            // console.log(container, contBeacukai);
             if (docBeacukai.docResultTrueStatus == true && docBeacukai.contResultTrueStatus == true) {
-              if (contBeacukai != container) {
+              for (var i = 0; i < contBeacukai.length; i++) {
+                if (contBeacukai[i] !== container[i]) {
+                  checking = false
+                } else {
+                  checking = true
+                }
+              }
+              // console.log(checking);
+              if (checking != true) {
                 Swal.fire({
                   icon: 'error',
                   title: 'Data Container Tidak Cocok!',
@@ -1494,7 +1576,6 @@
                     location.reload();
                   } else {
                     location.reload();
-
                   }
                 });
               } else {
@@ -1505,6 +1586,7 @@
                 });
                 $("#documentType").val(docBeacukai.docType);
                 $("#documentDate").val(docBeacukai.docDate);
+                $("#beacukaiChecking").val("true");
               }
             } else if (docBeacukai.docResultTrueStatus != true) {
               Swal.fire({
@@ -1567,6 +1649,20 @@
       })
     }
 
+  }
+
+  function beacukaiCheckValue() {
+    let check = $("#beacukaiChecking").val();
+    console.log(check);
+    if (check == "true") {
+      $("#formSubmit").submit();
+    } else {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Kamu Belum Melakukan Beacukai Checking!',
+        text: 'Harap Melakukan Checking Terlebih Dahulu!'
+      })
+    }
   }
 </script>
 

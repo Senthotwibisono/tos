@@ -9,7 +9,7 @@
 </div>
 <div class="page-content mb-5">
   <section class="row">
-    <form action="/invoice/add/storestep1" method="POST" enctype="multipart/form-data">
+    <form action="/invoice/add/storestep1" method="POST" id="formSubmit" enctype="multipart/form-data">
       @CSRF
       <div class="card">
         <div class="card-header">
@@ -113,7 +113,7 @@
               <select name="container[]" id="containerSelector" class="js-example-basic-multiple form-control" style="height: 150%;" multiple="multiple">
                 <option disabled value="">Pilih Salah Satu</option>
                 <?php foreach ($container as $data) { ?>
-                  <?php if ($data->ctr_intern_status == "03") { ?>
+                  <?php if ($data->ctr_intern_status == "03" && $data->isChoosen == "0") { ?>
                     <option value="<?= $data->id ?>"><?= $data->container_no ?></option>
                   <?php } ?>
                 <?php } ?>
@@ -154,12 +154,14 @@
               <div class="form-group">
                 <label for="">Document Date</label>
                 <input readonly class="form-control" placeholder="Please Fill Document Number First.." type="text" name="documentDate" id="documentDate">
+                <input type="hidden" id="beacukaiChecking" value="false">
+
               </div>
             </div>
           </div>
           <div class="row mt-5">
             <div class="col-12 text-right">
-              <button type="submit" class="btn btn-success">Submit</button>
+              <a type="button" onclick="beacukaiCheckValue();" class="btn btn-success">Submit</a>
               <a type="button" onclick="canceladdCustomer();" class="btn btn-secondary">Cancel</a>
             </div>
           </div>

@@ -95,8 +95,8 @@
                           <thead>
                               <tr>
                                   <th>No</th>
-                                  <th>No SPPB</th>
-                                  <th>Tgl SPPB</th>
+                                  <th>No Pabean</th>
+                                  <th>Tgl Dokumen</th>
                                   <th>Importir</th>
                                   <th>NPWP</th>
                                   <th>Nama Angkut</th>
@@ -105,15 +105,15 @@
                               </tr>
                           </thead>
                           <tbody>
-                            @foreach($sppb_bc as $bc)
+                            @foreach($pabean_import as $bean)
                               <tr>
                                   <td>{{$loop->iteration}}</td>                            
-                                  <td>{{$bc->NO_SPPB}}</td>
-                                  <td>{{$bc->TGL_SPPB}}</td>
-                                  <td>{{$bc->NAMA_IMP}}</td>
-                                  <td>{{$bc->NPWP_IMP}}</td>
-                                  <td>{{$bc->NM_ANGKUT}}</td>
-                                  <td>{{$bc->JML_CONT}}</td>
+                                  <td>{{$bean->KD_DOK_INOUT}}</td>
+                                  <td>{{$bean->TGL_DOK_INOUT}}</td>
+                                  <td>{{$bean->NAMA_IMP}}</td>
+                                  <td>{{$bean->NPWP_PPJK}}</td>
+                                  <td>{{$bean->NM_ANGKUT}}</td>
+                                  <td>{{$bean->JML_CONT}}</td>
                                   <td></td>                         
                               </tr>
                            @endforeach

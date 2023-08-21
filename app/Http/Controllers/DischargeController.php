@@ -100,7 +100,7 @@ class DischargeController extends Controller
     $data["subactive"] = "confirm";
     $currentDateTime = Carbon::now();
     $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
-    $vessel_voyage = VVoyage::whereDate('arrival_date', '<=', now())->orderBy('arrival_date', 'desc')->get();
+    $vessel_voyage = VVoyage::whereDate('deparature_date', '>=', now())->orderBy('arrival_date', 'desc')->get();
     return view('disch.android', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'vessel_voyage'), $data);
   }
 
@@ -165,6 +165,7 @@ class DischargeController extends Controller
 
   public function confirm(Request $request)
   {
+    $now = Carbon::now();
     $container_key = $request->container_key;
     $item = Item::where('container_key', $container_key)->first();
     $request->validate([
@@ -179,7 +180,7 @@ class DischargeController extends Controller
     Item::where('container_key', $container_key)->update([
       'cc_tt_no' => $request->cc_tt_no,
       'cc_tt_oper' => $request->cc_tt_oper,
-      'disc_date' => $request->disc_date,
+      'disc_date' => $now,
       'ctr_intern_status' => '02',
       'wharf_yard_oa' => $request->wharf_yard_oa,
       'container_key' => $request->container_key,

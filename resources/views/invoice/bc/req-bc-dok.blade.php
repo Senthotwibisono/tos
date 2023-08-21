@@ -58,6 +58,7 @@
 @include('invoice.bc.modal-sppb')
 @include('invoice.bc.modal-npe')
 @include('invoice.bc.modal-peabn')
+@include('invoice.bc.model-peabn-exp')
 
 @endsection
 

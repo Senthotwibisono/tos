@@ -16,9 +16,8 @@
                         <label for="first-name-vertical">Pilih Dok</label>
                     </div>
                     <div class="col-7">
-                    <select class="form-control" id="kodePab" name="kode_dok">
-                                    <option value="41">BC 1.6</option>
-                                    <option value="44">Dokumen Pengeluaran Barang Impor dengan BC 1.1 Out</option>
+                    <select class="form-control" id="kodePab" name="kode_dok" realonly>
+                                    <option value="56">Dokumen Pemasukan Barang Ekspor dengan BC 1.1</option>
                     </select>
                     </div>
                    </div>
