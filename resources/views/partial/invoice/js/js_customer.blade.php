@@ -932,13 +932,39 @@
 <script>
   const doNumberSelect = $("#do_number_auto");
   const containerSelect = $("#containerSelector");
+  var cont = [];
+  var selcont = [];
+
 
   function fetchContainers(selectedDoNoId) {
     console.log(selectedDoNoId);
     let csrfToken = $('meta[name="csrf-token"]').attr('content');
     let formData = new FormData();
     formData.append("do_no", selectedDoNoId);
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+      },
+      type: "POST",
+      url: `/allContainerImport`,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function(response) {
 
+        let res = JSON.parse(response);
+        // console.log("TRIMMED ALL CONTAINER = ", res.data[0].container_no.trim());
+
+        let data = res.data;
+        // console.log(data.length);
+        data.forEach(value => {
+          if (value.ctr_intern_status == "03") {
+            selcont.push(value.container_no.trim());
+            // console.log(value.container_no);
+          }
+        });
+      }
+    });
     $.ajax({
       headers: {
         'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
@@ -952,40 +978,20 @@
       success: function(response) {
         containerSelect.innerHTML = ''; // Clear previous options
         const responseData = JSON.parse(response);
-        console.log(responseData);
-        console.log(responseData);
-        var cont = [];
-        var selcont = [];
+        // console.log(responseData);
+        // console.log("TRIMMED DO CONTAINER = ", responseData.data[0].container_no.trim());
+
         let checking = "";
         if (responseData.hasOwnProperty('data')) {
           const containers = responseData.data;
 
           let doBDate = containers[0].do_expired;
           containers.forEach(value => {
-            cont.push(value.container_no);
+            cont.push(value.container_no.trim());
           });
-          $.ajax({
-            headers: {
-              'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
-            },
-            type: "POST",
-            url: `/allContainerImport`,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: function(response) {
-              let res = JSON.parse(response);
-              var data = res.data;
-              console.log(data);
-              data.forEach(value => {
-                if (value.ctr_intern_status == "03") {
-                  selcont.push(value.container_no);
-                }
-              });
-            }
-          });
-          console.log(cont);
-          console.log(selcont);
+
+          console.log("cont array=", cont);
+          console.log("selcont array=", selcont);
           // Convert the date string to a Date object
           let doDate = new Date(doBDate);
 
@@ -993,10 +999,7 @@
           const today = new Date();
           today.setHours(0, 0, 0, 0); // Reset time components for accurate comparison
 
-          // $("#do_exp_date").val(formattedDate(containers.do_expired)).attr("readonly", "true");
-          // $("#boln").val(containers.bl_no).attr("readonly", "true");
-          // console.log(todayDate);
-          console.log(doDate);
+          // console.log(doDate);
           if (doDate <= today) {
             console.log("im here bro 1");
             Swal.fire({
@@ -1011,16 +1014,25 @@
               }
             })
           } else {
-            console.log("im here bro 2");
-            for (let i = 0; i < cont.length; i++) {
-              if ($.inArray(cont[i], selcont) === -1) {
-                checking = false;
-                break; // Exit the loop as soon as a mismatch is found
-              } else {
-                checking = true;
+            // console.log("im here bro 2");
+            function checkIfAllInArray(arrayToCheck, referenceArray) {
+              for (let i = 0; i < arrayToCheck.length; i++) {
+                const trimmedValue = arrayToCheck[i].trim(); // Trim whitespace from value
+                if (referenceArray.indexOf(trimmedValue) === -1) {
+                  return false; // Found a value in arrayToCheck that is not in referenceArray
+                }
               }
+              return true; // All values in arrayToCheck are present in referenceArray
             }
-            console.log(checking);
+
+            if (cont.length <= selcont.length && checkIfAllInArray(cont, selcont)) {
+              // console.log("All values in cont are present in selcont.");
+              checking = true;
+            } else {
+              // console.log("Not all values in cont are present in selcont.");
+              checking = false;
+            }
+            // console.log(checking);
             if (checking != true) {
               Swal.fire({
                 icon: 'error',
@@ -1039,6 +1051,8 @@
                 title: 'Container Data Found!',
                 text: 'You can proceed'
               });
+              $("#containerSelector")[0].selectedIndex = -1;
+
               containers.forEach((container) => {
                 $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
               });
@@ -1071,6 +1085,8 @@
 
 <script>
   function fetchContainersBooking(selectedDoNoId) {
+    var sweet_loader = '<div class="spinner-border text-info" role="status"><span class="sr-only">Loading...</span></div>';
+
     console.log(selectedDoNoId);
     let csrfToken = $('meta[name="csrf-token"]').attr('content');
     let formData = new FormData();
@@ -1086,7 +1102,20 @@
       contentType: false,
       processData: false,
       data: formData,
+      xhr: function() {
+        var xhr = $.ajaxSettings.xhr();
+        xhr.upload.onprogress = function(e) {
+          Swal.fire({
+            html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
+            showConfirmButton: false,
+
+          });
+        }
+        return xhr;
+      },
       success: function(response) {
+        Swal.close();
+
         containerSelect.innerHTML = ''; // Clear previous options
         const responseData = JSON.parse(response);
         console.log(responseData);
@@ -1095,12 +1124,17 @@
           const containers = responseData.data;
           // $("#do_exp_date").val(formattedDate(containers.do_expired)).attr("readonly", "true");
           // $("#boln").val(containers.bl_no).attr("readonly", "true");
+          $("#containerSelector")[0].selectedIndex = -1;
           containers.forEach((container) => {
             ctr++;
             $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+            $("#containerSelectorView").append(`<option selected value="${container.id}">${container.container_no}</option>`)
           });
+          $("#selector").css("display", "none");
+          $("#selectorView").css("display", "grid");
           $("#ctr").val(ctr).attr("readonly", "true");
-          $("#pod").val(containers[0].pod).attr("readonly", "true");
+          $("#fpod").val(containers[0].pod).attr("readonly", "true");
+          $("#pod").val(containers[0].disch_port).attr("readonly", "true");
           // $("#vesselBN").val(containers[0].vessel_name).attr("readonly", "true");
           // $("#voyage").val(containers[0].voy_no).attr("readonly", "true");
           // $("#vesselcode").val(containers[0].ves_code).attr("readonly", "true");
@@ -1120,25 +1154,69 @@
             contentType: false,
             processData: false,
             data: formData,
+            xhr: function() {
+              var xhr = $.ajaxSettings.xhr();
+              xhr.upload.onprogress = function(e) {
+                Swal.fire({
+                  html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
+                  showConfirmButton: false,
+
+                });
+              }
+              return xhr;
+            },
             success: function(response) {
+              Swal.close();
+
               let res = JSON.parse(response);
               console.log(res);
               data = res[0];
               // console.log(res.arrival_date);
-              $("#vesselBN").val(data.ves_id).attr("readonly", "true");
+              $("#vesselBN").val(data.ves_name).attr("readonly", "true");
               $("#voyage").val(data.voy_out).attr("readonly", "true");
               $("#vesselcode").val(data.ves_code).attr("readonly", "true");
               $("#closing").val(formattedDate(data.clossing_date)).attr("readonly", "true");
               $("#arrival").val(formattedDate(data.arrival_date)).attr("readonly", "true");
               $("#departure").val(formattedDate(data.deparature_date)).attr("readonly", "true");
+            },
+            error: function(error) {
+              setTimeout(function() {
+                let res = JSON.parse(response);
+                // console.log(res);
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops !',
+                  text: 'Something occured Happened, Please try again later',
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    location.reload();
+                  } else {
+                    location.reload();
+                  }
+                })
+              }, 700);
             }
           })
         } else {
           console.error('Invalid response format:', response);
         }
       },
-      error(err) {
-        console.log(err);
+      error: function(error) {
+        setTimeout(function() {
+          let res = JSON.parse(response);
+          // console.log(res);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops !',
+            text: 'Something occured Happened, Please try again later',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              location.reload();
+            } else {
+              location.reload();
+            }
+          })
+        }, 700);
       }
     });
   }

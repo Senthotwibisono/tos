@@ -123,6 +123,10 @@ Route::prefix('invoice')->group(function () {
   });
   Route::prefix('mastertarif')->group(function () {
     Route::get('/', [InvoiceController::class, 'masterTarif']);
+    Route::get('/add', [InvoiceController::class, 'addMasterTarif']);
+    Route::get('/edit', [InvoiceController::class, 'editMasterTarif']);
+    Route::post('/store', [InvoiceController::class, 'storeCreateMasterTarif']);
+    Route::post('/storeEdit', [InvoiceController::class, 'storeEditMasterTarif']);
   });
 
   Route::prefix('payment')->group(function () {
@@ -211,6 +215,10 @@ Route::prefix('spps')->group(function () {
   });
   Route::prefix('mastertarif')->group(function () {
     Route::get('/', [SppsController::class, 'masterTarif']);
+    Route::get('/add', [SppsController::class, 'addMasterTarif']);
+    Route::get('/edit', [SppsController::class, 'editMasterTarif']);
+    Route::post('/store', [SppsController::class, 'storeCreateMasterTarif']);
+    Route::post('/storeEdit', [SppsController::class, 'storeEditMasterTarif']);
   });
 });
 

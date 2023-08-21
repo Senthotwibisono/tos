@@ -162,6 +162,7 @@ class ExportController extends Controller
         $departure = $request->departure;
         $exp_time = $request->exp_time;
         $customer = $request->customer;
+        $closingtime = $request->closingtime;
         $do_number = $request->do_number ?? $request->do_number_auto;
         $do_exp_date = $request->do_exp_date;
         $boln = $request->boln;
@@ -175,6 +176,7 @@ class ExportController extends Controller
             "exp_date" => $departure,
             // "time" => "",
             "customer_id" => $customer,
+            "closingtime" => $closingtime,
             "do_number" => "",
             // "do_exp_date" => "",
             "boln" => "",
@@ -481,6 +483,7 @@ class ExportController extends Controller
 
         $departure = $request->departure;
         $exp_time = $request->exp_time;
+        $closingtime = $request->closingtime;
         $customer = $request->customer;
         $do_number = $request->do_number ?? $request->do_number_auto;
         $do_exp_date = $request->do_exp_date;
@@ -494,6 +497,7 @@ class ExportController extends Controller
         $fields = [
             "exp_date" => $departure,
             // "time" => "",
+            "closingtime" => $closingtime,
             "customer_id" => $customer,
             "do_number" => "",
             // "do_exp_date" => "",

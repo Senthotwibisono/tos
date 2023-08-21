@@ -78,6 +78,10 @@
                 <div class="text-center">
                   <img src="/logo/ICON2.png" class="img" alt="">
                   <br>
+                  <?php if ($delivery->orderService == "export") { ?>
+                    <p>Export Card</p>
+                  <?php } ?>
+                  <br>
                   <?= $qrcodes[$i] ?>
                   <br>
                   <br>
@@ -89,6 +93,8 @@
                   <p><?= $job->bl_no ?></p>
                   <p><?= $job->consignee ?></p>
                   <p>Active to <?= DateFormat($delivery->exp_date) ?></p>
+                  <br>
+                  <p>Arabus Kencana</p>
 
                 </div>
 

@@ -120,6 +120,161 @@ class InvoiceController extends Controller
     return view('invoice/master_tarif/dashboard', $data);
   }
 
+  public function addMasterTarif()
+  {
+    $data = [];
+    $client = new Client();
+
+    $data["title"] = "Tambah Master Tarif Data";
+    return view('invoice/master_tarif/add', $data);
+  }
+
+  public function editMasterTarif(Request $request)
+  {
+    $client = new Client();
+
+    $id = $request->id;
+    // var_dump($id);
+    // die();
+    $url_form = getenv('API_URL') . '/delivery-service/mastertarif/sp2/single/' . $id;
+    $req_form = $client->get($url_form);
+    $response_form = $req_form->getBody()->getContents();
+    $result_master_tarif = json_decode($response_form);
+
+    $data["mastertarif"] = $result_master_tarif->data;
+    $data["title"] = "Edit Master Tarif Data";
+
+    return view('invoice/master_tarif/edit', $data);
+  }
+
+  public function storeEditMasterTarif(Request $request)
+  {
+    $client = new Client();
+
+    $id = $request->id;
+    // var_dump($id);
+    // die();
+    $lokasi_sandar = $request->lokasi_sandar;
+    $type = $request->type;
+    $size = $request->size;
+    $status = $request->status;
+    $masa1 = $request->masa1;
+    $masa2 = $request->masa2;
+    $masa3 = $request->masa3;
+    $masa4 = $request->masa4;
+    $lift_on = $request->lift_on;
+    $lift_off = $request->lift_off;
+    $pass_truck = $request->pass_truck;
+    $gate_pass_admin = $request->gate_pass_admin;
+    $cost_recovery = $request->cost_recovery;
+    $surcharge = $request->surcharge;
+    $packet_plp = $request->packet_plp;
+    $behandle = $request->behandle;
+    $recooling = $request->recooling;
+    $monitoring = $request->monitoring;
+    $administrasi = $request->administrasi;
+    $fields =
+      [
+        "lokasi_sandar" => $lokasi_sandar,
+        "type" => $type,
+        "size" => $size,
+        "status" => $status,
+        "masa1" => $masa1,
+        "masa2" => $masa2,
+        "masa3" => $masa3,
+        "masa4" => $masa4,
+        "lift_on" => $lift_on,
+        "lift_off" => $lift_off,
+        "pass_truck" => $pass_truck,
+        "gate_pass_admin" => $gate_pass_admin,
+        "cost_recovery" => $cost_recovery,
+        "surcharge" => $surcharge,
+        "packet_plp" => $packet_plp,
+        "behandle" => $behandle,
+        "recooling" => $recooling,
+        "monitoring" => $monitoring,
+        "administrasi" => $administrasi,
+      ];
+    $url = getenv('API_URL') . '/delivery-service/mastertarif/sp2/update/' . $id;
+    $req = $client->post(
+      $url,
+      [
+        "json" => $fields
+      ]
+    );
+    $response = $req->getBody()->getContents();
+    // dd($response);
+    if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+      return redirect('/invoice/mastertarif')->with('success', 'Data berhasil disimpan!');
+    } else {
+      return redirect('/invoice/mastertarif')->with('success', 'Data gagal disimpan!');
+    }
+  }
+
+  public function storeCreateMasterTarif(Request $request)
+  {
+    $client = new Client();
+
+    // $id = $request->id;
+    // var_dump($id);
+    // die();
+    $lokasi_sandar = $request->lokasi_sandar;
+    $type = $request->type;
+    $size = $request->size;
+    $status = $request->status;
+    $masa1 = $request->masa1;
+    $masa2 = $request->masa2;
+    $masa3 = $request->masa3;
+    $masa4 = $request->masa4;
+    $lift_on = $request->lift_on;
+    $lift_off = $request->lift_off;
+    $pass_truck = $request->pass_truck;
+    $gate_pass_admin = $request->gate_pass_admin;
+    $cost_recovery = $request->cost_recovery;
+    $surcharge = $request->surcharge;
+    $packet_plp = $request->packet_plp;
+    $behandle = $request->behandle;
+    $recooling = $request->recooling;
+    $monitoring = $request->monitoring;
+    $administrasi = $request->administrasi;
+    $fields =
+      [
+        "lokasi_sandar" => $lokasi_sandar,
+        "type" => $type,
+        "size" => $size,
+        "status" => $status,
+        "masa1" => $masa1,
+        "masa2" => $masa2,
+        "masa3" => $masa3,
+        "masa4" => $masa4,
+        "lift_on" => $lift_on,
+        "lift_off" => $lift_off,
+        "pass_truck" => $pass_truck,
+        "gate_pass_admin" => $gate_pass_admin,
+        "cost_recovery" => $cost_recovery,
+        "surcharge" => $surcharge,
+        "packet_plp" => $packet_plp,
+        "behandle" => $behandle,
+        "recooling" => $recooling,
+        "monitoring" => $monitoring,
+        "administrasi" => $administrasi,
+      ];
+    // dd($fields);
+    $url = getenv('API_URL') . '/delivery-service/mastertarif/sp2/create';
+    $req = $client->post(
+      $url,
+      [
+        "json" => $fields
+      ]
+    );
+    $response = $req->getBody()->getContents();
+    if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+      return redirect('/invoice/mastertarif')->with('success', 'Data berhasil disimpan!');
+    } else {
+      return redirect('/invoice/mastertarif')->with('success', 'Data gagal disimpan!');
+    }
+  }
+
 
   public function Pranota(Request $request)
   {

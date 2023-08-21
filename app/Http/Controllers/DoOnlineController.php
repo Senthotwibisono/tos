@@ -94,7 +94,7 @@ class DoOnlineController extends Controller
     );
     $response = $req->getBody()->getContents();
     $result = json_decode($response);
-    dd($result);
+    // dd($result);
     if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
       return redirect('/do')->with('success', 'Form berhasil disimpan!');
     } else {
