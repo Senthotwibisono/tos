@@ -49,7 +49,7 @@
                   <div class="col-6">
                     <div class="form-group">
                       <label for="">Booking Number</label>
-                      <select name="booking" id="booking" class="js-example-basic-multiple form-control" style="height: 150%;">
+                      <select name="booking" id="bookingStuffing" class="js-example-basic-multiple form-control" style="height: 150%;">
                         <option value="" disabled selected>Pilih Salah Satu</option>
                         <?php foreach ($booking as $data) { ?>
                           <option value="<?= $data->booking_no ?>" data-id="<?= $data->booking_no ?>"><?= $data->booking_no ?></option>
