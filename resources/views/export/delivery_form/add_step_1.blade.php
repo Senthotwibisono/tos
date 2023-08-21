@@ -14,7 +14,7 @@
       <div class="card">
         <div class="card-header">
           <!-- <h3>Delivery Form Data</h3> -->
-          <h4>Step 1 Tambah Data Delivery</h4>
+          <h4>Step 1 Tambah Data Receiving</h4>
           <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
         </div>
         <div class="card-body">
@@ -118,7 +118,7 @@
 
               <div class="col-2">
                 <div class="form-group">
-                  <label>Arival Date</label>
+                  <label>Arrival Date</label>
                   <input required name="arrival" id="arrival" type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023" id="arrival">
                 </div>
               </div>

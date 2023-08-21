@@ -14,7 +14,7 @@
       <div class="card">
         <div class="card-header">
           <h4 class="card-title">
-            Delivery Export Form Data Management
+            Receiving Form Data Management
           </h4>
           <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
         </div>
@@ -23,7 +23,7 @@
             <div class="col-12">
               <div class="btn-group mb-3" role="group" aria-label="Basic example">
                 <a href="/export/add/step1" type="button" class="btn btn-success">
-                  Tambah Delivery Form
+                  Tambah Receiving Form
                 </a>
               </div>
             </div>
@@ -38,7 +38,7 @@
     <div class="col-12">
       <div class="card">
         <div class="card-header">
-          <h4 class="card-title">Delivery Form Data Table</h4>
+          <h4 class="card-title">Receiving Form Data Table</h4>
           <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
         </div>
         <div class="card-body">
