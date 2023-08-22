@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+
+// use Auth;
+
 use Config\Services;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -406,6 +410,8 @@ class InvoiceController extends Controller
   }
   public function addDataStep1()
   {
+    $user = Auth::user();
+    // dd($user->id);
     $data = [];
     $data["title"] = "Step 1 | Devivery Form Input Data";
 
@@ -436,6 +442,7 @@ class InvoiceController extends Controller
     $data["customer"] = $result_customer->data;
     $data["container"] = $result_container->data;
     $data["do"] = $result_do->data;
+    $data["user"] = $user->id;
     return view('invoice/delivery_form/add_step_1', $data);
   }
 

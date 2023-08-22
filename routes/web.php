@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\SystemController;
 use App\Http\Controllers\VesselController;
 use App\Http\Controllers\BayplanImportController;
@@ -33,6 +34,7 @@ use App\Http\Controllers\ShipPlanController;
 use App\Http\Controllers\LoadController;
 use App\Http\Controllers\BeaController;
 use App\Http\Controllers\SoapController;
+
 
 /*
 |--------------------------------------------------------------------------

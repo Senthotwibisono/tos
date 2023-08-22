@@ -1084,6 +1084,143 @@
 </script>
 
 <script>
+  function checkDoNumber() {
+    let doNumber = $("#do_number_type").val();
+    // console.log(doNumber);
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+    let formData = new FormData();
+    formData.append("do_no", doNumber);
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+      },
+      type: "POST",
+      url: `/allContainerImport`,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function(response) {
+
+        let res = JSON.parse(response);
+        // console.log("TRIMMED ALL CONTAINER = ", res.data[0].container_no.trim());
+
+        let data = res.data;
+        // console.log(data.length);
+        data.forEach(value => {
+          if (value.ctr_intern_status == "03") {
+            selcont.push(value.container_no.trim());
+            // console.log(value.container_no);
+          }
+        });
+      }
+    });
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+      },
+      type: "POST",
+      url: `/invoice/singleData/findContainer`,
+      cache: false,
+      contentType: false,
+      processData: false,
+      data: formData,
+      success: function(response) {
+        containerSelect.innerHTML = ''; // Clear previous options
+        const responseData = JSON.parse(response);
+        console.log(responseData);
+        // console.log("TRIMMED DO CONTAINER = ", responseData.data[0].container_no.trim());
+
+        let checking = "";
+        if (responseData.hasOwnProperty('data')) {
+          const containers = responseData.data;
+
+          let doBDate = containers[0].do_expired;
+          containers.forEach(value => {
+            cont.push(value.container_no.trim());
+          });
+
+          console.log("cont array=", cont);
+          console.log("selcont array=", selcont);
+          // Convert the date string to a Date object
+          let doDate = new Date(doBDate);
+
+          // Get the current date
+          const today = new Date();
+          today.setHours(0, 0, 0, 0); // Reset time components for accurate comparison
+
+          // console.log(doDate);
+          if (doDate <= today) {
+            console.log("im here bro 1");
+            Swal.fire({
+              icon: 'warning',
+              title: 'Oops!',
+              text: 'Tanggal DO Expired sudah melebihi hari ini, silahkan pilih ulang DO Number!'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                location.reload();
+              } else {
+                location.reload();
+              }
+            })
+          } else {
+            // console.log("im here bro 2");
+            function checkIfAllInArray(arrayToCheck, referenceArray) {
+              for (let i = 0; i < arrayToCheck.length; i++) {
+                const trimmedValue = arrayToCheck[i].trim(); // Trim whitespace from value
+                if (referenceArray.indexOf(trimmedValue) === -1) {
+                  return false; // Found a value in arrayToCheck that is not in referenceArray
+                }
+              }
+              return true; // All values in arrayToCheck are present in referenceArray
+            }
+
+            if (cont.length <= selcont.length && checkIfAllInArray(cont, selcont)) {
+              // console.log("All values in cont are present in selcont.");
+              checking = true;
+            } else {
+              // console.log("Not all values in cont are present in selcont.");
+              checking = false;
+            }
+            // console.log(checking);
+            if (checking != true) {
+              Swal.fire({
+                icon: 'error',
+                title: 'Data Container Tidak Cocok!',
+                text: 'Silahkan cek kembali data dan coba ulangi lagi!'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  location.reload();
+                } else {
+                  location.reload();
+                }
+              });
+            } else {
+              Swal.fire({
+                icon: 'success',
+                title: 'Container Data Found!',
+                text: 'You can proceed'
+              });
+              $("#containerSelector")[0].selectedIndex = -1;
+
+              containers.forEach((container) => {
+                $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+              });
+              $("#do_exp_date").val(containers[0].do_expired).attr("readonly", "true");
+              $("#boln").val(containers[0].bl_no).attr("readonly", "true");
+            }
+          }
+        } else {
+          console.error('Invalid response format:', response);
+        }
+      },
+      error(err) {
+        console.log(err);
+      }
+    });
+  }
+</script>
+
+<script>
   function fetchContainersBooking(selectedDoNoId) {
     var sweet_loader = '<div class="spinner-border text-info" role="status"><span class="sr-only">Loading...</span></div>';
 
