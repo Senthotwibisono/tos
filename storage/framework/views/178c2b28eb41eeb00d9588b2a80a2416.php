@@ -55,7 +55,13 @@
   <script src="<?php echo e(asset('vendor/components/jquery/jquery.min.js')); ?>"></script>
   <script src="<?php echo e(asset('dist/assets/extensions/sweetalert2/sweetalert2.min.js')); ?>"></script>
   <script src="<?php echo e(asset('dist/assets/js/pages/sweetalert2.js')); ?>"></script>
+  <script src="<?php echo e(asset('dist/assets/extensions/choices.js/public/assets/scripts/choices.js')); ?>"></script>
+  <script src="<?php echo e(asset('dist/assets/js/pages/form-element-select.js')); ?>"></script>
   <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+  <script>new simpleDatatables.DataTable('#table1bc');</script>
+  <script>new simpleDatatables.DataTable('#table1pea');</script>
+  <script>new simpleDatatables.DataTable('#table2');</script>
+  <script>new simpleDatatables.DataTable('#table3');</script>
 
   <!-- select 2 js  -->
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>

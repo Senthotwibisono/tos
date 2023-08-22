@@ -24,7 +24,7 @@
             <div class="col-12">
               <div class="btn-group mb-3" role="group" aria-label="Basic example">
                 <a href="/export/delivery" type="button" class="btn btn-success">
-                  Data Delivery Export
+                  Data Receiving
                 </a>
               </div>
             </div>
@@ -39,7 +39,7 @@
     <div class="col-12">
       <div class="card">
         <div class="card-header">
-          <h4 class="card-title">Billing Invoice Data Table</h4>
+          <h4 class="card-title">Billing Invoice Receiving Data Table</h4>
           <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
         </div>
         <div class="card-body">

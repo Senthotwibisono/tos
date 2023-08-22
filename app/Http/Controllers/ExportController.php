@@ -39,7 +39,7 @@ class ExportController extends Controller
         // dd($result_invoice);
 
         $data["invoices"] = $result_invoice->data;
-        $data["title"] = "Export | Billing System";
+        $data["title"] = "Receiving | Billing System";
         return view('export.dashboard', $data);
     }
 
@@ -56,7 +56,7 @@ class ExportController extends Controller
         // dd($result_delivery);
 
         $data["deliveries"] = $result_delivery->data;
-        $data["title"] = "Delivery Form Data";
+        $data["title"] = "Receiving Form Data";
         return view('export/delivery_form/dashboard', $data);
     }
 
@@ -90,10 +90,13 @@ class ExportController extends Controller
         // dd($result_do);
 
         // GET ALL VESSEL
-        $url_vessel = getenv('API_URL') . '/delivery-service/vessel/all';
-        $req_vessel = $client->get($url_vessel);
-        $response_vessel = $req_vessel->getBody()->getContents();
-        $result_vessel = json_decode($response_vessel);
+        // $url_vessel = getenv('API_URL') . '/delivery-service/vessel/all';
+        // $req_vessel = $client->get($url_vessel);
+        // $response_vessel = $req_vessel->getBody()->getContents();
+        // $result_vessel = json_decode($response_vessel);
+
+        $vessel_voyage = VVoyage::whereDate('deparature_date', '>=', now())->orderBy('deparature_date', 'desc')->get();
+
         // dd($result_vessel);
 
         // GET ALL BOOKING
@@ -105,7 +108,7 @@ class ExportController extends Controller
         $data["booking"] = $result_booking->data;
 
         $data["customer"] = $result_customer->data;
-        $data["vessel"] = $result_vessel->data;
+        $data["vessel"] = $vessel_voyage;
         $data["container"] = $result_container->data;
         $data["do"] = $result_do->data;
         return view('export/delivery_form/add_step_1', $data);
@@ -114,7 +117,7 @@ class ExportController extends Controller
     public function updateDataStep1(Request $request)
     {
         $data = [];
-        $data["title"] = "Update Data Step 1 | Devivery Form Update Data";
+        $data["title"] = "Update Data Step 1 | Receiving Form Update Data";
 
         $client = new Client();
 
@@ -159,6 +162,7 @@ class ExportController extends Controller
         $departure = $request->departure;
         $exp_time = $request->exp_time;
         $customer = $request->customer;
+        $closingtime = $request->closingtime;
         $do_number = $request->do_number ?? $request->do_number_auto;
         $do_exp_date = $request->do_exp_date;
         $boln = $request->boln;
@@ -172,6 +176,7 @@ class ExportController extends Controller
             "exp_date" => $departure,
             // "time" => "",
             "customer_id" => $customer,
+            "closingtime" => $closingtime,
             "do_number" => "",
             // "do_exp_date" => "",
             "boln" => "",
@@ -329,7 +334,7 @@ class ExportController extends Controller
         // dd($data["menuinv"]);
         $data["isExtended"] = $isExtended;
         $data["diffInDays"] = $diffInDays;
-        $data["title"] = "Step 2 | Delivery Pranota";
+        $data["title"] = "Step 2 | Receiving Pranota";
         return view('export/delivery_form/add_step_2', $data);
     }
 
@@ -457,13 +462,13 @@ class ExportController extends Controller
 
 
         // GET ALL BOOKING
-        // $url_booking = getenv('API_URL') . '/delivery-service/container/booking/all';
-        // $req_booking = $client->get($url_booking);
-        // $response_booking = $req_booking->getBody()->getContents();
-        // $result_booking = json_decode($response_booking);
+        $url_booking = getenv('API_URL') . '/delivery-service/container/booking/all';
+        $req_booking = $client->get($url_booking);
+        $response_booking = $req_booking->getBody()->getContents();
+        $result_booking = json_decode($response_booking);
         // dd($result_booking);
 
-        // $data["booking"] = $result_booking->data;
+        $data["booking"] = $result_booking->data;
         $data["customer"] = $result_customer->data;
         $data["vessel"] = $vessel_voyage;
         $data["container"] = $result_container->data;
@@ -478,6 +483,7 @@ class ExportController extends Controller
 
         $departure = $request->departure;
         $exp_time = $request->exp_time;
+        $closingtime = $request->closingtime;
         $customer = $request->customer;
         $do_number = $request->do_number ?? $request->do_number_auto;
         $do_exp_date = $request->do_exp_date;
@@ -491,6 +497,7 @@ class ExportController extends Controller
         $fields = [
             "exp_date" => $departure,
             // "time" => "",
+            "closingtime" => $closingtime,
             "customer_id" => $customer,
             "do_number" => "",
             // "do_exp_date" => "",

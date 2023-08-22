@@ -12,6 +12,23 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Illuminate\Support\Collection;
 use App\Http\Controllers\DataExport;
+use App\Models\TpsSppbPib; // check doc number import
+use App\Models\TpsSppbBc; // check doc import bc
+use App\Models\TpsDokPabean; // check doc lainya
+use App\Models\TpsSppbPibCont; // check container
+use App\Models\TpsSppbBcCont; // check container bc
+use App\Models\TpsDokPabeanCont; // check container pabean
+
+// cari doc number, type & date
+// 1. check TpsSppbPib (NO_SPPB)
+// 2. kalo ga nemu ke yg TpsSppbBc (NO_SPPB)
+// 3. kalo masi ga nemu ke yg TpsDokPabean (NO_DOC_INOUT)
+
+// cari container
+// 1. check TpsSppbPibCont (_CONT)
+// 2. kalo ga nemu ke yg TpsSppbBcCont (_CONT)
+// 3. kalo masi ga nemu ke yg TpsDokPabeanCont (_CONT)
+
 
 
 
@@ -101,6 +118,161 @@ class InvoiceController extends Controller
     $data["mastertarif"] = $result_master_tarif->data;
     $data["title"] = "Master Tarif Data";
     return view('invoice/master_tarif/dashboard', $data);
+  }
+
+  public function addMasterTarif()
+  {
+    $data = [];
+    $client = new Client();
+
+    $data["title"] = "Tambah Master Tarif Data";
+    return view('invoice/master_tarif/add', $data);
+  }
+
+  public function editMasterTarif(Request $request)
+  {
+    $client = new Client();
+
+    $id = $request->id;
+    // var_dump($id);
+    // die();
+    $url_form = getenv('API_URL') . '/delivery-service/mastertarif/sp2/single/' . $id;
+    $req_form = $client->get($url_form);
+    $response_form = $req_form->getBody()->getContents();
+    $result_master_tarif = json_decode($response_form);
+
+    $data["mastertarif"] = $result_master_tarif->data;
+    $data["title"] = "Edit Master Tarif Data";
+
+    return view('invoice/master_tarif/edit', $data);
+  }
+
+  public function storeEditMasterTarif(Request $request)
+  {
+    $client = new Client();
+
+    $id = $request->id;
+    // var_dump($id);
+    // die();
+    $lokasi_sandar = $request->lokasi_sandar;
+    $type = $request->type;
+    $size = $request->size;
+    $status = $request->status;
+    $masa1 = $request->masa1;
+    $masa2 = $request->masa2;
+    $masa3 = $request->masa3;
+    $masa4 = $request->masa4;
+    $lift_on = $request->lift_on;
+    $lift_off = $request->lift_off;
+    $pass_truck = $request->pass_truck;
+    $gate_pass_admin = $request->gate_pass_admin;
+    $cost_recovery = $request->cost_recovery;
+    $surcharge = $request->surcharge;
+    $packet_plp = $request->packet_plp;
+    $behandle = $request->behandle;
+    $recooling = $request->recooling;
+    $monitoring = $request->monitoring;
+    $administrasi = $request->administrasi;
+    $fields =
+      [
+        "lokasi_sandar" => $lokasi_sandar,
+        "type" => $type,
+        "size" => $size,
+        "status" => $status,
+        "masa1" => $masa1,
+        "masa2" => $masa2,
+        "masa3" => $masa3,
+        "masa4" => $masa4,
+        "lift_on" => $lift_on,
+        "lift_off" => $lift_off,
+        "pass_truck" => $pass_truck,
+        "gate_pass_admin" => $gate_pass_admin,
+        "cost_recovery" => $cost_recovery,
+        "surcharge" => $surcharge,
+        "packet_plp" => $packet_plp,
+        "behandle" => $behandle,
+        "recooling" => $recooling,
+        "monitoring" => $monitoring,
+        "administrasi" => $administrasi,
+      ];
+    $url = getenv('API_URL') . '/delivery-service/mastertarif/sp2/update/' . $id;
+    $req = $client->post(
+      $url,
+      [
+        "json" => $fields
+      ]
+    );
+    $response = $req->getBody()->getContents();
+    // dd($response);
+    if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+      return redirect('/invoice/mastertarif')->with('success', 'Data berhasil disimpan!');
+    } else {
+      return redirect('/invoice/mastertarif')->with('success', 'Data gagal disimpan!');
+    }
+  }
+
+  public function storeCreateMasterTarif(Request $request)
+  {
+    $client = new Client();
+
+    // $id = $request->id;
+    // var_dump($id);
+    // die();
+    $lokasi_sandar = $request->lokasi_sandar;
+    $type = $request->type;
+    $size = $request->size;
+    $status = $request->status;
+    $masa1 = $request->masa1;
+    $masa2 = $request->masa2;
+    $masa3 = $request->masa3;
+    $masa4 = $request->masa4;
+    $lift_on = $request->lift_on;
+    $lift_off = $request->lift_off;
+    $pass_truck = $request->pass_truck;
+    $gate_pass_admin = $request->gate_pass_admin;
+    $cost_recovery = $request->cost_recovery;
+    $surcharge = $request->surcharge;
+    $packet_plp = $request->packet_plp;
+    $behandle = $request->behandle;
+    $recooling = $request->recooling;
+    $monitoring = $request->monitoring;
+    $administrasi = $request->administrasi;
+    $fields =
+      [
+        "lokasi_sandar" => $lokasi_sandar,
+        "type" => $type,
+        "size" => $size,
+        "status" => $status,
+        "masa1" => $masa1,
+        "masa2" => $masa2,
+        "masa3" => $masa3,
+        "masa4" => $masa4,
+        "lift_on" => $lift_on,
+        "lift_off" => $lift_off,
+        "pass_truck" => $pass_truck,
+        "gate_pass_admin" => $gate_pass_admin,
+        "cost_recovery" => $cost_recovery,
+        "surcharge" => $surcharge,
+        "packet_plp" => $packet_plp,
+        "behandle" => $behandle,
+        "recooling" => $recooling,
+        "monitoring" => $monitoring,
+        "administrasi" => $administrasi,
+      ];
+    // dd($fields);
+    $url = getenv('API_URL') . '/delivery-service/mastertarif/sp2/create';
+    $req = $client->post(
+      $url,
+      [
+        "json" => $fields
+      ]
+    );
+    $response = $req->getBody()->getContents();
+    if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+      return redirect('/invoice/mastertarif')->with('success', 'Data berhasil disimpan!');
+    } else {
+      return redirect('/invoice/mastertarif')->with('success', 'Data gagal disimpan!');
+    }
   }
 
 
@@ -1163,5 +1335,19 @@ class InvoiceController extends Controller
     // var_dump($response);
     // die();
     echo $response;
+  }
+
+  public function allContainerImport()
+  {
+    $client = new Client();
+
+    // GET ALL CONTAINER
+    // $url_container = getenv('API_URL') . '/container-service/all';
+    $url_container = getenv('API_URL') . '/delivery-service/container/all';
+    $req_container = $client->get($url_container);
+    $response_container = $req_container->getBody()->getContents();
+    $result_container = json_decode($response_container);
+    // dd($result_container);
+    echo $response_container;
   }
 }

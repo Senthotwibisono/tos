@@ -25,7 +25,14 @@ class CoparnsController extends Controller
         $data = [];
         $client = new Client();
 
-
+        // GET ALL CONTAINER
+        // $url_container = getenv('API_URL') . '/container-service/all';
+        $url_container = getenv('API_URL') . '/delivery-service/container/all';
+        $req_container = $client->get($url_container);
+        $response_container = $req_container->getBody()->getContents();
+        $result_container = json_decode($response_container);
+        // dd($result_container);
+        $data["container"] = $result_container->data;
         $data["title"] = "Dashboard | Upload Coparn";
         return view('coparn/dashboard', $data);
     }
@@ -73,16 +80,20 @@ class CoparnsController extends Controller
         // dd($request->all());
         $client = new Client();
 
-        $vessel = $request->vessel;
+        $vessel = $request->vesselCoparn;
         $voyage = $request->voyage;
         $ves_code = $request->vesselcode;
         $closing = $request->closingtime;
         $arrival = $request->arrival;
         $departure = $request->departure;
+        $ves_id = $request->vesselid;
+        // dd($ves_id);
+
 
         $path1 = $request->file('storecoparn')->store('temp');
         $path = storage_path('app') . '/' . $path1;
         $data = Excel::toArray([], $path)[0];
+        // dd($data);
 
         if (count($data) > 1) {
             $columns = $data[0];
@@ -103,7 +114,7 @@ class CoparnsController extends Controller
                 $formattedRow['column25'] = $vessel;
                 // $formattedRow['column26'] = "";
                 $iso_code = Isocode::where('iso_code', '=', $formattedRow['column3'])->get();
-                // dd($iso_code[0]);
+                // dd($iso_code);
                 $formattedRow['column26'] = $iso_code[0]->iso_size;
                 $formattedRow['column27'] = $iso_code[0]->iso_type;
                 $formattedRow['column28'] = $iso_code[0]->iso_weight;
@@ -113,6 +124,7 @@ class CoparnsController extends Controller
                     $formattedRow['column29'] = "MTY";
                 }
                 $formattedRow['column30'] = "48";
+                $formattedRow['column31'] = $ves_id;
                 $formattedData[] = $formattedRow;
             }
 
@@ -218,7 +230,8 @@ class CoparnsController extends Controller
         // $result_vessel = json_decode($response_vessel);
         // dd($result_vessel);
         $response_vessel = VVoyage::where('ves_id', '=', $id)->get();
-        // var_dump($confirmed);
+        // $response_vessel = VVoyage::where('ves_id', '=', '17')->get();
+        // var_dump($response_vessel);
         // die();
 
         echo $response_vessel;

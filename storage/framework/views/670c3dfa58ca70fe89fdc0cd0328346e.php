@@ -80,13 +80,13 @@
             <div class="col-12 col-md-4">
               <div class="form-group">
                 <label for="">Do Expired</label>
-                <input name="do_exp_date" required type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023" id="doexpired">
+                <input name="do_exp_date" id="do_exp_date" required type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023" id="doexpired">
               </div>
             </div>
             <div class="col-12 col-md-4">
               <div class="form-group">
                 <label for="">Bill of Loading Number</label>
-                <input name="boln" required type="text" class="form-control" placeholder="Bill Of Loading Number">
+                <input name="boln" id="boln" required type="text" class="form-control" placeholder="Bill Of Loading Number">
               </div>
             </div>
             <div class="col-12">
@@ -120,27 +120,37 @@
           <div class="row mt-5">
             <div class="col-12">
               <h5>Beacukai Information</h5>
-              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+              <p>Please Select Domestic Service first.</p>
             </div>
+            <div class="col-6">
+              <div class="btn-group">
+                <a id="domestic" style="opacity:50%;" type="button" class="btn btn-primary text-white">Domestic Form</a>
+              </div>
+              <div class="btn-group">
+                <a id="nondomestic" type="button" class="btn btn-info text-white">Non-Domestic Form</a>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3" id="beacukaiForm">
             <div class="col-12 col-md-6">
               <div class="form-group">
                 <label class="mb-2" for="">Document Number <span class="badge bg-warning">Maximum 6 Characters </span></label>
                 <div class="input-group mb-3">
-                  <input type="text" class="form-control" name="documentNumber" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
-                  <button class="btn btn-primary" type="button" id="button-addon1"><i class="fa fa-magnifying-glass"></i> Check</button>
+                  <input placeholder="396956/KPU.01/2021" type="text" class="form-control" name="documentNumber" id="documentNumber" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
+                  <a onclick="checkBeacukaiImport();" class="btn btn-primary" type="button" id="beacukaicheck"><i class="fa fa-magnifying-glass"></i> Check</a>
                 </div>
               </div>
             </div>
             <div class="col-12 col-md-3">
               <div class="form-group">
                 <label for="">Document Type</label>
-                <input class="form-control" type="text" name="documentType">
+                <input readonly placeholder="Please Fill Document Number First.." class="form-control" type="text" name="documentType" id="documentType">
               </div>
             </div>
             <div class="col-12 col-md-3">
               <div class="form-group">
                 <label for="">Document Date</label>
-                <input class="form-control" type="text" name="documentDate">
+                <input readonly class="form-control" placeholder="Please Fill Document Number First.." type="text" name="documentDate" id="documentDate">
               </div>
             </div>
           </div>

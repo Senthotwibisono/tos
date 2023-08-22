@@ -15,7 +15,7 @@
       <div class="card">
         <div class="card-header">
           <!-- <h3>Delivery Form Data</h3> -->
-          <h4>Step 2 Data Delivery Pranota</h4>
+          <h4>Step 2 Data Receiving Pranota</h4>
           <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
         </div>
         <div class="card-body">

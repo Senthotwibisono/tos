@@ -22,7 +22,7 @@
           <div class="row">
             <div class="col-12">
               <div class="btn-group mb-3" role="group" aria-label="Basic example">
-                <a onclick="createTarif();" type="button" class="btn btn-success">
+                <a href="/invoice/mastertarif/add" type="button" class="btn btn-success">
                   Tambah Master Tarif SP2
                 </a>
               </div>
@@ -73,7 +73,7 @@
                 <tbody>
                   <?php foreach ($mastertarif as $value) { ?>
                     <tr>
-                      <td><a type="button" onclick="tarifConfig(`<?= $value->id ?>`)" class="btn btn-sm btn-success"><i class="fa fa-pencil"></i></a></td>
+                      <td><a type="button" href="/invoice/mastertarif/edit?id=<?= $value->id ?>" class="btn btn-sm btn-success"><i class="fa fa-pencil"></i></a></td>
                       <td><?= $value->lokasi_sandar ?></td>
                       <td><?= $value->type ?></td>
                       <td><?= $value->size ?></td>

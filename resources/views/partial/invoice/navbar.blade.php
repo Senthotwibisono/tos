@@ -25,7 +25,7 @@
               <a class="submenu-link" href="/invoice/add/extend">Delivery Extend</a>
             </li>
             <li class="submenu-item">
-              <a class="submenu-link" href="/export">Export</a>
+              <a class="submenu-link" href="/export">Receiving</a>
             </li>
             <li class="submenu-item">
               <a class="submenu-link" href="/export/stuffing">Export Stuffing</a>
@@ -37,7 +37,7 @@
               <a type="button" class="submenu-link">Master Tarif</a>
               <ul class="subsubmenu">
                 <li class="subsubmenu-item">
-                  <a href="/invoice/mastertarif" class="subsubmenu-link">Master Tarif SP2</a>
+                  <a href="/invoice/mastertarif" class="subsubmenu-link">Master Tarif</a>
                 </li>
                 <li class="subsubmenu-item">
                   <a href="/spps/mastertarif" class="subsubmenu-link">Master Tarif SPPS</a>
@@ -78,15 +78,15 @@
     </li> -->
 
 
-
+    <!-- 
     <li class="menu-item  has-sub">
       <a href="#" class='menu-link'>
         <i class="bi bi-stack"></i>
         <span>E-Job Order</span>
       </a>
-      <div class="submenu ">
-        <!-- Wrap to submenu-group-wrapper if you want 3-level submenu. Otherwise remove it. -->
-        <div class="submenu-group-wrapper">
+      <div class="submenu "> -->
+    <!-- Wrap to submenu-group-wrapper if you want 3-level submenu. Otherwise remove it. -->
+    <!-- <div class="submenu-group-wrapper">
 
 
           <ul class="submenu-group">
@@ -156,7 +156,7 @@
           </ul>
         </div>
       </div>
-    </li>
+    </li> -->
 
 
 
@@ -219,14 +219,14 @@
 
 
 
-    <li class="menu-item  has-sub">
+    <!-- <li class="menu-item  has-sub">
       <a href="#" class='menu-link'>
         <i class="bi bi-file-earmark-medical-fill"></i>
         <span>Monitoring</span>
       </a>
-      <div class="submenu ">
-        <!-- Wrap to submenu-group-wrapper if you want 3-level submenu. Otherwise remove it. -->
-        <div class="submenu-group-wrapper">
+      <div class="submenu "> -->
+    <!-- Wrap to submenu-group-wrapper if you want 3-level submenu. Otherwise remove it. -->
+    <!-- <div class="submenu-group-wrapper">
 
 
           <ul class="submenu-group">
@@ -241,12 +241,12 @@
               <a href="form-layout.html" class='submenu-link'>Monitoring Job Dry Port</a>
 
 
-            </li>
-          </ul>
-
-
-        </div>
-      </div>
-    </li>
+            </li> -->
   </ul>
+
+
+</div>
+</div>
+</li>
+</ul>
 </div>

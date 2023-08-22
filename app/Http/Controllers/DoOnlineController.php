@@ -6,6 +6,9 @@ use Auth;
 use Config\Services;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+// use Maatwebsite\Excel\Facades\Excel;
+
+use Maatwebsite\Excel\Excel as ExcelExcel;
 use Maatwebsite\Excel\Facades\Excel;
 
 use App\Exports\DataTableExport;
@@ -48,14 +51,14 @@ class DoOnlineController extends Controller
 
   public function store(Request $request)
   {
-    // dd("inputted");
-    // $data = [];
-    // dd($request->all());
     $client = new Client();
 
     $path1 = $request->file('storedo')->store('temp');
     $path = storage_path('app') . '/' . $path1;
     $data = Excel::toArray([], $path)[0];
+
+
+    // dd($data);
 
     if (count($data) > 1) {
       $columns = $data[0];

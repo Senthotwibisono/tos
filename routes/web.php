@@ -9,6 +9,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\DoOnlineController;
 use App\Http\Controllers\CoparnsController;
 use App\Http\Controllers\ExportInvoice;
+use App\Http\Controllers\BeaCukaiController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\SppsController;
 use App\Http\Controllers\PlacementController;
@@ -68,6 +69,9 @@ Route::post('/unset-session/{key}', [SessionsController::class, 'unsetSession'])
 
 
 
+Route::post('/beacukaiImportCheck', [BeacukaiController::class, 'beacukaiImportCheck']);
+Route::post('/beacukaiExportCheck', [BeacukaiController::class, 'beacukaiExportCheck']);
+Route::post('/allContainerImport', [InvoiceController::class, 'allContainerImport']);
 Route::prefix('invoice')->group(function () {
   Route::get('/', [InvoiceController::class, 'index']);
   Route::get('/menu', [InvoiceController::class, 'menuindex']);
@@ -119,6 +123,10 @@ Route::prefix('invoice')->group(function () {
   });
   Route::prefix('mastertarif')->group(function () {
     Route::get('/', [InvoiceController::class, 'masterTarif']);
+    Route::get('/add', [InvoiceController::class, 'addMasterTarif']);
+    Route::get('/edit', [InvoiceController::class, 'editMasterTarif']);
+    Route::post('/store', [InvoiceController::class, 'storeCreateMasterTarif']);
+    Route::post('/storeEdit', [InvoiceController::class, 'storeEditMasterTarif']);
   });
 
   Route::prefix('payment')->group(function () {
@@ -207,6 +215,10 @@ Route::prefix('spps')->group(function () {
   });
   Route::prefix('mastertarif')->group(function () {
     Route::get('/', [SppsController::class, 'masterTarif']);
+    Route::get('/add', [SppsController::class, 'addMasterTarif']);
+    Route::get('/edit', [SppsController::class, 'editMasterTarif']);
+    Route::post('/store', [SppsController::class, 'storeCreateMasterTarif']);
+    Route::post('/storeEdit', [SppsController::class, 'storeEditMasterTarif']);
   });
 });
 
@@ -503,7 +515,7 @@ Route::get('/generate-report-gato-del', [ReportController::class, 'generateREPT_
 Route::get('/edi/coparn', [CoparnController::class, 'index']);
 
 
-                                      //Export
+//Export
 
 //gate
 Route::get('/reciving/gate-in', [Gati::class, 'index_rec']);

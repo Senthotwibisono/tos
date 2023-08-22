@@ -197,7 +197,7 @@
 
 
             <li class="submenu-item  ">
-              <a href="layout-rtl.html" class='submenu-link'>Request Clearance BC</a>
+              <a href="/bea/req-dok" class='submenu-link'>Request Clearance BC</a>
 
 
             </li>
