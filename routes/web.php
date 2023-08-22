@@ -70,6 +70,7 @@ Route::post('/set-session/{key}/{value}', [SessionsController::class, 'setSessio
 Route::post('/unset-session/{key}', [SessionsController::class, 'unsetSession'])->name('unset-session');
 
 
+Route::post('/findContainerArray', [InvoiceController::class, 'findContainerArray']);
 
 Route::post('/beacukaiImportCheck', [BeacukaiController::class, 'beacukaiImportCheck']);
 Route::post('/beacukaiExportCheck', [BeacukaiController::class, 'beacukaiExportCheck']);

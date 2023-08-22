@@ -32,6 +32,7 @@
                             <th>NO</th>
                             <th>Vessel</th>
                             <th>Container No</th>
+                            <th>Slot || Row || Tier</th>
                             <th>Crane Code</th>
                             <th>Operator</th>
                             <th>Load</th>
@@ -43,6 +44,7 @@
                             <td>{{$loop->iteration}}</td>
                             <td>{{$d['ves_name']}} || {{$d['voy_no']}}</td>
                             <td>{{$d['container_no']}}</td>
+                            <td>{{$d['bay_slot']}} || {{$d['bay_row']}} || {{$d['bay_tier']}}</td>
                             <td>{{$d['cc_tt_no']}}</td>
                             <td>{{$d['cc_tt_oper']}}</td>
                             <td>{{$d['disc_date']}}</td>
