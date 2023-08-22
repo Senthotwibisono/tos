@@ -1276,7 +1276,8 @@
           // $("#do_exp_date").val(formattedDate(containers.do_expired)).attr("readonly", "true");
           // $("#boln").val(containers.bl_no).attr("readonly", "true");
           $("#containerSelector")[0].selectedIndex = -1;
-          if (containers[0].isChoosen == "1" && containers[0].ctr_intern_status != "04") {
+          // if (containers[0].isChoosen === "1" && containers[0].ctr_intern_status !== "04") {
+          if (containers[0].ctr_intern_status !== "04" && containers[0].isChoosen === "1") {
             Swal.fire({
               icon: 'warning',
               title: 'Data Container Sudah Digunakan!',
