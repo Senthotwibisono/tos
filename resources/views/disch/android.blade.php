@@ -456,13 +456,13 @@
 
                     success: function(msg) {
                         let res = msg;
-                        console.log(res.length);
+                        //console.log(res.length);
                         var len = res.length;
                         var optionsHtml = ''; // Variable to store the options HTML
                         for (let i = 0; i < len; i++) {
                             let id = res[i].value;
                             let nama = res[i].text;
-                            console.log(id, nama);
+                            //console.log(id, nama);
                             optionsHtml += "<option value='" + id + "'>" + nama + "</option>"; // Append each option HTML
                         }
                         $("#container_key").html(optionsHtml); // Set the HTML of the select element

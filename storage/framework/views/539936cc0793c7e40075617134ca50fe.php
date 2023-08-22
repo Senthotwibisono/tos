@@ -95,8 +95,8 @@
                           <thead>
                               <tr>
                                   <th>No</th>
-                                  <th>No SPPB</th>
-                                  <th>Tgl SPPB</th>
+                                  <th>No Pabean</th>
+                                  <th>Tgl Dokumen</th>
                                   <th>Importir</th>
                                   <th>NPWP</th>
                                   <th>Nama Angkut</th>
@@ -105,15 +105,15 @@
                               </tr>
                           </thead>
                           <tbody>
-                            <?php $__currentLoopData = $sppb_bc; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $bc): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php $__currentLoopData = $pabean_import; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $bean): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                               <tr>
                                   <td><?php echo e($loop->iteration); ?></td>                            
-                                  <td><?php echo e($bc->NO_SPPB); ?></td>
-                                  <td><?php echo e($bc->TGL_SPPB); ?></td>
-                                  <td><?php echo e($bc->NAMA_IMP); ?></td>
-                                  <td><?php echo e($bc->NPWP_IMP); ?></td>
-                                  <td><?php echo e($bc->NM_ANGKUT); ?></td>
-                                  <td><?php echo e($bc->JML_CONT); ?></td>
+                                  <td><?php echo e($bean->KD_DOK_INOUT); ?></td>
+                                  <td><?php echo e($bean->TGL_DOK_INOUT); ?></td>
+                                  <td><?php echo e($bean->NAMA_IMP); ?></td>
+                                  <td><?php echo e($bean->NPWP_PPJK); ?></td>
+                                  <td><?php echo e($bean->NM_ANGKUT); ?></td>
+                                  <td><?php echo e($bean->JML_CONT); ?></td>
                                   <td></td>                         
                               </tr>
                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

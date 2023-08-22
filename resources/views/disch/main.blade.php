@@ -251,7 +251,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: '/confirm-load',
+                    url: '/confirm',
                     data: data,
                     cache: false,
                     dataType: 'json',

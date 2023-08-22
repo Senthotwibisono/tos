@@ -95,8 +95,11 @@ class BeaController extends Controller
             if ($dok_pabean_EXPS) {
                 $pabean_EXP[] = $dok_pabean_EXPS;
             }
+
         }
 
-        return view('invoice.bc.req-bc-dok', compact('title', 'dok', 'sppb', 'dok_npe', 'details', 'container', 'container_SPPB', 'sppb_bc', 'pabean_import', 'pabean_EXP'));
+        $dok_lain = KodeDok::where('kode', '!=', ['1', '2', '6', '41', '44', '56'])->get();
+
+        return view('invoice.bc.req-bc-dok', compact('title', 'dok', 'sppb', 'dok_npe', 'details', 'container', 'container_SPPB', 'sppb_bc', 'pabean_import', 'pabean_EXP', 'dok_lain'));
     }
 }

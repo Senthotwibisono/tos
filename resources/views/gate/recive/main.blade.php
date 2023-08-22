@@ -7,13 +7,13 @@
   <div class="page-title">
     <div class="row">
       <div class="col-12 col-md-6 order-md-1 order-last">
-        <h3>Delivery Gate In</h3>
+        <h3>Reciving Gate In</h3>
       </div>
 
       <div class="col-12 col-md-6 order-md-2 order-first">
         <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item active" aria-current="page">Delivery Gate In</li>
+            <li class="breadcrumb-item active" aria-current="page">Reciving Gate In</li>
           </ol>
         </nav>
       </div>
@@ -57,7 +57,7 @@
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header bg-info">
-        <h5 class="modal-title white" id="myModalLabel110">Delivery Gate In</h5>
+        <h5 class="modal-title white" id="myModalLabel110">Reciving Gate In</h5>
         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><i data-feather="x"></i></button>
       </div>
       <div class="modal-body">
@@ -69,9 +69,12 @@
                 <label for="first-name-vertical">Choose Container Number</label>
                 <select class="choices form-select" id="key" name="container_key" required>
                   <option disabled selected value="">Select Container</option>
-                  @foreach($containerKeys as $containerKey => $containerNo)
-                                    <option value="{{ $containerKey }}">{{ $containerNo }}</option>
-                                    @endforeach
+                  <?php
+                  foreach ($jobContainers as $value) { ?>
+                    <?php if ($value->ctr_intern_status == "49") { ?>
+                      <option data-id="<?= $value->id ?>" value="<?= $value->id ?>"><?= $value->container_no ?></option>
+                    <?php } ?>
+                  <?php } ?>
                 </select>
                 <input type="hidden" id="container_no" class="form-control" name="container_no">
                 <input type="hidden" value="{{ $currentDateTimeString }}" name="truck_in_date" class="form-control" readonly>
@@ -159,9 +162,9 @@
                               </div>
                               <div class="input-group">
                                   
-                                  <input type="text" id="sz" class="form-control" disabled>
-                                  <input type="text" id="tp" class="form-control" disabled>
-                                  <input type="text" id="st" class="form-control" disabled>
+                                  <input type="text" id="sz" class="form-control" readonly>
+                                  <input type="text" id="tp" class="form-control" readonly>
+                                  <input type="text" id="st" class="form-control" readonly>
                               </div>
                           </fieldset>
                         </div>
@@ -177,8 +180,10 @@
                               </div>
                               <div class="input-group">
                                   
-                                  <input type="text" id="vessel" class="form-control" disabled>
-                                  <input type="text" id="voy" class="form-control" disabled>
+                                  <input type="text" id="vessel" name="ves_name" class="form-control" readonly>
+                                  <input type="text" id="voy" name="voy_no"class="form-control" readonly>
+                                  <input type="hidden" id="ves_id" name="ves_id"class="form-control" readonly>
+                                  <input type="hidden" id="code" name="ves_id"class="form-control" readonly>
                                   
                               </div>
                           </fieldset>
@@ -200,9 +205,9 @@
                               </div>
                               <div class="input-group">
                                   
-                                  <input type="text" id="imo" class="form-control" disabled>
-                                  <input type="text" id="jmlh" class="form-control" disabled>
-                                  <input type="text" id="class" class="form-control" disabled>
+                                  <input type="text" id="imo" class="form-control" readonly>
+                                  <input type="text" id="jmlh" class="form-control" readonly>
+                                  <input type="text" id="class" class="form-control" readonly>
                               </div>
                           </fieldset>
                         </div>
@@ -218,8 +223,8 @@
                               </div>
                               <div class="input-group">
                                   
-                                  <input type="text" id="pod"  class="form-control" disabled>
-                                  <input type="text" id="seal"  class="form-control" disabled>
+                                  <input type="text" id="pod"  class="form-control" readonly>
+                                  <input type="text" id="seal"  class="form-control" readonly>
                               </div>
                           </fieldset>
                         </div>
@@ -240,9 +245,9 @@
                               </div>
                               <div class="input-group">
                                   
-                                  <input type="text" id="oh" class="form-control" disabled>
-                                  <input type="text" id="ol" class="form-control" disabled>
-                                  <input type="text" id="ow" class="form-control" disabled>
+                                  <input type="text" id="oh" class="form-control" readonly>
+                                  <input type="text" id="ol" class="form-control" readonly>
+                                  <input type="text" id="ow" class="form-control" readonly>
                               </div>
                           </fieldset>
                         </div>
@@ -251,10 +256,12 @@
                               <div class="input-group">
                                       <div class="col-12">
                                       <label for="first-name-vertical">Date In</label>
+                                       <input type="hidden" id="user" class="form-control" value="{{ Auth::user()->name }}" name="user_id" placeholder="" required>
                                       </div>
                               </div>
                               <div class="input-group">    
                                   <input type="datetime-local" value="{{ $currentDateTimeString }}" id="datein" name="truck_in_date" class="form-control" readonly>
+                                  <input type="hidden"  id="id" name="id" class="form-control" readonly>
                               </div>
                           </fieldset>
                         </div>
@@ -315,8 +322,14 @@
     var ctr_type =$('#type').val();
     var ctr_size =$('#size').val();
     var ctr_status =$('#stat').val();
+    var ves_id=$('#ves_id').val();
+    var ves_code=$('#ves_code').val();
+    var ves_name=$('#vessel').val();
+    var voy_no=$('#voy').val();
+    var user_id=$('#user').val();
+    var id=$('#id').val();
     var data = {
-      'container_key': $('#key').val(),
+      'id': $('#key').val(),
       'container_no': $('#container_no').val(),
       'truck_no': $('#tayo').val(),
       'truck_in_date': $('#datein').val(),
@@ -327,6 +340,11 @@
       'ctr_type' : $('#type').val(),
       'ctr_size' : $('#size').val(),
       'ctr_status' : $('#stat').val(),
+      'ves_id':$('#ves_id').val(),
+      'ves_code':$('#ves_code').val(),
+      'ves_name':$('#vessel').val(),
+      'voy_no':$('#voy').val(),
+      'user_id':$('#user').val(),
 
 
     }
@@ -358,69 +376,11 @@
             console.log(response);
             if (response.success) {
               Swal.fire('Saved!', '', 'success')
-              $('#load_ini').load(window.location.href + ' #load_ini');
-              $('#place_cont').load(window.location.href + ' #place_cont', function() {
-                $(document).ready(function() {
-                  let choices = document.querySelectorAll('.choices');
-                  let initChoice;
-                  for (let i = 0; i < choices.length; i++) {
-                    if (choices[i].classList.contains("multiple-remove")) {
-                      initChoice = new Choices(choices[i], {
-                        delimiter: ',',
-                        editItems: true,
-                        maxItemCount: -1,
-                        removeItemButton: true,
-                      });
-                    } else {
-                      initChoice = new Choices(choices[i]);
-                    }
-                  }
-                  $('.container').select2({
-                    dropdownParent: '#success',
-                  });
-                  $(document).ready(function() {
-                    $('#key').on('change', function() {
-                      let id = $(this).val();
-                      $.ajax({
-                        type: 'POST',
-                        url: '/gati-data_container-rec',
-                        data: {
-                          container_key: id
-                        },
-                        success: function(response) {                      
-                           $('#container_no').val(response.container_no);
-                           $('#gross').val(response.gross);
-                           $('#iso_code').val(response.iso_code);
-                           $('#bl_no').val(response.bl_no);
-                           $('#seal_no').val(response.seal_no);
-                           $('#type').val(response.type);
-                           $('#size').val(response.size);
-                           $('#stat').val(response.stat);
-                           $('#tp').val(response.type);
-                           $('#sz').val(response.size);
-                           $('#st').val(response.stat);
-                           $('#vessel').val(response.vessel);
-                           $('#voy').val(response.voy);
-                           $('#imo').val(response.imo);
-                           $('#jmlh').val(response.gross);
-                           $('#class').val(response.class);
-                           $('#pod').val(response.pod);
-                           $('#seal').val(response.seal);
-                           $('#oh').val(response.oh);
-                           $('#ow').val(response.ow);
-                           $('#ol').val(response.ol);
-                        },
-                        error: function(data) {
-                          console.log('error:', data);
-                        },
-                      });
-                    });
-                  });
-                  // $
-                });
-
-                $('#load_ini').load(window.location.href + ' #load_ini');
-              });
+               .then(() => {
+                            // Memuat ulang halaman setelah berhasil menyimpan data
+                            window.location.reload();
+                        });
+              
             } else {
               Swal.fire({
                 icon: 'error',
@@ -463,46 +423,97 @@
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
       }
     });
-    $(document).ready(function() {
-      $('#key').on('change', function() {
-        let id = $(this).val();
-        $.ajax({
-          type: 'POST',
-          url: '/gati-data_container-rec',
-          data: {
-            container_key: id
-          },
-          success: function(response) {          
+    // $(document).ready(function() {
+    //   $('#key').on('change', function() {
+    //     let id = $(this).val();
+    //     $.ajax({
+    //       type: 'POST',
+    //       url: '/gati-data_container-rec',
+    //       data: {
+    //         container_key: id
+    //       },
+    //       success: function(response) {         
+    //         let res = JSON.parse(response); 
+    //         console.log(res);
             
-            $('#container_no').val(response.container_no);
-            $('#gross').val(response.gross);
-            $('#iso_code').val(response.iso_code);
-            $('#bl_no').val(response.bl_no);
-            $('#seal_no').val(response.seal_no);
-            $('#type').val(response.type);
-            $('#size').val(response.size);
-            $('#stat').val(response.stat);
-            $('#tp').val(response.type);
-            $('#sz').val(response.size);
-            $('#st').val(response.stat);
-            $('#vessel').val(response.vessel);
-            $('#voy').val(response.voy);
-            $('#imo').val(response.imo);
-            $('#jmlh').val(response.gross);
-            $('#class').val(response.class);
-            $('#pod').val(response.pod);
-            $('#seal').val(response.seal);
-            $('#oh').val(response.oh);
-            $('#ow').val(response.ow);
-            $('#ol').val(response.ol);
+    //         $('#container_no').val(res.data.container_no);
+    //         $('#gross').val(res.data.gross);
+    //         $('#iso_code').val(res.data.iso_code);
+    //         $('#bl_no').val(res.data.bl_no);
+    //         $('#seal_no').val(res.data.seal_no);
+    //         $('#type').val(res.data.ctr_type);
+    //         $('#size').val(res.data.ctr_size);
+    //         $('#stat').val(res.data.ctr_status);
+    //         $('#tp').val(res.data.ctr_type);
+    //         $('#sz').val(res.data.ctr_size);
+    //         $('#st').val(res.data.ctr_status);
+    //         $('#vessel').val(res.data.vessel_name);
+    //         $('#voy').val(res.data.voy_no);
+    //         $('#imo').val(res.data.imo_code);
+    //         $('#jmlh').val(res.data.gross);
+    //         $('#class').val(res.data.gross_class);
+    //         $('#pod').val(res.data.pod);
+    //         $('#seal').val(res.data.seal_no);
+    //         $('#oh').val(res.data.over_height);
+    //         $('#ow').val(res.data.over_weight);
+    //         $('#ol').val(res.data.over_length);
             
-          },
-          error: function(data) {
-            console.log('error:', data);
-          },
-        });
-      });
-    });
+    //       },
+    //       error: function(data) {
+    //         console.log('error:', data);
+    //       },
+    //     });
+    //   });
+    // });
+      $("#key").on('change', function() {
+    console.log("CHANGED!");
+    const selectedDoNo = this.value;
+    const selectedDoNoId = this.options[this.selectedIndex].getAttribute('value');
+    console.log(selectedDoNoId);
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+    let formData = new FormData();
+    formData.append("id", selectedDoNoId);
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+      },
+      type: "POST",
+      url: `/gati-data_container-rec`,
+      cache: false,
+      contentType: false,
+      processData: false,
+      data: formData,
+      success: function(response) {
+        let res = JSON.parse(response); 
+            console.log(res);
+            
+            $('#container_no').val(res.data.container_no);
+            $('#gross').val(res.data.gross);
+            $('#iso_code').val(res.data.iso_code);
+            $('#bl_no').val(res.data.bl_no);
+            $('#seal_no').val(res.data.seal_no);
+            $('#type').val(res.data.ctr_type);
+            $('#size').val(res.data.ctr_size);
+            $('#stat').val(res.data.ctr_status);
+            $('#tp').val(res.data.ctr_type);
+            $('#sz').val(res.data.ctr_size);
+            $('#st').val(res.data.ctr_status);
+            $('#vessel').val(res.data.vessel_name);
+            $('#voy').val(res.data.voy_no);
+            $('#ves_id').val(res.data.ves_id);
+            $('#code').val(res.data.ves_code);
+            $('#imo').val(res.data.imo_code);
+            $('#jmlh').val(res.data.gross);
+            $('#class').val(res.data.gross_class);
+            $('#pod').val(res.data.pod);
+            $('#seal').val(res.data.seal_no);
+            $('#oh').val(res.data.over_height);
+            $('#ow').val(res.data.over_widht);
+            $('#ol').val(res.data.over_length);
+            $('#id').val(res.data.id);
+      }
+    })
+  })
 
     $(document).ready(function() {
       $('#iso_code').on('change', function() {
@@ -527,15 +538,6 @@
 
       });
     });
-
-    function openModal2() {
-  document.getElementById('modal2').style.display = 'block';
-}
-
-function closeModal2() {
-  document.getElementById('modal2').style.display = 'none';
-}
-
     // $(function(){
     //         $('#block'). on('change', function(){
     //             let yard_block = $('#block').val();
@@ -557,6 +559,9 @@ function closeModal2() {
     //         })
     //     })
   });
+</script>
+<script>
+
 </script>
 
 @endsection

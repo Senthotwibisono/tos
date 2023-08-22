@@ -642,6 +642,13 @@
     text: "<?php echo e(session('success')); ?>"
   });
   <?php endif; ?>
+  <?php if(session('error')): ?>
+  Swal.fire({
+    icon: 'error',
+    title: 'Error',
+    text: "<?php echo e(session('error')); ?>"
+  });
+  <?php endif; ?>
 </script>
 
 <script>

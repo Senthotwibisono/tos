@@ -36,7 +36,7 @@
                             <div class="list-group list-group-horizontal-sm mb-1 text-center" role="tablist">
                                 <a class="list-group-item list-group-item-action active" id="list-sunday-list" data-bs-toggle="list" href="#import" role="tab">Import</a>
                                 <a class="list-group-item list-group-item-action" id="list-monday-list" data-bs-toggle="list" href="#export" role="tab">Export</a>
-                                <a class="list-group-item list-group-item-action" id="list-tuesday-list" data-bs-toggle="list" href="#exstrip" role="tab">Dokumen Lainnya...</a>
+                                <a class="list-group-item list-group-item-action" id="list-tuesday-list" data-bs-toggle="list" href="#dokumenlain" role="tab">Dokumen Lainnya...</a>
                             </div>
                             <div class="tab-content text-justify" id="load_ini">
                     <div class="tab-pane fade show active" id="import" role="tabpanel" aria-labelledby="list-sunday-list">
@@ -45,7 +45,7 @@
                     <div class="tab-pane fade" id="export" role="tabpanel"aria-labelledby="list-monday-list">
                     <?php echo $__env->make('invoice.bc.table.export', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                     </div>
-                    <div class="tab-pane fade" id="exstrip" role="tabpanel"aria-labelledby="list-tuesday-list">
+                    <div class="tab-pane fade" id="dokumenlain" role="tabpanel"aria-labelledby="list-tuesday-list">
                     <?php echo $__env->make('invoice.bc.table.dok-lain', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                     </div>
                 </div>
@@ -58,6 +58,8 @@
 <?php echo $__env->make('invoice.bc.modal-sppb', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 <?php echo $__env->make('invoice.bc.modal-npe', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 <?php echo $__env->make('invoice.bc.modal-peabn', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php echo $__env->make('invoice.bc.model-peabn-exp', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php echo $__env->make('invoice.bc.modal-lain', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
 <?php $__env->stopSection(); ?>
 

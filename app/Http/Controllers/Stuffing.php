@@ -63,26 +63,25 @@ class Stuffing extends Controller
         $currentDateTime = Carbon::now();
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
 
+
+        $client = new Client();
         // GET ALL JOB_CONTAINER
-
-        // $client = new Client();
-        // $url_jobContainer = getenv('API_URL') . '/delivery-service/job/all';
-        // $req_jobContainer = $client->get($url_jobContainer);
-        // $response_jobContainer = $req_jobContainer->getBody()->getContents();
-        // $result_jobContainer = json_decode($response_jobContainer);
-        // dd($result_jobContainer);
-        // dd($containerKeys);
-
-        // $data["jobContainers"] = $result_jobContainer->data;
+        $url_jobContainer = getenv('API_URL') . '/delivery-service/container/stuffing/all';
+        $req_jobContainer = $client->get($url_jobContainer);
+        $response_jobContainer = $req_jobContainer->getBody()->getContents();
+        $result_jobContainer = json_decode($response_jobContainer);
+        
+         $data["jobContainers"] = $result_jobContainer->data;
 
 
-        return view('stuffing.main', $data, compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'));
+        return view('stuffing.main', $data, compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'), $data);
     }
     public function android()
     {
-        $title = 'STR';
-        $confirmed = Item::where('ctr_intern_status', '=', 04,)->orderBy('update_time', 'desc')->get();
+        $title = 'Stuffing';
+        $confirmed = Item::where('ctr_intern_status', '=', 53,)->orderBy('update_time', 'desc')->get();
         $formattedData = [];
+        $data = [];
 
         foreach ($confirmed as $tem) {
             $now = Carbon::now();
@@ -112,17 +111,9 @@ class Stuffing extends Controller
                 'container_key' => $tem->container_key
             ];
         }
-        $containerKeys = Item::where('ctr_intern_status', '=', '03')
-            ->whereHas('job', function ($query) {
-                $query->where('order_service_code', 'SPPS');
-            })
-            ->pluck('container_no', 'container_key')
-            ->map(function ($value, $key) {
-                return ['value' => $key, 'text' => $value];
-            })
-            ->values()
-            ->all();
-        $items = Item::where('ctr_intern_status', 03)->get();
+        $containerKeys = Item::where('ctr_intern_status', '=', '04')
+            ->pluck('container_no', 'container_key');
+        $items = Item::where('ctr_intern_status', 04)->get();
         $users = User::all();
         $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
         $yard_slot = Yard::distinct('yard_slot')->pluck('yard_slot');
@@ -130,7 +121,19 @@ class Stuffing extends Controller
         $yard_tier = Yard::distinct('yard_tier')->pluck('yard_tier');
         $currentDateTime = Carbon::now();
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
-        return view('stripping.android', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'));
+
+
+        $client = new Client();
+        // GET ALL JOB_CONTAINER
+        $url_jobContainer = getenv('API_URL') . '/delivery-service/container/stuffing/all';
+        $req_jobContainer = $client->get($url_jobContainer);
+        $response_jobContainer = $req_jobContainer->getBody()->getContents();
+        $result_jobContainer = json_decode($response_jobContainer);
+        
+         $data["jobContainers"] = $result_jobContainer->data;
+
+
+        return view('stuffing.android', $data, compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'), $data);
     }
 
     public function get_stuffing(Request $request)
@@ -140,24 +143,8 @@ class Stuffing extends Controller
         $name = Item::where('container_key', $container_key)->first();
 
 
-        $fields = [
-            "container_key" => $request->container_key,
-        ];
-        // dd($fields, $item->getAttributes());
-
-        // $url = getenv('API_URL') . '/delivery-service/job/containerbykey';
-        // $req = $client->post(
-        //     $url,
-        //     [
-        //         "json" => $fields
-        //     ]
-        // );
-        // $response = $req->getBody()->getContents();
-        // $result = json_decode($response);
-        // $invoice = $result->data->jobData->invoiceNumber;
-        // var_dump($response);
-        // die();
-        // dd($result);
+        
+       
 
         if ($name) {
             return response()->json(['container_no' => $name->container_no, 'tipe' => $name->ctr_type, 'oldblock' => $name->yard_block, 'oldslot' => $name->yard_slot, 'oldrow' => $name->yard_row, 'oldtier' => $name->yard_tier]);
@@ -202,26 +189,27 @@ class Stuffing extends Controller
                 'ctr_intern_status' => '53',
                 'wharf_yard_oa' => $request->wharf_yard_oa,
             ]);
+            $client = new Client();
 
-            // $client = new Client();
+            $fields = [
+                "container_key" => $request->container_key,
+                "ctr_intern_status" => "53",
+                'yard_block' => $request->yard_block,
+                'yard_slot' => $request->yard_slot,
+                'yard_row' => $request->yard_row,
+                'yard_tier' => $request->yard_tier,
+            ];
+            // dd($fields, $item->getAttributes());
 
-            // $fields = [
-            //     "container_key" => $request->container_key,
-            //     "ctr_intern_status" => "53",
-            // ];
-            // // dd($fields, $item->getAttributes());
-
-            // $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
-            // $req = $client->post(
-            //     $url,
-            //     [
-            //         "json" => $fields
-            //     ]
-            // );
-            // $response = $req->getBody()->getContents();
-            // $result = json_decode($response);
-            // // var_dump($result);
-            // // die();
+            $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
+            $req = $client->post(
+                $url,
+                [
+                    "json" => $fields
+                ]
+            );
+            $response = $req->getBody()->getContents();
+            $result = json_decode($response);
 
             if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
                 // $item->save();

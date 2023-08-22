@@ -1,8 +1,8 @@
+@extends('partial.android')
+@section('custom_styles')
 
-<?php $__env->startSection('custom_styles'); ?>
-
-<?php $__env->stopSection(); ?>
-<?php $__env->startSection('content'); ?>
+@endsection
+@section('content')
 <div class="page-heading">
   <div class="page-title">
     <div class="row">
@@ -38,13 +38,13 @@
             </tr>
           </thead>
           <tbody>
-            <?php $__currentLoopData = $formattedData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $d): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            @foreach($formattedData as $d)
             <tr>
-              <td><?php echo e($d['container_no']); ?></td>
-              <td><?php echo e($d['truck_no']); ?></td>
-              <td><?php echo e($d['truck_in_date']); ?></td>
+              <td>{{$d['container_no']}}</td>
+              <td>{{$d['truck_no']}}</td>
+              <td>{{$d['truck_in_date']}}</td>
             </tr>
-            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            @endforeach
           </tbody>
         </table>
       </div>
@@ -77,10 +77,9 @@
                   <?php } ?>
                 </select>
                 <input type="hidden" id="container_no" class="form-control" name="container_no">
-                <input type="hidden" value="<?php echo e($currentDateTimeString); ?>" name="truck_in_date" class="form-control" readonly>
+                <input type="hidden" value="{{ $currentDateTimeString }}" name="truck_in_date" class="form-control" readonly>
               </div>
-              <?php echo e(csrf_field()); ?>
-
+              {{ csrf_field()}}
             </div>
         <div class="col-12">
           <div class="row">
@@ -95,9 +94,9 @@
                 <label for="first-name-vertical">Iso Code</label>
                 <select class="form-select" id="iso_code" name="iso_code">
                                 <option value="-">-</option>
-                                <?php $__currentLoopData = $isocode; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $iso): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <option value="<?php echo e($iso->iso_code); ?>"><?php echo e($iso->iso_code); ?></option>
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                @foreach($isocode as $iso)
+                                <option value="{{$iso->iso_code}}">{{$iso->iso_code}}</option>
+                                @endforeach
                               </select>
               </div>
             </div>
@@ -257,11 +256,11 @@
                               <div class="input-group">
                                       <div class="col-12">
                                       <label for="first-name-vertical">Date In</label>
-                                       <input type="hidden" id="user" class="form-control" value="<?php echo e(Auth::user()->name); ?>" name="user_id" placeholder="" required>
+                                       <input type="hidden" id="user" class="form-control" value="{{ Auth::user()->name }}" name="user_id" placeholder="" required>
                                       </div>
                               </div>
                               <div class="input-group">    
-                                  <input type="datetime-local" value="<?php echo e($currentDateTimeString); ?>" id="datein" name="truck_in_date" class="form-control" readonly>
+                                  <input type="datetime-local" value="{{ $currentDateTimeString }}" id="datein" name="truck_in_date" class="form-control" readonly>
                                   <input type="hidden"  id="id" name="id" class="form-control" readonly>
                               </div>
                           </fieldset>
@@ -295,12 +294,12 @@
 
 
 
-<?php $__env->stopSection(); ?>
-<?php $__env->startSection('custom_js'); ?>
-<script src="<?php echo e(asset('vendor/components/jquery/jquery.min.js')); ?>"></script>
-<script src="<?php echo e(asset('select2/dist/js/select2.full.min.js')); ?>"></script>
-<script src="<?php echo e(asset('dist/assets/extensions/sweetalert2/sweetalert2.min.js')); ?>"></script>
-<script src="<?php echo e(asset('dist/assets/js/pages/sweetalert2.js')); ?>"></script>
+@endsection
+@section('custom_js')
+<script src="{{ asset('vendor/components/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('select2/dist/js/select2.full.min.js') }}"></script>
+<script src="{{asset('dist/assets/extensions/sweetalert2/sweetalert2.min.js')}}"></script>
+<script src="{{asset('dist/assets/js/pages/sweetalert2.js')}}"></script>
 
 
 
@@ -565,5 +564,4 @@
 
 </script>
 
-<?php $__env->stopSection(); ?>
-<?php echo $__env->make('partial.main', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\tos\resources\views/gate/recive/main.blade.php ENDPATH**/ ?>
+@endsection

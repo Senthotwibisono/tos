@@ -107,7 +107,14 @@ class DischargeController extends Controller
   public function get_cont(request $request)
   {
     $ves_id = $request->ves_id;
-    $container_key = Item::where('ves_id', $ves_id)->where('ctr_intern_status', '=', 01)->get();
+    $container_key = Item::where('ves_id', $ves_id)->whereIn('ctr_intern_status', ['01'])->get();
+    
+    $option = [];
+
+    if ($container_key->isEmpty()) {
+        // Return empty response when no containers are found
+        return response()->json($option);
+    }
     foreach ($container_key as $kode) {
       // echo "<option value='$kode->container_key'>$kode->container_no</option>";
       $option[] = [
@@ -170,12 +177,14 @@ class DischargeController extends Controller
     $item = Item::where('container_key', $container_key)->first();
     $request->validate([
       'container_no' => 'required',
-      'cc_tt_no' => 'required',
-      'cc_tt_oper' => 'required',
+      'cc_tt_no' => 'required | max : 7',
+      'cc_tt_oper' => 'required | max : 7',
     ], [
       'container_no.required' => 'Container Number is required.',
       'cc_tt_no.required' => 'Nomor Alat Number is required.',
       'cc_tt_oper.required' => 'Operator Alat Number is required.',
+      'cc_tt_no.max' => 'Opss Data Terlalu Panjang.',
+      'cc_tt_oper.max' => 'Opss Data Terlalu Panjang.',
     ]);
     Item::where('container_key', $container_key)->update([
       'cc_tt_no' => $request->cc_tt_no,

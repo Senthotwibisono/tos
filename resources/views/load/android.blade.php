@@ -4,13 +4,13 @@
     <div class="page-title">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3>Confirm Disch</h3>
+                <h3>Confirm Load</h3>
             </div>
 
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item active" aria-current="page">Confirmed Disch</li>
+                        <li class="breadcrumb-item active" aria-current="page">Confirmed Load</li>
                     </ol>
                 </nav>
             </div>
@@ -23,23 +23,25 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit">
                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                         <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                    </svg> Confirmed</button>
+                    </svg> Load</button>
             </div>
             <div class="card-body">
                 <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
                     <thead>
                         <tr>
                             <th>NO</th>
+                            <th>Vessel</th>
                             <th>Container No</th>
                             <th>Crane Code</th>
                             <th>Operator</th>
-                            <th>Disc At</th>
+                            <th>Load</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($formattedData as $d)
                         <tr>
                             <td>{{$loop->iteration}}</td>
+                            <td>{{$d['ves_name']}} || {{$d['voy_no']}}</td>
                             <td>{{$d['container_no']}}</td>
                             <td>{{$d['cc_tt_no']}}</td>
                             <td>{{$d['cc_tt_oper']}}</td>
@@ -58,7 +60,7 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header bg-success">
-                <h5 class="modal-title white" id="myModalLabel110">Confirm Disch</h5>
+                <h5 class="modal-title white" id="myModalLabel110">Confirm Load</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><i data-feather="x"></i></button>
             </div>
             <div class="modal-body">
@@ -117,32 +119,21 @@
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="first-name-vertical">Slot</label>
-                                        <input type="text" id="slot" class="form-control" name="bay_slot" readonly>
+                                        <input type="text" id="slot" class="form-control" name="bay_slot">
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="first-name-vertical">Row</label>
-                                        <input type="text" id="row" class="form-control" name="bay_row" readonly>
+                                        <input type="text" id="row" class="form-control" name="bay_row" >
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="first-name-vertical">Tier</label>
-                                        <input type="text" id="tier" class="form-control" name="bay_tier" readonly>
+                                        <input type="text" id="tier" class="form-control" name="bay_tier">
                                         <input type="hidden" id="container_key" name="container_key" class="form-control" required>
-                                        <input type="hidden" id="ves_id" name="ves_id" class="form-control" required>
-                                        <input type="hidden" id="voy_no" name="voy_no" class="form-control" required>
                                         <input type="hidden" id="container_no" name="container_no" class="form-control" required>
-                                        <input type="hidden" id="ctr_status" name="ctr_status" class="form-control" required>
-                                        <input type="hidden" id="ctr_type" name="ctr_type" class="form-control" required>
-                                        <input type="hidden" id="ctr_opr" name="ctr_opr" class="form-control" required>
-                                        <input type="hidden" id="ctr_size" name="ctr_size" class="form-control" required>
-                                        <input type="hidden" id="disc_load_trans_shift" name="disc_load_trans_shift" class="form-control" required>
-                                        <input type="hidden" id="load_port" name="load_port" class="form-control" required>
-                                        <input type="hidden" id="disch_port" name="disch_port" class="form-control" required>
-                                        <input type="hidden" id="gross" name="gross" class="form-control" required>
-                                        <input type="hidden" id="iso_code" name="iso_code" class="form-control" required>
                                     </div>
                                 </div>
                             </div>
@@ -151,7 +142,7 @@
                             <div class="form-group">
                                 <label for="first-name-vertical">Op Lapangan</label>
                                 <input type="text" id="user" class="form-control" value="{{ Auth::user()->name }}" name="wharf_yard_oa" readonly>
-                                <input type="datetime-local" id="tanggal" class="form-control" value="{{ $currentDateTimeString }}" name="disc_date" readonly>
+                                <input type="datetime-local" id="tanggal" class="form-control" value="{{ $currentDateTimeString }}" name="load_date" readonly>
                             </div>
                         </div>
                     </div>
@@ -214,22 +205,11 @@
             'cc_tt_oper': $('#operator').val(),
             'cc_tt_no': $('#no_alat').val(),
             'wharf_yard_oa': $('#user').val(),
-            'disc_date': $('#tanggal').val(),
+            'load_date': $('#tanggal').val(),
             'ves_name': $('#name').val(),
             'bay_slot': $('#slot').val(),
             'bay_row': $('#row').val(),
             'bay_tier': $('#tier').val(),
-            'ves_id': $('#ves_id').val(),
-            'voy_no': $('#voy_no').val(),
-            'ctr_status': $('#ctr_status').val(),
-            'ctr_type': $('#ctr_type').val(),
-            'ctr_opr': $('#ctr_opr').val(),
-            'ctr_size': $('#ctr_size').val(),
-            'disc_load_trans_shift': $('#disc_load_trans_shift').val(),
-            'load_port': $('#load_port').val(),
-            'disch_port': $('#disch_port').val(),
-            'gross': $('#gross').val(),
-            'iso_code': $('#iso_code').val(),
 
         }
         $.ajaxSetup({
@@ -251,7 +231,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: '/confirm',
+                    url: '/confirm-load',
                     data: data,
                     cache: false,
                     dataType: 'json',
@@ -292,7 +272,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: '/get-con-disch',
+                    url: '/get-con-load',
                     data: {
                         ves_id: ves_id
                     },
@@ -402,7 +382,7 @@
                 let id = $(this).val();
                 $.ajax({
                     type: 'POST',
-                    url: '/get-container-key',
+                    url: '/get-container-key-load',
                     data: {
                         container_key: id
                     },
@@ -448,7 +428,7 @@
 
                 $.ajax({
                     type: 'POST',
-                    url: '/get-con-disch',
+                    url: '/get-con-load',
                     data: {
                         ves_id: ves_id
                     },
@@ -456,13 +436,13 @@
 
                     success: function(msg) {
                         let res = msg;
-                        console.log(res.length);
+                        //console.log(res.length);
                         var len = res.length;
                         var optionsHtml = ''; // Variable to store the options HTML
                         for (let i = 0; i < len; i++) {
                             let id = res[i].value;
                             let nama = res[i].text;
-                            console.log(id, nama);
+                            //console.log(id, nama);
                             optionsHtml += "<option value='" + id + "'>" + nama + "</option>"; // Append each option HTML
                         }
                         $("#container_key").html(optionsHtml); // Set the HTML of the select element
