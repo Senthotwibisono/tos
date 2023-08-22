@@ -253,7 +253,7 @@ class Gati extends Controller
     //Reciving
     public function index_rec()
     {
-        $title = 'Gate In Delivery';
+        $title = 'Gate In Recivng';
         $confirmed = Item::where('ctr_intern_status', '=', 50,)->orderBy('truck_in_date', 'desc')->get();
         $formattedData = [];
         $data = [];
@@ -292,35 +292,158 @@ class Gati extends Controller
         $currentDateTime = Carbon::now();
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
         $isocode = Isocode::all();
-
-       
-
-      
+        
+        $client = new Client();
+        // GET ALL JOB_CONTAINER
+        $url_jobContainer = getenv('API_URL') . '/delivery-service/container/export/all';
+        $req_jobContainer = $client->get($url_jobContainer);
+        $response_jobContainer = $req_jobContainer->getBody()->getContents();
+        $result_jobContainer = json_decode($response_jobContainer);
+        
+         $data["jobContainers"] = $result_jobContainer->data;
         return view('gate.recive.main', $data, compact('confirmed', 'formattedData', 'title', 'users','isocode', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'), $data);
+    }
+
+
+    public function android_rec()
+    {
+        $title = 'Gate In Recivng';
+        $confirmed = Item::where('ctr_intern_status', '=', 50,)->orderBy('truck_in_date', 'desc')->get();
+        $formattedData = [];
+        $data = [];
+
+        foreach ($confirmed as $tem) {
+            $now = Carbon::now();
+            $updatedAt = Carbon::parse($tem->truck_in_date);
+
+            // Perhitungan selisih waktu
+            $diff = $updatedAt->diffForHumans($now);
+
+            // Jika selisih waktu kurang dari 1 hari, maka tampilkan format jam
+            if ($updatedAt->diffInDays($now) < 1) {
+                $diff = $updatedAt->diffForHumans($now, true);
+                $diff = str_replace(['hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
+            } else {
+                // Jika selisih waktu lebih dari 1 hari, maka tampilkan format hari dan jam
+                $diff = $updatedAt->diffForHumans($now, true);
+                $diff = str_replace(['days', 'day', 'hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['hari', 'hari', 'jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
+            }
+
+            $formattedData[] = [
+                'container_no' => $tem->container_no,
+                'truck_no' => $tem->truck_no,
+                'truck_in_date' => $diff . ' yang lalu',
+                'container_key' => $tem->container_key
+            ];
+        }
+        $containerKeys = Item::where('ctr_intern_status', '49')
+            ->pluck('container_no', 'container_key');
+        $users = User::all();
+        $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
+        $yard_slot = Yard::distinct('yard_slot')->pluck('yard_slot');
+        $yard_row = Yard::distinct('yard_row')->pluck('yard_row');
+        $yard_tier = Yard::distinct('yard_tier')->pluck('yard_tier');
+        $currentDateTime = Carbon::now();
+        $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
+        $isocode = Isocode::all();
+        
+        $client = new Client();
+        // GET ALL JOB_CONTAINER
+        $url_jobContainer = getenv('API_URL') . '/delivery-service/container/export/all';
+        $req_jobContainer = $client->get($url_jobContainer);
+        $response_jobContainer = $req_jobContainer->getBody()->getContents();
+        $result_jobContainer = json_decode($response_jobContainer);
+        
+         $data["jobContainers"] = $result_jobContainer->data;
+        return view('gate.recive.android_in', $data, compact('confirmed', 'formattedData', 'title', 'users','isocode', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'), $data);
     }
 
     public function data_container_rec(Request $request)
     {
-        $container_key = $request->container_key;
-        $name = Item::where('container_key', $container_key)->first();
+        // $container_key = $request->container_key;
+        // $name = Item::where('container_key', $container_key)->first();
 
-        if ($name) {
-            return response()->json(['container_no' => $name->container_no, 'gross' => $name->gross, 'iso_code' => $name->iso_code, 'seal_no' => $name->seal_no, 'bl_no' => $name->bl_no, 'size' => $name->ctr_size, 'type' => $name->ctr_type, 'stat' => $name->ctr_status,
-            'vessel'=>$name->ves_name,
-            'voy'=>$name->voy_no,
-            'imo'=>$name->imo_code,
-            'gross'=>$name->gross,
-            'class'=>$name->gross_class,
-            'pod'=>$name->disch_port,
-            'seal'=>$name->seal_no,
-            'oh'=>$name->over_height,
-            'ow'=>$name->over_weight,
-            'ol'=>$name->over_length
-        ]);
+        // if ($name) {
+        //     return response()->json(['container_no' => $name->container_no, 'gross' => $name->gross, 'iso_code' => $name->iso_code, 'seal_no' => $name->seal_no, 'bl_no' => $name->bl_no, 'size' => $name->ctr_size, 'type' => $name->ctr_type, 'stat' => $name->ctr_status,
+        //     'vessel'=>$name->ves_name,
+        //     'voy'=>$name->voy_no,
+        //     'imo'=>$name->imo_code,
+        //     'gross'=>$name->gross,
+        //     'class'=>$name->gross_class,
+        //     'pod'=>$name->disch_port,
+        //     'seal'=>$name->seal_no,
+        //     'oh'=>$name->over_height,
+        //     'ow'=>$name->over_weight,
+        //     'ol'=>$name->over_length
+        // ]);
+        // }
+        // return response()->json(['container_no' => 'data tidak ditemukan', 'gross' => 'data tidak ditemukan', 'iso_code' => 'data tidak ditemukan', 'bl_no' => 'data tidak ditemukan']);
+       $client = new Client();
+
+        $fields = [
+            "container_key" => $request->container_key,
+        ];
+        // dd($fields, $item->getAttributes());
+
+        $url = getenv('API_URL') . '/delivery-service/container/export/all';
+        $req = $client->get(
+            $url,
+            [
+                "json" => $fields
+            ]
+        );
+        $response = $req->getBody()->getContents();
+        $result = json_decode($response);
+        // var_dump($response);
+        // die();
+        // dd($result);
+        if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+            // $item->save();
+
+            echo $response;
+        } else {
+            return response()->json(['container_no' => 'data tidak ditemukan', 'job' => 'data tidak ditemukan', 'invoice' => 'data tidak ditemukan']);
         }
-        return response()->json(['container_no' => 'data tidak ditemukan', 'gross' => 'data tidak ditemukan', 'iso_code' => 'data tidak ditemukan', 'bl_no' => 'data tidak ditemukan']);
-       
     }
+
+     public function get_data_reciving(Request $request)
+    {
+        // $container_key = $request->container_key;
+        // $name = Item::where('container_key', $container_key)->first();
+
+        // if ($name) {
+        //     return response()->json(['container_no' => $name->container_no, 'gross' => $name->gross, 'iso_code' => $name->iso_code, 'seal_no' => $name->seal_no, 'bl_no' => $name->bl_no, 'size' => $name->ctr_size, 'type' => $name->ctr_type, 'stat' => $name->ctr_status,
+        //     'vessel'=>$name->ves_name,
+        //     'voy'=>$name->voy_no,
+        //     'imo'=>$name->imo_code,
+        //     'gross'=>$name->gross,
+        //     'class'=>$name->gross_class,
+        //     'pod'=>$name->disch_port,
+        //     'seal'=>$name->seal_no,
+        //     'oh'=>$name->over_height,
+        //     'ow'=>$name->over_weight,
+        //     'ol'=>$name->over_length
+        // ]);
+        // }
+        // return response()->json(['container_no' => 'data tidak ditemukan', 'gross' => 'data tidak ditemukan', 'iso_code' => 'data tidak ditemukan', 'bl_no' => 'data tidak ditemukan']);
+        $client = new Client();
+        $id = $request->id;
+        $url_vessel = getenv('API_URL') . '/delivery-service/container/single/' . $id;
+        $req = $client->get($url_vessel);
+        $response_vessel = $req->getBody()->getContents();
+        $result_vessel = json_decode($response_vessel);
+        // var_dump($response);
+        // die();
+        // dd($result);
+        if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+            // $item->save();
+
+            echo $response_vessel;
+        } else {
+            return response()->json(['container_no' => 'data tidak ditemukan', 'job' => 'data tidak ditemukan', 'invoice' => 'data tidak ditemukan']);
+        }
+    }
+
     public function gati_iso_rec(Request $request)
     {
         $iso_code = $request->iso_code;
@@ -336,10 +459,10 @@ class Gati extends Controller
     {
 
 
-        $container_key = $request->container_key;
+        // $container_key = $request->container_key;
         // var_dump($request->job_no);
         // die();
-        $item = Item::where('container_key', $container_key)->first();
+        
         
         $request->validate([
             'container_no' => 'required',
@@ -348,7 +471,7 @@ class Gati extends Controller
             'container_no.required' => 'Container Number is required.',
             'truck_no.required' => 'Truck Number is required.',
         ]);
-        $item->update([
+        $item = Item::create([
             'container_no' => $request->container_no,
             'ctr_intern_status' => 50,
             'truck_no' => $request->truck_no,
@@ -360,15 +483,56 @@ class Gati extends Controller
             'ctr_type' => $request->ctr_type,
             'ctr_size' => $request->ctr_size,
             'ctr_status' => $request->ctr_status,
+            'ves_id'=>$request->ves_id,
+            'ves_code'=>$request->ves_code,
+            'ves_name'=>$request->ves_name,
+            'voy_no'=>$request->voy_no,
+            'user_id' => $request->user_id,
         ]);
         // var_dump($item);
         // die();
        
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Updated successfully!',
-            'item' => $item,
-        ]);
+        $client = new Client();
+        $id = $request->id;
+            $fields = [
+            'container_key' =>$item->container_key,
+            'ctr_intern_status' => 50,
+            'truck_no' => $request->truck_no,
+            'truck_in_date' => $request->truck_in_date,
+            'gross' => $request->gross,
+            'iso_code' => $request->iso_code,
+            'ctr_type' => $request->ctr_type,
+            'ctr_size' => $request->ctr_size,
+            'ctr_status' => $request->ctr_status,
+            'ves_id'=>$request->ves_id,
+            'ves_code'=>$request->ves_code,
+            'vessel_name'=>$request->ves_name,
+            'voy_no'=>$request->voy_no,
+            ];
+            // dd($fields, $item->getAttributes());
+
+            $url = getenv('API_URL') . '/delivery-service/container/update/' . $id;
+            $req = $client->post(
+                $url,
+                [
+                    "json" => $fields
+                ]
+            );
+            $response = $req->getBody()->getContents();
+            $result = json_decode($response);
+
+            // dd($result);
+            if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+                $item->save();
+
+                return response()->json([
+                    'success' => 400,
+                    'message' => 'updated successfully!',
+                    'data'    => $item,
+                ]);
+            } else {
+                return back();
+            }
     }
 }

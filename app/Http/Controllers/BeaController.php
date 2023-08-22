@@ -16,6 +16,11 @@ use App\Models\TpsSppbBcKms;
 // NPE
 use App\Models\TpsDokNPE;
 
+// Pabean
+use App\Models\TpsDokPabean;
+use App\Models\TpsDokPabeanCont;
+use App\Models\TpsDokPabeanKms;
+
 class BeaController extends Controller
 {
     //
@@ -70,6 +75,31 @@ class BeaController extends Controller
                 ->selectRaw('NONPE, count(distinct NO_CONT) as container_count')
                 ->pluck('container_count', 'NONPE');
 
-        return view('invoice.bc.req-bc-dok', compact('title', 'dok', 'sppb', 'dok_npe', 'details', 'container', 'container_SPPB', 'sppb_bc'));
+    
+        // Pabean
+        $dok_pabean_import = TpsDokPabean::where('KD_DOK_INOUT', [41, 44])->pluck('NO_DOK_INOUT')->unique();
+        $pabean_import = [];
+        
+        foreach ($dok_pabean_import as $bc) {
+            $dok_pabean_imports = TpsDokPabean::where('NO_DOK_INOUT', $bc)->first();
+            if ($dok_pabean_imports) {
+                $pabean_import[] = $dok_pabean_imports;
+            }
+        }
+
+        $dok_pabean_EXP = TpsDokPabean::where('KD_DOK_INOUT', '=', '56')->pluck('NO_DOK_INOUT')->unique();
+        $pabean_EXP = [];
+        
+        foreach ($dok_pabean_EXP as $bc) {
+            $dok_pabean_EXPS = TpsDokPabean::where('NO_DOK_INOUT', $bc)->first();
+            if ($dok_pabean_EXPS) {
+                $pabean_EXP[] = $dok_pabean_EXPS;
+            }
+
+        }
+
+        $dok_lain = KodeDok::where('kode', '!=', ['1', '2', '6', '41', '44', '56'])->get();
+
+        return view('invoice.bc.req-bc-dok', compact('title', 'dok', 'sppb', 'dok_npe', 'details', 'container', 'container_SPPB', 'sppb_bc', 'pabean_import', 'pabean_EXP', 'dok_lain'));
     }
 }

@@ -1,5 +1,5 @@
 <!-- SPPB Modal -->
-<div class="modal fade text-left w-100" id="peaBNexp" tabindex="-1" role="dialog" aria-labelledby="myModalLabel16" aria-hidden="true">
+<div class="modal fade text-left w-100" id="lain" tabindex="-1" role="dialog" aria-labelledby="myModalLabel16" aria-hidden="true">
          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-m" role="document">
              <div class="modal-content">
                  <div class="modal-header bg-warning">
@@ -16,8 +16,10 @@
                         <label for="first-name-vertical">Pilih Dok</label>
                     </div>
                     <div class="col-7">
-                    <select class="form-control" id="kodePab" name="kode_dok" realonly>
-                                    <option value="56">Dokumen Pemasukan Barang Ekspor dengan BC 1.1</option>
+                    <select class="form-control" id="kodePab" name="kode_dok">
+                                   @foreach($dok_lain as $dok)
+                                   <option value="{{$dok->kode}}">{{$dok->name}}</option>
+                                   @endforeach
                     </select>
                     </div>
                    </div>

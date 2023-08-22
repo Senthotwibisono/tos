@@ -137,6 +137,16 @@ class BayplanImportController extends Controller
 
     public function store(request $request)
     {
+
+        $cont = $request->container_no;
+        $cont_item = Item::where('container_no', $cont)->get();
+    
+        foreach ($cont_item as $item) {
+            if ($item->ctr_intern_status !== '09' && $item->ctr_intern_status !== '56') {
+                return redirect()->back()->with('error', 'Container sudah ada dan tidak memenuhi syarat untuk pembuatan baru.')->withInput();
+            }
+        }
+    
         $request->validate([
             'container_no' => 'required|max:13',
             'ves_id' => 'required',
@@ -151,9 +161,8 @@ class BayplanImportController extends Controller
             'bay_tier' => 'required|max:2',
             'iso_code' => 'required',
             'ctr_opr' => 'required',
-
-
         ]);
+    
         try {
             $item = Item::create([
                 'container_no' => $request->container_no,
@@ -192,9 +201,10 @@ class BayplanImportController extends Controller
             ]);
             return redirect('/planning/bayplan_import')->with('success', "Container Berhasil Dibuat");
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.')->withInput();
+            return redirect()->back()->with('error', 'Terjadi Kesalahan')->withInput();
         }
     }
+
 
     public function edit(Request $request)
     {

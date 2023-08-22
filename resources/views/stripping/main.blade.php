@@ -76,7 +76,7 @@
                   <option value="">Select Container</option>
                   <?php
                   foreach ($jobContainers->container as $value) { ?>
-                    <?php if ($value->ctr_intern_status == "03") { ?>
+                    <?php if ($value->ctr_intern_status == "03" || $value->ctr_intern_status == "04") { ?>
                       <option value="<?= $value->container_key ?>"><?= $value->container_no ?></option>
                     <?php } ?>
                   <?php } ?>

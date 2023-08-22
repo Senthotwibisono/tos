@@ -190,4 +190,135 @@ class Gato extends Controller
             ]);
         }
     }
+
+    public function index_rec()
+    {
+        $title = 'Gate Out Reciving';
+        $confirmed = Item::where('ctr_intern_status', '=', '51',)-> whereNotNull('truck_out_date')->whereNotNull('truck_no')->orderBy('update_time', 'desc')->get();
+        $formattedData = [];
+        $data = [];
+
+        foreach ($confirmed as $tem) {
+            $now = Carbon::now();
+            $updatedAt = Carbon::parse($tem->update_time);
+
+            // Perhitungan selisih waktu
+            $diff = $updatedAt->diffForHumans($now);
+
+            // Jika selisih waktu kurang dari 1 hari, maka tampilkan format jam
+            if ($updatedAt->diffInDays($now) < 1) {
+                $diff = $updatedAt->diffForHumans($now, true);
+                $diff = str_replace(['hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
+            } else {
+                // Jika selisih waktu lebih dari 1 hari, maka tampilkan format hari dan jam
+                $diff = $updatedAt->diffForHumans($now, true);
+                $diff = str_replace(['days', 'day', 'hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['hari', 'hari', 'jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
+            }
+
+            $formattedData[] = [
+                'container_no' => $tem->container_no,
+                'truck_no' => $tem->truck_no,
+                'truck_out_date' => $diff . ' yang lalu',
+                'container_key' => $tem->container_key
+            ];
+        }
+        $containerKeys = Item::where('ctr_intern_status', ['51', '53', '56'])
+            ->whereNotNull('truck_in_date')->where('truck_out_date', '=', null)
+            ->pluck('container_no', 'container_key');
+        $users = User::all();
+        $currentDateTime = Carbon::now();
+        $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
+        $data["active"] = "delivery";
+        $data["subactive"] = "gateout";
+        return view('gate.recive.main_out', $data, compact('confirmed', 'title', 'formattedData', 'users', 'currentDateTimeString','containerKeys'));
+    }
+    public function android_rec()
+    {
+        $title = 'Gate Out Reciving';
+        $confirmed = Item::where('ctr_intern_status', '=', '51',)-> whereNotNull('truck_out_date')->whereNotNull('truck_no')->orderBy('update_time', 'desc')->get();
+        $formattedData = [];
+        $data = [];
+
+        foreach ($confirmed as $tem) {
+            $now = Carbon::now();
+            $updatedAt = Carbon::parse($tem->update_time);
+
+            // Perhitungan selisih waktu
+            $diff = $updatedAt->diffForHumans($now);
+
+            // Jika selisih waktu kurang dari 1 hari, maka tampilkan format jam
+            if ($updatedAt->diffInDays($now) < 1) {
+                $diff = $updatedAt->diffForHumans($now, true);
+                $diff = str_replace(['hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
+            } else {
+                // Jika selisih waktu lebih dari 1 hari, maka tampilkan format hari dan jam
+                $diff = $updatedAt->diffForHumans($now, true);
+                $diff = str_replace(['days', 'day', 'hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['hari', 'hari', 'jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
+            }
+
+            $formattedData[] = [
+                'container_no' => $tem->container_no,
+                'truck_no' => $tem->truck_no,
+                'truck_out_date' => $diff . ' yang lalu',
+                'container_key' => $tem->container_key
+            ];
+        }
+        $containerKeys = Item::where('ctr_intern_status', ['51', '53', '56'])
+            ->whereNotNull('truck_in_date')->where('truck_out_date', '=', null)
+            ->pluck('container_no', 'container_key');
+        $users = User::all();
+        $currentDateTime = Carbon::now();
+        $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
+        $data["active"] = "delivery";
+        $data["subactive"] = "gateout";
+        return view('gate.recive.android_out', $data, compact('confirmed', 'title', 'formattedData', 'users', 'currentDateTimeString','containerKeys'));
+    }
+
+    public function data_container_rec(Request $request)
+    {
+        $container_key = $request->container_key;
+        $name = Item::where('container_key', $container_key)->first();
+
+        if ($name) {
+            return response()->json(['container_no' => $name->container_no, 'job' => $name->job_no, 'invoice' => $name->invoice_no]);
+        }
+        return response()->json(['container_no' => 'data tidak ditemukan', 'job' => 'data tidak ditemukan', 'invoice' => 'data tidak ditemukan']);
+    }
+
+    public function gato_rec(Request $request)
+    {
+
+
+        $container_key = $request->container_key;
+        $item = Item::where('container_key', $container_key)->first();
+        $request->validate([
+            'container_no'=> 'required',
+            'truck_no' => 'required',
+        ], [
+            'container_no.required' => 'Container Number is required.',
+            'truck_no.required' => 'Truck Number is required.',
+        ]);
+        
+        
+        if ($item->truck_no === $request->truck_no) {
+        $item->update([
+            'truck_no' => $request->truck_no,
+            'truck_out_date' => $request->truck_out_date,
+        ]);
+            
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'updated successfully!',
+                    'data'    => $item,
+                ]);
+           
+        }else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Nomor Truck Berbeda Pada Saat Gate In !!',
+            ]);
+        }
+    }
+
 }

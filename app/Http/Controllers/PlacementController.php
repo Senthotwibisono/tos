@@ -69,8 +69,9 @@ class PlacementController extends Controller
     public function android()
     {
         $title = 'PLC';
-        $confirmed = Item::where('ctr_intern_status',  [03, 04, 51],)->orderBy('update_time', 'desc')->get();
+        $confirmed = Item::whereIn('ctr_intern_status',  [03, 04, 51])->orderBy('update_time', 'desc')->get();
         $formattedData = [];
+        $data = [];
 
         foreach ($confirmed as $tem) {
             $now = Carbon::now();
@@ -97,10 +98,11 @@ class PlacementController extends Controller
                 'yard_row' => $tem->yard_row,
                 'yard_tier' => $tem->yard_tier,
                 'update_time' => $diff . ' yang lalu',
-                'container_key' => $tem->container_key
+                'container_key' => $tem->container_key,
+                'ctr_intern_status' => $tem->ctr_intern_status
             ];
         }
-        $items = Item::where('ctr_intern_status', 02)->get();
+        $items = Item::whereIn('ctr_intern_status', [02, 03, 04, 50, 51])->get();
         $users = User::all();
         $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
         $yard_slot = Yard::distinct('yard_slot')->pluck('yard_slot');
@@ -108,7 +110,9 @@ class PlacementController extends Controller
         $yard_tier = Yard::distinct('yard_tier')->pluck('yard_tier');
         $currentDateTime = Carbon::now();
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
-        return view('yard.place.android', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier'));
+        $data["active"] = "yard";
+        $data["subactive"] = "placement";
+        return view('yard.place.android', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier'), $data);
     }
 
 
@@ -169,40 +173,40 @@ class PlacementController extends Controller
                 'wharf_yard_oa' => $request->wharf_yard_oa,
             ]);
 
-            // $client = new Client();
+            $client = new Client();
 
-            // $fields = [
-            //     "container_key" => $request->container_key,
-            //     "ctr_intern_status" => "03",
-            //     'yard_block' => $request->yard_block,
-            //     'yard_slot' => $request->yard_slot,
-            //     'yard_row' => $request->yard_row,
-            //     'yard_tier' => $request->yard_tier,
-            // ];
+            $fields = [
+                "container_key" => $request->container_key,
+                "ctr_intern_status" => ($item->ctr_intern_status === '02' || $item->ctr_intern_status === '03') ? '03' : (($item->ctr_intern_status === '50') ? '51' : $item->ctr_intern_status),
+                'yard_block' => $request->yard_block,
+                'yard_slot' => $request->yard_slot,
+                'yard_row' => $request->yard_row,
+                'yard_tier' => $request->yard_tier,
+            ];
             // dd($fields, $item->getAttributes());
 
-            // $url = getenv('API_URL') . '/delivery-service/container/confirmPlacement';
-            // $req = $client->post(
-            //     $url,
-            //     [
-            //         "json" => $fields
-            //     ]
-            // );
-            // $response = $req->getBody()->getContents();
-            // $result = json_decode($response);
+            $url = getenv('API_URL') . '/delivery-service/container/confirmPlacement';
+            $req = $client->post(
+                $url,
+                [
+                    "json" => $fields
+                ]
+            );
+            $response = $req->getBody()->getContents();
+            $result = json_decode($response);
 
             // dd($result);
-            // if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-                // $item->save();
+            if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+                $item->save();
 
                 return response()->json([
                     'success' => 400,
                     'message' => 'updated successfully!',
                     'data'    => $item,
                 ]);
-            // } else {
-            //     return back();
-            // }
+            } else {
+                return back();
+            }
         } else {
             return response()->json([
                 'success' => false,

@@ -74,9 +74,12 @@
                 <label for="first-name-vertical">Choose Container Number</label>
                 <select class="choices form-select" id="key" name="container_key" required>
                     <option value="">Select Container</option>
-                    <?php $__currentLoopData = $containerKeys; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $containerKey => $containerNo): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <option value="<?php echo e($containerKey); ?>"><?php echo e($containerNo); ?></option>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php
+                  foreach ($jobContainers as $value) { ?>
+                    <?php if ($value->ctr_intern_status == "04") { ?>
+                      <option data-id="<?= $value->id ?>" value="<?= $value->container_key ?>"><?= $value->container_no ?></option>
+                    <?php } ?>
+                  <?php } ?>
                 </select>
                 <input type="hidden" id="container_no" class="form-control" name="container_no">
               </div>
@@ -87,6 +90,7 @@
               <div class="form-group">
                 <label for="first-name-vertical">Type</label>
                 <input type="text" id="tipe" class="form-control" name="ctr_type" disabled>
+                <input type="text" id="id" class="form-control" name="id" disabled>
               </div>
             </div>
             <div class="col-12">

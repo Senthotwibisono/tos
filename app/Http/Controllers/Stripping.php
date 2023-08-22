@@ -51,7 +51,7 @@ class Stripping extends Controller
                 'container_key' => $tem->container_key
             ];
         }
-        $containerKeys = Item::where('ctr_intern_status', '=', '03')
+        $containerKeys = Item::where('ctr_intern_status', '=', [03,04])
             ->whereHas('job', function ($query) {
                 $query->where('order_service_code', 'SPPS');
             })
@@ -208,13 +208,25 @@ class Stripping extends Controller
                 'yard_tier' => $request->yard_tier,
                 'ctr_intern_status' => '04',
                 'wharf_yard_oa' => $request->wharf_yard_oa,
+                'gross'=>null,
+                'gross_class'=>null,
+                'commodity_code'=>null,
+                'commodity_name'=>null,
+                'agent'=>null,
             ]);
 
             $client = new Client();
 
             $fields = [
                 "container_key" => $request->container_key,
+                'yard_block' => $request->yard_block,
+                'yard_slot' => $request->yard_slot,
+                'yard_row' => $request->yard_row,
+                'yard_tier' => $request->yard_tier,
                 "ctr_intern_status" => "04",
+                'gross'=>null,
+                'commoditor'=>null,
+                'isChoosen' =>"2",
             ];
             // dd($fields, $item->getAttributes());
 

@@ -507,13 +507,15 @@ Route::get('/edi/coparn', [CoparnController::class, 'index']);
 
 //gate
 Route::get('/reciving/gate-in', [Gati::class, 'index_rec']);
-Route::post('/gati-data_container-rec', [Gati::class, 'data_container_rec']);
+Route::get('/reciving/gate-in-android', [Gati::class, 'android_rec']);
+Route::post('/gati-data_container-rec', [Gati::class, 'get_data_reciving']);
 Route::post('/gati-rec', [Gati::class, 'gati_rec']);
 Route::post('/gati-iso-rec', [Gati::class, 'gati_iso_rec']);
 
-Route::get('/delivery/gate-out', [Gato::class, 'index']);
+Route::get('/reciving/gate-out', [Gato::class, 'index_rec']);
+Route::get('/reciving/gate-out-android', [Gato::class, 'android_rec']);
 Route::post('/gato-data_container', [Gato::class, 'data_container']);
-Route::post('/gato-del', [Gato::class, 'gato_del']);
+Route::post('/gato-rec', [Gato::class, 'gato_rec']);
 
 
 //Ship Plan
@@ -522,11 +524,13 @@ Route::get('/planning/plan-ves-{ves_id}', [ShipPlanController::class, 'plan']);
 
 // Stuffing
 Route::get('/stuffing', [Stuffing::class, 'index']);
+Route::get('/stuffing-android', [Stuffing::class, 'android']);
 Route::post('/get-stuffing', [Stuffing::class, 'get_stuffing']);
 Route::post('/stuffing-place', [Stuffing::class, 'stuffing_place']);
 
 // Load
 Route::get('/load/confirm_load', [LoadController::class, 'index']);
+Route::get('/load/confirm_load-android', [LoadController::class, 'android']);
 Route::post('/search-container', [LoadController::class, 'container']);
 Route::post('/get-container-key-load', [LoadController::class, 'get_key']);
 Route::post('/confirm-load', [LoadController::class, 'confirm']);

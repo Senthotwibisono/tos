@@ -4,13 +4,13 @@
   <div class="page-title">
     <div class="row">
       <div class="col-12 col-md-6 order-md-1 order-last">
-        <h3>Stripping</h3>
+        <h3>Stuffing</h3>
       </div>
 
       <div class="col-12 col-md-6 order-md-2 order-first">
         <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item active" aria-current="page">Stripping</li>
+            <li class="breadcrumb-item active" aria-current="page">Stuffing</li>
           </ol>
         </nav>
       </div>
@@ -74,9 +74,12 @@
                 <label for="first-name-vertical">Choose Container Number</label>
                 <select class="choices form-select" id="key" name="container_key" required>
                     <option value="">Select Container</option>
-                    @foreach($containerKeys as $containerKey => $containerNo)
-                        <option value="{{$containerKey}}">{{$containerNo}}</option>
-                    @endforeach
+                    <?php
+                  foreach ($jobContainers as $value) { ?>
+                    <?php if ($value->ctr_intern_status == "04") { ?>
+                      <option data-id="<?= $value->id ?>" value="<?= $value->container_key ?>"><?= $value->container_no ?></option>
+                    <?php } ?>
+                  <?php } ?>
                 </select>
                 <input type="hidden" id="container_no" class="form-control" name="container_no">
               </div>
@@ -86,6 +89,7 @@
               <div class="form-group">
                 <label for="first-name-vertical">Type</label>
                 <input type="text" id="tipe" class="form-control" name="ctr_type" disabled>
+                <input type="text" id="id" class="form-control" name="id" disabled>
               </div>
             </div>
             <div class="col-12">
@@ -261,67 +265,10 @@
                 console.log(response);
                 if (response.success) {
                   Swal.fire('Saved!', '', 'success')
-                  $('#place_cont').load(window.location.href + ' #place_cont', function() {
-                    $(document).ready(function() {
-                      let choices = document.querySelectorAll('.choices');
-                      let initChoice;
-                      for (let i = 0; i < choices.length; i++) {
-                        if (choices[i].classList.contains("multiple-remove")) {
-                          initChoice = new Choices(choices[i], {
-                            delimiter: ',',
-                            editItems: true,
-                            maxItemCount: -1,
-                            removeItemButton: true,
-                          });
-                        } else {
-                          initChoice = new Choices(choices[i]);
-                        }
-                      }
-
-                      $('.container').select2({
-                        dropdownParent: '#success',
-                      });
-                      $('.block').select2({
-                        dropdownParent: '#success',
-                      });
-                      $('.slot').select2({
-                        dropdownParent: '#success',
-                      });
-                      $('.yard_row').select2({
-                        dropdownParent: '#success',
-                      });
-                      $('.tier').select2({
-                        dropdownParent: '#success',
-                      });
-                      $(document).ready(function() {
-                        $('#key').on('change', function() {
-                          let id = $(this).val();
-                          $.ajax({
-                            type: 'POST',
-                            url: '/get-stripping',
-                            data: {
-                              container_key: id
-                            },
-                            success: function(response) {
-
-                              $('#container_no').val(response.container_no);
-                              $('#tipe').val(response.tipe);
-                              $('#invoice').val(response.invoice);
-                              $('#oldblock').val(response.oldblock);
-                              $('#oldslot').val(response.oldslot);
-                              $('#oldrow').val(response.oldrow);
-                              $('#oldtier').val(response.oldtier);
-                            },
-                            error: function(data) {
-                              console.log('error:', data);
-                            },
-                          });
+                  .then(() => {
+                            // Memuat ulang halaman setelah berhasil menyimpan data
+                            window.location.reload();
                         });
-                      });
-                    });
-
-                    $('#table1').load(window.location.href + ' #table1');
-                  });
                 } else {
                   Swal.fire('Error', response.message, 'error');
                 }
