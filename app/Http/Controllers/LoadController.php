@@ -50,6 +50,9 @@ class LoadController extends Controller
           'disc_date' => $diff . ' yang lalu',
           'ves_name' => $tem->ves_name,
           'voy_no' => $tem->voy_no,
+          'bay_slot' => $tem->bay_slot,
+          'bay_row' => $tem->bay_row,
+          'bay_tier' => $tem->bay_tier,
         ];
       }
       $items = Item::where('ctr_intern_status', '=', [51, 53])->get();
@@ -182,31 +185,31 @@ class LoadController extends Controller
         'ctr_intern_status' => '56',
   
       ]);
-      $client = new Client();
+      // $client = new Client();
 
-            $fields = [
-              "container_key" => $request->container_key,
-              'bay_slot' => $request->bay_slot,
-              'bay_row' => $request->bay_row,
-              'bay_tier' => $request->bay_tier,
-              'load_date' => $request->load_date,
-              'cc_tt_no'  =>$request->cc_tt_no,
-              'cc_tt_oper'  =>$request->cc_tt_oper,
-              'ctr_intern_status' => '56',
-            ];
-            // dd($fields, $item->getAttributes());
+      //       $fields = [
+      //         "container_key" => $request->container_key,
+      //         'bay_slot' => $request->bay_slot,
+      //         'bay_row' => $request->bay_row,
+      //         'bay_tier' => $request->bay_tier,
+      //         'load_date' => $request->load_date,
+      //         'cc_tt_no'  =>$request->cc_tt_no,
+      //         'cc_tt_oper'  =>$request->cc_tt_oper,
+      //         'ctr_intern_status' => '56',
+      //       ];
+      //       // dd($fields, $item->getAttributes());
 
-            $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
-            $req = $client->post(
-                $url,
-                [
-                    "json" => $fields
-                ]
-            );
-            $response = $req->getBody()->getContents();
-            $result = json_decode($response);
+      //       $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
+      //       $req = $client->post(
+      //           $url,
+      //           [
+      //               "json" => $fields
+      //           ]
+      //       );
+      //       $response = $req->getBody()->getContents();
+      //       $result = json_decode($response);
 
-            if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+      //       if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
                 // $item->save();
 
                 return response()->json([
@@ -214,11 +217,11 @@ class LoadController extends Controller
                     'message' => 'Updated successfully!',
                     'item' => $item,
                 ]);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Something wrong happened while updating with api',
-                ]);
-            }
+            // } else {
+            //     return response()->json([
+            //         'success' => false,
+            //         'message' => 'Something wrong happened while updating with api',
+            //     ]);
+            // }
     }
 }
