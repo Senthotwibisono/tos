@@ -1294,6 +1294,8 @@ class InvoiceController extends Controller
     echo $response;
   }
 
+
+
   public function exportToExcel(Request $request)
   {
     $client = new Client();
