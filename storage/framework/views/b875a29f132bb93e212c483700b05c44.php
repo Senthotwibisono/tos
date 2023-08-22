@@ -17,6 +17,31 @@
         <div class="card-body">
           <div class="row">
             <div class="col-4">
+              <label for="">Customer</label>
+              <div class="form-group">
+                <select required name="customer" id="customer" class="js-example-basic-single form-control">
+                  <option selected disabled default value="">Pilih Salah Satu</option>
+                  <?php foreach ($customer as $data) { ?>
+                    <option value="<?= $data->id ?>" data-id="<?= $data->id ?>"><?= $data->customer_name ?></option>
+                  <?php } ?>
+                </select>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label for="">NPWP</label>
+                <input required type="text" class="form-control" id="npwp" name="npwp" placeholder="Npwp">
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label for="">Address</label>
+                <input required type="text" class="form-control" id="address" name="address" placeholder="address">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4">
               <div class="form-group">
                 <label for="">Expired Date</label>
                 <input name="exp_date" type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023" id="expired">
@@ -27,17 +52,7 @@
               <input name="exp_time" type="text" class="form-control flatpickr-range mb-3" placeholder="12.00 PM" id="hour">
 
             </div>
-            <div class="col-4">
-              <label for="">Customer</label>
-              <div class="form-group">
-                <select name="customer" class="js-example-basic-single form-control">
-                  <option selected disabled default value="">Pilih Salah Satu</option>
-                  <?php foreach ($customer as $data) { ?>
-                    <option value="<?= $data->id ?>"><?= $data->customer_name ?></option>
-                  <?php } ?>
-                </select>
-              </div>
-            </div>
+
           </div>
           <div class="row mt-5">
             <div class="col-12">
@@ -69,10 +84,19 @@
                   </div>
                 </div>
               </div>
-              <div class="col-12 col-md-4" style="display: none !important;" id="do_manual">
+              <!-- <div class="col-12 col-md-4" style="display: none !important;" id="do_manual">
                 <div class="form-group">
                   <label for="">Do Number</label>
                   <input name="do_number" type="text" class="form-control" placeholder="Do Number">
+                </div>
+              </div> -->
+              <div class="col-12 col-md-4" id="do_manual" style="display: none !important;">
+                <div class="form-group">
+                  <label for="">Do Number</label>
+                  <div class="input-group mb-3">
+                    <input name="do_number" id="do_number_type" type="text" class="form-control" placeholder="DO910934">
+                    <a onclick="checkDoNumber();" class="btn btn-primary" type="button" id="doNumberCheck"><i class="fa fa-magnifying-glass"></i> Check</a>
+                  </div>
                 </div>
               </div>
               <div class="col-12 col-md-4" id="do_auto">
@@ -103,7 +127,7 @@
               <div class="form-group">
                 <label>Order Service</label>
                 <select name="order_service" class="form-select" required id="basicSelect">
-                  <option value="" default disabled selected>Pilih Salah Satu..</option>
+                  <option value="" default disabled>Pilih Salah Satu..</option>
                   <option value="sp2">SP2</option>
                   <option value="spps">SPPS</option>
                 </select>

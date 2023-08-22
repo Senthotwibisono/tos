@@ -1294,35 +1294,7 @@ class InvoiceController extends Controller
     echo $response;
   }
 
-  public function findContainerArray(Request $request)
-  {
-    $client = new Client();
 
-    // $id = $request->id;
-    // var_dump($id);
-    // die();
-    $container = $request->container;
-    // $isActive = $request->isActive;
-    $fields =
-      [
-        "container" => $container,
-      ];
-    // var_dump($fields);
-    // die();
-
-    $url = getenv('API_URL') . '/delivery-service/container/array';
-    $req = $client->post(
-      $url,
-      [
-        "json" => $fields
-      ]
-    );
-    $response = $req->getBody()->getContents();
-    var_dump($response);
-    die();
-
-    echo $response;
-  }
 
   public function exportToExcel(Request $request)
   {
