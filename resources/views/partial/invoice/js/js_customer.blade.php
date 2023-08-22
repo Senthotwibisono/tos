@@ -934,6 +934,7 @@
   const containerSelect = $("#containerSelector");
   var cont = [];
   var selcont = [];
+  var newcont = [];
 
 
   function fetchContainers(selectedDoNoId) {
@@ -1020,6 +1021,8 @@
                 const trimmedValue = arrayToCheck[i].trim(); // Trim whitespace from value
                 if (referenceArray.indexOf(trimmedValue) === -1) {
                   return false; // Found a value in arrayToCheck that is not in referenceArray
+                } else {
+                  newcont.push(referenceArray.id.trim());
                 }
               }
               return true; // All values in arrayToCheck are present in referenceArray
@@ -1052,7 +1055,26 @@
                 text: 'You can proceed'
               });
               $("#containerSelector")[0].selectedIndex = -1;
-
+              let fd = new FormData();
+              // fd.append("container", JSON.stringify(cont));
+              fd.append("container", cont);
+              $.ajax({
+                headers: {
+                  'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+                },
+                type: "POST",
+                url: `/findContainerArray`,
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: JSON.stringify({
+                  container: cont
+                }),
+                success: function(response) {
+                  let res = JSON.parse(response)
+                  console.log(res.data);
+                }
+              });
               containers.forEach((container) => {
                 $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
               });

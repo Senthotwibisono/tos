@@ -74,6 +74,7 @@ Route::post('/unset-session/{key}', [SessionsController::class, 'unsetSession'])
 Route::post('/beacukaiImportCheck', [BeacukaiController::class, 'beacukaiImportCheck']);
 Route::post('/beacukaiExportCheck', [BeacukaiController::class, 'beacukaiExportCheck']);
 Route::post('/allContainerImport', [InvoiceController::class, 'allContainerImport']);
+Route::post('/findContainerArray', [InvoiceController::class, 'findContainerArray']);
 Route::prefix('invoice')->group(function () {
   Route::get('/', [InvoiceController::class, 'index']);
   Route::get('/menu', [InvoiceController::class, 'menuindex']);
