@@ -17,7 +17,7 @@
         "laravel/tinker": "^2.8",
         "laravel/ui": "^4.2",
         "maatwebsite/excel": "^3.1",
-        "nesbot/carbon": "^2.66",
+        "nesbot/carbon": "^2.69",
         "ramsey/uuid": "^4.7",
         "select2/select2": "^4.0",
         "simplesoftwareio/simple-qrcode": "^4.2",
