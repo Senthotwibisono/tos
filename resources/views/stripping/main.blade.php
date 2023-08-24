@@ -76,12 +76,13 @@
                   <option value="">Select Container</option>
                   <?php
                   foreach ($jobContainers->container as $value) { ?>
-                    <?php if ($value->ctr_intern_status == "03" || $value->ctr_intern_status == "04") { ?>
+                    <?php if (($value->ctr_intern_status == "03"  || $value->ctr_intern_status == "04") &&($value->orderService == "spps")) { ?>
                       <option value="<?= $value->container_key ?>"><?= $value->container_no ?></option>
                     <?php } ?>
                   <?php } ?>
                 </select>
                 <input type="hidden" id="container_no" class="form-control" name="container_no">
+                <input type="text" id="container_key" class="form-control" name="container_key" readonly>
               </div>
               {{ csrf_field()}}
             </div>
@@ -228,7 +229,7 @@
         var yard_raw = $('#raw').val();
         var yard_tier = $('#tier').val();
         var data = {
-          'container_key': $('#key').val(),
+          'container_key': $('#container_key').val(),
           'container_no': $('#container_no').val(),
           'yard_block': $('#block').val(),
           'yard_slot': $('#slot').val(),
@@ -264,67 +265,10 @@
                 console.log(response);
                 if (response.success) {
                   Swal.fire('Saved!', '', 'success')
-                  $('#place_cont').load(window.location.href + ' #place_cont', function() {
-                    $(document).ready(function() {
-                      let choices = document.querySelectorAll('.choices');
-                      let initChoice;
-                      for (let i = 0; i < choices.length; i++) {
-                        if (choices[i].classList.contains("multiple-remove")) {
-                          initChoice = new Choices(choices[i], {
-                            delimiter: ',',
-                            editItems: true,
-                            maxItemCount: -1,
-                            removeItemButton: true,
-                          });
-                        } else {
-                          initChoice = new Choices(choices[i]);
-                        }
-                      }
-
-                      $('.container').select2({
-                        dropdownParent: '#success',
-                      });
-                      $('.block').select2({
-                        dropdownParent: '#success',
-                      });
-                      $('.slot').select2({
-                        dropdownParent: '#success',
-                      });
-                      $('.yard_row').select2({
-                        dropdownParent: '#success',
-                      });
-                      $('.tier').select2({
-                        dropdownParent: '#success',
-                      });
-                      $(document).ready(function() {
-                        $('#key').on('change', function() {
-                          let id = $(this).val();
-                          $.ajax({
-                            type: 'POST',
-                            url: '/get-stripping',
-                            data: {
-                              container_key: id
-                            },
-                            success: function(response) {
-
-                              $('#container_no').val(response.container_no);
-                              $('#tipe').val(response.tipe);
-                              $('#invoice').val(response.invoice);
-                              $('#oldblock').val(response.oldblock);
-                              $('#oldslot').val(response.oldslot);
-                              $('#oldrow').val(response.oldrow);
-                              $('#oldtier').val(response.oldtier);
-                            },
-                            error: function(data) {
-                              console.log('error:', data);
-                            },
-                          });
+                  .then(() => {
+                            // Memuat ulang halaman setelah berhasil menyimpan data
+                            window.location.reload();
                         });
-                      });
-                    });
-
-                    $('#table1').load(window.location.href + ' #table1');
-                  });
                 } else {
                   Swal.fire('Error', response.message, 'error');
                 }
@@ -374,6 +318,7 @@
               },
               success: function(response) {
 
+                $('#container_key').val(response.container_key);
                 $('#container_no').val(response.container_no);
                 $('#tipe').val(response.tipe);
                 $('#invoice').val(response.invoice);

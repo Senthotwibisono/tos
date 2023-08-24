@@ -98,8 +98,40 @@ class BeaController extends Controller
 
         }
 
-        $dok_lain = KodeDok::where('kode', '!=', ['1', '2', '6', '41', '44', '56'])->get();
+        $dok_lain = KodeDok::whereNot('kode', '=', [ '6', '41', '44', '56'])->get();
 
         return view('invoice.bc.req-bc-dok', compact('title', 'dok', 'sppb', 'dok_npe', 'details', 'container', 'container_SPPB', 'sppb_bc', 'pabean_import', 'pabean_EXP', 'dok_lain'));
+    }
+
+    public function detail(Request $request)
+    {
+        $car = $request->CAR;
+
+        $cont = TpsSppbPibCont::where('CAR', '=', $car)->select('NO_CONT','SIZE', 'JNS_MUAT')->distinct('NO_CONT')->get();
+        if ($cont->isEmpty()) {
+            $cont = TpsSppbBcCont::where('CAR', '=', $car)->select('NO_CONT','SIZE', 'JNS_MUAT')->distinct('NO_CONT')->get();
+        }
+        if ($cont->isEmpty()) {
+            $cont = TpsDokPabeanCont::where('CAR', '=', $car)->select('NO_CONT','SIZE', 'JNS_MUAT')->distinct('NO_CONT')->get();
+        }
+
+        return response()->json([
+            'success' => 200,
+            'message' => 'Detail Data Post',
+            'data'    => $cont,
+        ]);
+    }
+
+    public function container_export(Request $request)
+    {
+        $NO_DAFTAR = $request->NO_DAFTAR;
+
+        $data = TpsDokNpe::where('NO_DAFTAR', $NO_DAFTAR)->select('NO_CONT','SIZE','FL_SEGEL')->distinct('NO_CONT')->get();
+
+        return response()->json([
+            'success' => 200,
+            'message' => 'Detail Data Post',
+            'data'    => $data,
+        ]);
     }
 }

@@ -60,6 +60,7 @@
 @include('invoice.bc.modal-peabn')
 @include('invoice.bc.model-peabn-exp')
 @include('invoice.bc.modal-lain')
+@include('invoice.bc.detail-cont')
 
 @endsection
 
@@ -330,5 +331,96 @@
     })
 
   });
+</script>
+
+<script>
+ $(function() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $(document).on('click', '.detail-cont', function() {
+        let id = $(this).data('id');
+        $.ajax({
+            type: 'GET',
+            url: '/bc/detail-container-' + id,
+            cache: false,
+            data: {
+                CAR: id
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                $('#detail').modal('show');
+                var tableBody = $('#detail #taabs tbody');
+                tableBody.empty();
+                if (response.length === 0) {            
+                  var newRow = $('<tr>');
+                  newRow.append('<td colspan="7">No Container Avilable</td>');
+                  tableBody.append(newRow);
+              } else {
+                response.data.forEach(function(cont) {
+                        var newRow = $('<tr>');
+                        newRow.append('<td>' + cont.NO_CONT + '</td>');
+                        newRow.append('<td>' + cont.SIZE + '</td>');
+                        newRow.append('<td>' + cont.JNS_MUAT + '</td>');
+                        tableBody.append(newRow);
+                });
+              }
+            },
+            error: function(data) {
+                console.log('error:', data);
+            }
+        });
+    });
+});
+</script>
+
+<script>
+ $(function() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $(document).on('click', '.detail-cont-exp', function() {
+        let id = $(this).data('id');
+        $.ajax({
+            type: 'GET',
+            url: '/container/export-' + id,
+            cache: false,
+            data: {
+                NO_DAFTAR: id
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                $('#detail_exp').modal('show');
+                var tableBody = $('#detail_exp #taabs tbody');
+                tableBody.empty();
+                if (response.length === 0) {            
+                  var newRow = $('<tr>');
+                  newRow.append('<td colspan="7">No Container Avilable</td>');
+                  tableBody.append(newRow);
+              } else {
+                response.data.forEach(function(cont) {
+                        var newRow = $('<tr>');
+                        newRow.append('<td>' + cont.NO_CONT + '</td>');
+                        newRow.append('<td>' + cont.SIZE + '</td>');
+                        newRow.append('<td>' + cont.FL_SEGEL + '</td>');
+                   
+                        tableBody.append(newRow);
+                });
+              }
+            },
+            error: function(data) {
+                console.log('error:', data);
+            }
+        });
+    });
+});
 </script>
 @endsection

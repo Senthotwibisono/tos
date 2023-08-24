@@ -82,6 +82,7 @@
                   <?php } ?>
                 </select>
                 <input type="hidden" id="container_no" class="form-control" name="container_no">
+                <input type="text" id="container_key" class="form-control" name="container_key">
               </div>
               {{ csrf_field()}}
             </div>
@@ -89,7 +90,7 @@
               <div class="form-group">
                 <label for="first-name-vertical">Type</label>
                 <input type="text" id="tipe" class="form-control" name="ctr_type" disabled>
-                <input type="text" id="id" class="form-control" name="id" disabled>
+               
               </div>
             </div>
             <div class="col-12">
@@ -229,7 +230,7 @@
         var yard_raw = $('#raw').val();
         var yard_tier = $('#tier').val();
         var data = {
-          'container_key': $('#key').val(),
+          'container_key': $('#container_key').val(),
           'container_no': $('#container_no').val(),
           'yard_block': $('#block').val(),
           'yard_slot': $('#slot').val(),
@@ -318,6 +319,7 @@
               },
               success: function(response) {
 
+                $('#container_key').val(response.container_key);
                 $('#container_no').val(response.container_no);
                 $('#tipe').val(response.tipe);
                 $('#invoice').val(response.invoice);
