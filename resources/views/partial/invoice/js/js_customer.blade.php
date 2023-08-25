@@ -918,14 +918,20 @@
 
 <script>
   $("#manual").click(function() {
-    console.log("manual!");
+    // console.log("manual!");
     $("#do_manual").css("display", "block");
     $("#do_auto").css("display", "none");
+    $("#auto").css("opacity", "50%");
+    $("#manual").css("opacity", "100%");
+
   })
   $("#auto").click(function() {
-    console.log("auto!");
+    // console.log("auto!");
     $("#do_auto").css("display", "block");
     $("#do_manual").css("display", "none");
+    $("#auto").css("opacity", "100%");
+    $("#manual").css("opacity", "50%");
+
   })
 </script>
 
@@ -2123,9 +2129,22 @@
 
   function beacukaiCheckValue() {
     let check = $("#beacukaiChecking").val();
-    console.log(check);
+    let doCheck = $("#do_exp_date").val();
+    let bolnCheck = $("#boln").val();
+
+
     if (check == "true") {
-      $("#formSubmit").submit();
+      if (!doCheck) {
+        event.preventDefault(); // Prevent form submission
+        // alert("Please enter a date."); // Display an alert or use another method to notify the user
+        Swal.fire({
+          icon: 'warning',
+          title: 'Kamu Belum Melengkapi Form!',
+          text: 'Harap Lengkapi Form Terlebih Dahulu!'
+        })
+      } else {
+        $("#formSubmit").submit();
+      }
     } else {
       Swal.fire({
         icon: 'warning',
