@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\TpsDokPKBE;
 
 
 use Artisaninweb\SoapWrapper\Facades\SoapWrapper;
@@ -2066,6 +2067,106 @@ class SoapController extends Controller
         
     }
 	
+
+    public function GetEkspor_PKBE(Request $request)
+    {
+        \SoapWrapper::add(function ($service) {
+            $service
+                ->name('GetEkspor_PKBE')
+                ->wsdl($this->wsdl)
+                ->trace(true)                                                                                                  
+//                ->certificate()                                                 
+//                ->cache(WSDL_CACHE_NONE)                                        
+                ->options([
+                    'stream_context' => stream_context_create([
+                        'ssl' => array(
+                            'verify_peer' => false,
+                            'verify_peer_name' => false,
+                            'allow_self_signed' => true
+                        )
+                    ])
+                ]);                                                     
+        });
+        
+        $data = [
+            'UserName' 	=> 'MAL0', 
+            'Password' 	=> 'MAL0',
+			'No_PKBE' 	=> $request->no_pkbe,
+            'TGL_PKBE' 	    => $request->tgl_pkbe,           
+            'kdKantor' 	=>$request->kd_kantor
+        ];
+        
+        // Using the added service
+        \SoapWrapper::service('GetEkspor_PKBE', function ($service) use ($data) {        
+            $this->response = $service->call('GetEkspor_PKBE', [$data])->GetEkspor_PKBEResult;      
+        });
+        
+        libxml_use_internal_errors(true);
+        $xml = simplexml_load_string($this->response);
+        if(!$xml || !$xml->children()){
+            return response()->json([
+                'success' => false,
+                'message' => 'Data Tidak Ditemukan',
+            ]);
+        }
+        
+    
+        foreach ($xml->children() as $data):
+            foreach ($data as $key => $value):
+                if ($key == 'DOCUMENT' || $key == 'document') {
+                    if ($key == 'PKBE' || $key == 'pkbe') {
+                        $docmanual = new \App\Models\TpsDokPKBE;
+        
+                        foreach ($value as $keyh => $valueh):
+                            if ($keyh == 'car' || $keyh == 'CAR') {
+                                $CAR = $valueh;
+                            }
+                            if ($keyh == 'kd_kantor' || $keyh == 'KD_KANTOR') {
+                                $KD_KANTOR = $valueh;
+                            }
+                            if ($keyh == 'nopkbe' || $keyh == 'NOPKBE') {
+                                $NOPKBE = $valueh;
+                            }
+                            if ($keyh == 'tglpkbe' || $keyh == 'TGLPKBE') {
+                                $TGLPKBE = $valueh;
+                            }
+                            if ($keyh == 'npwp_eks' || $keyh == 'NPWP_EKS') {
+                                $NPWP_EKS = $valueh;
+                            }
+                            if ($keyh == 'nama_eks' || $keyh == 'NAMA_EKS') {
+                                $NAMA_EKS = $valueh;
+                            }
+                            if ($keyh == 'no_cont' || $keyh == 'NO_CONT') {
+                                $NO_CONT = $valueh;
+                            }
+                            if ($keyh == 'size' || $keyh == 'SIZE') {
+                                $SIZE = $valueh;
+                            }
+                        endforeach;
+        
+                        $docmanual->CAR = $CAR;
+                        $docmanual->KD_KANTOR = $KD_KANTOR;
+                        $docmanual->NOPKBE = $NOPKBE;
+                        $docmanual->TGLPKBE = $TGLPKBE;
+                        $docmanual->NPWP_EKS = $NPWP_EKS;
+                        $docmanual->NAMA_EKS = $NAMA_EKS;
+                        $docmanual->NO_CONT = $NO_CONT;
+                        $docmanual->SIZE = $SIZE;
+        
+                        $docmanual->save();
+                    }
+                }
+                
+            endforeach;
+        endforeach;
+    
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Ditemukan',
+            'data' => $data,
+        ]);
+        
+    }
 	
     public function postCoarriCodeco_Container()
     {

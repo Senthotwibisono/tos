@@ -2153,6 +2153,33 @@
       })
     }
   }
+
+  function beacukaiCheckValueExport() {
+    let check = $("#beacukaiChecking").val();
+    // let doCheck = $("#do_exp_date").val();
+    let ctr = $("#ctr").val();
+
+
+    if (check == "true") {
+      if (!ctr) {
+        event.preventDefault(); // Prevent form submission
+        // alert("Please enter a date."); // Display an alert or use another method to notify the user
+        Swal.fire({
+          icon: 'warning',
+          title: 'Kamu Belum Melengkapi Form!',
+          text: 'Harap Lengkapi Form Terlebih Dahulu!'
+        })
+      } else {
+        $("#formSubmit").submit();
+      }
+    } else {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Kamu Belum Melakukan Beacukai Checking!',
+        text: 'Harap Melakukan Checking Terlebih Dahulu!'
+      })
+    }
+  }
 </script>
 
 <script>

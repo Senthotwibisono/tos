@@ -27,17 +27,7 @@ class BapleiExc implements ToModel, WithStartRow, WithMapping, WithValidation
         ];
     }
 
-    public function onFailure(Failure ...$failures)
-    {
-        foreach ($failures as $failure) {
-            $this->errors[] = $failure->errors();
-        }
-    }
-
-    public function getErrors()
-    {
-        return $this->errors;
-    }
+    
     public function startRow(): int
     {
         return 2; // Nomor baris mulai membaca (lewatkan baris judul)
@@ -60,82 +50,27 @@ class BapleiExc implements ToModel, WithStartRow, WithMapping, WithValidation
     public function map($row): array
 {
 
-   
 
-    $bay_slot = substr(trim($row[2]), 0, 2);
-    $bay_row = substr(trim($row[2]), 2, 2);
-    $bay_tier = substr(trim($row[2]), 4, 2);
+$bay_slot = substr(trim($row[2]), 0, 2);
+$bay_row = substr(trim($row[2]), 2, 2);
+$bay_tier = substr(trim($row[2]), 4, 2);
 
-    $ctr_status = trim($row[6]);
-    if ($ctr_status == 'FULL') {
-        $ctr_status = 'FCL';
-    }
-    elseif ($ctr_status == 'Empty') {
-        $ctr_status = 'MTY';
-    }
-   
-    $iso_code = trim($row[4]);
-   $isoCodeData = Isocode::where('iso_code', $iso_code)->first();
-   if ($isoCodeData) {
-       $ctr_size = $isoCodeData->iso_size;
-       $ctr_type = $isoCodeData->iso_type;
-   } else {
-       $ctr_size = NULL; // Nilai default jika tidak ditemukan
-       $ctr_type = NULL; // Nilai default jika tidak ditemukan
-   }
-   $containerNo = trim($row[3]);
-   $existingItem = Item::where('container_no', $containerNo)->get();
-   foreach ($existingItem as $item) {
-    if ($item->ctr_intern_status !== '09' && $item->ctr_intern_status !== '56') {
-        $this->errors[] = "Container sudah ada.";
-        return [];
-    }elseif ($item->ctr_intern_status === '09' && $item->ctr_intern_status === '56') {
-        return [
-            'ves_id' => $this->ves_id,
-            'ves_code' => $this->ves_code,
-            'ves_name' => $this->ves_name,
-            'voy_no' => $this->voy_no,
-             'disch_port' => trim($row[0]),
-             'load_port' => $row[1],
-             'bay_slot'  => $bay_slot,
-             'bay_row'   => $bay_row,
-             'bay_tier'  => $bay_tier,
-             'container_no' => $row[3],
-             'iso_code' => $iso_code,
-             'ctr_size' => $ctr_size,
-             'ctr_type' => $ctr_type,
-             'ctr_opr' => trim($row[5]),
-             'ctr_status' => $ctr_status,
-             'gross' => trim($row[7]),
-             'ctr_intern_status'=>'01',
-             'ctr_i_e_t'=> 'I',                          
-             'disc_load_trans_shift'=>'DISC',
-             'user_id' => $this->user_id,
-    ];
-    }else {
-        return [
-            'ves_id' => $this->ves_id,
-            'ves_code' => $this->ves_code,
-            'ves_name' => $this->ves_name,
-            'voy_no' => $this->voy_no,
-             'disch_port' => trim($row[0]),
-             'load_port' => $row[1],
-             'bay_slot'  => $bay_slot,
-             'bay_row'   => $bay_row,
-             'bay_tier'  => $bay_tier,
-             'container_no' => $row[3],
-             'iso_code' => $iso_code,
-             'ctr_size' => $ctr_size,
-             'ctr_type' => $ctr_type,
-             'ctr_opr' => trim($row[5]),
-             'ctr_status' => $ctr_status,
-             'gross' => trim($row[7]),
-             'ctr_intern_status'=>'01',
-             'ctr_i_e_t'=> 'I',                          
-             'disc_load_trans_shift'=>'DISC',
-             'user_id' => $this->user_id,
-    ];
-    }
+$ctr_status = trim($row[6]);
+if ($ctr_status == 'FULL') {
+    $ctr_status = 'FCL';
+}
+elseif ($ctr_status == 'Empty') {
+    $ctr_status = 'MTY';
+}
+
+$iso_code = trim($row[4]);
+$isoCodeData = Isocode::where('iso_code', $iso_code)->first();
+if ($isoCodeData) {
+   $ctr_size = $isoCodeData->iso_size;
+   $ctr_type = $isoCodeData->iso_type;
+} else {
+   $ctr_size = NULL; // Nilai default jika tidak ditemukan
+   $ctr_type = NULL; // Nilai default jika tidak ditemukan
 }
 
     return [

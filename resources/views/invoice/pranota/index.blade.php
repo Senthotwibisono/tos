@@ -124,7 +124,11 @@
             <div class="col-xs-12 col-6">
               <address>
                 <strong>Masa Penumpukan :</strong><br>
-                <?= DateFormat($invoices->deliveryForm->data->containers[0]->disc_date) ?> S.d <?= DateFormat($invoices->deliveryForm->data->exp_date) ?>
+                <?php if ($invoices->deliveryForm->data->orderService == "sp2" || $invoices->deliveryForm->data->orderService == "spps") { ?>
+                  <?= DateFormat($invoices->deliveryForm->data->containers[0]->disc_date) ?> S.d <?= DateFormat($invoices->deliveryForm->data->exp_date) ?>
+                <?php } else if ($invoices->deliveryForm->data->orderService == "export" || $invoices->deliveryForm->data->orderService == "stuffing") { ?>
+                  <?= DateFormat($invoices->deliveryForm->data->containers[0]->departure_date) ?> S.d <?= DateFormat($invoices->deliveryForm->data->exp_date) ?>
+                <?php } ?>
               </address>
             </div>
             <?php if ($invoices->invoice->data1 != null) { ?>

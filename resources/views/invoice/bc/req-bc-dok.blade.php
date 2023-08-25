@@ -61,6 +61,7 @@
 @include('invoice.bc.model-peabn-exp')
 @include('invoice.bc.modal-lain')
 @include('invoice.bc.detail-cont')
+@include('invoice.bc.modal-pkbe')
 
 @endsection
 
@@ -333,6 +334,97 @@
   });
 </script>
 
+
+<!-- PKBE -->
+<script>
+  $(document).on('click', '.download-PKBE', function(e) {
+    e.preventDefault();
+ 
+    var no_pkbe =  $('#no_pkbe').val();
+    var tgl_pkbe = $('#tanggal_pkbe').val();
+    var kd_kantor = $('#kd_kantor_pkbe').val();
+    var data = {
+      'no_pkbe': $('#no_pkbe').val(),
+      'tgl_pkbe':  $('#tanggal_pkbe').val(),
+      'kd_kantor': $('#kd_kantor_pkbe').val(),
+     
+    
+
+
+    }
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+    Swal.fire({
+      title: 'Are you Sure?',
+      text: "Ambil data untuk Dokumen Pebean " + no_pkbe + " untuk data export ? ",
+      icon: 'warning',
+      showDenyButton: false,
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      confirmButtonText: 'Confirm',
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+
+
+        $.ajax({
+          type: 'POST',
+          url: '/download-PKBE',
+          data: data,
+          cache: false,
+          dataType: 'json',
+          success: function(response) {
+            console.log(response);
+            if (response.success) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: response.message,
+              })
+              .then(() => {
+                            // Memuat ulang halaman setelah berhasil menyimpan data
+                            window.location.reload();
+                        });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: response.message,
+              });
+            }
+          },
+          error: function(response) {
+            var errors = response.responseJSON.errors;
+            if (errors) {
+              var errorMessage = '';
+              $.each(errors, function(key, value) {
+                errorMessage += value[0] + '<br>';
+              });
+              Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                html: errorMessage,
+              });
+            } else {
+              console.log('error:', response);
+            }
+          },
+        });
+
+      } else if (result.isDenied) {
+        Swal.fire('Changes are not saved', '', 'info')
+      }
+
+
+    })
+
+  });
+</script>
+
+<!-- Container Detail -->
 <script>
  $(function() {
     $.ajaxSetup({

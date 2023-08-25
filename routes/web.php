@@ -584,5 +584,6 @@ Route::get('/bea/req-dok', [BeaController::class, 'index']);
 Route::post('/download-sppb', [SoapController::class, 'GetImpor_SPPB']);
 Route::post('/download-npe', [SoapController::class, 'GetEkspor_NPE']);
 Route::post('/download-Pabean', [SoapController::class, 'GetDokumenPabean_OnDemand']);
+Route::post('/download-PKBE', [SoapController::class, 'GetEkspor_PKBE']);
 Route::get('/bc/detail-container-{CAR}', [BeaController::class, 'detail']);
 Route::get('/container/export-{NO_DAFTAR}', [BeaController::class, 'container_export']);
