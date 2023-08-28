@@ -180,7 +180,7 @@ class Stripping extends Controller
         // dd($result);
 
         if ($name) {
-            return response()->json(['container_no' => $name->container_no, 'tipe' => $name->ctr_type, 'oldblock' => $name->yard_block, 'oldslot' => $name->yard_slot, 'oldrow' => $name->yard_row, 'oldtier' => $name->yard_tier, 'invoice' => $invoice]);
+            return response()->json(['container_key' => $name->container_key, 'container_no' => $name->container_no, 'tipe' => $name->ctr_type, 'oldblock' => $name->yard_block, 'oldslot' => $name->yard_slot, 'oldrow' => $name->yard_row, 'oldtier' => $name->yard_tier, 'invoice' => $invoice]);
         }
         return response()->json(['container_no' => 'data tidak ditemukan', 'tipe' => 'data tidak ditemukan', 'coname' => 'data tidak ditemukan', 'oldblock' => 'data tidak ditemukan', 'oldslot' => 'data tidak ditemukan', 'oldrow' => 'data tidak ditemukan', 'oldtier' => 'data tidak ditemukan']);
     }
@@ -237,9 +237,11 @@ class Stripping extends Controller
                 'yard_row' => $request->yard_row,
                 'yard_tier' => $request->yard_tier,
                 "ctr_intern_status" => "04",
+                "ctr_type" => "DRY",
+                "ctr_size" => "20",
                 'gross'=>null,
                 'commoditor'=>null,
-                'isChoosen' =>"2",
+                'isChoosen' =>"0",
             ];
             // dd($fields, $item->getAttributes());
 

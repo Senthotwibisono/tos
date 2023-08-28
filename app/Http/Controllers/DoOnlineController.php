@@ -72,7 +72,7 @@ class DoOnlineController extends Controller
         foreach ($columns as $index => $column) {
           if ($index === 3) { // Assuming 4th column (0-indexed) is the date column
             $excelSerialNumber = $row[$index];
-            $carbonDate = Carbon::parse('1899-12-30')->addDays($excelSerialNumber);
+            $carbonDate = Carbon::parse($excelSerialNumber)->addDays($excelSerialNumber);
             $formattedRow['column' . ($index + 1)] = $carbonDate->format('d/m/Y');
           } else {
             $formattedRow['column' . ($index + 1)] = $row[$index];
@@ -101,7 +101,7 @@ class DoOnlineController extends Controller
     );
     $response = $req->getBody()->getContents();
     $result = json_decode($response);
-    // dd($result);
+    // dd($result, $req);
     if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
       return redirect('/do')->with('success', 'Form berhasil disimpan!');
     } else {

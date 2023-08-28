@@ -169,7 +169,7 @@ Route::prefix('export')->group(function () {
     Route::post('/storeupdatestep1', [ExportController::class, 'storeUpdateDataStep1']);
     Route::post('/storestep2', [ExportController::class, 'storeDataStep2']);
   });
-  Route::prefix('/stuffing')->group(function () {
+  Route::prefix('/stuffingold')->group(function () {
     route::get('/', [ExportController::class, 'indexStuffing']);
     Route::get('/delivery', [ExportController::class, 'deliveryFormStuffing']);
     Route::prefix('add')->group(function () {
@@ -185,6 +185,33 @@ Route::prefix('export')->group(function () {
     Route::get('/paidinvoice1', [ExportController::class, 'PaidInvoice1']);
     Route::get('/paidinvoice2', [ExportController::class, 'PaidInvoice2']);
     Route::get('/job', [ExportController::class, 'jobPage']);
+  });
+  Route::prefix('/stuffing-in')->group(function () {
+    Route::get('/', [StuffingController::class, 'index']);
+    Route::get('/form', [StuffingController::class, 'formStuffing']);
+    Route::prefix('/add')->group(function () {
+      Route::get('/step1', [StuffingController::class, 'addDataStep1']);
+      Route::get('/updatestep1', [StuffingController::class, 'updateDataStep1']);
+      Route::get('/step2', [StuffingController::class, 'addDataStep2']);
+      Route::post('/storestep1', [StuffingController::class, 'storeDataStep1']);
+      Route::post('/updatestep1', [StuffingController::class, 'updateDataStep1']);
+      Route::post('/storestep2', [StuffingController::class, 'storeDataStep2']);
+    });
+    Route::prefix('/invoice')->group(function () {
+      Route::get('/', [StuffingController::class, 'invoiceIndex']);
+      Route::get('/form', [StuffingController::class, 'invoiceForm']);
+      Route::prefix('/add')->group(function () {
+        Route::get('/step1', [StuffingController::class, 'invoiceStep1']);
+        Route::get('/updatestep1', [StuffingController::class, 'invoiceUpdateStep1']);
+        Route::get('/step2', [StuffingController::class, 'invoiceStep2']);
+        Route::post('/storestep1', [StuffingController::class, 'invoiceStoreStep1']);
+        Route::post('/updatestep1', [StuffingController::class, 'invoiceUpdateStep1']);
+        Route::post('/storestep2', [StuffingController::class, 'invoiceStoreStep2']);
+      });
+    });
+    Route::get('/pranota', [StuffingController::class, 'pranotaStuffing']);
+    Route::get('/finalinvoice', [StuffingController::class, 'invoiceStuffing']);
+    Route::get('/jobPage', [StuffingController::class, 'jobPageStuffing']);
   });
 });
 
@@ -557,9 +584,12 @@ Route::get('/planning/ship_planning', [ShipPlanController::class, 'index']);
 Route::get('/planning/plan-ves-{ves_id}', [ShipPlanController::class, 'plan']);
 
 // Stuffing
+Route::get('/stuffing/gate-in', [Gati::class, 'index_stuf']);
+Route::post('/stuf-gate-in', [Gati::class, 'gati_stuf']);
 Route::get('/stuffing', [Stuffing::class, 'index']);
 Route::get('/stuffing-android', [Stuffing::class, 'android']);
 Route::post('/get-stuffing', [Stuffing::class, 'get_stuffing']);
+Route::post('/get-vessel-in-stuffing', [Stuffing::class, 'get_vessel']);
 Route::post('/stuffing-place', [Stuffing::class, 'stuffing_place']);
 
 // Load
@@ -575,3 +605,7 @@ Route::get('/bea/req-dok', [BeaController::class, 'index']);
 Route::post('/download-sppb', [SoapController::class, 'GetImpor_SPPB']);
 Route::post('/download-npe', [SoapController::class, 'GetEkspor_NPE']);
 Route::post('/download-Pabean', [SoapController::class, 'GetDokumenPabean_OnDemand']);
+Route::post('/download-PKBE', [SoapController::class, 'GetEkspor_PKBE']);
+Route::post('/download-Dok-Manual', [SoapController::class, 'GetDokumenManual_OnDemand']);
+Route::get('/bc/detail-container-{CAR}', [BeaController::class, 'detail']);
+Route::get('/container/export-{NO_DAFTAR}', [BeaController::class, 'container_export']);

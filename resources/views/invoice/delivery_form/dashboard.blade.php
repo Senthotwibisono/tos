@@ -61,30 +61,32 @@
                   <?php
                   $i = 1;
                   foreach ($deliveries as $data) { ?>
+                    <?php if ($data->orderService == "sp2" || $data->orderService == "spps") { ?>
 
-                    <tr>
-                      <td><?= $i ?></td>
-                      <td><?= $data->customer->customer_name ?></td>
-                      <td><?= $data->do_number ?></td>
-                      <td><?= $data->orderService ?></td>
-                      <td><?= DateFormat($data->exp_date) ?></td>
-                      <td><?= $data->boln ?></td>
-                      <td><?= DateTimeFormat($data->createdAt) ?></td>
-                      <td>
-                        <?php if ($data->hasInvoice != null) { ?>
-                          <span class="badge bg-success text-white">Has Invoice</span>
-                        <?php } else { ?>
-                          <span class="badge bg-warning text-white">Draft</span>
-                        <?php } ?>
-                      </td>
-                      <td>
-                        <?php if ($data->hasInvoice != null) { ?>
-                          <button disabled type="button" class="btn btn-sm btn-success"><i class="fa fa-file"></i></button>
-                        <?php } else { ?>
-                          <a href="/invoice/add/update_step1?id=<?= $data->id ?>" type="button" class="btn btn-sm btn-info"><i class="fa fa-pencil"></i></a>
-                        <?php } ?>
-                      </td>
-                    </tr>
+                      <tr>
+                        <td><?= $i ?></td>
+                        <td><?= $data->customer->customer_name ?></td>
+                        <td><?= $data->do_number ?></td>
+                        <td><?= $data->orderService ?></td>
+                        <td><?= DateFormat($data->exp_date) ?></td>
+                        <td><?= $data->boln ?></td>
+                        <td><?= DateTimeFormat($data->createdAt) ?></td>
+                        <td>
+                          <?php if ($data->hasInvoice != null) { ?>
+                            <span class="badge bg-success text-white">Has Invoice</span>
+                          <?php } else { ?>
+                            <span class="badge bg-warning text-white">Draft</span>
+                          <?php } ?>
+                        </td>
+                        <td>
+                          <?php if ($data->hasInvoice != null) { ?>
+                            <button disabled type="button" class="btn btn-sm btn-success"><i class="fa fa-file"></i></button>
+                          <?php } else { ?>
+                            <a href="/invoice/add/update_step1?id=<?= $data->id ?>" type="button" class="btn btn-sm btn-info"><i class="fa fa-pencil"></i></a>
+                          <?php } ?>
+                        </td>
+                      </tr>
+                    <?php } ?>
 
                   <?php
                     $i++;

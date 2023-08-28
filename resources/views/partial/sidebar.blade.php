@@ -266,12 +266,12 @@
 
     <!-- gate -->
 
-    <li class="sidebar-item  has-sub @if(Request::is('delivery/*') || Request::is('reciving/*'))) active @endif">
+    <li class="sidebar-item  has-sub @if(Request::is('delivery/*') || Request::is('reciving/*') || Request::is('stuffing/gate-in')) active @endif">
         <a href="#" class='sidebar-link'>
             <i class="fa-solid fa-torii-gate"></i>
             <span>Gate</span>
         </a>
-        <ul class="submenu @if(Request::is('delivery/*') || Request::is('reciving/*'))) active @endif">
+        <ul class="submenu @if(Request::is('delivery/*') || Request::is('reciving/*') || Request::is('stuffing/gate-in')) active @endif">
             <li class="submenu-item @if(Request::is('delivery/gate-in')) active @endif">
                 <a href="/delivery/gate-in">Get in Delivery</a>
             </li>
@@ -288,6 +288,11 @@
                 <a href="/reciving/gate-out">Gate Out Reciving</a>
             </li>
 
+            <hr>
+
+            <li class="submenu-item @if(Request::is('stuffing/gate-in')) active @endif">
+                <a href="/stuffing/gate-in">Get in Stuffing</a>
+            </li>
 
             <!-- <li class="submenu-item ">
                         <a href="form-element-select.html">Gate In Receiving</a>

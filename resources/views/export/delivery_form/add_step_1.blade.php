@@ -207,9 +207,8 @@
           </div>
           <div class="row mt-5">
             <div class="col-12 text-right">
-              <a type="button" onclick="beacukaiCheckValue();" class="btn btn-success">Submit</a>
-              <a href="/export/delivery" class="btn btn-light-secondary"><i class="bx bx-x d-block d-sm-none"></i>
-                <span class="d-none d-sm-block">Cancel</span></a>
+              <a type="button" onclick="beacukaiCheckValueExport();" class="btn btn-success">Submit</a>
+              <a type="button" onclick="canceladdCustomer();" class="btn btn-secondary">Cancel</a>
             </div>
           </div>
         </div>

@@ -510,7 +510,6 @@ class InvoiceController extends Controller
       "orderService" => $order_service,
     ];
     // dd($fields);
-    // Commit changes
 
     $url = getenv('API_URL') . '/delivery-service/form/create';
     $req = $client->post(

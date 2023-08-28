@@ -1,4 +1,3 @@
-
 <?php $__env->startSection('custom_styles'); ?>
 <style>
     #outer-dropzone {
