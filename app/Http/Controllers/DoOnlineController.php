@@ -7,6 +7,7 @@ use Config\Services;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 // use Maatwebsite\Excel\Facades\Excel;
+use Carbon\Carbon;
 
 use Maatwebsite\Excel\Excel as ExcelExcel;
 use Maatwebsite\Excel\Facades\Excel;
@@ -69,7 +70,13 @@ class DoOnlineController extends Controller
       foreach ($rows as $row) {
         $formattedRow = [];
         foreach ($columns as $index => $column) {
-          $formattedRow['column' . ($index + 1)] = $row[$index];
+          if ($index === 3) { // Assuming 4th column (0-indexed) is the date column
+            $excelSerialNumber = $row[$index];
+            $carbonDate = Carbon::parse($excelSerialNumber)->addDays($excelSerialNumber);
+            $formattedRow['column' . ($index + 1)] = $carbonDate->format('d/m/Y');
+          } else {
+            $formattedRow['column' . ($index + 1)] = $row[$index];
+          }
         }
         $formattedData[] = $formattedRow;
       }
@@ -94,7 +101,7 @@ class DoOnlineController extends Controller
     );
     $response = $req->getBody()->getContents();
     $result = json_decode($response);
-    // dd($result);
+    // dd($result, $req);
     if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
       return redirect('/do')->with('success', 'Form berhasil disimpan!');
     } else {

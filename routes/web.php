@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\SystemController;
 use App\Http\Controllers\VesselController;
 use App\Http\Controllers\BayplanImportController;
@@ -33,6 +34,7 @@ use App\Http\Controllers\ShipPlanController;
 use App\Http\Controllers\LoadController;
 use App\Http\Controllers\BeaController;
 use App\Http\Controllers\SoapController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -68,10 +70,12 @@ Route::post('/set-session/{key}/{value}', [SessionsController::class, 'setSessio
 Route::post('/unset-session/{key}', [SessionsController::class, 'unsetSession'])->name('unset-session');
 
 
+Route::post('/findContainerArray', [InvoiceController::class, 'findContainerArray']);
 
 Route::post('/beacukaiImportCheck', [BeacukaiController::class, 'beacukaiImportCheck']);
 Route::post('/beacukaiExportCheck', [BeacukaiController::class, 'beacukaiExportCheck']);
 Route::post('/allContainerImport', [InvoiceController::class, 'allContainerImport']);
+Route::post('/findContainerArray', [InvoiceController::class, 'findContainerArray']);
 Route::prefix('invoice')->group(function () {
   Route::get('/', [InvoiceController::class, 'index']);
   Route::get('/menu', [InvoiceController::class, 'menuindex']);
@@ -165,7 +169,7 @@ Route::prefix('export')->group(function () {
     Route::post('/storeupdatestep1', [ExportController::class, 'storeUpdateDataStep1']);
     Route::post('/storestep2', [ExportController::class, 'storeDataStep2']);
   });
-  Route::prefix('/stuffing')->group(function () {
+  Route::prefix('/stuffingold')->group(function () {
     route::get('/', [ExportController::class, 'indexStuffing']);
     Route::get('/delivery', [ExportController::class, 'deliveryFormStuffing']);
     Route::prefix('add')->group(function () {
@@ -181,6 +185,33 @@ Route::prefix('export')->group(function () {
     Route::get('/paidinvoice1', [ExportController::class, 'PaidInvoice1']);
     Route::get('/paidinvoice2', [ExportController::class, 'PaidInvoice2']);
     Route::get('/job', [ExportController::class, 'jobPage']);
+  });
+  Route::prefix('/stuffing-in')->group(function () {
+    Route::get('/', [StuffingController::class, 'index']);
+    Route::get('/form', [StuffingController::class, 'formStuffing']);
+    Route::prefix('/add')->group(function () {
+      Route::get('/step1', [StuffingController::class, 'addDataStep1']);
+      Route::get('/updatestep1', [StuffingController::class, 'updateDataStep1']);
+      Route::get('/step2', [StuffingController::class, 'addDataStep2']);
+      Route::post('/storestep1', [StuffingController::class, 'storeDataStep1']);
+      Route::post('/updatestep1', [StuffingController::class, 'updateDataStep1']);
+      Route::post('/storestep2', [StuffingController::class, 'storeDataStep2']);
+    });
+    Route::prefix('/invoice')->group(function () {
+      Route::get('/', [StuffingController::class, 'invoiceIndex']);
+      Route::get('/form', [StuffingController::class, 'invoiceForm']);
+      Route::prefix('/add')->group(function () {
+        Route::get('/step1', [StuffingController::class, 'invoiceStep1']);
+        Route::get('/updatestep1', [StuffingController::class, 'invoiceUpdateStep1']);
+        Route::get('/step2', [StuffingController::class, 'invoiceStep2']);
+        Route::post('/storestep1', [StuffingController::class, 'invoiceStoreStep1']);
+        Route::post('/updatestep1', [StuffingController::class, 'invoiceUpdateStep1']);
+        Route::post('/storestep2', [StuffingController::class, 'invoiceStoreStep2']);
+      });
+    });
+    Route::get('/pranota', [StuffingController::class, 'pranotaStuffing']);
+    Route::get('/finalinvoice', [StuffingController::class, 'invoiceStuffing']);
+    Route::get('/jobPage', [StuffingController::class, 'jobPageStuffing']);
   });
 });
 

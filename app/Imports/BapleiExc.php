@@ -50,7 +50,6 @@ class BapleiExc implements ToModel, WithStartRow, WithMapping, WithValidation
     public function map($row): array
 {
 
-   
 
   
 $bay_slot = substr(trim($row[2]), 0, 2);

@@ -50,7 +50,7 @@ class Gato extends Controller
             ];
         }
         $containerKeys = Item::where('ctr_intern_status', '10')
-            ->whereNotNull('job_no')
+            ->whereNotNull('truck_no')
             ->pluck('container_no', 'container_key');
         $users = User::all();
         $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
@@ -158,7 +158,7 @@ class Gato extends Controller
             ];
             // dd($fields, $item->getAttributes());
 
-            $url = 'localhost:3013/delivery-service/container/confirmDisch';
+            $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
             $req = $client->post(
                 $url,
                 [
@@ -194,7 +194,7 @@ class Gato extends Controller
     public function index_rec()
     {
         $title = 'Gate Out Reciving';
-        $confirmed = Item::where('ctr_intern_status', '=', '51',)-> whereNotNull('truck_out_date')->whereNotNull('truck_no')->orderBy('update_time', 'desc')->get();
+        $confirmed = Item::where('ctr_intern_status', '=', ['50', '51', '53'],)-> whereNotNull('truck_out_date')->whereNotNull('truck_no')->orderBy('update_time', 'desc')->get();
         $formattedData = [];
         $data = [];
 
@@ -222,7 +222,7 @@ class Gato extends Controller
                 'container_key' => $tem->container_key
             ];
         }
-        $containerKeys = Item::where('ctr_intern_status', ['51', '53', '56'])
+        $containerKeys = Item::where('ctr_intern_status', ['50', '51', '53', '56'])
             ->whereNotNull('truck_in_date')->where('truck_out_date', '=', null)
             ->pluck('container_no', 'container_key');
         $users = User::all();

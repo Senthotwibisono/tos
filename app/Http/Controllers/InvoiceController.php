@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+
+// use Auth;
+
 use Config\Services;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -406,6 +410,8 @@ class InvoiceController extends Controller
   }
   public function addDataStep1()
   {
+    $user = Auth::user();
+    // dd($user->id);
     $data = [];
     $data["title"] = "Step 1 | Devivery Form Input Data";
 
@@ -436,6 +442,7 @@ class InvoiceController extends Controller
     $data["customer"] = $result_customer->data;
     $data["container"] = $result_container->data;
     $data["do"] = $result_do->data;
+    $data["user"] = $user->id;
     return view('invoice/delivery_form/add_step_1', $data);
   }
 
@@ -503,7 +510,6 @@ class InvoiceController extends Controller
       "orderService" => $order_service,
     ];
     // dd($fields);
-    // Commit changes
 
     $url = getenv('API_URL') . '/delivery-service/form/create';
     $req = $client->post(
@@ -621,9 +627,55 @@ class InvoiceController extends Controller
     $data["ccdelivery"] = $result->data;
     if ($result->data->deliveryForm->isExtended != 1) {
       if ($result->data->deliveryForm->orderService != "spps") {
-        $data["menuinv"] = [$isExtended != 1 ? "Lift On" : "", $isExtended != 1 ? "Pass Truck" : "", $diffInDays->masa1 > 0 ? "Penumpukan Masa 1" : "", $diffInDays->masa2 > 0 ? "Penumpukan Masa 2" : "", $diffInDays->masa3 > 0 ? "Penumpukan Masa 3" : ""];
+        // $data["menuinv"] = [$isExtended != 1 ? "Lift On" : "", $isExtended != 1 ? "Pass Truck" : "", $diffInDays->masa1 > 0 ? "Penumpukan Masa 1" : "", $diffInDays->masa2 > 0 ? "Penumpukan Masa 2" : "", $diffInDays->masa3 > 0 ? "Penumpukan Masa 3" : ""];
+        if ($diffInDays->masa1 != 0 && $diffInDays->masa2 != 0 && $diffInDays->masa3 != 0) {
+          $data["menuinv"] = ["Lift On", "Pass Truck", "Penumpukan Masa 1", "Penumpukan Masa 2", "Penumpukan Masa 3"];
+        } else if ($diffInDays->masa1 != 0 && $diffInDays->masa2 != 0) {
+          $data["menuinv"] = ["Lift On", "Pass Truck", "Penumpukan Masa 1", "Penumpukan Masa 2"];
+        } else if ($diffInDays->masa1 != 0 && $diffInDays->masa3 != 0) {
+          $data["menuinv"] = ["Lift On", "Pass Truck", "Penumpukan Masa 1", "Penumpukan Masa 3"];
+        } else if ($diffInDays->masa2 != 0 && $diffInDays->masa3 != 0) {
+          $data["menuinv"] = ["Lift On", "Pass Truck", "Penumpukan Masa 2", "Penumpukan Masa 3"];
+        } else if ($diffInDays->masa1 == 0 && $diffInDays->masa2 != 0) {
+          $data["menuinv"] = ["Lift On", "Pass Truck", "Penumpukan Masa 2"];
+        } else if ($diffInDays->masa1 == 0 && $diffInDays->masa3 != 0) {
+          $data["menuinv"] = ["Lift On", "Pass Truck", "Penumpukan Masa 3"];
+        } else if ($diffInDays->masa2 == 0 && $diffInDays->masa1 != 0) {
+          $data["menuinv"] = ["Lift On", "Pass Truck", "Penumpukan Masa 1"];
+        } else if ($diffInDays->masa3 == 0 && $diffInDays->masa2 != 0) {
+          $data["menuinv"] = ["Lift On", "Pass Truck", "Penumpukan Masa 2"];
+        } else if ($diffInDays->masa1 == 0) {
+          $data["menuinv"] = ["Lift On", "Pass Truck", "Penumpukan Masa 2", "Penumpukan Masa 3"];
+        } else if ($diffInDays->masa2 == 0) {
+          $data["menuinv"] = ["Lift On", "Pass Truck", "Penumpukan Masa 1", "Penumpukan Masa 3"];
+        } else if ($diffInDays->masa3 == 0) {
+          $data["menuinv"] = ["Lift On", "Pass Truck", "Penumpukan Masa 1", "Penumpukan Masa 2"];
+        }
       } else {
-        $data["menuinv"] = [$isExtended != 1 ? "Paket Stripping" : "", $isExtended != 1 ? "Pass Truck" : "", $diffInDays->masa1 > 0 ? "Penumpukan Masa 1" : "Penumpukan Masa 1", $diffInDays->masa2 > 0 ? "Penumpukan Masa 2" : "Penumpukan Masa 2", $diffInDays->masa3 > 0 ? "Penumpukan Masa 3" : "Penumpukan Masa 3"];
+        // $data["menuinv"] = [$isExtended != 1 ? "Paket Stripping" : "", $isExtended != 1 ? "Pass Truck" : "", $diffInDays->masa1 > 0 ? "Penumpukan Masa 1" : "Penumpukan Masa 1", $diffInDays->masa2 > 0 ? "Penumpukan Masa 2" : "Penumpukan Masa 2", $diffInDays->masa3 > 0 ? "Penumpukan Masa 3" : "Penumpukan Masa 3"];
+        if ($diffInDays->masa1 != 0 && $diffInDays->masa2 != 0 && $diffInDays->masa3 != 0) {
+          $data["menuinv"] = ["Paket Stripping", "Pass Truck", "Penumpukan Masa 1", "Penumpukan Masa 2", "Penumpukan Masa 3"];
+        } else if ($diffInDays->masa1 != 0 && $diffInDays->masa2 != 0) {
+          $data["menuinv"] = ["Paket Stripping", "Pass Truck", "Penumpukan Masa 1", "Penumpukan Masa 2"];
+        } else if ($diffInDays->masa1 != 0 && $diffInDays->masa3 != 0) {
+          $data["menuinv"] = ["Paket Stripping", "Pass Truck", "Penumpukan Masa 1", "Penumpukan Masa 3"];
+        } else if ($diffInDays->masa2 != 0 && $diffInDays->masa3 != 0) {
+          $data["menuinv"] = ["Paket Stripping", "Pass Truck", "Penumpukan Masa 2", "Penumpukan Masa 3"];
+        } else if ($diffInDays->masa1 == 0 && $diffInDays->masa2 != 0) {
+          $data["menuinv"] = ["Paket Stripping", "Pass Truck", "Penumpukan Masa 2"];
+        } else if ($diffInDays->masa1 == 0 && $diffInDays->masa3 != 0) {
+          $data["menuinv"] = ["Paket Stripping", "Pass Truck", "Penumpukan Masa 3"];
+        } else if ($diffInDays->masa2 == 0 && $diffInDays->masa1 != 0) {
+          $data["menuinv"] = ["Paket Stripping", "Pass Truck", "Penumpukan Masa 1"];
+        } else if ($diffInDays->masa3 == 0 && $diffInDays->masa2 != 0) {
+          $data["menuinv"] = ["Paket Stripping", "Pass Truck", "Penumpukan Masa 2"];
+        } else if ($diffInDays->masa1 == 0) {
+          $data["menuinv"] = ["Paket Stripping", "Pass Truck", "Penumpukan Masa 2", "Penumpukan Masa 3"];
+        } else if ($diffInDays->masa2 == 0) {
+          $data["menuinv"] = ["Paket Stripping", "Pass Truck", "Penumpukan Masa 1", "Penumpukan Masa 3"];
+        } else if ($diffInDays->masa3 == 0) {
+          $data["menuinv"] = ["Paket Stripping", "Pass Truck", "Penumpukan Masa 1", "Penumpukan Masa 2"];
+        }
       }
     } else if ($diffInDays->masa1 != 0 && $diffInDays->masa2 != 0 && $diffInDays->masa3 != 0) {
       $data["menuinv"] = ["Penumpukan Masa 1", "Penumpukan Masa 2", "Penumpukan Masa 3"];
@@ -1241,6 +1293,8 @@ class InvoiceController extends Controller
     echo $response;
   }
 
+
+
   public function exportToExcel(Request $request)
   {
     $client = new Client();
@@ -1334,6 +1388,36 @@ class InvoiceController extends Controller
     $response = $req->getBody()->getContents();
     // var_dump($response);
     // die();
+    echo $response;
+  }
+
+  public function findContainerArray(Request $request)
+  {
+    $client = new Client();
+
+    // $id = $request->id;
+    // var_dump($id);
+    // die();
+    $container = $request->container;
+    // $isActive = $request->isActive;
+    $fields =
+      [
+        "container" => $container,
+      ];
+    // var_dump(json_encode($fields));
+    // die();
+
+    $url = getenv('API_URL') . '/delivery-service/container/array';
+    $req = $client->post(
+      $url,
+      [
+        "json" => $fields
+      ]
+    );
+    $response = $req->getBody()->getContents();
+    // var_dump($response);
+    // die();
+
     echo $response;
   }
 

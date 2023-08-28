@@ -180,6 +180,7 @@
               },
               success: function(response) {
 
+                $('#container_key').val(response.container_key);
                 $('#container_no').val(response.container_no);
                 $('#tipe').val(response.tipe);
                 $('#invoice').val(response.invoice);

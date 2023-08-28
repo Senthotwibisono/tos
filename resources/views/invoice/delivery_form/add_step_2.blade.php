@@ -137,7 +137,7 @@
                   <input type="hidden" name="data2[<?= $index ?>][title]" value="<?= $menuinv[1] ?>">
                   <input type="hidden" name="data3[<?= $index ?>][title]" value="<?= $menuinv[2] ?>">
                   <input type="hidden" name="data4[<?= $index ?>][title]" value="<?= $menuinv[3] ?>">
-                  <input type="hidden" name="data5[<?= $index ?>][title]" value="<?= $menuinv[4] ?>">
+                  <input type="hidden" name="data5[<?= $index ?>][title]" value="<?= $menuinv[4] ?? "0" ?>">
 
                   <input type="hidden" name="data1[<?= $index ?>][jumlah]" value="<?= $ccdelivery->findContainer[$i]->jml_cont ?>">
                   <input type="hidden" name="data2[<?= $index ?>][jumlah]" value="<?= $ccdelivery->findContainer[$i]->jml_cont ?>">
@@ -311,7 +311,7 @@
                       <h5 class="text-white">Grand Total :</h5>
                     </div>
                     <div class="col-6" style="text-align:right;">
-                      <h4 class="text-white bold">Rp. <?= rupiah($ccdelivery->finalGrandTotal[0]->totalAmountBeforeTax) ?>,00 ~</h4>
+                      <h4 class="text-white bold">Rp. <?= rupiah($ccdelivery->finalGrandTotal[0]->amountBeforeAdmin) ?>,00 ~</h4>
                       <h5 class="text-white">Rp. 30.000,00 ~</h5>
                       <h5 class="text-white">Rp. <?= rupiah($ccdelivery->finalGrandTotal[0]->totalAmountWithTax) ?>,00 ~</h5>
                       <h4 class="bold" style="color:#ff5265;">Rp. <?= rupiah($ccdelivery->finalGrandTotal[0]->totalAmountAfterTax) ?>,00 ~</h4>
@@ -319,7 +319,7 @@
 
                       <input type="hidden" name="data6[customer]" value="<?= $ccdelivery->deliveryForm->customer->customer_name ?>">
                       <input type="hidden" name="data6[deliveryid]" value="<?= $ccdelivery->deliveryForm->id ?>">
-                      <input type="hidden" name="data6[totalamount]" value="<?= $ccdelivery->finalGrandTotal[0]->totalAmountBeforeTax ?>">
+                      <input type="hidden" name="data6[totalamount]" value="<?= $ccdelivery->finalGrandTotal[0]->amountBeforeAdmin ?>">
                       <input type="hidden" name="data6[admin]" value="30000">
                       <input type="hidden" name="data6[tax]" value="<?= $ccdelivery->finalGrandTotal[0]->totalAmountWithTax ?>">
                       <input type="hidden" name="data6[grandtotal]" value="<?= $ccdelivery->finalGrandTotal[0]->totalAmountAfterTax ?>">
