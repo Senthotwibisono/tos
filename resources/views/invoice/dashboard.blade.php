@@ -6,7 +6,7 @@
 
 <div class="page-heading">
   <h3><?= $title ?></h3>
-  <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+  <p>Menu untuk Management Data Pembayaran</p>
 
 </div>
 <div class="page-content">
@@ -17,7 +17,7 @@
           <h4 class="card-title">
             Data Management
           </h4>
-          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+          <p>Pilihan Pembayaran untuk Delivery/Customer</p>
         </div>
         <div class="card-body">
           <div class="row">
@@ -42,8 +42,8 @@
     <div class="col-12">
       <div class="card">
         <div class="card-header">
-          <h4 class="card-title">Billing Invoice Data Table</h4>
-          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+          <h4 class="card-title">Tabel Data Invoice</h4>
+          <p>Rekap Invoice</p>
         </div>
         <div class="card-body">
           <form action="/invoice/export" method="POST" enctype="multipart/form-data">

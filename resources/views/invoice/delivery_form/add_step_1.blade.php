@@ -4,8 +4,8 @@
 @section('content')
 
 <div class="page-heading">
-  <h3><?= $title ?></h3>
-  <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+  <h3>Step 1 | Delivery Form Input Data</h3>
+  <p>Masukan Data untuk form Delivery</p>
 </div>
 <div class="page-content mb-5">
   <section class="row">
@@ -14,8 +14,8 @@
       <div class="card">
         <div class="card-header">
           <!-- <h3>Delivery Form Data</h3> -->
-          <h4>Step 1 Tambah Data Delivery</h4>
-          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+          <h4>Tambah Data Delivery</h4>
+          <p>Masukan Tanggal Kadaluarsa, Waktu dan Pilih Customer</p>
         </div>
         <div class="card-body">
           <div class="row">
@@ -60,7 +60,7 @@
           <div class="row mt-5">
             <div class="col-12">
               <h5>Information Shipping Agent</h5>
-              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+              <p>Masukan Data Shipping dan Pilih Metode Do Checking</p>
             </div>
 
             <?php
@@ -140,7 +140,7 @@
           <div class="row mt-5">
             <div class="col-12">
               <h5>Add Container</h5>
-              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+              <p>Masukan Nomor Container</p>
             </div>
             <div class="col-12" id="selector">
               <label for="">Container Number</label>
@@ -162,7 +162,7 @@
           <div class="row mt-5">
             <div class="col-12">
               <h5>Beacukai Information</h5>
-              <p>Please Select Domestic Service first.</p>
+              <p>Please Select Domestic Service first</p>
             </div>
             <div class="col-6">
               <div class="btn-group">

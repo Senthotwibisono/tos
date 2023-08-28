@@ -5,7 +5,7 @@
 
 <div class="page-heading">
   <h3><?= $title ?></h3>
-  <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+  <p>Form untuk Edit Mastertarif</p>
 </div>
 <div class="page-content mb-5">
   <section class="row">
@@ -103,10 +103,8 @@
           </div>
           <div class="row">
             <div class="col-6">
-              <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
-                <i class="bx bx-x d-block d-sm-none"></i>
-                <span class="d-none d-sm-block">Cancel</span>
-              </button>
+            <a href="/invoice/mastertarif" class="btn btn-light-secondary"><i class="bx bx-x d-block d-sm-none"></i>
+                <span class="d-none d-sm-block">Cancel</span></a>
               <button type="submit" class="btn btn-primary ml-1">
                 Submit
               </button>

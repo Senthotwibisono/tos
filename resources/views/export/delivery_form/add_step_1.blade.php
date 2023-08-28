@@ -4,8 +4,8 @@
 @section('content')
 
 <div class="page-heading">
-  <h3><?= $title ?></h3>
-  <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+  <h3>Receiving Form Input Data (Export)</h3>
+  <p>Form Input Data Receiving</p>
 </div>
 <div class="page-content mb-5">
   <section class="row">
@@ -15,7 +15,7 @@
         <div class="card-header">
           <!-- <h3>Delivery Form Data</h3> -->
           <h4>Step 1 Tambah Data Receiving</h4>
-          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+          <p>Pilih Customer, Masukan No NPWP dan Alamat</p>
         </div>
         <div class="card-body">
           <div class="row">
@@ -33,20 +33,20 @@
             <div class="col-4">
               <div class="form-group">
                 <label for="">NPWP</label>
-                <input required type="text" class="form-control" id="npwp" name="npwp" placeholder="Npwp">
+                <input required type="text" class="form-control" id="Npwp" name="npwp" placeholder="NPWP">
               </div>
             </div>
             <div class="col-4">
               <div class="form-group">
                 <label for="">Address</label>
-                <input required type="text" class="form-control" id="address" name="address" placeholder="address">
+                <input required type="text" class="form-control" id="Address" name="address" placeholder="Address">
               </div>
             </div>
 
             <div class="row mt-5">
               <div class="col-12">
                 <h5>Information Shipping Agent</h5>
-                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                <p>Masukan Informasi Agen Shipping</p>
               </div>
               <div class="col-12">
                 <div class="row">
@@ -147,7 +147,7 @@
           <div class="row mt-5">
             <div class="col-12">
               <h5>Add Container</h5>
-              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+              <p>Pilihlah Booking Number Terlebih Dahulu, lalu Pilih No Container</p>
             </div>
             <div class="col-12" id="selector">
               <label for="">Container Number</label>
@@ -170,7 +170,7 @@
           <div class="row mt-5">
             <div class="col-12">
               <h5>Beacukai Information</h5>
-              <p>Please Select Domestic Service first.</p>
+              <p>Pilihlah Serivce Domestic / Non-Domestic</p>
             </div>
             <div class="col-6">
               <div class="btn-group">

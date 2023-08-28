@@ -4,8 +4,8 @@
 @section('content')
 
 <div class="page-heading">
-  <h3><?= $title ?></h3>
-  <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+  <h3>Step 1 | Delivery Extend Form Input Data</h3>
+  <p>Masukan Data untuk Delivery Extend</p>
 </div>
 <div class="page content mb-5">
   <section class="row">
@@ -14,8 +14,8 @@
       <div class="card">
         <div class="card-header">
           <!-- <h3>Delivery Form Data</h3> -->
-          <h4>Step 1 Pilih Delivery Form Untuk Extend</h4>
-          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+          <h4> Delivery Form Untuk Extend</h4>
+          <p>Pilih Nomor Profroma dan Tanggal Perpanjangan</p>
         </div>
         <div class="card-body">
           <div class="row">

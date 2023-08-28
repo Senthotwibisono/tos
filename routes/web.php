@@ -316,6 +316,7 @@ Route::get('/disch/view-vessel', [DischargeView::class, 'index']);
 Route::post('/get-ves', [DischargeView::class, 'get_ves']);
 Route::post('/get-bay', [DischargeView::class, 'get_bay']);
 Route::get('/get-container', [DischargeView::class, 'get_container']);
+
 // Android
 Route::get('/android-dashboard', [AndroidController::class, 'index']);
 Route::get('/disch/confirm_disch', [DischargeController::class, 'index']);
@@ -323,12 +324,24 @@ Route::post('/search-container', [DischargeController::class, 'container']);
 Route::post('/get-container-key', [DischargeController::class, 'get_key']);
 Route::post('/confirm', [DischargeController::class, 'confirm']);
 
+
+// Android user Gate
+Route::get('/android-gate', [AndroidController::class, 'gate_android']);
+
+// Android user yard
+Route::get('/android-yard', [AndroidController::class, 'yard_android']);
+
+// Android user cc
+Route::get('/android-cc', [AndroidController::class, 'cc_android']);
+
+
 //tampilan android
 Route::get('/disch/android', [DischargeController::class, 'android']);
 Route::get('/yard/android', [PlacementController::class, 'android']);
 Route::get('/stripping/android', [Stripping::class, 'android']);
 Route::get('/delivery/android-in', [Gati::class, 'android']);
 Route::get('/delivery/android-out', [Gato::class, 'android']);
+Route::get('/stuffing/android', [Stuffing::class, 'android']);
 
 Route::get('/yard/placement', [PlacementController::class, 'index']);
 Route::post('/placement', [PlacementController::class, 'place']);
@@ -418,6 +431,10 @@ Route::post('/gato-del', [Gato::class, 'gato_del']);
 
 
 // history
+Route::get('/search-cont-job', [HistoryController::class, 'searchContJob'])->name('search_cont_job');
+Route::get('/search-cont-hist', [HistoryController::class, 'searchContHist'])->name('search_cont_hist');
+
+
 Route::group([
   'prefix' => 'reports',
   'as' => 'reports.'
@@ -495,6 +512,7 @@ Route::get('/edi/edit_itembayplan', [EdiController::class, 'edit_itembayplan']);
 route::resource('yard/rowtier', YardrotController::class);
 route::post('yards/rowtier/get_rowtier', [YardrotController::class, 'get_rowtier'])->name('rowtier.get_rowtier');
 
+//Routes Spatie
 Route::middleware('role:admin')->get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 
 Route::get('/profile', [ProfileControllers::class, 'index']);
