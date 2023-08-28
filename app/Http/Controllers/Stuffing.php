@@ -6,6 +6,10 @@ use App\Models\Item;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Yard;
+use App\Models\RO_Gate;
+use App\Models\RO_Realisasi;
+use App\Models\RO;
+use App\Models\VVoyage;
 use Auth;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
@@ -49,12 +53,46 @@ class Stuffing extends Controller
                 'yard_row' => $tem->yard_row,
                 'yard_tier' => $tem->yard_tier,
                 'update_time' => $diff . ' yang lalu',
-                'container_key' => $tem->container_key
+                'container_key' => $tem->container_key,
+                'ro_no' => $tem->ro_no
+            ];
+        }
+
+        $stuffing_luar = Item::where('ctr_intern_status', 53)->where('stuffing_procces', '=', 'out')->get();
+        $stuffingLuar= [];
+        foreach ($stuffing_luar as $stuf_out) {
+            $now = Carbon::now();
+            $updatedAt = Carbon::parse($stuf_out->stuffing_date);
+
+            // Perhitungan selisih waktu
+            $waktu = $updatedAt->diffForHumans($now);
+
+            // Jika selisih waktu kurang dari 1 hari, maka tampilkan format jam
+            if ($updatedAt->diffInDays($now) < 1) {
+                $waktu = $updatedAt->diffForHumans($now, true);
+                $waktu = str_replace(['hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $waktu);
+            } else {
+                // Jika selisih waktu lebih dari 1 hari, maka tampilkan format hari dan jam
+                $waktu = $updatedAt->diffForHumans($now, true);
+                $waktu = str_replace(['days', 'day', 'hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['hari', 'hari', 'jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $waktu);
+            }
+
+            $stuffingLuar[] = [
+                'container_no' => $stuf_out->container_no,
+                'ctr_type' => $stuf_out->ctr_type,
+                'yard_block' => $stuf_out->yard_block,
+                'yard_slot' => $stuf_out->yard_slot,
+                'yard_row' => $stuf_out->yard_row,
+                'yard_tier' => $stuf_out->yard_tier,
+                'stuffing_date' => $waktu . ' yang lalu',
+                'container_key' => $stuf_out->container_key,
+                'ro_no' => $stuf_out->ro_no
             ];
         }
         $containerKeys = Item::where('ctr_intern_status', '=', '04')
             ->pluck('container_no', 'container_key');
         $items = Item::where('ctr_intern_status', 04)->get();
+        
         $users = User::all();
         $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
         $yard_slot = Yard::distinct('yard_slot')->pluck('yard_slot');
@@ -62,19 +100,13 @@ class Stuffing extends Controller
         $yard_tier = Yard::distinct('yard_tier')->pluck('yard_tier');
         $currentDateTime = Carbon::now();
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
+        $now = Carbon::now();
 
+       $ro_gate = RO_Gate::where('truck_out_date','=', null)->pluck('ro_no')->unique();
+       $ro_awal = RO::whereIn('ro_no', $ro_gate)->where('stuffing_service', '=', 'in')->get();
+       $vessel = VVoyage::where('deparature_date','>=',$now)->get();
 
-        $client = new Client();
-        // GET ALL JOB_CONTAINER
-        $url_jobContainer = getenv('API_URL') . '/delivery-service/container/stuffing/all';
-        $req_jobContainer = $client->get($url_jobContainer);
-        $response_jobContainer = $req_jobContainer->getBody()->getContents();
-        $result_jobContainer = json_decode($response_jobContainer);
-        
-         $data["jobContainers"] = $result_jobContainer->data;
-
-
-        return view('stuffing.main', $data, compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'), $data);
+        return view('stuffing.main', $data, compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys', 'ro_gate','ro_awal', 'vessel', 'stuffingLuar'), $data);
     }
     public function android()
     {
@@ -141,17 +173,33 @@ class Stuffing extends Controller
         // $client = new Client();
         $container_key = $request->container_key;
         $name = Item::where('container_key', $container_key)->first();
-
-
-        
-       
-
         if ($name) {
             return response()->json(['container_no' => $name->container_no, 'tipe' => $name->ctr_type, 'oldblock' => $name->yard_block, 'oldslot' => $name->yard_slot, 'oldrow' => $name->yard_row, 'oldtier' => $name->yard_tier]);
         }
         return response()->json(['container_no' => 'data tidak ditemukan', 'tipe' => 'data tidak ditemukan', 'coname' => 'data tidak ditemukan', 'oldblock' => 'data tidak ditemukan', 'oldslot' => 'data tidak ditemukan', 'oldrow' => 'data tidak ditemukan', 'oldtier' => 'data tidak ditemukan']);
     }
 
+    public function get_vessel(Request $request)
+    {
+        // $client = new Client();
+        $vessel = $request->ves_id;
+        $kapal = VVoyage::where('ves_id', $vessel)->first();
+        if ($kapal) {
+            return response()->json(['ves_name' => $kapal->ves_name, 'ves_code' => $kapal->ves_code, 'voy_no' => $kapal->voy_out]);
+        }
+        return response()->json(['ves_name' => 'data tidak ditemukan', 'ves_code' => 'data tidak ditemukan', 'voy_no' => 'data tidak ditemukan']);
+    }
+
+    // public function get_truck(Request $request)
+    // {
+    //     $truck = $request->truck_no;
+    //     $ro_gate = RO_Gate::where('truck_no', $ro_gate)->first();
+
+    //     if ($ro_gate) {
+    //         return response()->json(['truck_in_date' => $kapal->truck_in_date,]);
+    //     }
+
+    // }
     public function stuffing_place(Request $request)
     {
 
@@ -164,6 +212,7 @@ class Stuffing extends Controller
             'yard_slot'  => 'required',
             'yard_row'  => 'required',
             'yard_tier' => 'required',
+            'truck_no' => 'required',
 
         ], [
             'container_no.required' => 'Container Number is required.',
@@ -171,6 +220,7 @@ class Stuffing extends Controller
             'yard_slot.required' => 'Slot Alat Number is required.',
             'yard_row.required' => 'Row Alat Number is required.',
             'yard_tier.required' => 'Tier Alat Number is required.',
+            'trucK_no.required' => 'Nomor Truck is required.',
         ]);
 
 
@@ -181,50 +231,95 @@ class Stuffing extends Controller
             ->first();
 
         if (is_null($yard_rowtier->container_key)) {
-            $item->update([
-                'yard_block' => $request->yard_block,
-                'yard_slot' => $request->yard_slot,
-                'yard_row' => $request->yard_row,
-                'yard_tier' => $request->yard_tier,
-                'ctr_intern_status' => '53',
-                'wharf_yard_oa' => $request->wharf_yard_oa,
-            ]);
-            $client = new Client();
+            $now = Carbon::now();
 
-            $fields = [
-                "container_key" => $request->container_key,
-                "ctr_intern_status" => "53",
-                'yard_block' => $request->yard_block,
-                'yard_slot' => $request->yard_slot,
-                'yard_row' => $request->yard_row,
-                'yard_tier' => $request->yard_tier,
-            ];
-            // dd($fields, $item->getAttributes());
+            $ro_no = $request->ro_no;
+            $ro = RO::where('ro_no',$ro_no)->first();
+            $cont_check = $ro->jmlh_cont;
+            $cont =  RO_Realisasi::where('ro_no', $ro_no)->count();
 
-            $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
-            $req = $client->post(
-                $url,
-                [
-                    "json" => $fields
-                ]
-            );
-            $response = $req->getBody()->getContents();
-            $result = json_decode($response);
+            if ($cont_check > $cont) {
 
-            if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-                // $item->save();
+                    $truck = $request->truck_no;
+                    $ro_gate = RO_Gate::where('ro_no', $ro_no)->where('truck_no', $truck)->first();
 
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Updated successfully!',
-                    'item' => $item,
-                ]);
-            } else {
+                
+                    $realisasi = RO_Realisasi::create([
+                        'ro_no' => $request->ro_no,
+                        'container_no' => $request->container_no,
+                    ]);
+        
+                    $item->update([
+                        'ro_no' => $ro_no,
+                        'ves_id'=> $request->ves_id,
+                        'ves_name' => $request->ves_name,
+                        'ves_code' => $request->ves_code,
+                        'voy_no' => $request->voy_no,
+                        'yard_block' => $request->yard_block,
+                        'yard_slot' => $request->yard_slot,
+                        'yard_row' => $request->yard_row,
+                        'yard_tier' => $request->yard_tier,
+                        'ctr_intern_status' => '53',
+                        'wharf_yard_oa' => $request->wharf_yard_oa,
+                        'stuffing_date' => $now,
+                        'truck_no' => $request->truck_no,
+                        'truck_in_date' => $ro_gate->truck_in_date,
+                        'stuffing_procces' => $ro->stuffing_service,
+                    ]);
+                    
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Updated successfully!',
+                        'item' => $item,
+                    ]);
+               
+            }else {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Something wrong happened while updating with api',
+                    'message' => 'Jumlah Container Melebihi Dokumen R.O !!',
                 ]);
             }
+            
+
+
+            // $client = new Client();
+
+            // $fields = [
+            //     "container_key" => $request->container_key,
+            //     "ctr_intern_status" => "53",
+            //     'yard_block' => $request->yard_block,
+            //     'yard_slot' => $request->yard_slot,
+            //     'yard_row' => $request->yard_row,
+            //     'yard_tier' => $request->yard_tier,
+            //     'ro_no' => $request->ro_no,
+            //     'ves_id'=> $request->ves_id,
+            //     'ves_name' => $request->ves_name,
+            //     'ves_code' => $request->ves_code,
+            //     'voy_no' => $request->voy_no,
+            // ];
+            // // dd($fields, $item->getAttributes());
+
+            // $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
+            // $req = $client->post(
+            //     $url,
+            //     [
+            //         "json" => $fields
+            //     ]
+            // );
+            // $response = $req->getBody()->getContents();
+            // $result = json_decode($response);
+
+            // if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+
+                
+
+               
+            // } else {
+            //     return response()->json([
+            //         'success' => false,
+            //         'message' => 'Something wrong happened while updating with api',
+            //     ]);
+            // }
         } else {
             return response()->json([
                 'success' => false,

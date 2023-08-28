@@ -108,6 +108,8 @@ class item extends Model
         'consl_f_d_key',
         'is_damage',
         'user_id',
+        'ro_no',
+        'stuffing_procces',
     ];
 
     public function job()

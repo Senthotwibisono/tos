@@ -60,6 +60,8 @@
 @include('invoice.bc.modal-peabn')
 @include('invoice.bc.model-peabn-exp')
 @include('invoice.bc.modal-lain')
+@include('invoice.bc.detail-cont')
+@include('invoice.bc.modal-pkbe')
 
 @endsection
 
@@ -330,5 +332,276 @@
     })
 
   });
+</script>
+
+
+<!-- PKBE -->
+<script>
+  $(document).on('click', '.download-PKBE', function(e) {
+    e.preventDefault();
+ 
+    var no_pkbe =  $('#no_pkbe').val();
+    var tgl_pkbe = $('#tanggal_pkbe').val();
+    var kd_kantor = $('#kd_kantor_pkbe').val();
+    var data = {
+      'no_pkbe': $('#no_pkbe').val(),
+      'tgl_pkbe':  $('#tanggal_pkbe').val(),
+      'kd_kantor': $('#kd_kantor_pkbe').val(),
+     
+    
+
+
+    }
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+    Swal.fire({
+      title: 'Are you Sure?',
+      text: "Ambil data untuk Dokumen Pebean " + no_pkbe + " untuk data export ? ",
+      icon: 'warning',
+      showDenyButton: false,
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      confirmButtonText: 'Confirm',
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+
+
+        $.ajax({
+          type: 'POST',
+          url: '/download-PKBE',
+          data: data,
+          cache: false,
+          dataType: 'json',
+          success: function(response) {
+            console.log(response);
+            if (response.success) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: response.message,
+              })
+              .then(() => {
+                            // Memuat ulang halaman setelah berhasil menyimpan data
+                            window.location.reload();
+                        });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: response.message,
+              });
+            }
+          },
+          error: function(response) {
+            var errors = response.responseJSON.errors;
+            if (errors) {
+              var errorMessage = '';
+              $.each(errors, function(key, value) {
+                errorMessage += value[0] + '<br>';
+              });
+              Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                html: errorMessage,
+              });
+            } else {
+              console.log('error:', response);
+            }
+          },
+        });
+
+      } else if (result.isDenied) {
+        Swal.fire('Changes are not saved', '', 'info')
+      }
+
+
+    })
+
+  });
+</script>
+
+<!-- Dok Manual -->
+<script>
+  $(document).on('click', '.Download-Dokumen-lain', function(e) {
+    e.preventDefault();
+ 
+    var kode_dok =  $('#kodeDokManual').val();
+    var no_dok = $('#no_dokumen_manual').val();
+    var tanggal_dok = $('#tanggal_manual').val();
+    var data = {
+      'kode_dok': $('#kodeDokManual').val(),
+      'no_dok':  $('#no_dokumen_manual').val(),
+      'tanggal_dok': $('#tanggal_manual').val(),
+     
+    
+
+
+    }
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+    Swal.fire({
+      title: 'Are you Sure?',
+      text: "Ambil data untuk Dokumen Pebean " + no_dok + " untuk data Manual ? ",
+      icon: 'warning',
+      showDenyButton: false,
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      confirmButtonText: 'Confirm',
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+
+
+        $.ajax({
+          type: 'POST',
+          url: '/download-Dok-Manual',
+          data: data,
+          cache: false,
+          dataType: 'json',
+          success: function(response) {
+            console.log(response);
+            if (response.success) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: response.message,
+              })
+              .then(() => {
+                            // Memuat ulang halaman setelah berhasil menyimpan data
+                            window.location.reload();
+                        });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: response.message,
+              });
+            }
+          },
+          error: function(response) {
+            var errors = response.responseJSON.errors;
+            if (errors) {
+              var errorMessage = '';
+              $.each(errors, function(key, value) {
+                errorMessage += value[0] + '<br>';
+              });
+              Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                html: errorMessage,
+              });
+            } else {
+              console.log('error:', response);
+            }
+          },
+        });
+
+      } else if (result.isDenied) {
+        Swal.fire('Changes are not saved', '', 'info')
+      }
+
+
+    })
+
+  });
+</script>
+
+<!-- Container Detail -->
+<script>
+ $(function() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $(document).on('click', '.detail-cont', function() {
+        let id = $(this).data('id');
+        $.ajax({
+            type: 'GET',
+            url: '/bc/detail-container-' + id,
+            cache: false,
+            data: {
+                CAR: id
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                $('#detail').modal('show');
+                var tableBody = $('#detail #taabs tbody');
+                tableBody.empty();
+                if (response.length === 0) {            
+                  var newRow = $('<tr>');
+                  newRow.append('<td colspan="7">No Container Avilable</td>');
+                  tableBody.append(newRow);
+              } else {
+                response.data.forEach(function(cont) {
+                        var newRow = $('<tr>');
+                        newRow.append('<td>' + cont.NO_CONT + '</td>');
+                        newRow.append('<td>' + cont.SIZE + '</td>');
+                        newRow.append('<td>' + cont.JNS_MUAT + '</td>');
+                        tableBody.append(newRow);
+                });
+              }
+            },
+            error: function(data) {
+                console.log('error:', data);
+            }
+        });
+    });
+});
+</script>
+
+<script>
+ $(function() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $(document).on('click', '.detail-cont-exp', function() {
+        let id = $(this).data('id');
+        $.ajax({
+            type: 'GET',
+            url: '/container/export-' + id,
+            cache: false,
+            data: {
+                NO_DAFTAR: id
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                $('#detail_exp').modal('show');
+                var tableBody = $('#detail_exp #taabs tbody');
+                tableBody.empty();
+                if (response.length === 0) {            
+                  var newRow = $('<tr>');
+                  newRow.append('<td colspan="7">No Container Avilable</td>');
+                  tableBody.append(newRow);
+              } else {
+                response.data.forEach(function(cont) {
+                        var newRow = $('<tr>');
+                        newRow.append('<td>' + cont.NO_CONT + '</td>');
+                        newRow.append('<td>' + cont.SIZE + '</td>');
+                        newRow.append('<td>' + cont.FL_SEGEL + '</td>');
+                   
+                        tableBody.append(newRow);
+                });
+              }
+            },
+            error: function(data) {
+                console.log('error:', data);
+            }
+        });
+    });
+});
 </script>
 @endsection

@@ -535,9 +535,12 @@ Route::get('/planning/ship_planning', [ShipPlanController::class, 'index']);
 Route::get('/planning/plan-ves-{ves_id}', [ShipPlanController::class, 'plan']);
 
 // Stuffing
+Route::get('/stuffing/gate-in', [Gati::class, 'index_stuf']);
+Route::post('/stuf-gate-in', [Gati::class, 'gati_stuf']);
 Route::get('/stuffing', [Stuffing::class, 'index']);
 Route::get('/stuffing-android', [Stuffing::class, 'android']);
 Route::post('/get-stuffing', [Stuffing::class, 'get_stuffing']);
+Route::post('/get-vessel-in-stuffing', [Stuffing::class, 'get_vessel']);
 Route::post('/stuffing-place', [Stuffing::class, 'stuffing_place']);
 
 // Load
@@ -553,3 +556,7 @@ Route::get('/bea/req-dok', [BeaController::class, 'index']);
 Route::post('/download-sppb', [SoapController::class, 'GetImpor_SPPB']);
 Route::post('/download-npe', [SoapController::class, 'GetEkspor_NPE']);
 Route::post('/download-Pabean', [SoapController::class, 'GetDokumenPabean_OnDemand']);
+Route::post('/download-PKBE', [SoapController::class, 'GetEkspor_PKBE']);
+Route::post('/download-Dok-Manual', [SoapController::class, 'GetDokumenManual_OnDemand']);
+Route::get('/bc/detail-container-{CAR}', [BeaController::class, 'detail']);
+Route::get('/container/export-{NO_DAFTAR}', [BeaController::class, 'container_export']);

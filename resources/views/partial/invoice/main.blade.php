@@ -62,6 +62,7 @@
   <script>new simpleDatatables.DataTable('#table1pea');</script>
   <script>new simpleDatatables.DataTable('#table2');</script>
   <script>new simpleDatatables.DataTable('#table2Pea');</script>
+  <script>new simpleDatatables.DataTable('#table2pkbe');</script>
   <script>new simpleDatatables.DataTable('#table3');</script>
   <script>new simpleDatatables.DataTable('#tableLain');</script>
 

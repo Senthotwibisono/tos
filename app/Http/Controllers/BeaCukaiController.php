@@ -18,6 +18,7 @@ use App\Models\TpsDokPabean; // check doc lainya untuk import & export
 use App\Models\TpsSppbPibCont; // check container
 use App\Models\TpsSppbBcCont; // check container bc
 use App\Models\TpsDokPabeanCont; // check container pabean untuk import & export
+use App\Models\TpsDokPKBE; // check container pabean untuk import & export
 use App\Models\KodeDok;
 
 use App\Models\TpsDokNPE; // check doc number && container export
