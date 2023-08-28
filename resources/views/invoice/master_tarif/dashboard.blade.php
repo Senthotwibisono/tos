@@ -5,7 +5,7 @@
 
 <div class="page-heading">
   <h3><?= $title ?></h3>
-  <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+  <p>Menu untuk Master Tarif</p>
 
 </div>
 <div class="page-content">
@@ -16,7 +16,6 @@
           <h4 class="card-title">
             Master Data Tarif SP2
           </h4>
-          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
         </div>
         <div class="card-body">
           <div class="row">
@@ -39,7 +38,7 @@
       <div class="card">
         <div class="card-header">
           <h4 class="card-title">Master Tarif for SP2 Data Table</h4>
-          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+          <p>Tabel Master Tarif untuk SP2</p>
         </div>
         <div class="card-body">
           <div class="row mt-5">
@@ -322,10 +321,11 @@
 
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+          <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal" onclick="window.location.href = 'invoice/mastertarif';">
             <i class="bx bx-x d-block d-sm-none"></i>
             <span class="d-none d-sm-block">Cancel</span>
           </button>
+
           <button id="createSubmit" type="button" class="btn btn-primary ml-1">
             Submit
           </button>

@@ -98,6 +98,9 @@ class LoadController extends Controller
           'disc_date' => $diff . ' yang lalu',
           'ves_name' => $tem->ves_name,
           'voy_no' => $tem->voy_no,
+          'bay_slot' => $tem->bay_slot,
+          'bay_row' => $tem->bay_row,
+          'bay_tier' => $tem->bay_tier,
         ];
       }
       $items = Item::where('ctr_intern_status', '=', [51, 53])->get();

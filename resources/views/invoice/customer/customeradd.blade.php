@@ -4,8 +4,8 @@
 @section('content')
 
 <div class="page-heading">
-  <h3><?= $title ?></h3>
-  <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+  <h3>Add Customer Data</h3>
+  <p>Masukan Informasi Data Customer</p>
 
 </div>
 <div class="page-content">
