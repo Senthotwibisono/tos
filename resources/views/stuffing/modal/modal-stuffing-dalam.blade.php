@@ -1,4 +1,4 @@
-<div class="modal fade text-left" id="success" role="dialog" aria-labelledby="myModalLabel110" aria-hidden="true">
+<div class="modal fade text-left" id="stuffingDalamModal" role="dialog" aria-labelledby="myModalLabel110" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header bg-success">
@@ -9,22 +9,17 @@
         <!-- form -->
         <div class="form-body" id="place_cont">
           <div class="row">
-          <div class="col-12">
+            <div class="col-12">
               <div class="form-group">
                 <label for="first-name-vertical">Choose R.O Number</label>
-                <select class="choices form-select" id="ro" name="ro_no" required>
-                    <option value="">Select Container</option>
-                   @foreach($ro_awal as $ro)
-                   <option value="{{$ro->ro_no}}">{{$ro->ro_no}}</option>
-                   @endforeach
-                </select>
-                <input type="hidden" id="container_no" class="form-control" name="container_no">
+                <input type="text" id="nomor_ro" class="form-control" name="ro_no" readonly>
+                <input type="text" id="id_truck" class="form-control" name="ro_id_gate" readonly>
               </div>
             </div>
             <div class="col-12">
               <div class="form-group">
                 <label for="first-name-vertical">Truck No</label>
-                <input type="text" id="truck" class="form-control" name="truck_no">
+                <input type="text" id="truck" class="form-control" name="truck_no" readonly>
               </div>
             </div>
             <div class="col-12">
@@ -175,7 +170,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i><span class="d-none d-sm-block">Close</span></button>
-            <button type="submit" class="btn btn-success ml-1 stuffin_luar"><i class="bx bx-check d-block d-sm-none"></i><span class="d-none d-sm-block">Confirm</span></button>
+            <button type="submit" class="btn btn-success ml-1 update_status"><i class="bx bx-check d-block d-sm-none"></i><span class="d-none d-sm-block">Confirm</span></button>
           </div>
         </div>
       </div>

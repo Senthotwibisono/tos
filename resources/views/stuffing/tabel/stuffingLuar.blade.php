@@ -1,37 +1,82 @@
 <div class="col-12">
   <div class="card">
     <div class="card-header">
-    <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#StuffingLuar">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-            </svg> Confirmed</button>
     </div>
     <div class="card-body">
     <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="tableStuffingLuar">
             <thead>
               <tr>
-                <th>Container No</th>
+                <th>Truck No</th>
                 <th>R.O Number</th>
-                <th>Type</th>
-                <th>Blok</th>
-                <th>Slot</th>
-                <th>Row</th>
-                <th>Tier</th>
-                <th>Placemented At</th>
+                <th>Jumlah Container</th>
+                <th>Status</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              @foreach($stuffingLuar as $d)
+              @foreach($ro_gate_luar as $in)
               <tr>
-                <td>{{$d['container_no']}}</td>
-                <td>{{$d['ro_no']}}</td>
-                <td>{{$d['ctr_type']}}</td>
-                <td>{{$d['yard_block']}}</td>
-                <td>{{$d['yard_slot']}}</td>
-                <td>{{$d['yard_row']}}</td>
-                <td>{{$d['yard_tier']}}</td>
-                <td>{{$d['update_time']}}</td>
+                <td>{{$in->truck_no}}</td>
+                <td>{{$in->ro_no}}</td>
+                <td>
+                    @if(isset($container_truck_luar[$in->ro_id_gati]))
+                      {{ $container_truck_luar[$in->ro_id_gati] }}
+                    @else
+                        0 <!-- Menampilkan 0 jika indeks tidak ditemukan -->
+                    @endif
+                </td>
+                <td>
+                  @if($in->status === "1") 
+                  Proccess in yard
+                  @elseif($in->status === '2')
+                  Waiting Truck Out
+                  @elseif($in->status === '3')
+                  Waiting container loaded in a vessel
+                  @elseif($in->status === '4')
+                  Container In a Truck
+                  @elseif($in->status === '5')
+                  In Proccess
+                  @elseif($in->status === '6')
+                  In Proccess
+                  @elseif($in->status === '7')
+                  In Proccess
+                  @elseif($in->status === '8')
+                  Waiting container loaded in a vessel
+                  @else
+                  @endif
+                </td>
+                <td>
+                      @if($in->status === "1")
+                      <button type="button" class="btn icon icon-left btn-outline-info stuffingLuar" data-bs-toggle="modal" data-id="{{$in->ro_id_gati}}"><i class="fa-solid fa-circle-plus"></i></button>
+                      @endif
+                      @if($in->status === "4")      
+                      <button type="button" class="btn icon icon-left btn-outline-info stuffingLuar" data-bs-toggle="modal" data-id="{{$in->ro_id_gati}}"><i class="fa-solid fa-circle-plus"></i></button>
+                      <!-- Button trigger modal -->
+                      <button type="button" class="btn btn-icon-left btn-outline-success ContLuar" data-bs-toggle="modal" data-id="{{$in->ro_id_gati}}"><i class="fa-solid fa-eye"></i></button>
+                      @include('stuffing.modal.detail-cont-luar')
+
+                      <button type="button" class="btn btn-icon-left btn-outline-warning ConfirmOut"  data-id="{{$in->ro_id_gati}}"><i class="fa-regular fa-circle-check"></i></button>
+                      @endif
+                      @if($in->status === "5")
+                      <button type="button" class="btn btn-icon-left btn-outline-success ContLuar" data-bs-toggle="modal" data-id="{{$in->ro_id_gati}}"><i class="fa-solid fa-eye"></i></button>
+                      @include('stuffing.modal.detail-cont-luar')
+                      @endif
+                      @if($in->status === "6")
+                      <button type="button" class="btn btn-icon-left btn-outline-success ContLuar" data-bs-toggle="modal" data-id="{{$in->ro_id_gati}}"><i class="fa-solid fa-eye"></i></button>
+                      @include('stuffing.modal.detail-cont-luar')
+                      @endif
+                      @if($in->status === "7")
+                      <a href="/stuffing/luar/placeCont-{{$in->ro_id_gati}}" type="button" class="btn btn-icon-left btn-outline-warning"><i class="fa-solid fa-location-dot"></i></i></a>
+                      <button type="button" class="btn btn-icon-left btn-outline-success ContLuar" data-bs-toggle="modal" data-id="{{$in->ro_id_gati}}"><i class="fa-solid fa-eye"></i></button>
+                      @include('stuffing.modal.detail-cont-luar')
+                      <button type="button" class="btn btn-icon-left btn-outline-warning ConfirmOut"  data-id="{{$in->ro_id_gati}}"><i class="fa-regular fa-circle-check"></i></button>
+                      @endif
+                      @if($in->status === "8")
+                      
+                      <button type="button" class="btn btn-icon-left btn-outline-success ContLuar" data-bs-toggle="modal" data-id="{{$in->ro_id_gati}}"><i class="fa-solid fa-eye"></i></button>
+                      @include('stuffing.modal.detail-cont-luar')
+                      @endif
+                </td>
               </tr>
               @endforeach
             </tbody>

@@ -34,6 +34,7 @@ use App\Http\Controllers\ShipPlanController;
 use App\Http\Controllers\LoadController;
 use App\Http\Controllers\BeaController;
 use App\Http\Controllers\SoapController;
+use App\Http\Controllers\DocsController;
 
 
 /*
@@ -586,11 +587,25 @@ Route::get('/planning/plan-ves-{ves_id}', [ShipPlanController::class, 'plan']);
 // Stuffing
 Route::get('/stuffing/gate-in', [Gati::class, 'index_stuf']);
 Route::post('/stuf-gate-in', [Gati::class, 'gati_stuf']);
+Route::post('/stuf-gate-in-full', [Gati::class, 'gati_stuf_full']);
+
+Route::get('/stuffing/gate-out', [Gato::class, 'index_stuf_out']);
+Route::post('/stuf-gate-out', [Gato::class, 'gato_stuf']);
+
+
 Route::get('/stuffing', [Stuffing::class, 'index']);
 Route::get('/stuffing-android', [Stuffing::class, 'android']);
 Route::post('/get-stuffing', [Stuffing::class, 'get_stuffing']);
 Route::post('/get-vessel-in-stuffing', [Stuffing::class, 'get_vessel']);
 Route::post('/stuffing-place', [Stuffing::class, 'stuffing_place']);
+Route::post('/stuffing-confirm-out', [Stuffing::class, 'confirm_out']);
+Route::get('/stuffing/stuffingDalam/modal-{ro_id_gati}', [Stuffing::class, 'choose_container']);
+Route::get('/stuffing/stuffingLuar/modal-{ro_id_gati}', [Stuffing::class, 'choose_container_luar']);
+Route::get('/stuffing/detailCont-{ro_id_gati}', [Stuffing::class, 'detail_cont']);
+Route::get('/stuffing/luar/placeCont-{ro_id_gati}', [Stuffing::class, 'place_cont_luar']);
+Route::get('/stuffing/viewCont-{container_key}', [Stuffing::class, 'view_cont']);
+
+Route::post('/stuffing-confirm-out-placement-luar', [Stuffing::class, 'update_place_cont_luar']);
 
 // Load
 Route::get('/load/confirm_load', [LoadController::class, 'index']);
@@ -609,3 +624,16 @@ Route::post('/download-PKBE', [SoapController::class, 'GetEkspor_PKBE']);
 Route::post('/download-Dok-Manual', [SoapController::class, 'GetDokumenManual_OnDemand']);
 Route::get('/bc/detail-container-{CAR}', [BeaController::class, 'detail']);
 Route::get('/container/export-{NO_DAFTAR}', [BeaController::class, 'container_export']);
+
+// Update Edi
+Route::get('/edi/detail-container-{ves_id}', [EdiController::class, 'get_cont']);
+
+
+
+// Docs
+// ro
+Route::get('/docs/dokumen/ro', [DocsController::class, 'index_ro']);
+Route::get('/docs/dokumen/ro/detail-{ro_no}', [DocsController::class, 'container_ro']);
+
+// Inven
+Route::get('docs/inventory/items', [DocsController::class, 'index_items'])->name('inventory.items');

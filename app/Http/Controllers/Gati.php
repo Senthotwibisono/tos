@@ -545,8 +545,9 @@ class Gati extends Controller
     public function index_stuf()
     {
         $title="Gate-In Stuffing";
-        $ro = RO_Gate::where('truck_out_date', '=', null)->get();
-        return view('gate.stuffing.gate-in', compact('title'), compact('ro'));
+        $ro = RO_Gate::whereIn('status', ['1', '2', '4','5', '7'])->get();
+        $full = RO_Gate::where('status', '=' , '6')->get();
+        return view('gate.stuffing.gate-in', compact('title'), compact('ro', 'full'));
     }
 
     public function gati_stuf(Request $request)
@@ -567,6 +568,7 @@ class Gati extends Controller
             'ro_no' => $request->ro_no,
             'truck_no' => $request->truck_no,
             'truck_in_date' => $now,
+            'status' => '1',
         ]);
        
 
@@ -575,5 +577,35 @@ class Gati extends Controller
             'message' => 'Detail Data Post',
             
         ]);
+    }
+
+    public function gati_stuf_full(Request $request)
+    {
+        $now = Carbon::now();
+        $id = $request->ro_id_gati;
+        $truck = RO_Gate::where('ro_id_gati', '=', $id)->first();
+
+        if ($truck) {
+            $truck->update([
+                'truck_in_date_after' => $now,
+                'status' => '7',
+            ]);
+           
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Detail Data Post',
+                'data' => $truck,
+                
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Detail Data Post',
+                
+                
+            ]);
+        }
+        
     }
 }
