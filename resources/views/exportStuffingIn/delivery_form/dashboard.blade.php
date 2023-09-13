@@ -1,4 +1,7 @@
-<?php $__env->startSection('content'); ?>
+@extends ('partial.invoice.main')
+
+
+@section('content')
 
 <div class="page-heading">
   <h3><?= $title ?></h3>
@@ -11,7 +14,7 @@
       <div class="card">
         <div class="card-header">
           <h4 class="card-title">
-            Delivery Form Data Management
+            Export Stuffing Dalam Form Data Management
           </h4>
           <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
         </div>
@@ -19,8 +22,8 @@
           <div class="row">
             <div class="col-12">
               <div class="btn-group mb-3" role="group" aria-label="Basic example">
-                <a href="/invoice/add/step1" type="button" class="btn btn-success">
-                  Tambah Delivery Form
+                <a href="/export/stuffing-in/add/step1" type="button" class="btn btn-success">
+                  Tambah Form Export Stuffing Dalam
                 </a>
               </div>
             </div>
@@ -35,7 +38,7 @@
     <div class="col-12">
       <div class="card">
         <div class="card-header">
-          <h4 class="card-title">Delivery Form Data Table</h4>
+          <h4 class="card-title">Export Stuffing Dalam Form Data Table</h4>
           <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
         </div>
         <div class="card-body">
@@ -46,10 +49,9 @@
                   <tr>
                     <th>#</th>
                     <th>Customer</th>
-                    <th>Do Number</th>
+                    <th>Booking Number</th>
                     <th>Order Service</th>
                     <th>Expired Date</th>
-                    <th>Bill Of Loading Number</th>
                     <th>Created At</th>
                     <th>Status</th>
                     <th>Action</th>
@@ -59,15 +61,14 @@
                   <?php
                   $i = 1;
                   foreach ($deliveries as $data) { ?>
-                    <?php if ($data->orderService == "sp2" || $data->orderService == "spps") { ?>
+                    <?php if ($data->orderService == "stuffingIn") { ?>
 
                       <tr>
                         <td><?= $i ?></td>
                         <td><?= $data->customer->customer_name ?></td>
-                        <td><?= $data->do_number ?></td>
+                        <td><?= $data->booking_no ?></td>
                         <td><?= $data->orderService ?></td>
                         <td><?= DateFormat($data->exp_date) ?></td>
-                        <td><?= $data->boln ?></td>
                         <td><?= DateTimeFormat($data->createdAt) ?></td>
                         <td>
                           <?php if ($data->hasInvoice != null) { ?>
@@ -99,8 +100,7 @@
   </section>
 </div>
 
-<?php echo $__env->make('invoice.modal.modal', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+@include('invoice.modal.modal')
 
 
-<?php $__env->stopSection(); ?>
-<?php echo $__env->make('partial.invoice.main', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\Fdw File Storage 1\CTOS\dev\frontend\tos-dev-local\resources\views/invoice/delivery_form/dashboard.blade.php ENDPATH**/ ?>
+@endsection

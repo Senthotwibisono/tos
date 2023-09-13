@@ -12,6 +12,7 @@ use App\Http\Controllers\CoparnsController;
 use App\Http\Controllers\ExportInvoice;
 use App\Http\Controllers\BeaCukaiController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\StuffingController;
 use App\Http\Controllers\SppsController;
 use App\Http\Controllers\PlacementController;
 use App\Http\Controllers\AndroidController;
@@ -189,6 +190,7 @@ Route::prefix('export')->group(function () {
   Route::prefix('/stuffing-in')->group(function () {
     Route::get('/', [StuffingController::class, 'index']);
     Route::get('/form', [StuffingController::class, 'formStuffing']);
+    Route::get('/previewJobContainer', [StuffingController::class, 'previewDataJob']);
     Route::prefix('/add')->group(function () {
       Route::get('/step1', [StuffingController::class, 'addDataStep1']);
       Route::get('/updatestep1', [StuffingController::class, 'updateDataStep1']);

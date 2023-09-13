@@ -1,7 +1,8 @@
+@extends ('partial.invoice.main')
 <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> -->
 
 
-<?php $__env->startSection('content'); ?>
+@section('content')
 
 <div class="page-heading">
   <h3><?= $title ?></h3>
@@ -22,11 +23,8 @@
           <div class="row">
             <div class="col-12">
               <div class="btn-group mb-3" role="group" aria-label="Basic example">
-                <a href="/invoice/delivery" type="button" class="btn btn-success">
-                  Data Delivery
-                </a>
-                <a href="/invoice/customer" type="button" class="btn btn-info">
-                  Data Customer
+                <a href="/export/stuffing/delivery" type="button" class="btn btn-success">
+                  Data Export Stuffing
                 </a>
               </div>
             </div>
@@ -46,7 +44,7 @@
         </div>
         <div class="card-body">
           <form action="/invoice/export" method="POST" enctype="multipart/form-data">
-            <?php echo csrf_field(); ?>
+            @CSRF
             <div class="row">
 
               <div class="col-4">
@@ -77,19 +75,19 @@
                     <th>Customer</th>
                     <th>Order Service</th>
                     <th>Dibuat Pada</th>
-                    <th>Status</th>
+                    <th>Status Invoice 1</th>
+                    <th>Status Invoice 2</th>
                     <th>Piutang</th>
                     <th>Pranota</th>
-                    <th>Invoice</th>
+                    <th>Invoice1</th>
+                    <th>Invoice2</th>
                     <th>Job</th>
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   <?php foreach ($invoices as $value) { ?>
-                    <?php if ($value->orderService == "sp2" || $value->orderService == "spps") { ?>
-
-
+                    <?php if ($value->orderService == "stuffing") { ?>
                       <tr>
                         <td><?= $value->performaId ?></td>
                         <!-- <td>Vessel Name</td> -->
@@ -105,6 +103,13 @@
                           <?php } ?>
                         </td>
                         <td>
+                          <?php if ($value->isPaid2 == 0) { ?>
+                            <span class="badge bg-danger text-white">Not Paid</span>
+                          <?php } else { ?>
+                            <span class="badge bg-success text-white">Paid</span>
+                          <?php } ?>
+                        </td>
+                        <td>
                           <?php if ($value->isPiutang == 0) { ?>
                             <span class="badge bg-danger text-white">Not Piutang</span>
                           <?php } else { ?>
@@ -112,32 +117,43 @@
                           <?php } ?>
                         </td>
                         <td>
-                          <a type="button" href="/invoice/pranota?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
+                          <a type="button" href="/export/stuffing/pranota1?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
                         </td>
                         <td>
                           <?php if ($value->isPiutang == 1 && $value->isPaid == 1) { ?>
-                            <a type="button" href="/invoice/paidinvoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-file"></i></a>
+                            <a type="button" href="/export/stuffing/paidinvoice1?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-file"></i></a>
                           <?php } else if ($value->isPiutang == 1 && $value->isPaid == 0) { ?>
-                            <a type="button" href="/invoice/paidinvoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-file"></i></a>
+                            <a type="button" href="/export/stuffing/paidinvoice1?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-file"></i></a>
                           <?php } else if ($value->isPiutang == 0 && $value->isPaid == 1) { ?>
-                            <a type="button" href="/invoice/paidinvoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-file"></i></a>
+                            <a type="button" href="/export/stuffing/paidinvoice1?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-file"></i></a>
                           <?php } else if ($value->isPiutang == 0 && $value->isPaid == 0) { ?>
                             <a type="button" class="btn btn-sm btn-primary text-white disabled"><i class="fa fa-file"></i></a>
                           <?php } ?>
                         </td>
-
+                        <td>
+                          <?php if ($value->isPiutang == 1 && $value->isPaid2 == 1) { ?>
+                            <a type="button" href="/export/stuffing/paidinvoice2?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-success text-white"><i class="fa fa-file"></i></a>
+                          <?php } else if ($value->isPiutang == 1 && $value->isPaid2 == 0) { ?>
+                            <a type="button" href="/export/stuffing/paidinvoice2?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-success text-white"><i class="fa fa-file"></i></a>
+                          <?php } else if ($value->isPiutang == 0 && $value->isPaid2 == 1) { ?>
+                            <a type="button" href="/export/stuffing/paidinvoice2?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-success text-white"><i class="fa fa-file"></i></a>
+                          <?php } else if ($value->isPiutang == 0 && $value->isPaid2 == 0) { ?>
+                            <a type="button" class="btn btn-sm btn-success text-white disabled"><i class="fa fa-file"></i></a>
+                          <?php } ?>
+                        </td>
                         <td>
                           <?php if ($value->isPiutang == 1 && $value->isPaid == 1) { ?>
-                            <a type="button" href="/invoice/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-file"></i></a>
+                            <a type="button" href="/export/stuffing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-file"></i></a>
                           <?php } else if ($value->isPiutang == 1 && $value->isPaid == 0) { ?>
-                            <a type="button" href="/invoice/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-file"></i></a>
+                            <a type="button" href="/export/stuffing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-file"></i></a>
                           <?php } else if ($value->isPiutang == 0 && $value->isPaid == 1) { ?>
-                            <a type="button" href="/invoice/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-file"></i></a>
+                            <a type="button" href="/export/stuffing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-file"></i></a>
                           <?php } else if ($value->isPiutang == 0 && $value->isPaid == 0) { ?>
                             <a type="button" class="btn btn-sm btn-info text-white disabled"><i class="fa fa-file"></i></a>
                           <?php } ?>
 
                         </td>
+
                         <td><a type="button" onclick="paidConfig(`<?= $value->id ?>`)" class="btn btn-sm btn-success"><i class="fa fa-pencil"></i></a></td>
 
                       </tr>
@@ -175,9 +191,15 @@
             <input type="text" id="customer" class="form-control" disabled value="kosong">
           </div>
           <div class="form-group">
-            <label>Status Pembayaran</label>
+            <label>Status Pembayaran Invoice 1</label>
             <p>
-              <span id="isPaid" class="badge text-white"></span>
+              <span id="isPaid1" class="badge text-white"></span>
+            </p>
+          </div>
+          <div class="form-group">
+            <label>Status Pembayaran Invoice 2</label>
+            <p>
+              <span id="isPaid2" class="badge text-white"></span>
             </p>
           </div>
           <div class="form-group">
@@ -194,8 +216,12 @@
             <i class="bx bx-x d-block d-sm-none"></i>
             <span class="d-none d-sm-block">Cancel</span>
           </button>
-          <button id="verifyPayment" type="button" class="btn btn-primary ml-1" data-bs-dismiss="modal">
-            Verify This Payment
+          <button id="verifyPayment1" type="button" class="btn btn-primary ml-1" data-bs-dismiss="modal">
+            Verify This Payment 1
+          </button>
+
+          <button id="verifyPayment2" type="button" class="btn btn-primary ml-1" data-bs-dismiss="modal">
+            Verify This Payment 2
           </button>
           <button id="verifyPiutang" type="button" class="btn btn-warning ml-1" data-bs-dismiss="modal">
             Piutang This Invoicess
@@ -210,5 +236,4 @@
 
 
 
-<?php $__env->stopSection(); ?>
-<?php echo $__env->make('partial.invoice.main', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\Fdw File Storage 1\CTOS\dev\frontend\tos-dev-local\resources\views/invoice/dashboard.blade.php ENDPATH**/ ?>
+@endsection

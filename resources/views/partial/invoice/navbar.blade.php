@@ -27,8 +27,19 @@
             <li class="submenu-item">
               <a class="submenu-link" href="/export">Receiving</a>
             </li>
-            <li class="submenu-item">
+            <!-- <li class="submenu-item">
               <a class="submenu-link" href="/export/stuffing">Export Stuffing</a>
+            </li> -->
+            <li class="submenu-item has-sub">
+              <a type="button" class="submenu-link">Export Stuffing</a>
+              <ul class="subsubmenu">
+                <li class="subsubmenu-item">
+                  <a href="/export/stuffing-in" class="subsubmenu-link">Export Stuffing Dalam</a>
+                </li>
+                <li class="subsubmenu-item">
+                  <a href="/export/stuffing-out" class="subsubmenu-link">Export Stuffing Dalam</a>
+                </li>
+              </ul>
             </li>
             <li class="submenu-item">
               <a class="submenu-link" href="/invoice/customer">Customer</a>
