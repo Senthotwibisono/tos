@@ -918,14 +918,20 @@
 
 <script>
   $("#manual").click(function() {
-    console.log("manual!");
+    // console.log("manual!");
     $("#do_manual").css("display", "block");
     $("#do_auto").css("display", "none");
+    $("#auto").css("opacity", "50%");
+    $("#manual").css("opacity", "100%");
+
   })
   $("#auto").click(function() {
-    console.log("auto!");
+    // console.log("auto!");
     $("#do_auto").css("display", "block");
     $("#do_manual").css("display", "none");
+    $("#auto").css("opacity", "100%");
+    $("#manual").css("opacity", "50%");
+
   })
 </script>
 
@@ -933,12 +939,220 @@
   const doNumberSelect = $("#do_number_auto");
   const containerSelect = $("#containerSelector");
 
+  var cont = [];
+  var selcont = [];
+  var newcont = [];
+
+  console.log("selcont before = ", selcont);
+
   function fetchContainers(selectedDoNoId) {
     console.log(selectedDoNoId);
     let csrfToken = $('meta[name="csrf-token"]').attr('content');
     let formData = new FormData();
     formData.append("do_no", selectedDoNoId);
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+      },
+      type: "POST",
+      url: `/allContainerImport`,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function(response) {
 
+        let res = JSON.parse(response);
+        console.log("TRIMMED ALL CONTAINER = ", res.data[0].container_no.trim());
+
+        let data = res.data;
+        // console.log(data.length);
+        data.forEach(value => {
+          if (value.ctr_intern_status == "03") {
+            selcont.push(value.container_no.trim());
+            // console.log(value.container_no);
+          }
+        });
+
+        $.ajax({
+          headers: {
+            'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+          },
+          type: "POST",
+          url: `/invoice/singleData/findContainer`,
+          cache: false,
+          contentType: false,
+          processData: false,
+          data: formData,
+          success: function(response) {
+            containerSelect.innerHTML = ''; // Clear previous options
+            const responseData = JSON.parse(response);
+            // console.log(responseData);
+            // console.log("TRIMMED DO CONTAINER = ", responseData.data[0].container_no.trim());
+
+            let checking = "";
+            if (responseData.hasOwnProperty('data')) {
+              const containers = responseData.data;
+
+              let doBDate = containers[0].do_expired;
+              containers.forEach(value => {
+                cont.push(value.container_no.trim());
+              });
+
+              console.log("cont array=", cont);
+              console.log("selcont array=", selcont);
+              // Convert the date string to a Date object
+              let doDate = new Date(doBDate);
+
+              // Get the current date
+              const today = new Date();
+              today.setHours(0, 0, 0, 0); // Reset time components for accurate comparison
+
+              // console.log(doDate);
+              if (doDate <= today) {
+                console.log("im here bro 1");
+                Swal.fire({
+                  icon: 'warning',
+                  title: 'Oops!',
+                  text: 'Tanggal DO Expired sudah melebihi hari ini, silahkan pilih ulang DO Number!'
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    location.reload();
+                  } else {
+                    location.reload();
+                  }
+                })
+              } else {
+                // console.log("im here bro 2");
+                function checkIfAllInArray(arrayToCheck, referenceArray) {
+                  for (let i = 0; i < arrayToCheck.length; i++) {
+                    const trimmedValue = arrayToCheck[i].trim(); // Trim whitespace from value
+                    if (referenceArray.indexOf(trimmedValue) === -1) {
+                      return false; // Found a value in arrayToCheck that is not in referenceArray
+                    }
+                  }
+                  return true; // All values in arrayToCheck are present in referenceArray
+                }
+                if (cont.length <= selcont.length && checkIfAllInArray(cont, selcont)) {
+                  console.log("All values in cont are present in selcont.");
+                  checking = true;
+                } else {
+                  console.log("Not all values in cont are present in selcont.");
+                  checking = false;
+                }
+                console.log(checking);
+                if (checking != true) {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Data Container Tidak Cocok!',
+                    text: 'Silahkan cek kembali data dan coba ulangi lagi!'
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      location.reload();
+                    } else {
+                      location.reload();
+                    }
+                  });
+                } else {
+                  Swal.fire({
+                    icon: 'success',
+                    title: 'Container Data Found!',
+                    text: 'You can proceed'
+                  });
+                  let fd = new FormData();
+                  fd.append("container", JSON.stringify(cont));
+                  $.ajax({
+                    headers: {
+                      'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+                    },
+                    type: "POST",
+                    url: `/findContainerArray`,
+                    // cache: false,
+                    contentType: "application/json",
+                    // processData: false,
+                    data: JSON.stringify({
+                      container: cont
+                    }),
+                    success: function(response) {
+                      let res = JSON.parse(response)
+                      // console.log(res.data);
+                      value = res.data;
+                      value.forEach((container) => {
+                        console.log(container);
+                        $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+                      });
+                    }
+                  });
+                  $("#containerSelector")[0].selectedIndex = -1;
+                  $("#do_exp_date").val(containers[0].do_expired).attr("readonly", "true");
+                  $("#boln").val(containers[0].bl_no).attr("readonly", "true");
+
+                }
+              }
+            } else {
+              console.error('Invalid response format:', response);
+            }
+          },
+          error(err) {
+            console.log(err);
+          }
+        });
+      },
+      error: function(result) {
+        console.log(result);
+        let res = JSON.parse(result);
+        console.log(res);
+      }
+    });
+
+  }
+
+  $("#do_number_auto").on('change', function() {
+    console.log("CHANGED!");
+    const selectedDoNo = this.value;
+    const selectedDoNoId = this.options[this.selectedIndex].getAttribute('data-id');
+    console.log("DO NO ID ", selectedDoNoId);
+    // $("#containerSelector").attr("disabled", "true");
+    if (selectedDoNo !== "") {
+      fetchContainers(selectedDoNoId);
+    } else {
+      containerSelect.innerHTML = ''; // Clear options when no "do_no" is selected
+    }
+  });
+</script>
+
+<script>
+  function checkDoNumber() {
+    let doNumber = $("#do_number_type").val();
+    // console.log(doNumber);
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+    let formData = new FormData();
+    formData.append("do_no", doNumber);
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+      },
+      type: "POST",
+      url: `/allContainerImport`,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function(response) {
+
+        let res = JSON.parse(response);
+        // console.log("TRIMMED ALL CONTAINER = ", res.data[0].container_no.trim());
+
+        let data = res.data;
+        // console.log(data.length);
+        data.forEach(value => {
+          if (value.ctr_intern_status == "03") {
+            selcont.push(value.container_no.trim());
+            // console.log(value.container_no);
+          }
+        });
+        console.log("selcont array=", selcont);
+
+      }
+    });
     $.ajax({
       headers: {
         'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
@@ -953,10 +1167,18 @@
         containerSelect.innerHTML = ''; // Clear previous options
         const responseData = JSON.parse(response);
         console.log(responseData);
+        // console.log("TRIMMED DO CONTAINER = ", responseData.data[0].container_no.trim());
+
+        let checking = "";
         if (responseData.hasOwnProperty('data')) {
           const containers = responseData.data;
-          let doBDate = containers[0].do_expired;
 
+          let doBDate = containers[0].do_expired;
+          containers.forEach(value => {
+            cont.push(value.container_no.trim());
+          });
+
+          console.log("cont array=", cont);
           // Convert the date string to a Date object
           let doDate = new Date(doBDate);
 
@@ -964,10 +1186,7 @@
           const today = new Date();
           today.setHours(0, 0, 0, 0); // Reset time components for accurate comparison
 
-          // $("#do_exp_date").val(formattedDate(containers.do_expired)).attr("readonly", "true");
-          // $("#boln").val(containers.bl_no).attr("readonly", "true");
-          // console.log(todayDate);
-          console.log(doDate);
+          // console.log(doDate);
           if (doDate <= today) {
             console.log("im here bro 1");
             Swal.fire({
@@ -982,12 +1201,72 @@
               }
             })
           } else {
-            console.log("im here bro 2");
-            containers.forEach((container) => {
-              $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
-            });
-            $("#do_exp_date").val(containers[0].do_expired).attr("readonly", "true");
-            $("#boln").val(containers[0].bl_no).attr("readonly", "true");
+            // console.log("im here bro 2");
+            function checkIfAllInArray(arrayToCheck, referenceArray) {
+              for (let i = 0; i < arrayToCheck.length; i++) {
+                const trimmedValue = arrayToCheck[i].trim(); // Trim whitespace from value
+                if (referenceArray.indexOf(trimmedValue) === -1) {
+                  return false; // Found a value in arrayToCheck that is not in referenceArray
+                }
+              }
+              return true; // All values in arrayToCheck are present in referenceArray
+            }
+
+            if (cont.length <= selcont.length && checkIfAllInArray(cont, selcont)) {
+              // console.log("All values in cont are present in selcont.");
+              checking = true;
+            } else {
+              // console.log("Not all values in cont are present in selcont.");
+              checking = false;
+            }
+            // console.log(checking);
+            if (checking != true) {
+              Swal.fire({
+                icon: 'error',
+                title: 'Data Container Tidak Cocok!',
+                text: 'Silahkan cek kembali data dan coba ulangi lagi!'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  location.reload();
+                } else {
+                  location.reload();
+                }
+              });
+            } else {
+              Swal.fire({
+                icon: 'success',
+                title: 'Container Data Found!',
+                text: 'You can proceed'
+              });
+              $("#containerSelector")[0].selectedIndex = -1;
+              checking = "";
+              let fd = new FormData();
+              fd.append("container", JSON.stringify(cont));
+              $.ajax({
+                headers: {
+                  'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+                },
+                type: "POST",
+                url: `/findContainerArray`,
+                // cache: false,
+                contentType: "application/json",
+                // processData: false,
+                data: JSON.stringify({
+                  container: cont
+                }),
+                success: function(response) {
+                  let res = JSON.parse(response)
+                  // console.log(res.data);
+                  value = res.data;
+                  value.forEach((container) => {
+                    console.log(container);
+                    $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+                  });
+                }
+              });
+              $("#do_exp_date").val(containers[0].do_expired).attr("readonly", "true");
+              $("#boln").val(containers[0].bl_no).attr("readonly", "true");
+            }
           }
         } else {
           console.error('Invalid response format:', response);
@@ -998,22 +1277,12 @@
       }
     });
   }
-
-  $("#do_number_auto").on('change', function() {
-    console.log("CHANGED!");
-    const selectedDoNo = this.value;
-    const selectedDoNoId = this.options[this.selectedIndex].getAttribute('data-id');
-    // $("#containerSelector").attr("disabled", "true");
-    if (selectedDoNo !== "") {
-      fetchContainers(selectedDoNoId);
-    } else {
-      containerSelect.innerHTML = ''; // Clear options when no "do_no" is selected
-    }
-  });
 </script>
 
 <script>
   function fetchContainersBooking(selectedDoNoId) {
+    var sweet_loader = '<div class="spinner-border text-info" role="status"><span class="sr-only">Loading...</span></div>';
+    var cont = [];
     console.log(selectedDoNoId);
     let csrfToken = $('meta[name="csrf-token"]').attr('content');
     let formData = new FormData();
@@ -1029,7 +1298,20 @@
       contentType: false,
       processData: false,
       data: formData,
+      xhr: function() {
+        var xhr = $.ajaxSettings.xhr();
+        xhr.upload.onprogress = function(e) {
+          Swal.fire({
+            html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
+            showConfirmButton: false,
+
+          });
+        }
+        return xhr;
+      },
       success: function(response) {
+        Swal.close();
+
         containerSelect.innerHTML = ''; // Clear previous options
         const responseData = JSON.parse(response);
         console.log(responseData);
@@ -1038,12 +1320,18 @@
           const containers = responseData.data;
           // $("#do_exp_date").val(formattedDate(containers.do_expired)).attr("readonly", "true");
           // $("#boln").val(containers.bl_no).attr("readonly", "true");
+          $("#containerSelector")[0].selectedIndex = -1;
           containers.forEach((container) => {
+
             ctr++;
             $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+            $("#containerSelectorView").append(`<option selected value="${container.id}">${container.container_no}</option>`)
           });
+          $("#selector").css("display", "none");
+          $("#selectorView").css("display", "grid");
           $("#ctr").val(ctr).attr("readonly", "true");
-          $("#pod").val(containers[0].pod).attr("readonly", "true");
+          $("#fpod").val(containers[0].pod).attr("readonly", "true");
+          $("#pod").val(containers[0].disch_port).attr("readonly", "true");
           // $("#vesselBN").val(containers[0].vessel_name).attr("readonly", "true");
           // $("#voyage").val(containers[0].voy_no).attr("readonly", "true");
           // $("#vesselcode").val(containers[0].ves_code).attr("readonly", "true");
@@ -1063,25 +1351,69 @@
             contentType: false,
             processData: false,
             data: formData,
+            xhr: function() {
+              var xhr = $.ajaxSettings.xhr();
+              xhr.upload.onprogress = function(e) {
+                Swal.fire({
+                  html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
+                  showConfirmButton: false,
+
+                });
+              }
+              return xhr;
+            },
             success: function(response) {
+              Swal.close();
+
               let res = JSON.parse(response);
               console.log(res);
               data = res[0];
               // console.log(res.arrival_date);
-              $("#vesselBN").val(data.ves_id).attr("readonly", "true");
+              $("#vesselBN").val(data.ves_name).attr("readonly", "true");
               $("#voyage").val(data.voy_out).attr("readonly", "true");
               $("#vesselcode").val(data.ves_code).attr("readonly", "true");
               $("#closing").val(formattedDate(data.clossing_date)).attr("readonly", "true");
               $("#arrival").val(formattedDate(data.arrival_date)).attr("readonly", "true");
               $("#departure").val(formattedDate(data.deparature_date)).attr("readonly", "true");
+            },
+            error: function(error) {
+              setTimeout(function() {
+                let res = JSON.parse(response);
+                // console.log(res);
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops !',
+                  text: 'Something occured Happened, Please try again later',
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    location.reload();
+                  } else {
+                    location.reload();
+                  }
+                })
+              }, 700);
             }
           })
         } else {
           console.error('Invalid response format:', response);
         }
       },
-      error(err) {
-        console.log(err);
+      error: function(error) {
+        setTimeout(function() {
+          let res = JSON.parse(response);
+          // console.log(res);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops !',
+            text: 'Something occured Happened, Please try again later',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              location.reload();
+            } else {
+              location.reload();
+            }
+          })
+        }, 700);
       }
     });
   }
@@ -1100,13 +1432,214 @@
 </script>
 
 <script>
-  $("#vesselCoparn").on('change', function() {
+  function fetchContainersBookings(selectedDoNoId) {
     var sweet_loader = '<div class="spinner-border text-info" role="status"><span class="sr-only">Loading...</span></div>';
+    var cont = [];
+    console.log(selectedDoNoId);
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+    let formData = new FormData();
+    formData.append("booking", selectedDoNoId);
 
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+      },
+      type: "POST",
+      url: `/invoice/singleData/findContainerBooking`,
+      cache: false,
+      contentType: false,
+      processData: false,
+      data: formData,
+      xhr: function() {
+        var xhr = $.ajaxSettings.xhr();
+        xhr.upload.onprogress = function(e) {
+          Swal.fire({
+            html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
+            showConfirmButton: false,
+
+          });
+        }
+        return xhr;
+      },
+      success: function(response) {
+        Swal.close();
+
+        containerSelect.innerHTML = ''; // Clear previous options
+        const responseData = JSON.parse(response);
+        console.log(responseData);
+        let ctr = 0;
+        if (responseData.hasOwnProperty('data')) {
+          const containers = responseData.data;
+          // $("#do_exp_date").val(formattedDate(containers.do_expired)).attr("readonly", "true");
+          // $("#boln").val(containers.bl_no).attr("readonly", "true");
+          $("#containerSelector")[0].selectedIndex = -1;
+          // if (containers[0].isChoosen === "1" && containers[0].ctr_intern_status !== "04") {
+          if (containers[0].ctr_intern_status !== "04" && containers[0].isChoosen === "1") {
+            Swal.fire({
+              icon: 'warning',
+              title: 'Data Container Sudah Digunakan!',
+              text: 'Silahakan pilih data yang lain',
+            }).then((result) => {
+              if (result.isConfirmed) {
+                location.reload();
+              } else {
+                location.reload();
+
+              }
+            })
+          } else {
+            containers.forEach((container) => {
+              ctr++;
+              cont.push(container.container_no.trim());
+
+              // $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+              // $("#containerSelectorView").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+            });
+            // let csrfToken = $('meta[name="csrf-token"]').attr('content');
+            let csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+            $.ajax({
+              headers: {
+                'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+              },
+              type: "POST",
+              url: `/findContainerArray`,
+              cache: false,
+              contentType: "application/json",
+              // processData: false,
+              data: JSON.stringify({
+                container: cont
+              }),
+              success: function(response) {
+                let res = JSON.parse(response)
+                // console.log(res.data);
+                value = res.data;
+                value.forEach((container) => {
+                  // console.log(container);
+                  if (container.ctr_intern_status == "04") {
+                    $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+                    $("#containerSelectorView").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+                  }
+                });
+                // console.log(cont);
+                $("#selector").css("display", "none");
+                $("#selectorView").css("display", "grid");
+                $("#ctr").val(ctr).attr("readonly", "true");
+                $("#fpod").val(containers[0].pod).attr("readonly", "true");
+                $("#pod").val(containers[0].disch_port).attr("readonly", "true");
+                // $("#vesselBN").val(containers[0].vessel_name).attr("readonly", "true");
+                // $("#voyage").val(containers[0].voy_no).attr("readonly", "true");
+                // $("#vesselcode").val(containers[0].ves_code).attr("readonly", "true");
+                // $("#closing").val(formattedDate(containers[0].closing_date)).attr("readonly", "true");
+                // $("#arrival").val(formattedDate(containers[0].arrival_date)).attr("readonly", "true");
+                // $("#departure").val(formattedDate(containers[0].departure_date)).attr("readonly", "true");
+                let csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+                let formData = new FormData();
+                formData.append("ves_id", containers[0].ves_id);
+                $.ajax({
+                  headers: {
+                    'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+                  },
+                  type: "POST",
+                  url: `/coparn/findSingleVessel`,
+                  cache: false,
+                  contentType: false,
+                  processData: false,
+                  data: formData,
+                  xhr: function() {
+                    var xhr = $.ajaxSettings.xhr();
+                    xhr.upload.onprogress = function(e) {
+                      Swal.fire({
+                        html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
+                        showConfirmButton: false,
+
+                      });
+                    }
+                    return xhr;
+                  },
+                  success: function(response) {
+                    Swal.close();
+
+                    let res = JSON.parse(response);
+                    console.log(res);
+                    data = res[0];
+                    // console.log(res.arrival_date);
+                    $("#vesselBN").val(data.ves_name).attr("readonly", "true");
+                    $("#voyage").val(data.voy_out).attr("readonly", "true");
+                    $("#vesselcode").val(data.ves_code).attr("readonly", "true");
+                    $("#closing").val(formattedDate(data.clossing_date)).attr("readonly", "true");
+                    $("#arrival").val(formattedDate(data.arrival_date)).attr("readonly", "true");
+                    $("#departure").val(formattedDate(data.deparature_date)).attr("readonly", "true");
+                  },
+                  error: function(error) {
+                    setTimeout(function() {
+                      let res = JSON.parse(response);
+                      // console.log(res);
+                      Swal.fire({
+                        icon: 'error',
+                        title: 'Oops !',
+                        text: 'Something occured Happened, Please try again later',
+                      }).then((result) => {
+                        if (result.isConfirmed) {
+                          location.reload();
+                        } else {
+                          location.reload();
+                        }
+                      })
+                    }, 700);
+                  }
+                })
+              }
+            });
+
+          }
+
+        } else {
+          console.error('Invalid response format:', response);
+        }
+      },
+      error: function(error) {
+        setTimeout(function() {
+          let res = JSON.parse(response);
+          // console.log(res);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops !',
+            text: 'Something occured Happened, Please try again later',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              location.reload();
+            } else {
+              location.reload();
+            }
+          })
+        }, 700);
+      }
+    });
+  }
+
+  $("#bookingStuffing").on('change', function() {
     console.log("CHANGED!");
     const selectedDoNo = this.value;
     const selectedDoNoId = this.options[this.selectedIndex].getAttribute('data-id');
-    console.log(selectedDoNoId);
+    // $("#containerSelector").attr("disabled", "true");
+    if (selectedDoNo !== "") {
+      fetchContainersBookings(selectedDoNoId);
+    } else {
+      containerSelect.innerHTML = ''; // Clear options when no "do_no" is selected
+    }
+  });
+</script>
+
+<script>
+  $("#vesselCoparn").on('change', function() {
+    var sweet_loader = '<div class="spinner-border text-info" role="status"><span class="sr-only">Loading...</span></div>';
+
+    // console.log("CHANGED!");
+    const selectedDoNo = this.value;
+    const selectedDoNoId = this.options[this.selectedIndex].getAttribute('data-id');
+    // console.log(selectedDoNoId);
     let csrfToken = $('meta[name="csrf-token"]').attr('content');
     let formData = new FormData();
     formData.append("ves_id", selectedDoNoId);
@@ -1135,11 +1668,15 @@
         Swal.close();
 
         let res = JSON.parse(response);
+        console.log("BEFORE LOG");
         console.log(res);
+        // console.log(res.data[0].ves_id);
+        // console.log(res.data[0]);
         data = res[0];
+        // console.log(data.ves_id);
         // console.log(res.arrival_date);
         $("#voyage").val(data.voy_out).attr("readonly", "true");
-        $("#ves_id").val(data.ves_id).attr("readonly", "true");
+        $("#vesselid").val(data.ves_id).attr("readonly", "true");
         $("#vesselcode").val(data.ves_code).attr("readonly", "true");
         $("#closing").val(formattedDate(data.clossing_date)).attr("readonly", "true");
         $("#arrival").val(formattedDate(data.arrival_date)).attr("readonly", "true");
@@ -1301,6 +1838,7 @@
     $("#documentNumber").attr("required", true);
     $("#documentType").attr("required", true);
     $("#documentDate").attr("required", true);
+    $("#beacukaiChecking").val("false");
   })
   $("#domestic").click(function() {
     $("#beacukaiForm").css("display", "none");
@@ -1309,6 +1847,7 @@
     $("#documentNumber").attr("required", false);
     $("#documentType").attr("required", false);
     $("#documentDate").attr("required", false);
+    $("#beacukaiChecking").val("true");
   })
 
   function checkBeacukaiImport() {
@@ -1352,10 +1891,20 @@
             // console.log(res);
             let docBeacukai = res[0];
             let contBeacukai = res[1];
+            let checking = "";
+
             // console.log(contBeacukai);
             // console.log(container);
             if (docBeacukai.docResultTrueStatus == true && docBeacukai.contResultTrueStatus == true) {
-              if (contBeacukai != container) {
+              for (var i = 0; i < contBeacukai.length; i++) {
+                if (contBeacukai[i] !== container[i]) {
+                  checking = false
+                } else {
+                  checking = true
+                }
+              }
+              // console.log(checking);
+              if (checking != true) {
                 Swal.fire({
                   icon: 'error',
                   title: 'Data Container Tidak Cocok!',
@@ -1365,7 +1914,6 @@
                     location.reload();
                   } else {
                     location.reload();
-
                   }
                 });
               } else {
@@ -1376,6 +1924,7 @@
                 });
                 $("#documentType").val(docBeacukai.docType);
                 $("#documentDate").val(docBeacukai.docDate);
+                $("#beacukaiChecking").val("true");
               }
             } else if (docBeacukai.docResultTrueStatus != true) {
               Swal.fire({
@@ -1481,10 +2030,19 @@
             // console.log(res);
             let docBeacukai = res[0];
             let contBeacukai = res[1];
+            let checking = "";
             // console.log(contBeacukai);
-            // console.log(container);
+            // console.log(container, contBeacukai);
             if (docBeacukai.docResultTrueStatus == true && docBeacukai.contResultTrueStatus == true) {
-              if (contBeacukai != container) {
+              for (var i = 0; i < contBeacukai.length; i++) {
+                if (contBeacukai[i] !== container[i]) {
+                  checking = false
+                } else {
+                  checking = true
+                }
+              }
+              // console.log(checking);
+              if (checking != true) {
                 Swal.fire({
                   icon: 'error',
                   title: 'Data Container Tidak Cocok!',
@@ -1494,7 +2052,6 @@
                     location.reload();
                   } else {
                     location.reload();
-
                   }
                 });
               } else {
@@ -1505,6 +2062,7 @@
                 });
                 $("#documentType").val(docBeacukai.docType);
                 $("#documentDate").val(docBeacukai.docDate);
+                $("#beacukaiChecking").val("true");
               }
             } else if (docBeacukai.docResultTrueStatus != true) {
               Swal.fire({
@@ -1567,6 +2125,60 @@
       })
     }
 
+  }
+
+  function beacukaiCheckValue() {
+    let check = $("#beacukaiChecking").val();
+    let doCheck = $("#do_exp_date").val();
+    let bolnCheck = $("#boln").val();
+
+
+    if (check == "true") {
+      if (!doCheck) {
+        event.preventDefault(); // Prevent form submission
+        // alert("Please enter a date."); // Display an alert or use another method to notify the user
+        Swal.fire({
+          icon: 'warning',
+          title: 'Kamu Belum Melengkapi Form!',
+          text: 'Harap Lengkapi Form Terlebih Dahulu!'
+        })
+      } else {
+        $("#formSubmit").submit();
+      }
+    } else {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Kamu Belum Melakukan Beacukai Checking!',
+        text: 'Harap Melakukan Checking Terlebih Dahulu!'
+      })
+    }
+  }
+
+  function beacukaiCheckValueExport() {
+    let check = $("#beacukaiChecking").val();
+    // let doCheck = $("#do_exp_date").val();
+    let ctr = $("#ctr").val();
+
+
+    if (check == "true") {
+      if (!ctr) {
+        event.preventDefault(); // Prevent form submission
+        // alert("Please enter a date."); // Display an alert or use another method to notify the user
+        Swal.fire({
+          icon: 'warning',
+          title: 'Kamu Belum Melengkapi Form!',
+          text: 'Harap Lengkapi Form Terlebih Dahulu!'
+        })
+      } else {
+        $("#formSubmit").submit();
+      }
+    } else {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Kamu Belum Melakukan Beacukai Checking!',
+        text: 'Harap Melakukan Checking Terlebih Dahulu!'
+      })
+    }
   }
 </script>
 

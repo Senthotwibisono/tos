@@ -61,7 +61,10 @@
   <script>new simpleDatatables.DataTable('#table1bc');</script>
   <script>new simpleDatatables.DataTable('#table1pea');</script>
   <script>new simpleDatatables.DataTable('#table2');</script>
+  <script>new simpleDatatables.DataTable('#table2Pea');</script>
+  <script>new simpleDatatables.DataTable('#table2pkbe');</script>
   <script>new simpleDatatables.DataTable('#table3');</script>
+  <script>new simpleDatatables.DataTable('#tableLain');</script>
 
   <!-- select 2 js  -->
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
