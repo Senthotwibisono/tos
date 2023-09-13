@@ -5,8 +5,8 @@
   });
 
   function goBack() {
-  window.history.back();
-}
+    window.history.back();
+  }
 
   function canceladdCustomer() {
     Swal.fire({
@@ -19,6 +19,7 @@
       }
     })
   }
+
   function submitaddCustomer() {
     Swal.fire({
       icon: 'question',
@@ -1628,6 +1629,207 @@
     // $("#containerSelector").attr("disabled", "true");
     if (selectedDoNo !== "") {
       fetchContainersBookings(selectedDoNoId);
+    } else {
+      containerSelect.innerHTML = ''; // Clear options when no "do_no" is selected
+    }
+  });
+</script>
+
+<script>
+  function fetchContainersRo(selectedDoNoId) {
+    var sweet_loader = '<div class="spinner-border text-info" role="status"><span class="sr-only">Loading...</span></div>';
+    var cont = [];
+    console.log(selectedDoNoId);
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+    let formData = new FormData();
+    formData.append("booking", selectedDoNoId);
+
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+      },
+      type: "POST",
+      url: `/invoice/singleData/findContainerRo`,
+      cache: false,
+      contentType: false,
+      processData: false,
+      data: formData,
+      xhr: function() {
+        var xhr = $.ajaxSettings.xhr();
+        xhr.upload.onprogress = function(e) {
+          Swal.fire({
+            html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
+            showConfirmButton: false,
+
+          });
+        }
+        return xhr;
+      },
+      success: function(response) {
+        Swal.close();
+
+        containerSelect.innerHTML = ''; // Clear previous options
+        const responseData = JSON.parse(response);
+        console.log(responseData);
+        let ctr = 0;
+        if (responseData.hasOwnProperty('data')) {
+          const containers = responseData.data;
+          // $("#do_exp_date").val(formattedDate(containers.do_expired)).attr("readonly", "true");
+          // $("#boln").val(containers.bl_no).attr("readonly", "true");
+          $("#containerSelector")[0].selectedIndex = -1;
+          // if (containers[0].isChoosen === "1" && containers[0].ctr_intern_status !== "04") {
+          if (containers[0].isChoosen === "1") {
+            Swal.fire({
+              icon: 'warning',
+              title: 'Data Container Sudah Digunakan!',
+              text: 'Silahakan pilih data yang lain',
+            }).then((result) => {
+              if (result.isConfirmed) {
+                location.reload();
+              } else {
+                location.reload();
+
+              }
+            })
+          } else {
+            containers.forEach((container) => {
+              ctr++;
+              cont.push(container.container_no.trim());
+
+              // $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+              // $("#containerSelectorView").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+            });
+            // let csrfToken = $('meta[name="csrf-token"]').attr('content');
+            let csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+            $.ajax({
+              headers: {
+                'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+              },
+              type: "POST",
+              url: `/findContainerArray`,
+              cache: false,
+              contentType: "application/json",
+              // processData: false,
+              data: JSON.stringify({
+                container: cont
+              }),
+              success: function(response) {
+                let res = JSON.parse(response)
+                // console.log(res.data);
+                value = res.data;
+                value.forEach((container) => {
+                  // console.log(container);
+                  // if (container.ctr_intern_status == "04") {
+                  $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+                  $("#containerSelectorView").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+                  // }
+                });
+                // console.log(cont);
+                $("#selector").css("display", "none");
+                $("#selectorView").css("display", "grid");
+                $("#ctr").val(ctr).attr("readonly", "true");
+                $("#fpod").val(containers[0].pod).attr("readonly", "true");
+                $("#pod").val(containers[0].disch_port).attr("readonly", "true");
+                // $("#vesselBN").val(containers[0].vessel_name).attr("readonly", "true");
+                // $("#voyage").val(containers[0].voy_no).attr("readonly", "true");
+                // $("#vesselcode").val(containers[0].ves_code).attr("readonly", "true");
+                // $("#closing").val(formattedDate(containers[0].closing_date)).attr("readonly", "true");
+                // $("#arrival").val(formattedDate(containers[0].arrival_date)).attr("readonly", "true");
+                // $("#departure").val(formattedDate(containers[0].departure_date)).attr("readonly", "true");
+                let csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+                let formData = new FormData();
+                formData.append("ves_id", containers[0].ves_id);
+                $.ajax({
+                  headers: {
+                    'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+                  },
+                  type: "POST",
+                  url: `/coparn/findSingleVessel`,
+                  cache: false,
+                  contentType: false,
+                  processData: false,
+                  data: formData,
+                  xhr: function() {
+                    var xhr = $.ajaxSettings.xhr();
+                    xhr.upload.onprogress = function(e) {
+                      Swal.fire({
+                        html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
+                        showConfirmButton: false,
+
+                      });
+                    }
+                    return xhr;
+                  },
+                  success: function(response) {
+                    Swal.close();
+
+                    let res = JSON.parse(response);
+                    console.log(res);
+                    data = res[0];
+                    // console.log(res.arrival_date);
+                    $("#vesselBN").val(data.ves_name).attr("readonly", "true");
+                    $("#voyage").val(data.voy_out).attr("readonly", "true");
+                    $("#vesselcode").val(data.ves_code).attr("readonly", "true");
+                    $("#closing").val(formattedDate(data.clossing_date)).attr("readonly", "true");
+                    $("#arrival").val(formattedDate(data.arrival_date)).attr("readonly", "true");
+                    $("#departure").val(formattedDate(data.deparature_date)).attr("readonly", "true");
+                  },
+                  error: function(error) {
+                    setTimeout(function() {
+                      let res = JSON.parse(response);
+                      // console.log(res);
+                      Swal.fire({
+                        icon: 'error',
+                        title: 'Oops !',
+                        text: 'Something occured Happened, Please try again later',
+                      }).then((result) => {
+                        if (result.isConfirmed) {
+                          location.reload();
+                        } else {
+                          location.reload();
+                        }
+                      })
+                    }, 700);
+                  }
+                })
+              }
+            });
+
+          }
+
+        } else {
+          console.error('Invalid response format:', response);
+        }
+      },
+      error: function(error) {
+        setTimeout(function() {
+          let res = JSON.parse(response);
+          // console.log(res);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops !',
+            text: 'Something occured Happened, Please try again later',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              location.reload();
+            } else {
+              location.reload();
+            }
+          })
+        }, 700);
+      }
+    });
+  }
+
+  $("#roNumber").on('change', function() {
+    console.log("CHANGED!");
+    const selectedDoNo = this.value;
+    const selectedDoNoId = this.options[this.selectedIndex].getAttribute('data-id');
+    // $("#containerSelector").attr("disabled", "true");
+    if (selectedDoNo !== "") {
+      fetchContainersRo(selectedDoNoId);
     } else {
       containerSelect.innerHTML = ''; // Clear options when no "do_no" is selected
     }

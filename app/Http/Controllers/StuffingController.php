@@ -94,12 +94,12 @@ class StuffingController extends Controller
     // dd($result_do);
 
     // GET ALL BOOKING
-    $url_booking = getenv('API_URL') . '/delivery-service/container/booking/all';
-    $req_booking = $client->get($url_booking);
-    $response_booking = $req_booking->getBody()->getContents();
-    $result_booking = json_decode($response_booking);
-    // dd($result_booking);
-    $data["booking"] = $result_booking->data;
+    $url_ro = getenv('API_URL') . '/delivery-service/container/ro/all';
+    $req_ro = $client->get($url_ro);
+    $response_ro = $req_ro->getBody()->getContents();
+    $result_ro = json_decode($response_ro);
+    // dd($result_ro);
+    $data["ro"] = $result_ro->data;
 
 
     $vessel_voyage = VVoyage::whereDate('deparature_date', '>=', now())->orderBy('deparature_date', 'desc')->get();
@@ -153,7 +153,7 @@ class StuffingController extends Controller
       "documentDate" => $documentDate,
 
     ];
-    // dd($fields);
+    // dd($fields, json_encode($fields));
     // Commit changes
 
     $url = getenv('API_URL') . '/delivery-service/form/create';
@@ -202,7 +202,7 @@ class StuffingController extends Controller
       "id" => $id_form,
       "containers" => $container_arr,
     ];
-    // dd($fields);
+    dd($fields, json_encode($fields));
 
     $url = getenv('API_URL') . '/delivery-service/form/calculate/export';
     $req = $client->post(
@@ -213,7 +213,7 @@ class StuffingController extends Controller
     );
     $response = $req->getBody()->getContents();
     $result = json_decode($response);
-    // dd($result);
+    dd($result);
     $data = [];
 
     $isExtended = $result->data->deliveryForm->isExtended;

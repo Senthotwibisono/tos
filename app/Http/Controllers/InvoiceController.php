@@ -1391,6 +1391,21 @@ class InvoiceController extends Controller
     echo $response;
   }
 
+  public function findContainerRo(Request $request)
+  {
+    $client = new Client();
+    $id = $request->booking;
+
+    $url = getenv('API_URL') . '/delivery-service/container/ro/' . $id;
+    $req = $client->get(
+      $url
+    );
+    $response = $req->getBody()->getContents();
+    // var_dump($response);
+    // die();
+    echo $response;
+  }
+
   public function findContainerArray(Request $request)
   {
     $client = new Client();

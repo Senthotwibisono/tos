@@ -126,6 +126,7 @@ Route::prefix('invoice')->group(function () {
     Route::post('/findContainer', [InvoiceController::class, 'findContainer']);
     Route::post('/findSingleCustomer', [InvoiceController::class, 'findSingleCustomer']);
     Route::post('/findContainerBooking', [InvoiceController::class, 'findContainerBooking']);
+    Route::post('/findContainerRo', [InvoiceController::class, 'findContainerRo']);
   });
   Route::prefix('mastertarif')->group(function () {
     Route::get('/', [InvoiceController::class, 'masterTarif']);
