@@ -90,6 +90,7 @@ class Stripping extends Controller
         $title = 'STR';
         $confirmed = Item::where('ctr_intern_status', '=', 04,)->orderBy('update_time', 'desc')->get();
         $formattedData = [];
+        $data = [];
 
         foreach ($confirmed as $tem) {
             $now = Carbon::now();
@@ -119,7 +120,7 @@ class Stripping extends Controller
                 'container_key' => $tem->container_key
             ];
         }
-        $containerKeys = Item::where('ctr_intern_status', '=', '03')
+        $containerKeys = Item::where('ctr_intern_status', '=', [03,04])
             ->whereHas('job', function ($query) {
                 $query->where('order_service_code', 'SPPS');
             })
@@ -137,7 +138,19 @@ class Stripping extends Controller
         $yard_tier = Yard::distinct('yard_tier')->pluck('yard_tier');
         $currentDateTime = Carbon::now();
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
-        return view('stripping.android', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'));
+
+        // GET ALL JOB_CONTAINER
+
+        $client = new Client();
+        $url_jobContainer = getenv('API_URL') . '/delivery-service/job/all';
+        $req_jobContainer = $client->get($url_jobContainer);
+        $response_jobContainer = $req_jobContainer->getBody()->getContents();
+        $result_jobContainer = json_decode($response_jobContainer);
+        // dd($result_jobContainer);
+        // dd($containerKeys);
+
+        $data["jobContainers"] = $result_jobContainer->data;
+        return view('stripping.android', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'),$data);
     }
 
     public function get_stripping(Request $request)

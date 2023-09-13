@@ -21,6 +21,9 @@ use App\Models\TpsDokPabean;
 use App\Models\TpsDokPabeanCont;
 use App\Models\TpsDokPabeanKms;
 
+//PKBE
+use App\Models\TpsDokPKBE;
+
 class BeaController extends Controller
 {
     //
@@ -98,9 +101,26 @@ class BeaController extends Controller
 
         }
 
-        $dok_lain = KodeDok::whereNot('kode', '=', [ '6', '41', '44', '56'])->get();
+        $dok_lain = KodeDok::whereIn('kode', [
+        4, 5, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+        31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 42, 43, 45, 47, 48, 49, 50, 51, 52, 59, 60, 61,
+        62, 63, 64, 65, 66, 46, 53, 54, 55, 57, 58, 67])->get();
 
-        return view('invoice.bc.req-bc-dok', compact('title', 'dok', 'sppb', 'dok_npe', 'details', 'container', 'container_SPPB', 'sppb_bc', 'pabean_import', 'pabean_EXP', 'dok_lain'));
+        // PKBE
+        $dok_pkbe = TpsDokPKBE::pluck('NOPKBE')->unique();
+        $details_pkbe = [];
+            foreach ($dok_pkbe as $pkbeValue) {
+                $detail_pkbe = TpsDokPKBE::where('NOPKBE', $pkbeValue)->first();
+                if ($detail_pkbe) {
+                    $details_pkbe[] = $detail_pkbe;
+                }
+            }
+            $container_pkbe = TpsDokPKBE::whereIn('NOPKBE', $dok_pkbe)
+                ->groupBy('NOPKBE')
+                ->selectRaw('NOPKBE, count(distinct NO_CONT) as container_count')
+                ->pluck('container_count', 'NOPKBE');
+
+        return view('invoice.bc.req-bc-dok', compact('title', 'dok', 'sppb', 'dok_npe', 'details', 'container', 'container_SPPB', 'sppb_bc', 'pabean_import', 'pabean_EXP', 'dok_lain', 'details_pkbe', 'container_pkbe'));
     }
 
     public function detail(Request $request)
@@ -113,6 +133,9 @@ class BeaController extends Controller
         }
         if ($cont->isEmpty()) {
             $cont = TpsDokPabeanCont::where('CAR', '=', $car)->select('NO_CONT','SIZE', 'JNS_MUAT')->distinct('NO_CONT')->get();
+        }
+        if ($cont->isEmpty()) {
+            $cont = TpsDokPKBE::where('CAR', '=', $car)->select('NO_CONT','SIZE')->distinct('NO_CONT')->get();
         }
 
         return response()->json([

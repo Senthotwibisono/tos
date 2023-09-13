@@ -36,8 +36,14 @@ class LoginController extends Controller
             $user = Auth::user();
             if ($user->hasRole('admin')) {
                 return '/';
-            } elseif ($user->hasRole('android')) {
+            } elseif ($user->hasRole('android'))
                 return '/android-dashboard';
+            elseif ($user->hasRole('gate')) {
+                return '/android-gate';
+            } elseif ($user->hasRole('yard')) {
+                return '/android-yard';
+            } elseif ($user->hasRole('cc')) {
+                return '/android-cc';
             }
         }
 
@@ -59,11 +65,16 @@ class LoginController extends Controller
     {
         if ($user->hasRole('admin')) {
             return redirect()->route('dashboard');
-        }elseif ($user->hasRole('android')) {
-        return redirect('/android-dashboard');
-        }else {
+        } elseif ($user->hasRole('android')) {
+            return redirect('/android-dashboard');
+        } elseif ($user->hasRole('gate')) {
+            return redirect('/android-gate');
+        } elseif ($user->hasRole('yard')) {
+            return redirect('/android-yard');
+        } elseif ($user->hasRole('cc')) {
+            return redirect('/android-cc');
+        } else {
             return redirect('/invoice');
         }
-        
     }
 }

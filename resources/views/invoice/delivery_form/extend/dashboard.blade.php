@@ -4,8 +4,8 @@
 @section('content')
 
 <div class="page-heading">
-  <h3><?= $title ?></h3>
-  <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+  <h3>Delivery Import Extend Form Data</h3>
+  <p>Menu Delivery Import untuk Perpanjang</p>
 
 </div>
 <div class="page-content">
@@ -16,7 +16,6 @@
           <h4 class="card-title">
             Data Management
           </h4>
-          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
         </div>
         <div class="card-body">
           <div class="row">
@@ -38,8 +37,8 @@
     <div class="col-12">
       <div class="card">
         <div class="card-header">
-          <h4 class="card-title">Billing Invoice Data Table</h4>
-          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+          <h4 class="card-title">Billing Extend Invoice Data Table</h4>
+          <p>Tabel Billing Invoice (Extend)</p>
         </div>
         <div class="card-body">
           <div class="row mt-5">

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Item; // load model
@@ -6,6 +7,7 @@ use Illuminate\View\View;
 use Illuminate\Http\Request;
 use App\Models\HistoryContainer;
 use App\Models\Job;
+use Illuminate\Pagination\Paginator;
 
 class HistoryController extends Controller
 {
@@ -16,7 +18,12 @@ class HistoryController extends Controller
 
     function index(): View
     {
-        $items = Item::select('container_key', 'container_no', 'ves_id', 'ctr_intern_status')->get();
+        $items = HistoryContainer::select('container_key', 'container_no', 'operation_name', 'ctr_intern_status')
+            ->paginate(10); // Adjust the number based on your requirement
+
+            $paginator = new Paginator($items, 10); // Use the same pagination number here
+
+
         return view('reports.hist.index', compact('items'));
     }
 
@@ -69,5 +76,4 @@ class HistoryController extends Controller
         ]);
         return response()->json(['data' => $anncectrjobs]);
     }
-    
 }

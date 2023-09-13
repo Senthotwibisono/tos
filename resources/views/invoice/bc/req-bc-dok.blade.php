@@ -424,6 +424,95 @@
   });
 </script>
 
+<!-- Dok Manual -->
+<script>
+  $(document).on('click', '.Download-Dokumen-lain', function(e) {
+    e.preventDefault();
+ 
+    var kode_dok =  $('#kodeDokManual').val();
+    var no_dok = $('#no_dokumen_manual').val();
+    var tanggal_dok = $('#tanggal_manual').val();
+    var data = {
+      'kode_dok': $('#kodeDokManual').val(),
+      'no_dok':  $('#no_dokumen_manual').val(),
+      'tanggal_dok': $('#tanggal_manual').val(),
+     
+    
+
+
+    }
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+    Swal.fire({
+      title: 'Are you Sure?',
+      text: "Ambil data untuk Dokumen Pebean " + no_dok + " untuk data Manual ? ",
+      icon: 'warning',
+      showDenyButton: false,
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      confirmButtonText: 'Confirm',
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+
+
+        $.ajax({
+          type: 'POST',
+          url: '/download-Dok-Manual',
+          data: data,
+          cache: false,
+          dataType: 'json',
+          success: function(response) {
+            console.log(response);
+            if (response.success) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: response.message,
+              })
+              .then(() => {
+                            // Memuat ulang halaman setelah berhasil menyimpan data
+                            window.location.reload();
+                        });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: response.message,
+              });
+            }
+          },
+          error: function(response) {
+            var errors = response.responseJSON.errors;
+            if (errors) {
+              var errorMessage = '';
+              $.each(errors, function(key, value) {
+                errorMessage += value[0] + '<br>';
+              });
+              Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                html: errorMessage,
+              });
+            } else {
+              console.log('error:', response);
+            }
+          },
+        });
+
+      } else if (result.isDenied) {
+        Swal.fire('Changes are not saved', '', 'info')
+      }
+
+
+    })
+
+  });
+</script>
+
 <!-- Container Detail -->
 <script>
  $(function() {

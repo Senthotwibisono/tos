@@ -5,7 +5,7 @@
 
 <div class="page-heading">
   <h3><?= $title ?></h3>
-  <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+  <p>Edit Data Master Tarif SPPS</p>
 </div>
 <div class="page-content mb-5">
   <section class="row">

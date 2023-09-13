@@ -1,235 +1,90 @@
-
+<?php $__env->startSection('custom_style'); ?>
+<style>
+    span.select2-container {
+        z-index: 10050;
+    }
+</style>
+<?php $__env->stopSection(); ?>
 <?php $__env->startSection('content'); ?>
-<div class="page-heading">
+
   <div class="page-title">
     <div class="row">
       <div class="col-12 col-md-6 order-md-1 order-last">
-        <h3>Stripping</h3>
+        <h3>Stuffing</h3>
       </div>
 
       <div class="col-12 col-md-6 order-md-2 order-first">
         <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item active" aria-current="page">Stripping</li>
+            <li class="breadcrumb-item active" aria-current="page">Stuffing</li>
           </ol>
         </nav>
       </div>
     </div>
   </div>
+
+
   <section class="section">
     <div class="card">
-      <div class="card-header">
-        <button class="btn icon icon-left btn-success" data-bs-toggle="modal" data-bs-target="#success">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit">
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-          </svg> Confirmed</button>
-      </div>
       <div class="card-body">
-        <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
-          <thead>
-            <tr>
-              <th>Container No</th>
-              <th>Type</th>
-              <th>Blok</th>
-              <th>Slot</th>
-              <th>Row</th>
-              <th>Tier</th>
-              <th>Placemented At</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php $__currentLoopData = $formattedData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $d): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-            <tr>
-              <td><?php echo e($d['container_no']); ?></td>
-              <td><?php echo e($d['ctr_type']); ?></td>
-              <td><?php echo e($d['yard_block']); ?></td>
-              <td><?php echo e($d['yard_slot']); ?></td>
-              <td><?php echo e($d['yard_row']); ?></td>
-              <td><?php echo e($d['yard_tier']); ?></td>
-              <td><?php echo e($d['update_time']); ?></td>
-            </tr>
-            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-          </tbody>
-        </table>
+          <div class="list-group list-group-horizontal-sm mb-1 text-center" role="tablist">
+              <a class="list-group-item list-group-item-action active" id="list-dalam-list" data-bs-toggle="list" href="#dalam" role="tab">Stuffing Dalam</a>
+              <a class="list-group-item list-group-item-action" id="list-luar-list" data-bs-toggle="list" href="#luar" role="tab">Stuffing Luar</a>
+                                                  
+          </div>
+          <div class="tab-content text-justify" id="load_ini">
+               <div class="tab-pane fade show active" id="dalam" role="tabpanel" aria-labelledby="list-dalam-list">
+                   <?php echo $__env->make('stuffing.tabel.stuffingDalam', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                   
+               </div>
+               <div class="tab-pane fade" id="luar" role="tabpanel"aria-labelledby="list-luar-list">
+                    <?php echo $__env->make('stuffing.tabel.stuffingLuar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                    <?php echo $__env->make('stuffing.modal.modal-stuffing-luar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+               </div>
+          </div>
       </div>
     </div>
   </section>
-</div>
+  <?php echo $__env->make('stuffing.modal.modal-stuffing-dalam', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+
+
+
+
+
 
 <!-- Modal Update Status -->
-<div class="modal fade text-left" id="success" role="dialog" aria-labelledby="myModalLabel110" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-success">
-        <h5 class="modal-title white" id="myModalLabel110">Stuffing</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><i data-feather="x"></i></button>
-      </div>
-      <div class="modal-body">
-        <!-- form -->
-        <div class="form-body" id="place_cont">
-          <div class="row">
-            <div class="col-12">
-              <div class="form-group">
-                <label for="first-name-vertical">Choose Container Number</label>
-                <select class="choices form-select" id="key" name="container_key" required>
-                    <option value="">Select Container</option>
-                    <?php
-                  foreach ($jobContainers as $value) { ?>
-                    <?php if ($value->ctr_intern_status == "04") { ?>
-                      <option data-id="<?= $value->id ?>" value="<?= $value->container_key ?>"><?= $value->container_no ?></option>
-                    <?php } ?>
-                  <?php } ?>
-                </select>
-                <input type="hidden" id="container_no" class="form-control" name="container_no">
-              </div>
-              <?php echo e(csrf_field()); ?>
 
-            </div>
-            <div class="col-12">
-              <div class="form-group">
-                <label for="first-name-vertical">Type</label>
-                <input type="text" id="tipe" class="form-control" name="ctr_type" disabled>
-                <input type="text" id="id" class="form-control" name="id" disabled>
-              </div>
-            </div>
-            <div class="col-12">
-              <div class="form-group">
-                <label for="first-name-vertical">Invoice</label>
-                <input type="text" id="invoice" class="form-control" name="invoice_no" disabled>
-              </div>
-            </div>
-
-            <h4>Current Yard</h4>
-            <div class="col-12" style="border:1px solid blue;">
-              <div class="row">
-
-                <div class="col-3">
-                  <div class="form-group">
-                    <label for="first-name-vertical">Blok</label>
-                    <input type="text" id="oldblock" class="form-control" name="yard_block" disabled>
-                  </div>
-                </div>
-                <div class="col-3">
-                  <div class="form-group">
-                    <label for="first-name-vertical">Slot</label>
-                    <input type="text" id="oldslot" class="form-control" name="yard_slot" disabled>
-                  </div>
-                </div>
-                <div class="col-3">
-                  <div class="form-group">
-                    <label for="first-name-vertical">Row</label>
-                    <input type="text" id="oldrow" class="form-control" name="yard_row" disabled>
-                  </div>
-                </div>
-                <div class="col-3">
-                  <div class="form-group">
-                    <label for="first-name-vertical">Tier</label>
-                    <input type="text" id="oldtier" class="form-control" name="yard_tier" disabled>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-            <h4>Stuffing Yard</h4>
-            <div class="col-12" style="border:1px solid blue;">
-              <div class="row">
-
-                <div class="col-3">
-                  <div class="form-group">
-                    <label for="first-name-vertical">Blok</label>
-                    <select class="choices form-select" id="block" name="yard_block" required>
-                      <option value="">-</option>
-                      <?php $__currentLoopData = $yard_block; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $block): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                      <option value="<?php echo e($block); ?>"><?php echo e($block); ?></option>
-                      <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-3">
-                  <div class="form-group">
-                    <label for="first-name-vertical">Slot</label>
-                    <select class="choices form-select" id="slot" name="yard_slot" required>
-                      <option value="">-</option>
-                      <?php $__currentLoopData = $yard_slot; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $slot): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                      <option value="<?php echo e($slot); ?>"><?php echo e($slot); ?></option>
-                      <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-3">
-                  <div class="form-group">
-                    <label for="first-name-vertical">Row</label>
-                    <select class="choices form-select" id="row" name="yard_row" required>
-                      <option value="">-</option>
-                      <?php $__currentLoopData = $yard_row; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                      <option value="<?php echo e($row); ?>"><?php echo e($row); ?></option>
-                      <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-3">
-                  <div class="form-group">
-                    <label for="first-name-vertical">Tier</label>
-                    <select class="choices form-select" id="tier" name="yard_tier" required>
-                      <option value="">-</option>
-                      <?php $__currentLoopData = $yard_tier; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tier): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                      <option value="<?php echo e($tier); ?>"><?php echo e($tier); ?></option>
-                      <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="form-group">
-                    <label for="first-name-vertical">Planner Place</label>
-                    <input type="text" id="user" class="form-control" value="<?php echo e(Auth::user()->name); ?>" name="user_id" readonly>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i><span class="d-none d-sm-block">Close</span></button>
-            <button type="submit" class="btn btn-success ml-1 update_status"><i class="bx bx-check d-block d-sm-none"></i><span class="d-none d-sm-block">Confirm</span></button>
-          </div>
-        </div>
-      </div>
-    </div>
     <?php $__env->stopSection(); ?>
     <?php $__env->startSection('custom_js'); ?>
     <script src="<?php echo e(asset('vendor/components/jquery/jquery.min.js')); ?>"></script>
     <script src="<?php echo e(asset('select2/dist/js/select2.full.min.js')); ?>"></script>
     <script src="<?php echo e(asset('dist/assets/extensions/sweetalert2/sweetalert2.min.js')); ?>"></script>
     <script src="<?php echo e(asset('dist/assets/js/pages/sweetalert2.js')); ?>"></script>
+    <script>new simpleDatatables.DataTable('#tableStuffingLuar');</script>
 
     <script>
-      // In your Javascript (external .js resource or <script> tag)
-      $(document).ready(function() {
-        $('.container').select2({
-          dropdownParent: '#success',
-        });
-        $('.block').select2({
-          dropdownParent: '#success',
-        });
-        $('.slot').select2({
-          dropdownParent: '#success',
-        });
-        $('.yard_row').select2({
-          dropdownParent: '#success',
-        });
-        $('.tier').select2({
-          dropdownParent: '#success',
-        });
-      });
+
       $(document).on('click', '.update_status', function(e) {
         e.preventDefault();
+        var ro_no = $('#nomor_ro').val();
+        var ves_id = $('#Vessel').val();
+        var ves_name = $('#nama-kapal').val();
+        var ves_code = $('#kode-kapal').val();
+        var voy_no = $('#nomor-voyage').val();
         var container_key = $('#key').val();
         var container_no = $('#container_no').val();
         var yard_block = $('#block').val();
         var yard_slot = $('#slot').val();
         var yard_raw = $('#raw').val();
         var yard_tier = $('#tier').val();
+        var truck_no = $('#truck').val();
+        var ro_id_gati = $('#id_truck').val();
         var data = {
+          'ro_no' : $('#nomor_ro').val(),
+          'ves_id' : $('#Vessel').val(),
+          'ves_name' : $('#nama-kapal').val(),
+          'ves_code' : $('#kode-kapal').val(),
+          'voy_no' : $('#nomor-voyage').val(),
           'container_key': $('#key').val(),
           'container_no': $('#container_no').val(),
           'yard_block': $('#block').val(),
@@ -237,6 +92,8 @@
           'yard_row': $('#row').val(),
           'yard_tier': $('#tier').val(),
           'user_id': $('#user').val(),
+          'truck_no' : $('#truck').val(),
+          'ro_id_gati' : $('#id_truck').val(),
 
         }
         $.ajaxSetup({
@@ -266,67 +123,10 @@
                 console.log(response);
                 if (response.success) {
                   Swal.fire('Saved!', '', 'success')
-                  $('#place_cont').load(window.location.href + ' #place_cont', function() {
-                    $(document).ready(function() {
-                      let choices = document.querySelectorAll('.choices');
-                      let initChoice;
-                      for (let i = 0; i < choices.length; i++) {
-                        if (choices[i].classList.contains("multiple-remove")) {
-                          initChoice = new Choices(choices[i], {
-                            delimiter: ',',
-                            editItems: true,
-                            maxItemCount: -1,
-                            removeItemButton: true,
-                          });
-                        } else {
-                          initChoice = new Choices(choices[i]);
-                        }
-                      }
-
-                      $('.container').select2({
-                        dropdownParent: '#success',
-                      });
-                      $('.block').select2({
-                        dropdownParent: '#success',
-                      });
-                      $('.slot').select2({
-                        dropdownParent: '#success',
-                      });
-                      $('.yard_row').select2({
-                        dropdownParent: '#success',
-                      });
-                      $('.tier').select2({
-                        dropdownParent: '#success',
-                      });
-                      $(document).ready(function() {
-                        $('#key').on('change', function() {
-                          let id = $(this).val();
-                          $.ajax({
-                            type: 'POST',
-                            url: '/get-stripping',
-                            data: {
-                              container_key: id
-                            },
-                            success: function(response) {
-
-                              $('#container_no').val(response.container_no);
-                              $('#tipe').val(response.tipe);
-                              $('#invoice').val(response.invoice);
-                              $('#oldblock').val(response.oldblock);
-                              $('#oldslot').val(response.oldslot);
-                              $('#oldrow').val(response.oldrow);
-                              $('#oldtier').val(response.oldtier);
-                            },
-                            error: function(data) {
-                              console.log('error:', data);
-                            },
-                          });
+                  .then(() => {
+                            // Memuat ulang halaman setelah berhasil menyimpan data
+                            window.location.reload();
                         });
-                      });
-                    });
-
-                    $('#table1').load(window.location.href + ' #table1');
-                  });
                 } else {
                   Swal.fire('Error', response.message, 'error');
                 }
@@ -376,6 +176,7 @@
               },
               success: function(response) {
 
+                $('#container_key').val(response.container_key);
                 $('#container_no').val(response.container_no);
                 $('#tipe').val(response.tipe);
                 $('#invoice').val(response.invoice);
@@ -383,6 +184,28 @@
                 $('#oldslot').val(response.oldslot);
                 $('#oldrow').val(response.oldrow);
                 $('#oldtier').val(response.oldtier);
+              },
+              error: function(data) {
+                console.log('error:', data);
+              },
+            });
+          });
+        });
+
+        $(document).ready(function() {
+          $('#Vessel').on('change', function() {
+            let id = $(this).val();
+            $.ajax({
+              type: 'POST',
+              url: '/get-vessel-in-stuffing',
+              data: {
+                ves_id: id
+              },
+              success: function(response) {
+
+                $('#nama-kapal').val(response.ves_name);
+                $('#kode-kapal').val(response.ves_code);
+                $('#nomor-voyage').val(response.voy_no);
               },
               error: function(data) {
                 console.log('error:', data);
@@ -413,5 +236,428 @@
       });
     </script>
 
-    <?php $__env->stopSection(); ?>
+
+
+
+<!-- Stuffing Luar -->
+<script>
+  $(document).on('click', '.accept-stuffing-luar', function(e) {
+        e.preventDefault();
+        var ro_no = $('#rnomor_ro_luar').val();
+        var container_key = $('#key_luar').val();
+        var container_no = $('#container_no_luar').val();
+        var truck_no = $('#truck_luar').val();
+        var ro_id_gati = $('#id_truck_luar').val();
+        var data = {
+          'ro_no' : $('#nomor_ro_luar').val(),
+          'container_key': $('#key_luar').val(),
+          'truck_no' : $('#truck_luar').val(),
+          'ro_id_gati' : $('#id_truck_luar').val(),
+
+        }
+        $.ajaxSetup({
+          headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          }
+        });
+        Swal.fire({
+          title: 'Are you Sure?',
+          text: "?",
+          icon: 'warning',
+          showDenyButton: false,
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Confirm',
+        }).then((result) => {
+          /* Read more about isConfirmed, isDenied below */
+          if (result.isConfirmed) {
+
+            $.ajax({
+              type: 'POST',
+              url: '/stuffing-place',
+              data: data,
+              cache: false,
+              dataType: 'json',
+              success: function(response) {
+                console.log(response);
+                if (response.success) {
+                  Swal.fire('Saved!', '', 'success')
+                  .then(() => {
+                            // Memuat ulang halaman setelah berhasil menyimpan data
+                            window.location.reload();
+                        });
+                } else {
+                  Swal.fire('Error', response.message, 'error');
+                }
+              },
+              error: function(response) {
+                var errors = response.responseJSON.errors;
+                if (errors) {
+                  var errorMessage = '';
+                  $.each(errors, function(key, value) {
+                    errorMessage += value[0] + '<br>';
+                  });
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    html: errorMessage,
+                  });
+                } else {
+                  console.log('error:', response);
+                }
+              },
+            });
+
+          } else if (result.isDenied) {
+            Swal.fire('Changes are not saved', '', 'info')
+          }
+
+
+        })
+
+      });
+
+
+
+      $(document).on('click', '.ConfirmOut', function(e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+        $.ajaxSetup({
+          headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          }
+        });
+        Swal.fire({
+          title: 'Are you Sure?',
+          text: "?",
+          icon: 'warning',
+          showDenyButton: false,
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Confirm',
+        }).then((result) => {
+          /* Read more about isConfirmed, isDenied below */
+          if (result.isConfirmed) {
+
+            $.ajax({
+              type: 'POST',
+              url: '/stuffing-confirm-out',
+              data: { ro_id_gati: id },
+              cache: false,
+              dataType: 'json',
+              success: function(response) {
+                console.log(response);
+                if (response.success) {
+                  Swal.fire('Saved!', '', 'success')
+                  .then(() => {
+                            // Memuat ulang halaman setelah berhasil menyimpan data
+                            window.location.reload();
+                        });
+                } else {
+                  Swal.fire('Error', response.message, 'error');
+                }
+              },
+              error: function(response) {
+               
+              },
+            });
+
+          } else if (result.isDenied) {
+            Swal.fire('Changes are not saved', '', 'info')
+          }
+
+
+        })
+
+      });
+</script>
+
+
+
+    <script>
+  $(function() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+   
+
+    $(document).on('click', '.stuffingDalam', function() {
+        let id = $(this).data('id');
+        $.ajax({
+            type: 'GET',
+            url: '/stuffing/stuffingDalam/modal-' + id,
+            cache: false,
+            data: {
+                ro_id_gati: id
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                $('#stuffingDalamModal').modal('show');
+                $("#stuffingDalamModal #nomor_ro").val(response.data.ro_no);
+                $("#stuffingDalamModal #truck").val(response.data.truck_no);
+                $("#stuffingDalamModal #id_truck").val(response.data.ro_id_gati);
+                
+                
+            },
+            error: function(data) {
+                console.log('error:', data);
+            }
+        });
+    });
+});
+    </script>
+
+<script>
+  $(function() {
+   $.ajaxSetup({
+      headers: {
+         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+   });
+
+   $(document).on('click', '.stuffingLuar', function() {
+      let id = $(this).data('id');
+      $.ajax({
+         type: 'GET',
+         url: '/stuffing/stuffingLuar/modal-' + id,
+         cache: false,
+         data: {
+            ro_id_gati: id
+         },
+         dataType: 'json',
+         success: function(response) {
+            console.log(response);
+            $('#modalStuffingLuar').modal('show');
+            $("#modalStuffingLuar #nomor_ro_luar").val(response.data.ro_no);
+            $("#modalStuffingLuar #truck_luar").val(response.data.truck_no);
+            $("#modalStuffingLuar #id_truck_luar").val(response.data.ro_id_gati);
+         },
+         error: function(data) {
+            console.log('error:', data);
+         }
+      });
+   });
+});
+
+</script>
+
+<script>
+ $(function() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+   
+
+    $(document).on('click', '.detail-cont-stuffing', function() {
+        let id = $(this).data('id');
+        $.ajax({
+            type: 'GET',
+            url: '/stuffing/detailCont-' + id,
+            cache: false,
+            data: {
+                ro_id_gati: id
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                $('#detail-stuffing').modal('show');
+                var tableBody = $('#detail-stuffing #tableDetail tbody');
+                tableBody.empty();
+                    if (response.data.cont === 0) {
+                        var newRow = $('<tr>');
+                        newRow.append('<td colspan="3">No Container Available</td>');
+                        tableBody.append(newRow);
+                    } else {
+                        response.data.forEach(function(detail_cont) {
+                            var newRow = $('<tr>');
+                            newRow.append('<td>' + detail_cont.ro_no + '</td>');
+                            newRow.append('<td>' + detail_cont.container_no + '</td>');
+                         // Tombol Edit
+                         var viewButton = $('<a>', {
+                             href: 'javascript:void(0)',
+                             class: 'btn btn-outline-primary view-detail',
+                             'data-id': detail_cont.container_key,
+                             html: '<i class="fa-solid fa-eye"></i>'
+                         });
+
+                         newRow.append($('<td>').append(viewButton));
+                            tableBody.append(newRow);
+                        });
+                        new simpleDatatables.DataTable('#tableDetail');
+                      }
+            },
+            error: function(data) {
+                console.log('error:', data);
+            }
+        });
+    });
+});
+</script>
+
+<!-- Container View -->
+<script>
+ $(function() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+   
+
+    $(document).on('click', '.view-detail', function() {
+        let id = $(this).data('id');
+        $.ajax({
+            type: 'GET',
+            url: '/stuffing/viewCont-' + id,
+            cache: false,
+            data: {
+                container_key: id
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                $('#detail-container').modal('show');
+                var tableBody = $('#detail-container #tableView tbody');
+                tableBody.empty();
+                    if (response.data.view_cont === 0) {
+                        var newRow = $('<tr>');
+                        newRow.append('<td colspan="3">No Container Available</td>');
+                        tableBody.append(newRow);
+                    } else {
+                        response.data.forEach(function(view_cont) {
+                            var newRow = $('<tr>');
+                            newRow.append('<td>' + view_cont.container_no + '</td>');
+                            newRow.append('<td>' + view_cont.iso_code + '</td>');
+                            newRow.append('<td>' + view_cont.ves_name + '</td>');
+                            newRow.append('<td>' + view_cont.voy_no + '</td>');
+                            newRow.append('<td>' + view_cont.ctr_size + '</td>');
+                            newRow.append('<td>' + view_cont.ctr_type + '</td>');
+                         // Tombol Edit
+                            tableBody.append(newRow);
+                        });
+                        new simpleDatatables.DataTable('#tableView');
+                      }
+            },
+            error: function(data) {
+                console.log('error:', data);
+            }
+        });
+    });
+});
+</script>
+
+
+<!-- Stuffing Luar -->
+<script>
+ $(function() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+   
+
+    $(document).on('click', '.ContLuar', function() {
+        let id = $(this).data('id');
+        $.ajax({
+            type: 'GET',
+            url: '/stuffing/detailCont-' + id,
+            cache: false,
+            data: {
+                ro_id_gati: id
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                $('#contLuar').modal('show');
+                var tableBody = $('#contLuar #tableDetailLuar tbody');
+                tableBody.empty();
+                    if (response.data.cont === 0) {
+                        var newRow = $('<tr>');
+                        newRow.append('<td colspan="3">No Container Available</td>');
+                        tableBody.append(newRow);
+                    } else {
+                        response.data.forEach(function(detail_cont) {
+                            var newRow = $('<tr>');
+                            newRow.append('<td>' + detail_cont.ro_no + '</td>');
+                            newRow.append('<td>' + detail_cont.container_no + '</td>');
+                         // Tombol Edit
+                         var viewButton = $('<a>', {
+                             href: 'javascript:void(0)',
+                             class: 'btn btn-outline-primary ContainerLuar',
+                             'data-id': detail_cont.container_key,
+                             html: '<i class="fa-solid fa-eye"></i>'
+                         });
+
+                         newRow.append($('<td>').append(viewButton));
+                            tableBody.append(newRow);
+                        });
+                        new simpleDatatables.DataTable('#tableDetailLuar');
+                      }
+            },
+            error: function(data) {
+                console.log('error:', data);
+            }
+        });
+    });
+});
+</script>
+
+<!-- Container View -->
+<script>
+ $(function() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+   
+
+    $(document).on('click', '.ContainerLuar', function() {
+        let id = $(this).data('id');
+        $.ajax({
+            type: 'GET',
+            url: '/stuffing/viewCont-' + id,
+            cache: false,
+            data: {
+                container_key: id
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                $('#ContainerStuffingLuar').modal('show');
+                var tableBody = $('#ContainerStuffingLuar #tableContainerLuar tbody');
+                tableBody.empty();
+                    if (response.data.view_cont === 0) {
+                        var newRow = $('<tr>');
+                        newRow.append('<td colspan="3">No Container Available</td>');
+                        tableBody.append(newRow);
+                    } else {
+                        response.data.forEach(function(view_cont) {
+                            var newRow = $('<tr>');
+                            newRow.append('<td>' + view_cont.container_no + '</td>');
+                            newRow.append('<td>' + view_cont.iso_code + '</td>');
+                            newRow.append('<td>' + view_cont.ves_name + '</td>');
+                            newRow.append('<td>' + view_cont.voy_no + '</td>');
+                            newRow.append('<td>' + view_cont.ctr_size + '</td>');
+                            newRow.append('<td>' + view_cont.ctr_type + '</td>');
+                         // Tombol Edit
+                            tableBody.append(newRow);
+                        });
+                        new simpleDatatables.DataTable('#tableContainerLuar');
+                      }
+            },
+            error: function(data) {
+                console.log('error:', data);
+            }
+        });
+    });
+});
+</script>
+<?php $__env->stopSection(); ?>
 <?php echo $__env->make('partial.main', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\tos\resources\views/stuffing/main.blade.php ENDPATH**/ ?>

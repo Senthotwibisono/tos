@@ -8,11 +8,11 @@
 
 <body class="theme-dark" style="overflow-y: auto;">
 
-    <div class="container-fluid">
-        <a href="/android-dashboard">
-            <i class="bi bi-arrow-left " style="font-size: 50px;"></i>
-        </a>
-    </div>
+<div class="container-fluid">
+    <button onclick="goBack()" style="background: none; border: none;">
+        <i class="bi bi-arrow-left" style="font-size: 50px; color:lightskyblue;"></i>
+    </button>
+</div>
     </div>
     </div>
     <div class="page-heading">
@@ -42,7 +42,7 @@
     <script src="{{asset('jquery-3.6.4.min.js')}}" type="text/javascript"></script> -->
     @yield('custom_js')
 </body>
-
+@include('partial.invoice.js.js_customer')
 
 
 </html>

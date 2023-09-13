@@ -51,6 +51,7 @@ class BapleiExc implements ToModel, WithStartRow, WithMapping, WithValidation
 {
 
 
+  
 $bay_slot = substr(trim($row[2]), 0, 2);
 $bay_row = substr(trim($row[2]), 2, 2);
 $bay_tier = substr(trim($row[2]), 4, 2);

@@ -5,7 +5,7 @@
 
 <div class="page-heading">
   <h3><?= $title ?></h3>
-  <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+  <p>Menu untuk Master Tarif SPPS</p>
 
 </div>
 <div class="page-content">
@@ -16,7 +16,6 @@
           <h4 class="card-title">
             Master Data Tarif SPPS
           </h4>
-          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
         </div>
         <div class="card-body">
           <div class="row">
@@ -39,7 +38,7 @@
       <div class="card">
         <div class="card-header">
           <h4 class="card-title">Master Tarif for SPPS Data Table</h4>
-          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+          <p>Tabel Data Master Tarif SPPS</p>
         </div>
         <div class="card-body">
           <div class="row mt-5">

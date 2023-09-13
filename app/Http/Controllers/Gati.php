@@ -8,6 +8,10 @@ use App\Models\User;
 use App\Models\Yard;
 use App\Models\Job;
 use App\Models\Isocode;
+use App\Models\RO;
+use App\Models\RO_Gate;
+use App\Models\RO_Realisasi;
+
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -534,5 +538,74 @@ class Gati extends Controller
             } else {
                 return back();
             }
+    }
+
+
+    // Stuffing Gate
+    public function index_stuf()
+    {
+        $title="Gate-In Stuffing";
+        $ro = RO_Gate::whereIn('status', ['1', '2', '4','5', '7'])->get();
+        $full = RO_Gate::where('status', '=' , '6')->get();
+        return view('gate.stuffing.gate-in', compact('title'), compact('ro', 'full'));
+    }
+
+    public function gati_stuf(Request $request)
+    {
+        $now = Carbon::now();
+        $ro_check = $request->ro_no;
+        $ro_checked = RO::where('ro_no','=', $ro_check)->get();
+        
+        if ($ro_checked->isEmpty()) {
+            $ro = RO::create([
+                'ro_no'=>$request->ro_no,
+                'stuffing_service'=>$request->stuffing_service,
+                'jmlh_cont'=>$request->jmlh_cont,
+            ]);
+        };
+
+        $ro_gati = RO_Gate::create([
+            'ro_no' => $request->ro_no,
+            'truck_no' => $request->truck_no,
+            'truck_in_date' => $now,
+            'status' => '1',
+        ]);
+       
+
+        return response()->json([
+            'success' => 200,
+            'message' => 'Detail Data Post',
+            
+        ]);
+    }
+
+    public function gati_stuf_full(Request $request)
+    {
+        $now = Carbon::now();
+        $id = $request->ro_id_gati;
+        $truck = RO_Gate::where('ro_id_gati', '=', $id)->first();
+
+        if ($truck) {
+            $truck->update([
+                'truck_in_date_after' => $now,
+                'status' => '7',
+            ]);
+           
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Detail Data Post',
+                'data' => $truck,
+                
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Detail Data Post',
+                
+                
+            ]);
+        }
+        
     }
 }

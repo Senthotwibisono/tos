@@ -112,7 +112,7 @@ class PlacementController extends Controller
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
         $data["active"] = "yard";
         $data["subactive"] = "placement";
-        return view('yard.place.android', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier'), $data);
+        return view('yard.place.android-yard', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier'), $data);
     }
 
 

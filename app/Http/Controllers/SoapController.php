@@ -1528,8 +1528,8 @@ class SoapController extends Controller
         });
         
         $data = [
-            'UserName' => $this->user, 
-            'Password' => $this->password,
+            'UserName' => 'MAL0', 
+            'Password' => 'MAL0',
             'KdDok' => $request->kode_dok,
             'NoDok' => $request->no_dok,
             'TglDok' =>$request->tgl_dok
@@ -1543,7 +1543,10 @@ class SoapController extends Controller
         libxml_use_internal_errors(true);
         $xml = simplexml_load_string($this->response);
         if(!$xml || !$xml->children()){
-           return back()->with('error', $this->response);
+            return response()->json([
+                'success' => false,
+                'message' => 'Data Tidak Ditemukan',
+            ]);
         }
         
         $docmanual_id = 0;
@@ -1581,7 +1584,94 @@ class SoapController extends Controller
             endforeach;
         endforeach;
     
-        return back()->with('success', 'Get Dokumen Manual has been success.');
+        return response()->json([
+            'success' => 400,
+            'message' => 'Data Ditemukan',
+            'data' =>$data,
+          ]);
+          if ($cont->isEmpty()) {
+            \SoapWrapper::add(function ($service) {
+                $service
+                    ->name('TpsOnline_GetDokumenPabean_OnDemand')
+                    ->wsdl($this->wsdl)
+                    ->trace(true)                                                                                                  
+    //                ->certificate()                                                 
+    //                ->cache(WSDL_CACHE_NONE)                                        
+                    ->options([
+                        'stream_context' => stream_context_create([
+                            'ssl' => array(
+                                'verify_peer' => false,
+                                'verify_peer_name' => false,
+                                'allow_self_signed' => true
+                            )
+                        ])
+                    ]);                                                     
+            });
+            
+            $data = [
+                'UserName' => 'MAL0', 
+                'Password' => 'MAL0',
+                'KdDok' => $request->kode_dok,
+                'NoDok' => $request->no_dok,
+                'TglDok' =>$request->tgl_dok
+            ];
+            
+            // Using the added service
+            \SoapWrapper::service('TpsOnline_GetDokumenPabean_OnDemand', function ($service) use ($data) {        
+                $this->response = $service->call('GetDokumenPabean_OnDemand', [$data])->GetDokumenPabean_OnDemandResult;      
+            });
+            
+    //        var_dump($this->response);return false;
+            
+            libxml_use_internal_errors(true);
+            $xml = simplexml_load_string($this->response);
+            if(!$xml || !$xml->children()){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data Tidak Ditemukan',
+                ]);
+            }
+            
+            $docmanual_id = 0;
+            foreach ($xml->children() as $data):  
+                foreach ($data as $key=>$value):
+                    if($key == 'HEADER' || $key == 'header'){           
+                        $docmanual = new \App\Models\TpsDokPabean;
+                        foreach ($value as $keyh=>$valueh):
+                            $docmanual->$keyh = $valueh;
+                        endforeach;
+                        $docmanual->TGL_UPLOAD = date('Y-m-d');
+                        $docmanual->JAM_UPLOAD = date('H:i:s');
+                        $docmanual->save();
+                        $docmanual_id = $docmanual->TPS_DOKPABEANXML_PK;
+                    }elseif($key == 'DETIL' || $key == 'detil'){
+                        foreach ($value as $key1=>$value1):
+                            if($key1 == 'KMS' || $key1 == 'kms'){
+                                $kms = new \App\Models\TpsDokPabeanKms;
+                                foreach ($value1 as $keyk=>$valuek):
+                                    $kms->$keyk = $valuek;
+                                endforeach;
+                                $kms->TPS_DOKPABEANXML_FK = $docmanual_id;
+                                $kms->save();
+                            }elseif($key1 == 'CONT' || $key1 == 'cont'){
+                                $cont = new \App\Models\TpsDokPabeanCont;
+                                foreach ($value1 as $keyc=>$valuec):
+                                    $cont->$keyc = $valuec;
+                                endforeach;
+                                $cont->TPS_DOKPABEANXML_FK = $docmanual_id;
+                                $cont->save();
+                            }
+                        endforeach;  
+                    }
+                endforeach;
+            endforeach;
+        
+            return response()->json([
+                'success' => 400,
+                'message' => 'Data Ditemukan',
+               
+              ]);
+        }
         
     }
     
@@ -2110,55 +2200,58 @@ class SoapController extends Controller
             ]);
         }
         
+        \DB::listen(function ($query) {
+            \Log::debug("Executed SQL: " . $query->sql);
+            \Log::debug("Bindings: " . json_encode($query->bindings));
+            \Log::debug("Time: " . $query->time . "ms");
+        });
     
+        $pkbe = new \App\Models\TpsDokPKBE;
         foreach ($xml->children() as $data):
             foreach ($data as $key => $value):
-                if ($key == 'DOCUMENT' || $key == 'document') {
-                    if ($key == 'PKBE' || $key == 'pkbe') {
-                        $docmanual = new \App\Models\TpsDokPKBE;
-        
-                        foreach ($value as $keyh => $valueh):
-                            if ($keyh == 'car' || $keyh == 'CAR') {
-                                $CAR = $valueh;
-                            }
-                            if ($keyh == 'kd_kantor' || $keyh == 'KD_KANTOR') {
-                                $KD_KANTOR = $valueh;
-                            }
-                            if ($keyh == 'nopkbe' || $keyh == 'NOPKBE') {
-                                $NOPKBE = $valueh;
-                            }
-                            if ($keyh == 'tglpkbe' || $keyh == 'TGLPKBE') {
-                                $TGLPKBE = $valueh;
-                            }
-                            if ($keyh == 'npwp_eks' || $keyh == 'NPWP_EKS') {
-                                $NPWP_EKS = $valueh;
-                            }
-                            if ($keyh == 'nama_eks' || $keyh == 'NAMA_EKS') {
-                                $NAMA_EKS = $valueh;
-                            }
-                            if ($keyh == 'no_cont' || $keyh == 'NO_CONT') {
-                                $NO_CONT = $valueh;
-                            }
-                            if ($keyh == 'size' || $keyh == 'SIZE') {
-                                $SIZE = $valueh;
-                            }
-                        endforeach;
-        
-                        $docmanual->CAR = $CAR;
-                        $docmanual->KD_KANTOR = $KD_KANTOR;
-                        $docmanual->NOPKBE = $NOPKBE;
-                        $docmanual->TGLPKBE = $TGLPKBE;
-                        $docmanual->NPWP_EKS = $NPWP_EKS;
-                        $docmanual->NAMA_EKS = $NAMA_EKS;
-                        $docmanual->NO_CONT = $NO_CONT;
-                        $docmanual->SIZE = $SIZE;
-        
-                        $docmanual->save();
+                if ($key == 'CAR' || $key == 'car') {
+                        if($key == 'CAR' || $key == 'CAR')
+                        { $CAR=$value; }
+                              $pkbe->CAR= $CAR;
                     }
+                if ($key == 'KD_KANTOR' || $key == 'KD_KANTOR') {
+                    if($key == 'KD_KANTOR' || $key == 'KD_KANTOR')
+                    { $KD_KANTOR=$value; }
+                          $pkbe->KD_KANTOR= $KD_KANTOR;
                 }
-                
+                if ($key == 'NOPKBE' || $key == 'NOPKBE') {
+                    if($key == 'NOPKBE' || $key == 'NOPKBE')
+                    { $NOPKBE=$value; }
+                          $pkbe->NOPKBE= $NOPKBE;
+                }
+                if ($key == 'TGLPKBE' || $key == 'TGLPKBE') {
+                    if($key == 'TGLPKBE' || $key == 'TGLPKBE')
+                    { $TGLPKBE=$value; }
+                          $pkbe->TGLPKBE= $TGLPKBE;
+                }
+                if ($key == 'NPWP_EKS' || $key == 'NPWP_EKS') {
+                    if($key == 'NPWP_EKS' || $key == 'NPWP_EKS')
+                    { $NPWP_EKS=$value; }
+                          $pkbe->NPWP_EKS= $NPWP_EKS;
+                }
+                if ($key == 'NAMA_EKS' || $key == 'NAMA_EKS') {
+                    if($key == 'NAMA_EKS' || $key == 'NAMA_EKS')
+                    { $NAMA_EKS=$value; }
+                          $pkbe->NAMA_EKS= $NAMA_EKS;
+                }
+                if ($key == 'NO_CONT' || $key == 'NO_CONT') {
+                    if($key == 'NO_CONT' || $key == 'NO_CONT')
+                    { $NO_CONT=$value; }
+                          $pkbe->NO_CONT= $NO_CONT;
+                }
+                if ($key == 'SIZE' || $key == 'SIZE') {
+                    if($key == 'SIZE' || $key == 'SIZE')
+                    { $SIZE=$value; }
+                          $pkbe->SIZE= $SIZE;
+                }
             endforeach;
         endforeach;
+        $pkbe->save();
     
         return response()->json([
             'success' => true,
@@ -2177,5 +2270,6 @@ class SoapController extends Controller
     {
         
     }
+    
     
 }

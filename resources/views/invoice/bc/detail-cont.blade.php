@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header bg-info">
-                <h4 class="modal-title" id="myModalLabel16">Plan</h4>
+                <h4 class="modal-title" id="myModalLabel16">Detail Container</h4>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <i data-feather="x"></i>
                 </button>
@@ -47,7 +47,7 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header bg-info">
-                <h4 class="modal-title" id="myModalLabel16">Plan</h4>
+                <h4 class="modal-title" id="myModalLabel16">Detail Container</h4>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <i data-feather="x"></i>
                 </button>
