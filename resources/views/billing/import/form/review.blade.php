@@ -136,7 +136,7 @@
                               <td>0 Hari</td>
                               <td>Rp. <?= rupiah($value->tarif->lift_empty) ?>,00 ~</td>
                               <td>Rp. <?= rupiah($value->liftEmpty) ?>,00 ~</td>
-                            <?php } else if ($table == "Lift On / Off MT") { ?>
+                            <?php } else if ($table == "Lift Off MT") { ?>
                               <td>0 Hari</td>
                               <td>Rp. <?= rupiah($value->tarif->lift_off_mt) ?>,00 ~</td>
                               <td>Rp. <?= rupiah($value->liftOffMT) ?>,00 ~</td>

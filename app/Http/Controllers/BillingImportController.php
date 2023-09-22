@@ -277,7 +277,7 @@ class BillingImportController extends Controller
           } else if ($table == "Lift On / Off Empty") {
             $obj[$contNo]["billing_detail"][$bill][$table]["Tarif Satuan"] = $tarif->lift_empty;
             $obj[$contNo]["billing_detail"][$bill][$table]["Amount"] = $value->liftEmpty;
-          } else if ($table == "Lift On / Off MT") {
+          } else if ($table == "Lift Off MT") {
             $obj[$contNo]["billing_detail"][$bill][$table]["Tarif Satuan"] = $tarif->lift_off_mt;
             $obj[$contNo]["billing_detail"][$bill][$table]["Amount"] = $value->liftOffMT;
           } else if ($table == "Pass Truck Keluar") {
