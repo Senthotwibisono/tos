@@ -1,11 +1,12 @@
 @extends ('partial.invoice.main')
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> -->
 
 
 @section('content')
 
 <div class="page-heading">
   <h3><?= $title ?></h3>
-  <p>Menu untuk Management Data Pembayaran</p>
+  <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
 
 </div>
 <div class="page-content">
@@ -14,19 +15,16 @@
       <div class="card">
         <div class="card-header">
           <h4 class="card-title">
-            Data Management
+            Data Form Management
           </h4>
-          <p>Pilihan Pembayaran untuk Delivery/Customer</p>
+          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
         </div>
         <div class="card-body">
           <div class="row">
             <div class="col-12">
               <div class="btn-group mb-3" role="group" aria-label="Basic example">
-                <a href="/invoice/delivery" type="button" class="btn btn-success">
-                  Data Delivery
-                </a>
-                <a href="/invoice/customer" type="button" class="btn btn-info">
-                  Data Customer
+                <a href="/export/stuffing-in/generate/step1" type="button" class="btn btn-success">
+                  Form Export Stuffing Dalam
                 </a>
               </div>
             </div>
@@ -41,8 +39,8 @@
     <div class="col-12">
       <div class="card">
         <div class="card-header">
-          <h4 class="card-title">Tabel Data Invoice</h4>
-          <p>Rekap Invoice</p>
+          <h4 class="card-title">Billing Export Stuffing Dalam Job Data Table</h4>
+          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
         </div>
         <div class="card-body">
           <form action="/invoice/export" method="POST" enctype="multipart/form-data">
@@ -73,7 +71,7 @@
               <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
                 <thead>
                   <tr>
-                    <th>Proforma No</th>
+                    <th>No</th>
                     <th>Customer</th>
                     <th>Order Service</th>
                     <th>Dibuat Pada</th>
@@ -81,21 +79,18 @@
                     <th>Piutang</th>
                     <th>Pranota</th>
                     <th>Invoice</th>
-                    <th>Job</th>
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <?php foreach ($invoices as $value) { ?>
-                    <?php if ($value->orderService == "sp2" || $value->orderService == "spps") { ?>
-
-
+                  <?php
+                  $i = 0;
+                  foreach ($invoices as $value) { ?>
+                    <?php if ($value->orderService == "stuffingInAll") { ?>
                       <tr>
-                        <td><?= $value->performaId ?></td>
-                        <!-- <td>Vessel Name</td> -->
+                        <td><?= $i++; ?></td>
                         <td><?= $value->data6->customer ?></td>
                         <td><?= $value->orderService ?></td>
-                        <!-- <td>Service Name</td> -->
                         <td><?= DateTimeFormat($value->createdAt) ?></td>
                         <td>
                           <?php if ($value->isPaid == 0) { ?>
@@ -125,24 +120,9 @@
                             <a type="button" class="btn btn-sm btn-primary text-white disabled"><i class="fa fa-file"></i></a>
                           <?php } ?>
                         </td>
-
-                        <td>
-                          <?php if ($value->isPiutang == 1 && $value->isPaid == 1) { ?>
-                            <a type="button" href="/invoice/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-file"></i></a>
-                          <?php } else if ($value->isPiutang == 1 && $value->isPaid == 0) { ?>
-                            <a type="button" href="/invoice/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-file"></i></a>
-                          <?php } else if ($value->isPiutang == 0 && $value->isPaid == 1) { ?>
-                            <a type="button" href="/invoice/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-file"></i></a>
-                          <?php } else if ($value->isPiutang == 0 && $value->isPaid == 0) { ?>
-                            <a type="button" class="btn btn-sm btn-info text-white disabled"><i class="fa fa-file"></i></a>
-                          <?php } ?>
-
-                        </td>
                         <td><a type="button" onclick="paidConfig(`<?= $value->id ?>`)" class="btn btn-sm btn-success"><i class="fa fa-pencil"></i></a></td>
-
                       </tr>
                     <?php } ?>
-
                   <?php } ?>
                 </tbody>
               </table>
@@ -198,7 +178,7 @@
             Verify This Payment
           </button>
           <button id="verifyPiutang" type="button" class="btn btn-warning ml-1" data-bs-dismiss="modal">
-            Piutang This Invoices
+            Piutang This Invoicess
           </button>
         </div>
       </form>

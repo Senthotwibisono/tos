@@ -7,6 +7,7 @@ use App\Http\Controllers\VesselController;
 use App\Http\Controllers\BayplanImportController;
 use App\Http\Controllers\DischargeController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\BillingImportController;
 use App\Http\Controllers\DoOnlineController;
 use App\Http\Controllers\CoparnsController;
 use App\Http\Controllers\ExportInvoice;
@@ -213,6 +214,13 @@ Route::prefix('export')->group(function () {
         Route::post('/storestep2', [StuffingController::class, 'invoiceStoreStep2']);
       });
     });
+    Route::prefix('/generate')->group(function () {
+      Route::get('/', [StuffingController::class, 'generateIndex']);
+      Route::get('/step1', [StuffingController::class, 'generateStep1']);
+      Route::get('/step2', [StuffingController::class, 'generateStep2']);
+      Route::post('/storestep1', [StuffingController::class, 'generateStoreStep1']);
+      Route::post('/storestep2', [StuffingController::class, 'generateStoreStep2']);
+    });
     Route::get('/pranota', [StuffingController::class, 'pranotaStuffing']);
     Route::get('/finalinvoice', [StuffingController::class, 'invoiceStuffing']);
     Route::get('/jobPage', [StuffingController::class, 'jobPageStuffing']);
@@ -254,6 +262,27 @@ Route::prefix('spps')->group(function () {
     Route::get('/edit', [SppsController::class, 'editMasterTarif']);
     Route::post('/store', [SppsController::class, 'storeCreateMasterTarif']);
     Route::post('/storeEdit', [SppsController::class, 'storeEditMasterTarif']);
+  });
+});
+
+Route::prefix('delivery')->group(function () {
+  Route::prefix('billing')->group(function () {
+    Route::get('/', [BillingImportController::class, 'billingIndex']);
+    Route::get('/pranota', [BillingImportController::class, 'pranotaIndex']);
+    Route::get('/invoice', [BillingImportController::class, 'invoiceIndex']);
+    Route::get('/job', [BillingImportController::class, 'jobIndex']);
+  });
+  Route::prefix('form')->group(function () {
+    Route::get('/', [BillingImportController::class, 'formIndex']);
+    Route::get('/create', [BillingImportController::class, 'createIndex']);
+    Route::get('/review', [BillingImportController::class, 'reviewIndex']);
+    Route::post('/storeForm', [BillingImportController::class, 'storeForm']);
+    Route::post('/storeBilling', [BillingImportController::class, 'storeBilling']);
+  });
+  Route::prefix('ajx')->group(function () {
+    Route::post('/singleInvoice', [BillingImportController::class, 'singleInvoice']);
+    Route::post('/verifyPayment ', [BillingImportController::class, 'verifyPayment']);
+    Route::post('/verifyPiutang', [BillingImportController::class, 'verifyPiutang']);
   });
 });
 

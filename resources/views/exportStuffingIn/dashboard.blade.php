@@ -24,7 +24,14 @@
             <div class="col-12">
               <div class="btn-group mb-3" role="group" aria-label="Basic example">
                 <a href="/export/stuffing-in/form" type="button" class="btn btn-success">
-                  Export Stuffing Dalam Form Job
+                  Form Export Stuffing Dalam Job
+                </a>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="btn-group mb-3" role="group" aria-label="Basic example">
+                <a href="/export/stuffing-in/generate" type="button" class="btn btn-primary">
+                  Generate Invoice
                 </a>
               </div>
             </div>
@@ -39,7 +46,7 @@
     <div class="col-12">
       <div class="card">
         <div class="card-header">
-          <h4 class="card-title">Billing Export Stuffing Dalam Data Table</h4>
+          <h4 class="card-title">Billing Export Stuffing Dalam Job Data Table</h4>
           <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
         </div>
         <div class="card-body">
@@ -75,9 +82,13 @@
                     <th>Customer</th>
                     <th>Order Service</th>
                     <th>Dibuat Pada</th>
+                    <th>Status</th>
+                    <th>Piutang</th>
+                    <th>Pranota</th>
+                    <th>Invoice</th>
                     <th>Job</th>
                     <th>Preview</th>
-                    <!-- <th>Action</th> -->
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -91,11 +102,40 @@
                         <td><?= $value->orderService ?></td>
                         <td><?= DateTimeFormat($value->createdAt) ?></td>
                         <td>
+                          <?php if ($value->isPaid == 0) { ?>
+                            <span class="badge bg-danger text-white">Not Paid</span>
+                          <?php } else { ?>
+                            <span class="badge bg-success text-white">Paid</span>
+                          <?php } ?>
+                        </td>
+                        <td>
+                          <?php if ($value->isPiutang == 0) { ?>
+                            <span class="badge bg-danger text-white">Not Piutang</span>
+                          <?php } else { ?>
+                            <span class="badge bg-warning text-white">Piutang</span>
+                          <?php } ?>
+                        </td>
+                        <td>
+                          <a type="button" href="/invoice/pranota?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
+                        </td>
+                        <td>
+                          <?php if ($value->isPiutang == 1 && $value->isPaid == 1) { ?>
+                            <a type="button" href="/invoice/paidinvoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-file"></i></a>
+                          <?php } else if ($value->isPiutang == 1 && $value->isPaid == 0) { ?>
+                            <a type="button" href="/invoice/paidinvoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-file"></i></a>
+                          <?php } else if ($value->isPiutang == 0 && $value->isPaid == 1) { ?>
+                            <a type="button" href="/invoice/paidinvoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-file"></i></a>
+                          <?php } else if ($value->isPiutang == 0 && $value->isPaid == 0) { ?>
+                            <a type="button" class="btn btn-sm btn-primary text-white disabled"><i class="fa fa-file"></i></a>
+                          <?php } ?>
+                        </td>
+                        <td>
                           <a type="button" href="/invoice/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
                         </td>
                         <td>
-                          <a href="/export/stuffing-in/previewJobContainer?id=<?= $value->data6->deliveryid ?>" target="_blank" class="btn btn-primary btn-sm text-white" type="button"><i class="fa fa-file"></i></a>
+                          <a href="/export/stuffing-in/previewJobContainer?id=<?= $value->data6->deliveryid ?>" target="_blank" class="btn btn-secondary btn-sm text-white" type="button"><i class="fa fa-file"></i></a>
                         </td>
+                        <td><a type="button" onclick="paidConfig(`<?= $value->id ?>`)" class="btn btn-sm btn-success"><i class="fa fa-pencil"></i></a></td>
                       </tr>
                     <?php } ?>
                   <?php } ?>

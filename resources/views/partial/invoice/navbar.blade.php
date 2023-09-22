@@ -63,6 +63,31 @@
       </div>
     </li>
 
+    <li class="menu-item has-sub">
+      <a type="button" class="menu-link">
+        <i class="fa-solid fa-ship"></i>
+        Delivery
+      </a>
+      <div class="submenu">
+        <div class="submenu-group-wrapper">
+          <ul class="submenu-group">
+            <li class="submenu-item">
+              <a href="/delivery/billing" class="submenu-link">Delivery Billing System</a>
+            </li>
+            <li class="submenu-item">
+              <a href="/delivery/form" class="submenu-link">Delivery Form</a>
+            </li>
+            <li class="submenu-item">
+              <a href="/delivery/extend" class="submenu-link">Delivery Form Extend</a>
+            </li>
+            <li class="submenu-item">
+              <a href="" class="submenu-link">Master Tarif</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </li>
+
     <!-- <li class="menu-item has-sub">
       <a href="/spps" class="menu-link">
         <i class="fa-solid fa-ship"></i>
