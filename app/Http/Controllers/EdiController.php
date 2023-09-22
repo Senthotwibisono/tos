@@ -30,10 +30,24 @@ class EdiController extends Controller
     public function receiveedi()
     {
         $title= 'Edi Arrival';
-        $vessel_voyage = VVoyage::whereDate('eta_date', '>=', now())->get();
+        $vessel_voyage = VVoyage::whereDate('etd_date', '>=', now())->get();
         $item = Item::where('ctr_intern_status','01')->orderBy('update_time', 'desc')->get();
 
         return view('edi.ediarrival', compact('vessel_voyage','item', 'title'));
+    }
+
+    public function get_cont(Request $request)
+    {
+        $ves_id = $request->ves_id;
+        $cont = Item::where('ves_id', $ves_id)->where('ctr_intern_status', '=', '01')->get();
+
+        if ($cont) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Detail Data Post',
+                'data'    => $cont,  
+            ]); 
+        }
     }
 
     

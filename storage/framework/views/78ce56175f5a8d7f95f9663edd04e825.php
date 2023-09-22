@@ -28,7 +28,46 @@
                 
             </div>
             <div class="card-body">
-                <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
+            <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
+                    <thead>
+                        <tr>
+                            <th>Ves Id</th>
+                            <th>Ves Name</th>
+                            <th>Ves Code</th>
+                            <th>Voy In</th>
+                            <th>Voy Out</th>
+                            <th>Arrival Date</th>
+                            <th>Estimate Deparature Date</th>
+                            <th>Closing Time</th>
+                            <th>Owner</th>
+                            <th>Agent</th> 
+                            <th>Action</th>  
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php $__currentLoopData = $vessel_voyage; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $voy): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <tr>
+                            <td><?php echo e($voy->ves_id); ?></td>
+                            <td><?php echo e($voy->ves_name); ?></td>
+                            <td><?php echo e($voy->ves_code); ?></td>
+                            <td><?php echo e($voy->voy_in); ?></td>
+                            <td><?php echo e($voy->voy_out); ?></td>
+                            <td><?php echo e($voy->arrival_date); ?></td>
+                            <td><?php echo e($voy->etd_date); ?></td>
+                            <td><?php echo e($voy->clossing_date); ?></td>
+                            <td><?php echo e($voy->voyage_owner); ?></td>
+                            <td><?php echo e($voy->agent); ?></td> 
+                            <td>
+                            <a href="javascript:void(0)"class="btn icon icon-left btn-outline-info detail-cont-edi" data-id="<?php echo e($voy->ves_id); ?>"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                        </svg> Detail</a>
+                            </td>  
+                        </tr>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </tbody>
+                </table>
+                <!-- <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
                     <thead>
                         <tr>
                             <th>Vessel Name</th>
@@ -60,13 +99,12 @@
                                 <?php echo method_field('DELETE'); ?>
                                 <button type="submit" class="btn icon btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus record ini? <?php echo e($itm->container_key); ?> ')"> <i class="bi bi-x"></i></button>                             
                                 <a href="javascript:void(0)" class="btn btn-primary edit-modal" data-id="<?php echo e($itm->container_key); ?>" ><i class="bi bi-pencil"></i></a>
-
                             </form>
 
                         </tr>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </tbody>
-                </table>
+                </table> -->
             </div>
         </div>
 
@@ -287,7 +325,7 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-
+<?php echo $__env->make('edi.detail-cont', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
 <?php $__env->stopSection(); ?>
 
@@ -298,6 +336,7 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+
 
 <script>
 
@@ -355,7 +394,7 @@
      
       success: function(response) {
        
-
+        $('#detail-edi').modal('hide'); 
         
          $('#edit-itembayplan-modal').modal('show');
          $("#edit-itembayplan-modal #ves_id").val(response.data.ves_id);
@@ -387,6 +426,88 @@
    });
 });
 </script>  
+
+<script>
+ $(function() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+   
+
+    $(document).on('click', '.detail-cont-edi', function() {
+        let id = $(this).data('id');
+        $.ajax({
+            type: 'GET',
+            url: '/edi/detail-container-' + id,
+            cache: false,
+            data: {
+                ves_id: id
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                $('#detail-edi').modal('show');
+                var tableBody = $('#detail-edi #tableDetail tbody');
+                tableBody.empty();
+                    if (response.data.length === 0) {
+                        var newRow = $('<tr>');
+                        newRow.append('<td colspan="3">No Container Available</td>');
+                        tableBody.append(newRow);
+                    } else {
+                        response.data.forEach(function(cont) {
+                            var newRow = $('<tr>');
+                            newRow.append('<td>' + cont.container_no + '</td>');
+                            newRow.append('<td>' + cont.iso_code + '</td>');
+                            newRow.append('<td>' + cont.ctr_size + '</td>');
+                            newRow.append('<td>' + cont.ctr_type + '</td>');
+                            newRow.append('<td>' + cont.ctr_status + '</td>');
+                            newRow.append('<td>' + cont.bay_slot + cont.bay_row + cont.bay_tier + '</td>');
+                            var deleteForm = $('<form>', {
+                             action: '/edi/delete_itembayplan=' + cont.container_key,
+                             method: 'POST',
+                             onsubmit: "return confirm('Apakah Anda yakin ingin menghapus record ini? " + cont.container_key + "')"
+                         }).append(
+                             $('<button>', {
+                                 type: 'submit',
+                                 class: 'btn icon btn-danger',
+                                 html: '<i class="bi bi-x"></i>'
+                             }).append(
+                                 $('<input>', {
+                                     type: 'hidden',
+                                     name: '_token',
+                                     value: $('meta[name="csrf-token"]').attr('content')
+                                 }),
+                                 $('<input>', {
+                                     type: 'hidden',
+                                     name: '_method',
+                                     value: 'DELETE'
+                                 })
+                             )
+                         );
+                     
+                         // Tombol Edit
+                         var editButton = $('<a>', {
+                             href: 'javascript:void(0)',
+                             class: 'btn btn-primary edit-modal',
+                             'data-id': cont.container_key,
+                             html: '<i class="bi bi-pencil"></i>'
+                         });
+
+                         newRow.append($('<td>').append(deleteForm, editButton));
+                            tableBody.append(newRow);
+                        });
+                        new simpleDatatables.DataTable('#tableDetail');
+                    }
+            },
+            error: function(data) {
+                console.log('error:', data);
+            }
+        });
+    });
+});
+</script>
 
 <?php $__env->stopSection(); ?>
 

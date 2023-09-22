@@ -15,5 +15,9 @@ class RO_Realisasi extends Model
     protected $fillable = [
         'ro_no',
         'container_no',
+        'container_key',
+        'truck_no',
+        'truck_id',
+        'status',
     ];
 }

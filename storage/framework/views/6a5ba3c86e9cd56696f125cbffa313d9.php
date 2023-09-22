@@ -133,6 +133,8 @@
                 <div class="kotak" id=""></div>
             <?php endfor; ?>
 
+            <hr>
+
             <div class="tier-label right-label"><?php echo e($evenNumbers[$numberIndex]); ?></div>
 
             <?php
