@@ -34,6 +34,10 @@ use App\Http\Controllers\ShipPlanController;
 use App\Http\Controllers\LoadController;
 use App\Http\Controllers\BeaController;
 use App\Http\Controllers\SoapController;
+use App\Http\Controllers\ProfileKapal;
+
+
+
 
 
 /*
@@ -582,6 +586,21 @@ Route::post('/gato-rec', [Gato::class, 'gato_rec']);
 //Ship Plan
 Route::get('/planning/ship_planning', [ShipPlanController::class, 'index']);
 Route::get('/planning/plan-ves-{ves_id}', [ShipPlanController::class, 'plan']);
+
+
+
+// Profile kapal
+
+// Route for displaying the main profile page
+Route::get('/planning/profile-kapal', [ProfileKapal::class, 'index'])->name('profile-kapal.index');
+
+// Route for showing the Select Kapal modal
+Route::get('/profile-kapal/select-kapal/{ves_name}/{ves_code}', [ProfileKapal::class, 'showSelectKapalModal'])->name('profile-kapal.show-select-kapal-modal');
+
+// Route for handling the form submission and storing data
+Route::post('profile-kapal/store/{ves_code}', [ProfileKapal::class, 'store'])->name('profile-kapal.store');
+
+
 
 // Stuffing
 Route::get('/stuffing/gate-in', [Gati::class, 'index_stuf']);
