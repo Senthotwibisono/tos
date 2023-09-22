@@ -270,12 +270,12 @@
 
     <!-- gate -->
 
-    <li class="sidebar-item  has-sub @if(Request::is('delivery/*') || Request::is('reciving/*') || Request::is('stuffing/gate-in')) active @endif">
+    <li class="sidebar-item  has-sub @if(Request::is('delivery/*') || Request::is('reciving/*') || Request::is('stuffing/*')) active @endif">
         <a href="#" class='sidebar-link'>
             <i class="fa-solid fa-torii-gate"></i>
             <span>Gate</span>
         </a>
-        <ul class="submenu @if(Request::is('delivery/*') || Request::is('reciving/*') || Request::is('stuffing/gate-in')) active @endif">
+        <ul class="submenu @if(Request::is('delivery/*') || Request::is('reciving/*') || Request::is('stuffing/*')) active @endif">
             <li class="submenu-item @if(Request::is('delivery/gate-in')) active @endif">
                 <a href="/delivery/gate-in">Get in Delivery</a>
             </li>
@@ -296,6 +296,10 @@
 
             <li class="submenu-item @if(Request::is('stuffing/gate-in')) active @endif">
                 <a href="/stuffing/gate-in">Get in Stuffing</a>
+            </li>
+
+            <li class="submenu-item @if(Request::is('stuffing/gate-out')) active @endif">
+                <a href="/stuffing/gate-out">Get out Stuffing</a>
             </li>
 
             <!-- <li class="submenu-item ">
@@ -381,6 +385,25 @@
             </li>
             <li class="submenu-item ">
                 <a href="/delivery/gate-out">Gate Out Delivery</a>
+            </li>
+        </ul>
+    </li>
+
+    <!-- Doc -->
+    <li class="sidebar-item  has-sub @if(Request::is('docs/*')) active @endif">
+        <a href="#" class='sidebar-link'>
+        <i class="fa-solid fa-file-invoice"></i>
+            <span>Docs & Inventory</span>
+        </a>
+        <ul class="submenu @if(Request::is('docs/*')) active @endif">
+            <li class="submenu-item @if(Request::is('docs/dokumen/ro')) active @endif">
+                <a href="/docs/dokumen/ro">Dokumen R.O</a>
+            </li>
+
+            <hr>
+
+            <li class="submenu-item @if(Request::is('docs/inventory/items')) active @endif">
+                <a href="{{ route('inventory.items') }}">Container in Progress</a>
             </li>
         </ul>
     </li>

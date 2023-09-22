@@ -4,6 +4,9 @@
 
   });
 
+  function goBack() {
+  window.history.back();
+}
 
   function canceladdCustomer() {
     Swal.fire({
@@ -12,11 +15,10 @@
       showCancelButton: true,
     }).then((result) => {
       if (result.isConfirmed) {
-        window.location.href = "/invoice/customer";
+        window.history.back();
       }
     })
   }
-
   function submitaddCustomer() {
     Swal.fire({
       icon: 'question',

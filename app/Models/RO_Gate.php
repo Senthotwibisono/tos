@@ -16,5 +16,9 @@ class RO_Gate extends Model
         'ro_no',
         'truck_no',
         'truck_in_date',
+        'truck_out_date',
+        'truck_in_date_after',
+        'truck_out_date_after',
+        'status',
     ];
 }
