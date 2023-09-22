@@ -3,10 +3,18 @@
     $('#cust_invoice').modal('show').focus();
 
   });
+  $(function() {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
+
+  new simpleDatatables.DataTable('#table2');
+  new simpleDatatables.DataTable('#table3');
+  new simpleDatatables.DataTable('#table4');
+  new simpleDatatables.DataTable('#table5');
 
   function goBack() {
-  window.history.back();
-}
+    window.history.back();
+  }
 
   function canceladdCustomer() {
     Swal.fire({
@@ -19,6 +27,7 @@
       }
     })
   }
+
   function submitaddCustomer() {
     Swal.fire({
       icon: 'question',
@@ -344,6 +353,187 @@
                 },
                 type: "POST",
                 url: `/invoice/singleData/verifyPiutang`,
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: fd,
+                success: function(response) {
+                  let res = JSON.parse(response);
+                  console.log(res);
+                  Swal.fire({
+                    icon: 'success',
+                    title: 'Successfully Verify Piutang!',
+                    text: 'Please Check Again',
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      location.reload();
+                    } else {
+                      location.reload();
+
+                    }
+                  })
+                },
+                error(err) {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: 'Something wrong happened! #VE42i',
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      location.reload();
+                    } else {
+                      location.reload();
+                    }
+                  });
+                }
+              });
+            }
+          })
+        });
+
+      },
+      error(err) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops!',
+          text: 'Something wrong happened! #VE42i',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            location.reload();
+          } else {
+            location.reload();
+          }
+        });
+      }
+    });
+
+  }
+</script>
+
+<script>
+  function paidConfigv2(invoiceId) {
+    let id = invoiceId;
+    let fd = new FormData();
+    console.log("clicked paid config");
+    // Retrieve the CSRF token value from the page's meta tag
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+    fd.append('id', id);
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+      },
+      type: "POST",
+      url: `/delivery/ajx/singleInvoice`,
+      cache: false,
+      contentType: false,
+      processData: false,
+      data: fd,
+      success: function(response) {
+        let res = JSON.parse(response);
+        let data = res.data;
+        $('#editModal').modal('show');
+        // console.log(response);
+        // console.log(res.data.invoice.isPiutang);
+        // console.log(res.data.invoice.orderService);
+        $("#input_id").val(data.id);
+        $("#customer").val(data.deliveryForm.customer.customer_name);
+        if (data.isPaid == 1 && data.isPiutang == 0) {
+          $("#isPaid").addClass("bg-success").text("Paid");
+          $("#isPiutang").addClass("bg-danger").text("Not Piutang");
+          $("#verifyPiutang").prop("disabled", true).text("Already Paid");
+          $("#verifyPayment").prop("disabled", true).text("Already Paid");
+        } else if (data.isPiutang == 1 && data.isPaid == 0) {
+          $("#isPiutang").addClass("bg-warning").text("Piutang");
+          $("#isPaid").addClass("bg-danger").text("Not Paid");
+          $("#verifyPiutang").prop("disabled", true).text("Already Piutang");
+          $("#verifyPayment").prop("disabled", false).text("Verify This Payment");
+        } else if (data.isPiutang == 1 && data.isPaid == 1) {
+          $("#verifyPiutang").prop("disabled", true).text("Already Piutang");
+          $("#isPiutang").addClass("bg-warning").text("Piutang");
+          $("#verifyPayment").prop("disabled", true).text("Already Paid");
+          $("#isPaid").addClass("bg-success").text("Paid");
+        } else {
+          $("#isPiutang").addClass("bg-danger").text("Not Piutang");
+          $("#isPaid").addClass("bg-danger").text("Not Paid");
+          $("#verifyPiutang").prop("disabled", false).text("Piutang This Invoice");
+          $("#verifyPayement").prop("disabled", false).text("Verify This Payment");
+        }
+
+        $("#verifyPayment").click(function(event) {
+          Swal.fire({
+            icon: 'question',
+            title: 'Are You Sure?',
+            text: 'You are about to do verifying this payment, and cannot be reverted!',
+            showCancelButton: true,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              let fd = new FormData();
+              let id = data.id;
+
+              fd.append('id', id);
+              $.ajax({
+                headers: {
+                  'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+                },
+                type: "POST",
+                url: `/delivery/ajx/verifyPayment`,
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: fd,
+                success: function(response) {
+                  let res = JSON.parse(response);
+                  console.log(res);
+                  Swal.fire({
+                    icon: 'success',
+                    title: 'Successfully Verify Payment!',
+                    text: 'Please Check Again',
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      location.reload();
+                    } else {
+                      location.reload();
+
+                    }
+                  })
+                },
+                error(err) {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: 'Something wrong happened! #VE42i',
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      location.reload();
+                    } else {
+                      location.reload();
+                    }
+                  });
+                }
+              });
+            }
+          })
+        });
+
+        $("#verifyPiutang").click(function(event) {
+          Swal.fire({
+            icon: 'question',
+            title: 'Are You Sure?',
+            text: 'You are about to do verifying Piutang this payment, and cannot be reverted!',
+            showCancelButton: true,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              let fd = new FormData();
+              let id = data.id;
+
+              fd.append('id', id);
+              $.ajax({
+                headers: {
+                  'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+                },
+                type: "POST",
+                url: `/delivery/ajx/verifyPiutang`,
                 cache: false,
                 contentType: false,
                 processData: false,
@@ -940,6 +1130,7 @@
 <script>
   const doNumberSelect = $("#do_number_auto");
   const containerSelect = $("#containerSelector");
+  var sweet_loader = '<div class="spinner-border text-info" role="status"><span class="sr-only">Loading...</span></div>';
 
   var cont = [];
   var selcont = [];
@@ -961,10 +1152,22 @@
       cache: false,
       contentType: false,
       processData: false,
+      xhr: function() {
+        var xhr = $.ajaxSettings.xhr();
+        xhr.upload.onprogress = function(e) {
+          Swal.fire({
+            html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
+            showConfirmButton: false,
+
+          });
+        }
+        return xhr;
+      },
       success: function(response) {
+        Swal.close();
 
         let res = JSON.parse(response);
-        console.log("TRIMMED ALL CONTAINER = ", res.data[0].container_no.trim());
+        // console.log("TRIMMED ALL CONTAINER = ", res.data[0].container_no.trim());
 
         let data = res.data;
         // console.log(data.length);
@@ -1000,8 +1203,8 @@
                 cont.push(value.container_no.trim());
               });
 
-              console.log("cont array=", cont);
-              console.log("selcont array=", selcont);
+              // console.log("cont array=", cont);
+              // console.log("selcont array=", selcont);
               // Convert the date string to a Date object
               let doDate = new Date(doBDate);
 
@@ -1011,7 +1214,7 @@
 
               // console.log(doDate);
               if (doDate <= today) {
-                console.log("im here bro 1");
+                // console.log("im here bro 1");
                 Swal.fire({
                   icon: 'warning',
                   title: 'Oops!',
@@ -1035,13 +1238,13 @@
                   return true; // All values in arrayToCheck are present in referenceArray
                 }
                 if (cont.length <= selcont.length && checkIfAllInArray(cont, selcont)) {
-                  console.log("All values in cont are present in selcont.");
+                  // console.log("All values in cont are present in selcont.");
                   checking = true;
                 } else {
-                  console.log("Not all values in cont are present in selcont.");
+                  // console.log("Not all values in cont are present in selcont.");
                   checking = false;
                 }
-                console.log(checking);
+                // console.log(checking);
                 if (checking != true) {
                   Swal.fire({
                     icon: 'error',
@@ -1099,10 +1302,22 @@
           }
         });
       },
-      error: function(result) {
-        console.log(result);
-        let res = JSON.parse(result);
-        console.log(res);
+      error: function(error) {
+        setTimeout(function() {
+          let res = JSON.parse(response);
+          // console.log(res);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops !',
+            text: 'Something occured Happened, Please try again later',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              location.reload();
+            } else {
+              location.reload();
+            }
+          })
+        }, 700);
       }
     });
 
@@ -1635,6 +1850,208 @@
 </script>
 
 <script>
+  function fetchContainersRo(selectedDoNoId) {
+    var sweet_loader = '<div class="spinner-border text-info" role="status"><span class="sr-only">Loading...</span></div>';
+    var cont = [];
+    console.log(selectedDoNoId);
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+    let formData = new FormData();
+    formData.append("booking", selectedDoNoId);
+
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+      },
+      type: "POST",
+      url: `/invoice/singleData/findContainerRo`,
+      cache: false,
+      contentType: false,
+      processData: false,
+      data: formData,
+      xhr: function() {
+        var xhr = $.ajaxSettings.xhr();
+        xhr.upload.onprogress = function(e) {
+          Swal.fire({
+            html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
+            showConfirmButton: false,
+
+          });
+        }
+        return xhr;
+      },
+      success: function(response) {
+        Swal.close();
+
+        containerSelect.innerHTML = ''; // Clear previous options
+        const responseData = JSON.parse(response);
+        console.log(responseData);
+        let ctr = 0;
+        if (responseData.hasOwnProperty('data')) {
+          const containers = responseData.data;
+          // $("#do_exp_date").val(formattedDate(containers.do_expired)).attr("readonly", "true");
+          // $("#boln").val(containers.bl_no).attr("readonly", "true");
+          $("#containerSelector")[0].selectedIndex = -1;
+          // if (containers[0].isChoosen === "1" && containers[0].ctr_intern_status !== "04") {
+          if (containers[0].isChoosen === "1") {
+            Swal.fire({
+              icon: 'warning',
+              title: 'Data Container Sudah Digunakan!',
+              text: 'Silahakan pilih data yang lain',
+            }).then((result) => {
+              if (result.isConfirmed) {
+                location.reload();
+              } else {
+                location.reload();
+
+              }
+            })
+          } else {
+            containers.forEach((container) => {
+              ctr++;
+              cont.push(container.container_no.trim());
+
+              // $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+              // $("#containerSelectorView").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+            });
+            // let csrfToken = $('meta[name="csrf-token"]').attr('content');
+            let csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+            $.ajax({
+              headers: {
+                'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+              },
+              type: "POST",
+              url: `/findContainerArray`,
+              cache: false,
+              contentType: "application/json",
+              // processData: false,
+              data: JSON.stringify({
+                container: cont
+              }),
+              success: function(response) {
+                let res = JSON.parse(response)
+                // console.log(res.data);
+                value = res.data;
+                value.forEach((container) => {
+                  // console.log(container);
+                  // if (container.ctr_intern_status == "04") {
+                  $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+                  $("#containerSelectorView").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+                  // }
+                });
+                // console.log(cont);
+                $("#selector").css("display", "none");
+                $("#selectorView").css("display", "grid");
+                $("#ctr").val(ctr).attr("readonly", "true");
+                $("#fpod").val(containers[0].pod).attr("readonly", "true");
+                $("#pod").val(containers[0].disch_port).attr("readonly", "true");
+                // $("#vesselBN").val(containers[0].vessel_name).attr("readonly", "true");
+                // $("#voyage").val(containers[0].voy_no).attr("readonly", "true");
+                // $("#vesselcode").val(containers[0].ves_code).attr("readonly", "true");
+                // $("#closing").val(formattedDate(containers[0].closing_date)).attr("readonly", "true");
+                // $("#arrival").val(formattedDate(containers[0].arrival_date)).attr("readonly", "true");
+                // $("#departure").val(formattedDate(containers[0].departure_date)).attr("readonly", "true");
+                let csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+                let formData = new FormData();
+                formData.append("ves_id", containers[0].ves_id);
+                $.ajax({
+                  headers: {
+                    'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+                  },
+                  type: "POST",
+                  url: `/coparn/findSingleVessel`,
+                  cache: false,
+                  contentType: false,
+                  processData: false,
+                  data: formData,
+                  xhr: function() {
+                    var xhr = $.ajaxSettings.xhr();
+                    xhr.upload.onprogress = function(e) {
+                      Swal.fire({
+                        html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
+                        showConfirmButton: false,
+
+                      });
+                    }
+                    return xhr;
+                  },
+                  success: function(response) {
+                    Swal.close();
+
+                    let res = JSON.parse(response);
+                    console.log(res);
+                    data = res[0];
+                    // console.log(res.arrival_date);
+                    $("#vesselBN").val(data.ves_name).attr("readonly", "true");
+                    $("#voyage").val(data.voy_out).attr("readonly", "true");
+                    $("#vesselcode").val(data.ves_code).attr("readonly", "true");
+                    $("#closing").val(formattedDate(data.clossing_date)).attr("readonly", "true");
+                    $("#arrival").val(formattedDate(data.arrival_date)).attr("readonly", "true");
+                    $("#departure").val(formattedDate(data.deparature_date)).attr("readonly", "true");
+                  },
+                  error: function(error) {
+                    setTimeout(function() {
+                      let res = JSON.parse(response);
+                      // console.log(res);
+                      Swal.fire({
+                        icon: 'error',
+                        title: 'Oops !',
+                        text: 'Something occured Happened, Please try again later',
+                      }).then((result) => {
+                        if (result.isConfirmed) {
+                          location.reload();
+                        } else {
+                          location.reload();
+                        }
+                      })
+                    }, 700);
+                  }
+                })
+              }
+            });
+
+          }
+
+        } else {
+          console.error('Invalid response format:', response);
+        }
+      },
+      error: function(error) {
+        setTimeout(function() {
+          let res = JSON.parse(response);
+          // console.log(res);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops !',
+            text: 'Something occured Happened, Please try again later',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              location.reload();
+            } else {
+              location.reload();
+            }
+          })
+        }, 700);
+      }
+    });
+  }
+
+  $("#roNumber").on('change', function() {
+    console.log("CHANGED!");
+    const selectedDoNo = this.value;
+    const selectedDoNoId = this.options[this.selectedIndex].getAttribute('data-id');
+    // $("#containerSelector").attr("disabled", "true");
+    if (selectedDoNo !== "") {
+      fetchContainersRo(selectedDoNoId);
+    } else {
+      containerSelect.innerHTML = ''; // Clear options when no "do_no" is selected
+    }
+  });
+</script>
+
+
+<script>
   $("#vesselCoparn").on('change', function() {
     var sweet_loader = '<div class="spinner-border text-info" role="status"><span class="sr-only">Loading...</span></div>';
 
@@ -2132,11 +2549,13 @@
   function beacukaiCheckValue() {
     let check = $("#beacukaiChecking").val();
     let doCheck = $("#do_exp_date").val();
+    let expDate = $("#exp_date").val();
+    let orderService = $("#basicSelect").val();
     let bolnCheck = $("#boln").val();
 
 
     if (check == "true") {
-      if (!doCheck) {
+      if (!doCheck || !expDate || !bolnCheck || !orderService) {
         event.preventDefault(); // Prevent form submission
         // alert("Please enter a date."); // Display an alert or use another method to notify the user
         Swal.fire({

@@ -1,5 +1,4 @@
 @extends ('partial.invoice.main')
-<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> -->
 
 
 @section('content')
@@ -199,7 +198,7 @@
             Verify This Payment
           </button>
           <button id="verifyPiutang" type="button" class="btn btn-warning ml-1" data-bs-dismiss="modal">
-            Piutang This Invoicess
+            Piutang This Invoices
           </button>
         </div>
       </form>

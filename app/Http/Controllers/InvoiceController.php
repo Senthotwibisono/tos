@@ -12,10 +12,10 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Controllers\DataExport;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Illuminate\Support\Collection;
-use App\Http\Controllers\DataExport;
 use App\Models\TpsSppbPib; // check doc number import
 use App\Models\TpsSppbBc; // check doc import bc
 use App\Models\TpsDokPabean; // check doc lainya
@@ -1382,6 +1382,21 @@ class InvoiceController extends Controller
     $id = $request->booking;
 
     $url = getenv('API_URL') . '/delivery-service/container/booking/' . $id;
+    $req = $client->get(
+      $url
+    );
+    $response = $req->getBody()->getContents();
+    // var_dump($response);
+    // die();
+    echo $response;
+  }
+
+  public function findContainerRo(Request $request)
+  {
+    $client = new Client();
+    $id = $request->booking;
+
+    $url = getenv('API_URL') . '/delivery-service/container/ro/' . $id;
     $req = $client->get(
       $url
     );
