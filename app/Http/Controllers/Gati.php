@@ -492,6 +492,8 @@ class Gati extends Controller
             'ves_name'=>$request->ves_name,
             'voy_no'=>$request->voy_no,
             'user_id' => $request->user_id,
+            'ctr_active_yn'=>'Y',
+            'ctr_i_e_t'=>'E',
         ]);
         // var_dump($item);
         // die();

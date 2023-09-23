@@ -1,4 +1,5 @@
 <ul class="menu">
+    @if(Auth::user() && !Auth::user()->hasRole('BeaCukai'))
     <li class="sidebar-title">Menu</li>
 
     <li class="sidebar-item @if(Request::is('dashboard') || Request::is('/')) active @endif">
@@ -416,6 +417,9 @@
             <li class="submenu-item @if(Request::is('reports/hist')) active @endif">
                 <a href="/reports/hist">History Container</a>
             </li>
+            <li class="submenu-item @if(Request::is('reports/equipment')) active @endif">
+                <a href="/reports/equipment">Equipment Report</a>
+            </li>
             <hr>
             <li class="submenu-item @if(Request::is('reports/disch')) active @endif">
                 <a href="/reports/disch">Disch Reports</a>
@@ -579,8 +583,35 @@
             <li class="submenu-item @if(Request::is('master/isocode')) active @endif">
                 <a href="/master/isocode">ISO Code Maintenance</a>
             </li>
+            <li class="submenu-item @if(Request::is('master/alat')) active @endif">
+                <a href="/master/alat">Equipment</a>
+            </li>
         </ul>
     </li>
+    @else
+    
+    <li class="sidebar-item @if(Request::is('bea-cukai-sevice')) active @endif">
+        <a href="/bea-cukai-sevice" class='sidebar-link'>
+            <span>Home</span>
+        </a>
+    </li>
+    <li class="sidebar-item @if(Request::is('bea-cukai-sevice/container-hold')) active @endif">
+        <a href="bea-cukai-sevice/container-hold" class='sidebar-link'>
+            <span>Container in Hold</span>
+        </a>
+    </li>
+    <li class="sidebar-item @if(Request::is('bea-cukai-sevice/container-hold-p2')) active @endif">
+        <a href="/bea-cukai-sevice/container-hold-p2" class='sidebar-link'>
+            <span>Holding Proccess P2</span>
+        </a>
+    </li>
+    <li class="sidebar-item @if(Request::is(' ')) active @endif">
+        <a href="#" class='sidebar-link'>
+            <span>Proses Segel P2</span>
+        </a>
+    </li>
+    @endif
+    </ul>
 
 
 

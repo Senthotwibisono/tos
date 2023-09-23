@@ -37,6 +37,18 @@
                       </div>
                       {{ csrf_field()}}
                     </div>
+                    <div class="col-12">
+                            <div class="form-group">
+                                <label for="first-name-vertical">Alat</label>
+                                <select class="choices form-select" id="alat_luar" required>
+                                    <option value="">Pilih Alata</option>
+                                    @foreach($alat as $alt)
+                                    <option value="{{$alt->id}}">{{$alt->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            {{ csrf_field()}}
+                        </div>
                     <!-- end content -->
                 </div>
                 <div class="modal-footer">

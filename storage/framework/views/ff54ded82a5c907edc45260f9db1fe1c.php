@@ -57,14 +57,17 @@
                   <?php
                   $i = 1;
                   foreach ($do as $data) { ?>
-                    <tr>
-                      <td><?= $i ?></td>
-                      <td><?= $data->container_no ?></td>
-                      <td><?= $data->do_no ?></td>
-                      <td><?= $data->bl_no ?></td>
-                      <td><?= $data->do_expired ?></td>
+                    <?php if ($data->isActive == "1") { ?>
 
-                    </tr>
+                      <tr>
+                        <td><?= $i ?></td>
+                        <td><?= $data->container_no ?></td>
+                        <td><?= $data->do_no ?></td>
+                        <td><?= $data->bl_no ?></td>
+                        <td><?= $data->do_expired ?></td>
+
+                      </tr>
+                    <?php } ?>
                   <?php
                     $i++;
                   } ?>

@@ -6,6 +6,8 @@ use App\Models\Item;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Yard;
+use App\Models\MasterAlat;
+use App\Models\ActAlat;
 use Auth;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
@@ -82,8 +84,8 @@ class Stripping extends Controller
 
         $data["jobContainers"] = $result_jobContainer->data;
 
-
-        return view('stripping.main', $data, compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'));
+        $alat = MasterAlat::where('category', '=', 'Yard')->get();
+        return view('stripping.main', $data, compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys', 'alat'));
     }
     public function android()
     {
@@ -214,6 +216,9 @@ class Stripping extends Controller
             ->first();
 
         if (is_null($yard_rowtier->container_key)) {
+            $id_alat = $request->alat;
+            $alat = MasterAlat::where('id', $id_alat )->first();
+
             $item->update([
                 'yard_block' => $request->yard_block,
                 'yard_slot' => $request->yard_slot,
@@ -227,6 +232,15 @@ class Stripping extends Controller
                 'commodity_name'=>null,
                 'agent'=>null,
             ]);
+
+            $act_alat = ActAlat::create([
+                'id_alat' =>  $request->alat,
+                'category' => $alat->category,
+                'nama_alat' => $alat->name,
+                'container_key' => $request->container_key,
+                'container_no' => $request->container_no,
+                'activity' => 'STR',
+              ]);
 
             $client = new Client();
 

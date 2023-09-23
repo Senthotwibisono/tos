@@ -13,7 +13,11 @@
                 <div class="sidebar-header position-relative">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="logoicon">
+                            <?php if(Auth::user() && Auth::user()->hasRole('BeaCukai')): ?>
+                            <a href="/bea-cukai-sevice"><img src="<?php echo e(asset('logo/ICON2.png')); ?>" alt="Logo" srcset=""></a>
+                            <?php else: ?>
                             <a href="/dashboard"><img src="<?php echo e(asset('logo/ICON2.png')); ?>" alt="Logo" srcset=""></a>
+                            <?php endif; ?>
                         </div>
                         <!-- Dark or Light mode -->
 

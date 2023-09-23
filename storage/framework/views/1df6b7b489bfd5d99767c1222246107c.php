@@ -2,7 +2,7 @@
 
 <div class="page-heading">
   <h3><?= $title ?></h3>
-  <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+  <p>Menu untuk Delivery</p>
 
 </div>
 <div class="page-content">
@@ -13,7 +13,6 @@
           <h4 class="card-title">
             Delivery Form Data Management
           </h4>
-          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
         </div>
         <div class="card-body">
           <div class="row">
@@ -36,7 +35,7 @@
       <div class="card">
         <div class="card-header">
           <h4 class="card-title">Delivery Form Data Table</h4>
-          <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+          <p>Tabel Form Delivery</p>
         </div>
         <div class="card-body">
           <div class="row mt-5">
@@ -59,30 +58,32 @@
                   <?php
                   $i = 1;
                   foreach ($deliveries as $data) { ?>
+                    <?php if ($data->orderService == "sp2" || $data->orderService == "spps") { ?>
 
-                    <tr>
-                      <td><?= $i ?></td>
-                      <td><?= $data->customer->customer_name ?></td>
-                      <td><?= $data->do_number ?></td>
-                      <td><?= $data->orderService ?></td>
-                      <td><?= DateFormat($data->exp_date) ?></td>
-                      <td><?= $data->boln ?></td>
-                      <td><?= DateTimeFormat($data->createdAt) ?></td>
-                      <td>
-                        <?php if ($data->hasInvoice != null) { ?>
-                          <span class="badge bg-success text-white">Has Invoice</span>
-                        <?php } else { ?>
-                          <span class="badge bg-warning text-white">Draft</span>
-                        <?php } ?>
-                      </td>
-                      <td>
-                        <?php if ($data->hasInvoice != null) { ?>
-                          <button disabled type="button" class="btn btn-sm btn-success"><i class="fa fa-file"></i></button>
-                        <?php } else { ?>
-                          <a href="/invoice/add/update_step1?id=<?= $data->id ?>" type="button" class="btn btn-sm btn-info"><i class="fa fa-pencil"></i></a>
-                        <?php } ?>
-                      </td>
-                    </tr>
+                      <tr>
+                        <td><?= $i ?></td>
+                        <td><?= $data->customer->customer_name ?></td>
+                        <td><?= $data->do_number ?></td>
+                        <td><?= $data->orderService ?></td>
+                        <td><?= DateFormat($data->exp_date) ?></td>
+                        <td><?= $data->boln ?></td>
+                        <td><?= DateTimeFormat($data->createdAt) ?></td>
+                        <td>
+                          <?php if ($data->hasInvoice != null) { ?>
+                            <span class="badge bg-success text-white">Has Invoice</span>
+                          <?php } else { ?>
+                            <span class="badge bg-warning text-white">Draft</span>
+                          <?php } ?>
+                        </td>
+                        <td>
+                          <?php if ($data->hasInvoice != null) { ?>
+                            <button disabled type="button" class="btn btn-sm btn-success"><i class="fa fa-file"></i></button>
+                          <?php } else { ?>
+                            <a href="/invoice/add/update_step1?id=<?= $data->id ?>" type="button" class="btn btn-sm btn-info"><i class="fa fa-pencil"></i></a>
+                          <?php } ?>
+                        </td>
+                      </tr>
+                    <?php } ?>
 
                   <?php
                     $i++;

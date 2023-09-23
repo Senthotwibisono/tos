@@ -6,6 +6,8 @@ use App\Models\Item;
 use App\Models\VVoyage;
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\MasterAlat;
+use App\Models\ActAlat;
 use GuzzleHttp\Client;
 
 use Auth;
@@ -57,7 +59,9 @@ class DischargeController extends Controller
     $currentDateTime = Carbon::now();
     $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
     $vessel_voyage = VVoyage::whereDate('deparature_date', '>=', now())->orderBy('deparature_date', 'desc')->get();
-    return view('disch.main', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'vessel_voyage'), $data);
+
+    $alat = MasterAlat::where('category', '=', 'Bay')->get();
+    return view('disch.main', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'vessel_voyage', 'alat'), $data);
   }
   
   //android
@@ -175,6 +179,8 @@ class DischargeController extends Controller
     $now = Carbon::now();
     $container_key = $request->container_key;
     $item = Item::where('container_key', $container_key)->first();
+    $id_alat = $request->cc_tt_no;
+    $alat = MasterAlat::where('id', $id_alat )->first();
     $request->validate([
       'container_no' => 'required',
       'cc_tt_no' => 'required | max : 7',
@@ -186,79 +192,97 @@ class DischargeController extends Controller
       'cc_tt_no.max' => 'Opss Data Terlalu Panjang.',
       'cc_tt_oper.max' => 'Opss Data Terlalu Panjang.',
     ]);
-    Item::where('container_key', $container_key)->update([
-      'cc_tt_no' => $request->cc_tt_no,
-      'cc_tt_oper' => $request->cc_tt_oper,
-      'disc_date' => $now,
-      'ctr_intern_status' => '02',
-      'wharf_yard_oa' => $request->wharf_yard_oa,
-      'container_key' => $request->container_key,
-      'ves_id' => $request->ves_id,
-      'voy_no' => $request->voy_no,
-      'ves_name' => $request->ves_name,
-      'container_no' => $request->container_no,
-      'ctr_status' => $request->ctr_status,
-      'ctr_type' => $request->ctr_type,
-      'ctr_opr' => $request->ctr_opr,
-      'ctr_size' => $request->ctr_size,
-      'disc_load_trans_shift' => $request->disc_load_trans_shift,
-      'load_port' => $request->load_port,
-      'disch_port' => $request->disch_port,
-      'fdisch_port' => '',
-      'bay_slot' => $request->bay_slot,
-      'bay_row' => $request->bay_row,
-      'bay_tier' => $request->bay_tier,
-      'gross' => $request->gross,
-      'iso_code' => $request->iso_code,
+    if ($item) {
 
-    ]);
-
-    $client = new Client();
-
-    $fields = [
-      "container_key" => $request->container_key,
-      "ctr_intern_status" => "02",
-      "disc_date" => $request->disc_date,
-      "ves_id" => $request->ves_id,
-      "voy_no" => $request->voy_no,
-      "vessel_name" => $request->ves_name,
-      "container_no" => $request->container_no,
-      "ctr_status" => $request->ctr_status,
-      "ctr_type" => $request->ctr_type,
-      "ctr_size" => $request->ctr_size,
-      "ctr_opr" => $request->ctr_opr,
-      "disc_load_trans_shift" => $request->disc_load_trans_shift,
-      "load_port" => $request->load_port,
-      "disch_port" => $request->disch_port,
-      "fdisch_port" => "",
-      "bay_slot" => $request->bay_slot,
-      "bay_row" => $request->bay_row,
-      "bay_tier" => $request->bay_tier,
-      "gross" => $request->gross,
-      "iso_code" => $request->iso_code,
-    ];
-    // dd($fields, $item->getAttributes());
-
-    $url = getenv('API_URL') . '/delivery-service/container/create';
-    $req = $client->post(
-      $url,
-      [
-        "json" => $fields
-      ]
-    );
-    $response = $req->getBody()->getContents();
-    $result = json_decode($response);
-    // dd($result);
-    if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-      // $item->save();
-
-      return response()->json([
-        'success' => 400,
-        'message' => 'updated successfully!',
-        'data'    => $item,
+      $act_alat = ActAlat::create([
+        'id_alat' =>  $request->cc_tt_no,
+        'category' => 'Bay',
+        'nama_alat' => $alat->name,
+        'container_key' => $request->container_key,
+        'container_no' => $request->container_no,
+        'activity' => 'DISCH',
       ]);
-    } else {
-      return back();
+
+      $item->update([
+        'cc_tt_no' => $alat->name,
+        'cc_tt_oper' => $request->cc_tt_oper,
+        'disc_date' => $now,
+        'ctr_intern_status' => '02',
+        'wharf_yard_oa' => $request->wharf_yard_oa,
+        'container_key' => $request->container_key,
+        'ves_id' => $request->ves_id,
+        'voy_no' => $request->voy_no,
+        'ves_name' => $request->ves_name,
+        'container_no' => $request->container_no,
+        'ctr_status' => $request->ctr_status,
+        'ctr_type' => $request->ctr_type,
+        'ctr_opr' => $request->ctr_opr,
+        'ctr_size' => $request->ctr_size,
+        'disc_load_trans_shift' => $request->disc_load_trans_shift,
+        'load_port' => $request->load_port,
+        'disch_port' => $request->disch_port,
+        'fdisch_port' => '',
+        'bay_slot' => $request->bay_slot,
+        'bay_row' => $request->bay_row,
+        'bay_tier' => $request->bay_tier,
+        'gross' => $request->gross,
+        'iso_code' => $request->iso_code,
+        'ctr_active_yn'=>'Y',
+      ]);
+  
+     
+  
+      $client = new Client();
+  
+      $fields = [
+        "container_key" => $request->container_key,
+        "ctr_intern_status" => "02",
+        "disc_date" => $request->disc_date,
+        "ves_id" => $request->ves_id,
+        "voy_no" => $request->voy_no,
+        "vessel_name" => $request->ves_name,
+        "container_no" => $request->container_no,
+        "ctr_status" => $request->ctr_status,
+        "ctr_type" => $request->ctr_type,
+        "ctr_size" => $request->ctr_size,
+        "ctr_opr" => $request->ctr_opr,
+        "disc_load_trans_shift" => $request->disc_load_trans_shift,
+        "load_port" => $request->load_port,
+        "disch_port" => $request->disch_port,
+        "fdisch_port" => "",
+        "bay_slot" => $request->bay_slot,
+        "bay_row" => $request->bay_row,
+        "bay_tier" => $request->bay_tier,
+        "gross" => $request->gross,
+        "iso_code" => $request->iso_code,
+      ];
+      // dd($fields, $item->getAttributes());
+  
+      $url = getenv('API_URL') . '/delivery-service/container/create';
+      $req = $client->post(
+        $url,
+        [
+          "json" => $fields
+        ]
+      );
+      $response = $req->getBody()->getContents();
+      $result = json_decode($response);
+      // dd($result);
+      if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+       
+  
+        return response()->json([
+          'success' => true,
+          'message' => 'updated successfully!',
+          'data'    => $item,
+        ]);
+      } else {
+        return response()->json([
+          'success' => false,
+          'message' => 'Something Wrong!',
+        ]);
+      };
     }
+    
   }
 }

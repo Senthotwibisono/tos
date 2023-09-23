@@ -107,6 +107,8 @@ class item extends Model
         'f_d_key',
         'consl_f_d_key',
         'is_damage',
+        'jenis_dok',
+        'bc_flag',
         'user_id',
         'ro_no',
         'stuffing_procces',

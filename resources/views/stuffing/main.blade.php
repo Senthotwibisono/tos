@@ -80,6 +80,7 @@
         var yard_tier = $('#tier').val();
         var truck_no = $('#truck').val();
         var ro_id_gati = $('#id_truck').val();
+        var alat = $('#alat').val();
         var data = {
           'ro_no' : $('#nomor_ro').val(),
           'ves_id' : $('#Vessel').val(),
@@ -95,6 +96,7 @@
           'user_id': $('#user').val(),
           'truck_no' : $('#truck').val(),
           'ro_id_gati' : $('#id_truck').val(),
+          'alat' : $('#alat').val(),
 
         }
         $.ajaxSetup({
@@ -249,11 +251,13 @@
         var container_no = $('#container_no_luar').val();
         var truck_no = $('#truck_luar').val();
         var ro_id_gati = $('#id_truck_luar').val();
+        var alat = $('#alat_luar').val();
         var data = {
           'ro_no' : $('#nomor_ro_luar').val(),
           'container_key': $('#key_luar').val(),
           'truck_no' : $('#truck_luar').val(),
           'ro_id_gati' : $('#id_truck_luar').val(),
+          'alat' : $('#alat_luar').val(),
 
         }
         $.ajaxSetup({

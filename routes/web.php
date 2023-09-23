@@ -35,6 +35,8 @@ use App\Http\Controllers\LoadController;
 use App\Http\Controllers\BeaController;
 use App\Http\Controllers\SoapController;
 use App\Http\Controllers\DocsController;
+use App\Http\Controllers\EquipmentController;
+use App\Http\Controllers\BCGatterController;
 
 
 /*
@@ -637,3 +639,19 @@ Route::get('/docs/dokumen/ro/detail-{ro_no}', [DocsController::class, 'container
 
 // Inven
 Route::get('docs/inventory/items', [DocsController::class, 'index_items'])->name('inventory.items');
+
+
+// Alat
+Route::get('/master/alat', [EquipmentController::class, 'index']);
+Route::post('/kategori-alat', [EquipmentController::class, 'addCategory']);
+Route::post('/add-alat', [EquipmentController::class, 'addAlat']);
+Route::get('/reports/equipment', [EquipmentController::class, 'report']);
+Route::post('/get-alat', [EquipmentController::class, 'get_alat']);
+Route::post('/get-data-alat', [EquipmentController::class, 'get_data_alat']);
+Route::get('/laporan-alat', [EquipmentController::class, 'laporan_alat'])->name('laporan-alat');
+
+// BC Gatter
+Route::get('/bea-cukai-sevice', [BCGatterController::class, 'index']);
+Route::get('/bea-cukai-sevice/container-hold', [BCGatterController::class, 'hold_index']);
+Route::post('/release-cont', [BCGatterController::class, 'release_cont']);
+Route::get('/bea-cukai-sevice/container-hold-p2', [BCGatterController::class, 'holdingp2_index']);

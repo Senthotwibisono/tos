@@ -69,10 +69,16 @@
 
                 <div class="form-body" id="modal-update">
                     <div class="row">
-                        <div class="col-12">
+                    <div class="col-12">
                             <div class="form-group">
                                 <label for="first-name-vertical">No Alat</label>
-                                <input type="text" id="no_alat" class="form-control" name="cc_tt_no" required>
+                                <select class="choices form-control" name="cc_tt_no" id="no_alat">
+                                    <option value="" disabledselected>Pilih Alat</option>
+                                    <?php $__currentLoopData = $alat; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $alt): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($alt->id); ?>"><?php echo e($alt->name); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </select>
+                                <!-- <input type="text" id="no_alat" class="form-control" name="cc_tt_no" required> -->
                             </div>
                         </div>
                         <div class="col-12">
@@ -188,13 +194,11 @@
     $(document).on('click', '.update_status', function(e) {
         e.preventDefault(); // membatalkan perilaku default dari tombol submit
         // Menetapkan nilai input field pada saat modal ditampilkan
-        $('#no_alat').val(localStorage.getItem('no_alat'));
+       
         $('#operator').val(localStorage.getItem('operator'));
 
     });
-    $(document).on('keyup', '#no_alat', function() {
-        localStorage.setItem('no_alat', $(this).val());
-    });
+   
     $(document).on('keyup', '#operator', function() {
         localStorage.setItem('operator', $(this).val());
     });
