@@ -451,7 +451,7 @@
                 $('#detail-edi').modal('show');
                 var tableBody = $('#detail-edi #tableDetail tbody');
                 tableBody.empty();
-                    if (response.data.length === 0) {
+                    if (response.data.cont === 0) {
                         var newRow = $('<tr>');
                         newRow.append('<td colspan="3">No Container Available</td>');
                         tableBody.append(newRow);
