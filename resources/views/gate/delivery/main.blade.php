@@ -78,9 +78,19 @@
               {{ csrf_field()}}
             </div>
             <div class="col-12">
-              <div class="form-group">
-                <label for="first-name-vertical">Job Number</label>
-                <input type="text" id="job" class="form-control" name="job_no" readonly>
+              <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                      <label for="first-name-vertical">Job Number</label>
+                      <input type="text" id="job" class="form-control" name="job_no" readonly>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                      <label for="first-name-vertical">Order Service</label>
+                      <input type="text" id="orderservice" class="form-control"  readonly>
+                    </div>
+                </div>
               </div>
             </div>
             <div class="col-12">
@@ -167,62 +177,15 @@
           dataType: 'json',
           success: function(response) {
             console.log(response);
-            if (response.success) {
-              Swal.fire('Saved!', '', 'success')
-              $('#load_ini').load(window.location.href + ' #load_ini');
-              $('#place_cont').load(window.location.href + ' #place_cont', function() {
-                $(document).ready(function() {
-                  let choices = document.querySelectorAll('.choices');
-                  let initChoice;
-                  for (let i = 0; i < choices.length; i++) {
-                    if (choices[i].classList.contains("multiple-remove")) {
-                      initChoice = new Choices(choices[i], {
-                        delimiter: ',',
-                        editItems: true,
-                        maxItemCount: -1,
-                        removeItemButton: true,
-                      });
-                    } else {
-                      initChoice = new Choices(choices[i]);
-                    }
-                  }
-                  $('.container').select2({
-                    dropdownParent: '#success',
-                  });
-                  $(document).ready(function() {
-                    $('#key').on('change', function() {
-                      let id = $(this).val();
-                      $.ajax({
-                        type: 'POST',
-                        url: '/gati-data_container',
-                        data: {
-                          container_key: id
-                        },
-                        success: function(response) {
-                          let res = JSON.parse(response);
-                          // console.log(res);
-                          $('#container_no').val(res.data.jobData.container_no);
-                          $('#job').val(res.data.jobData.jobNumber);
-                          $('#invoice').val(res.data.jobData.invoiceNumber);
-                        },
-                        error: function(data) {
-                          console.log('error:', data);
-                        },
-                      });
-                    });
-                  });
-                  // $
-                });
-
-                $('#load_ini').load(window.location.href + ' #load_ini');
-              });
-            } else {
-              Swal.fire({
-                icon: 'error',
-                title: 'Validation Error',
-                text: response.message,
-              });
-            }
+                        if (response.success) {
+                            Swal.fire('Saved!', '', 'success')
+                            .then(() => {
+                            // Memuat ulang halaman setelah berhasil menyimpan data
+                            window.location.reload();
+                        });
+                        } else {
+                            Swal.fire('Error', response.message, 'error');
+                        }
           },
           error: function(response) {
             var errors = response.responseJSON.errors;
@@ -273,6 +236,7 @@
             $('#container_no').val(res.data.jobData.container_no);
             $('#job').val(res.data.jobData.jobNumber);
             $('#invoice').val(res.data.jobData.invoiceNumber);
+            $('#orderservice').val(res.data.jobData.orderService);
           },
           error: function(data) {
             console.log('error:', data);

@@ -794,16 +794,16 @@
           cache: false,
           dataType: 'json',
           success: function(response) {
-            Swal.fire({
-              icon: 'success',
-              title: 'Saved',
-              html: 'Update Successfully',
-            }).then((result) => {
-              if (result.isConfirmed) {
-                location.reload();
-              }
-            });
-            console.log(response.message);
+            console.log(response);
+                        if (response.success) {
+                            Swal.fire('Saved!', '', 'success')
+                            .then(() => {
+                            // Memuat ulang halaman setelah berhasil menyimpan data
+                            window.location.reload();
+                        });
+                        } else {
+                            Swal.fire('Error', response.message, 'error');
+                        }
           },
           error: function(response) {
             var errors = response.responseJSON.errors;

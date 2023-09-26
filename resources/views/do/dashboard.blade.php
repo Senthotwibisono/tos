@@ -60,17 +60,15 @@
                   <?php
                   $i = 1;
                   foreach ($do as $data) { ?>
-                    <?php if ($data->isActive == "1") { ?>
 
-                      <tr>
-                        <td><?= $i ?></td>
-                        <td><?= $data->container_no ?></td>
-                        <td><?= $data->do_no ?></td>
-                        <td><?= $data->bl_no ?></td>
-                        <td><?= $data->do_expired ?></td>
+                    <tr>
+                      <td><?= $i ?></td>
+                      <td><?= $data->container_no ?></td>
+                      <td><?= $data->do_no ?></td>
+                      <td><?= $data->bl_no ?></td>
+                      <td><?= $data->do_expired ?></td>
 
-                      </tr>
-                    <?php } ?>
+                    </tr>
                   <?php
                     $i++;
                   } ?>

@@ -596,7 +596,7 @@
         </a>
     </li>
     <li class="sidebar-item @if(Request::is('bea-cukai-sevice/container-hold')) active @endif">
-        <a href="bea-cukai-sevice/container-hold" class='sidebar-link'>
+        <a href="/bea-cukai-sevice/container-hold" class='sidebar-link'>
             <span>Container in Hold</span>
         </a>
     </li>

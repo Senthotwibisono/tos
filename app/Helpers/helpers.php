@@ -59,6 +59,11 @@ function DateFormat($date)
     $new_date = date("d F Y", strtotime('-0 hours', strtotime($date)));
     return $new_date;
 }
+function DateOnly($date)
+{
+    $new_date = date("Y-m-d", strtotime('-0 hours', strtotime($date)));
+    return $new_date;
+}
 
 function terbilang($angka)
 {
