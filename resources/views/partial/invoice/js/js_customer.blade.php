@@ -11,6 +11,11 @@
   new simpleDatatables.DataTable('#table3');
   new simpleDatatables.DataTable('#table4');
   new simpleDatatables.DataTable('#table5');
+  new simpleDatatables.DataTable('#table6');
+  new simpleDatatables.DataTable('#table7');
+  new simpleDatatables.DataTable('#table8');
+  new simpleDatatables.DataTable('#table9');
+  new simpleDatatables.DataTable('#table10');
 
   function goBack() {
     window.history.back();
@@ -1155,11 +1160,28 @@
       xhr: function() {
         var xhr = $.ajaxSettings.xhr();
         xhr.upload.onprogress = function(e) {
+          let timerInterval
           Swal.fire({
-            html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
-            showConfirmButton: false,
-
-          });
+            title: 'Processing',
+            // html: 'I will close in <b></b> milliseconds.',
+            timer: 10000,
+            timerProgressBar: true,
+            didOpen: () => {
+              Swal.showLoading()
+              const b = Swal.getHtmlContainer().querySelector('b')
+              timerInterval = setInterval(() => {
+                b.textContent = Swal.getTimerLeft()
+              }, 100)
+            },
+            willClose: () => {
+              clearInterval(timerInterval)
+            }
+          }).then((result) => {
+            /* Read more about handling dismissals below */
+            if (result.dismiss === Swal.DismissReason.timer) {
+              console.log('I was closed by the timer')
+            }
+          })
         }
         return xhr;
       },
@@ -1518,11 +1540,33 @@
       xhr: function() {
         var xhr = $.ajaxSettings.xhr();
         xhr.upload.onprogress = function(e) {
-          Swal.fire({
-            html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
-            showConfirmButton: false,
+          // Swal.fire({
+          //   html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
+          //   showConfirmButton: false,
 
-          });
+          // });
+          let timerInterval
+          Swal.fire({
+            title: 'Processing',
+            // html: 'I will close in <b></b> milliseconds.',
+            timer: 10000,
+            timerProgressBar: true,
+            didOpen: () => {
+              Swal.showLoading()
+              const b = Swal.getHtmlContainer().querySelector('b')
+              timerInterval = setInterval(() => {
+                b.textContent = Swal.getTimerLeft()
+              }, 100)
+            },
+            willClose: () => {
+              clearInterval(timerInterval)
+            }
+          }).then((result) => {
+            /* Read more about handling dismissals below */
+            if (result.dismiss === Swal.DismissReason.timer) {
+              console.log('I was closed by the timer')
+            }
+          })
         }
         return xhr;
       },
@@ -1571,11 +1615,33 @@
             xhr: function() {
               var xhr = $.ajaxSettings.xhr();
               xhr.upload.onprogress = function(e) {
-                Swal.fire({
-                  html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
-                  showConfirmButton: false,
+                // Swal.fire({
+                //   html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
+                //   showConfirmButton: false,
 
-                });
+                // });
+                let timerInterval
+                Swal.fire({
+                  title: 'Processing',
+                  // html: 'I will close in <b></b> milliseconds.',
+                  timer: 10000,
+                  timerProgressBar: true,
+                  didOpen: () => {
+                    Swal.showLoading()
+                    const b = Swal.getHtmlContainer().querySelector('b')
+                    timerInterval = setInterval(() => {
+                      b.textContent = Swal.getTimerLeft()
+                    }, 100)
+                  },
+                  willClose: () => {
+                    clearInterval(timerInterval)
+                  }
+                }).then((result) => {
+                  /* Read more about handling dismissals below */
+                  if (result.dismiss === Swal.DismissReason.timer) {
+                    console.log('I was closed by the timer')
+                  }
+                })
               }
               return xhr;
             },
@@ -1670,11 +1736,28 @@
       xhr: function() {
         var xhr = $.ajaxSettings.xhr();
         xhr.upload.onprogress = function(e) {
+          let timerInterval
           Swal.fire({
-            html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
-            showConfirmButton: false,
-
-          });
+            title: 'Processing',
+            // html: 'I will close in <b></b> milliseconds.',
+            timer: 10000,
+            timerProgressBar: true,
+            didOpen: () => {
+              Swal.showLoading()
+              const b = Swal.getHtmlContainer().querySelector('b')
+              timerInterval = setInterval(() => {
+                b.textContent = Swal.getTimerLeft()
+              }, 100)
+            },
+            willClose: () => {
+              clearInterval(timerInterval)
+            }
+          }).then((result) => {
+            /* Read more about handling dismissals below */
+            if (result.dismiss === Swal.DismissReason.timer) {
+              console.log('I was closed by the timer')
+            }
+          })
         }
         return xhr;
       },
@@ -1871,11 +1954,28 @@
       xhr: function() {
         var xhr = $.ajaxSettings.xhr();
         xhr.upload.onprogress = function(e) {
+          let timerInterval
           Swal.fire({
-            html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
-            showConfirmButton: false,
-
-          });
+            title: 'Processing',
+            // html: 'I will close in <b></b> milliseconds.',
+            timer: 10000,
+            timerProgressBar: true,
+            didOpen: () => {
+              Swal.showLoading()
+              const b = Swal.getHtmlContainer().querySelector('b')
+              timerInterval = setInterval(() => {
+                b.textContent = Swal.getTimerLeft()
+              }, 100)
+            },
+            willClose: () => {
+              clearInterval(timerInterval)
+            }
+          }).then((result) => {
+            /* Read more about handling dismissals below */
+            if (result.dismiss === Swal.DismissReason.timer) {
+              console.log('I was closed by the timer')
+            }
+          })
         }
         return xhr;
       },
@@ -2075,11 +2175,28 @@
       xhr: function() {
         var xhr = $.ajaxSettings.xhr();
         xhr.upload.onprogress = function(e) {
+          let timerInterval
           Swal.fire({
-            html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
-            showConfirmButton: false,
-
-          });
+            title: 'Processing',
+            // html: 'I will close in <b></b> milliseconds.',
+            timer: 10000,
+            timerProgressBar: true,
+            didOpen: () => {
+              Swal.showLoading()
+              const b = Swal.getHtmlContainer().querySelector('b')
+              timerInterval = setInterval(() => {
+                b.textContent = Swal.getTimerLeft()
+              }, 100)
+            },
+            willClose: () => {
+              clearInterval(timerInterval)
+            }
+          }).then((result) => {
+            /* Read more about handling dismissals below */
+            if (result.dismiss === Swal.DismissReason.timer) {
+              console.log('I was closed by the timer')
+            }
+          })
         }
         return xhr;
       },
@@ -2146,11 +2263,28 @@
       xhr: function() {
         var xhr = $.ajaxSettings.xhr();
         xhr.upload.onprogress = function(e) {
+          let timerInterval
           Swal.fire({
-            html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
-            showConfirmButton: false,
-
-          });
+            title: 'Processing',
+            // html: 'I will close in <b></b> milliseconds.',
+            timer: 10000,
+            timerProgressBar: true,
+            didOpen: () => {
+              Swal.showLoading()
+              const b = Swal.getHtmlContainer().querySelector('b')
+              timerInterval = setInterval(() => {
+                b.textContent = Swal.getTimerLeft()
+              }, 100)
+            },
+            willClose: () => {
+              clearInterval(timerInterval)
+            }
+          }).then((result) => {
+            /* Read more about handling dismissals below */
+            if (result.dismiss === Swal.DismissReason.timer) {
+              console.log('I was closed by the timer')
+            }
+          })
         }
         return xhr;
       },
@@ -2211,11 +2345,28 @@
       xhr: function() {
         var xhr = $.ajaxSettings.xhr();
         xhr.upload.onprogress = function(e) {
+          let timerInterval
           Swal.fire({
-            html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
-            showConfirmButton: false,
-
-          });
+            title: 'Processing',
+            // html: 'I will close in <b></b> milliseconds.',
+            timer: 10000,
+            timerProgressBar: true,
+            didOpen: () => {
+              Swal.showLoading()
+              const b = Swal.getHtmlContainer().querySelector('b')
+              timerInterval = setInterval(() => {
+                b.textContent = Swal.getTimerLeft()
+              }, 100)
+            },
+            willClose: () => {
+              clearInterval(timerInterval)
+            }
+          }).then((result) => {
+            /* Read more about handling dismissals below */
+            if (result.dismiss === Swal.DismissReason.timer) {
+              console.log('I was closed by the timer')
+            }
+          })
         }
         return xhr;
       },
@@ -2297,11 +2448,28 @@
           xhr: function() {
             var xhr = $.ajaxSettings.xhr();
             xhr.upload.onprogress = function(e) {
+              let timerInterval
               Swal.fire({
-                html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
-                showConfirmButton: false,
-
-              });
+                title: 'Processing',
+                // html: 'I will close in <b></b> milliseconds.',
+                timer: 10000,
+                timerProgressBar: true,
+                didOpen: () => {
+                  Swal.showLoading()
+                  const b = Swal.getHtmlContainer().querySelector('b')
+                  timerInterval = setInterval(() => {
+                    b.textContent = Swal.getTimerLeft()
+                  }, 100)
+                },
+                willClose: () => {
+                  clearInterval(timerInterval)
+                }
+              }).then((result) => {
+                /* Read more about handling dismissals below */
+                if (result.dismiss === Swal.DismissReason.timer) {
+                  console.log('I was closed by the timer')
+                }
+              })
             }
             return xhr;
           },
@@ -2436,11 +2604,28 @@
           xhr: function() {
             var xhr = $.ajaxSettings.xhr();
             xhr.upload.onprogress = function(e) {
+              let timerInterval
               Swal.fire({
-                html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
-                showConfirmButton: false,
-
-              });
+                title: 'Processing',
+                // html: 'I will close in <b></b> milliseconds.',
+                timer: 10000,
+                timerProgressBar: true,
+                didOpen: () => {
+                  Swal.showLoading()
+                  const b = Swal.getHtmlContainer().querySelector('b')
+                  timerInterval = setInterval(() => {
+                    b.textContent = Swal.getTimerLeft()
+                  }, 100)
+                },
+                willClose: () => {
+                  clearInterval(timerInterval)
+                }
+              }).then((result) => {
+                /* Read more about handling dismissals below */
+                if (result.dismiss === Swal.DismissReason.timer) {
+                  console.log('I was closed by the timer')
+                }
+              })
             }
             return xhr;
           },

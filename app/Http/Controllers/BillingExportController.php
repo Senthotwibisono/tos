@@ -11,14 +11,15 @@ use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\DataExport;
+use App\Models\VVoyage;
 
-class BillingImportController extends Controller
+
+class BillingExportController extends Controller
 {
   public function __construct()
   {
     $this->middleware('auth');
   }
-
   public function billingIndex()
   {
     $client = new Client();
@@ -31,21 +32,9 @@ class BillingImportController extends Controller
     $result_invoice = json_decode($response_invoice);
     // dd($result_invoice);
 
-    // if ($result_invoice->data->deliveryForm->orderService == "sp2iks") {
-    //   $data["orderService"] = "SP2 Kapal Sandar Icon (MT Balik IKS / MKB)";
-    // } else if ($result_invoice->data->deliveryForm->orderService == "sp2pelindo") {
-    //   $data["orderService"] = "SP2 Kapal Sandar icon (MT Balik Pelindo)";
-    // } else if ($result_invoice->data->deliveryForm->orderService == "spps") {
-    //   $data["orderService"] = "SPPS";
-    // } else if ($result_invoice->data->deliveryForm->orderService == "sppsrelokasipelindo") {
-    //   $data["orderService"] = "SPPS (Relokasi Pelindo - ICON)";
-    // } else if ($result_invoice->data->deliveryForm->orderService == "sp2icon") {
-    //   $data["orderService"] = "SP2 (MT Balik ICON / MKB)";
-    // }
-
-    $data["title"] = "Delivery Billing System";
+    $data["title"] = "Receiving Billing System";
     $data["invoices"] = $result_invoice->data;
-    return view('billing.import.billingIndex', $data);
+    return view('billing.export.billingIndex', $data);
   }
 
   public function formIndex()
@@ -54,17 +43,16 @@ class BillingImportController extends Controller
     $data = [];
 
     // GET ALL FORM
-    $url_delivery = getenv('API_URL') . '/delivery-service/form/all';
-    $req_delivery = $client->get($url_delivery);
-    $response_delivery = $req_delivery->getBody()->getContents();
-    $result_delivery = json_decode($response_delivery);
-    // dd($result_delivery);
+    $url_receiving = getenv('API_URL') . '/delivery-service/form/all';
+    $req_receiving = $client->get($url_receiving);
+    $response_receiving = $req_receiving->getBody()->getContents();
+    $result_receiving = json_decode($response_receiving);
+    // dd($result_receiving);
 
-    $data["deliveries"] = $result_delivery->data;
-    $data["title"] = "Delivery Form";
-    return view('billing.import.form.formIndex', $data);
+    $data["receivings"] = $result_receiving->data;
+    $data["title"] = "Receiving Form";
+    return view('billing.export.form.formIndex', $data);
   }
-
   public function  createIndex()
   {
     $client = new Client();
@@ -87,43 +75,51 @@ class BillingImportController extends Controller
     $result_container = json_decode($response_container);
     // dd($result_container);
 
-    // GET ALL DO NUMBER
-    $url_do = getenv('API_URL') . '/delivery-service/do/groupall';
-    $req_do = $client->get($url_do);
-    $response_do = $req_do->getBody()->getContents();
-    $result_do = json_decode($response_do);
-    // dd($result_do);
+    // GET ALL VOYAGE BY DEPARATURE DATE
+    $vessel_voyage = VVoyage::whereDate('deparature_date', '>=', now())->orderBy('deparature_date', 'desc')->get();
+    // dd($result_vessel);
 
+    // GET ALL BOOKING
+    $url_booking = getenv('API_URL') . '/delivery-service/container/booking/all';
+    $req_booking = $client->get($url_booking);
+    $response_booking = $req_booking->getBody()->getContents();
+    $result_booking = json_decode($response_booking);
+    // dd($result_booking);
+
+    $data["booking"] = $result_booking->data;
+    $data["vessel"] = $vessel_voyage;
     $data["customer"] = $result_customer->data;
     $data["container"] = $result_container->data;
-    $data["do"] = $result_do->data;
     $data["user"] = $user->id;
-    $data["title"] = "Delivery Create Form | Delivery Billing System";
-    return view('billing.import.form.create', $data);
+    $data["title"] = "Receiving Create Form | Receiving Billing System";
+    return view('billing.export.form.create', $data);
   }
-
   public function storeForm(Request $request)
   {
     $data = [];
     $client = new Client();
 
-    $exp_date = $request->exp_date;
+    // $exp_date = $request->exp_date;
+    $departure = $request->departure;
     // $exp_time = $request->exp_time;
     $customer = $request->customer;
-    $do_number = $request->do_number ?? $request->do_number_auto;
-    $do_exp_date = $request->do_exp_date;
-    $boln = $request->boln;
+    // $do_number = $request->do_number ?? $request->do_number_auto;
+    // $do_exp_date = $request->do_exp_date;
+    // $boln = $request->boln;
     $container = $request->container;
     $order_service = $request->order_service;
     $documentNumber = $request->documentNumber;
     $documentType = $request->documentType;
     $documentDate = $request->documentDate;
+    $bookingno = $request->booking;
+
     $fields = [
-      "exp_date" => $exp_date,
+      "exp_date" => $departure,
       "customer_id" => $customer,
-      "do_number" => $do_number,
-      "do_exp_date" => $do_exp_date,
-      "boln" => $boln,
+      // "do_number" => $do_number,
+      // "do_exp_date" => $do_exp_date,
+      // "boln" => $boln,
+      "booking_no" => $bookingno,
       "container" => $container,
       "orderService" => $order_service,
       "documentNumber" => $documentNumber,
@@ -144,9 +140,9 @@ class BillingImportController extends Controller
     $result = json_decode($response);
     // dd($result);
     if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-      return redirect('/delivery/form/review?id=' . $result->data->id)->with('success', 'Form berhasil disimpan!');
+      return redirect('/receiving/form/review?id=' . $result->data->id)->with('success', 'Form berhasil disimpan!');
     } else {
-      return redirect('/delivery')->with('success', 'Data gagal disimpan!');
+      return redirect('/receiving')->with('success', 'Data gagal disimpan!');
     }
   }
 
@@ -161,7 +157,7 @@ class BillingImportController extends Controller
       "id" => $id_form,
     ];
     // dd($fields);
-    $url = getenv('API_URL') . '/delivery-service/form/delivery/calculate';
+    $url = getenv('API_URL') . '/delivery-service/form/receiving/calculate';
 
     $req = $client->post(
       $url,
@@ -184,21 +180,31 @@ class BillingImportController extends Controller
     $data["customer"] = $result->data->deliveryForm->customer;
     $data["containers"] = $result->data->deliveryForm->containers;
     // $data["tarifCheckResults"] = $result->data->tarifCheckResults;
-    if ($result->data->deliveryForm->orderService == "sp2iks") {
-      $data["orderService"] = "SP2 Kapal Sandar Icon (MT Balik IKS / MKB)";
-    } else if ($result->data->deliveryForm->orderService == "sp2pelindo") {
-      $data["orderService"] = "SP2 Kapal Sandar icon (MT Balik Pelindo)";
-    } else if ($result->data->deliveryForm->orderService == "spps") {
-      $data["orderService"] = "SPPS";
-    } else if ($result->data->deliveryForm->orderService == "sppsrelokasipelindo") {
-      $data["orderService"] = "SPPS (Relokasi Pelindo - ICON)";
-    } else if ($result->data->deliveryForm->orderService == "sp2icon") {
-      $data["orderService"] = "SP2 (MT Balik ICON / MKB)";
+    if ($result->data->deliveryForm->orderService == "lolofull") {
+      $data["orderService"] = "LOLO FULL KAPAL SANDAR ICON (2 Invoice)";
+    } else if ($result->data->deliveryForm->orderService == "lolofull1inv") {
+      $data["orderService"] = "LOLO FULL KAPAL SANDAR ICON (1 Invoice)";
+    } else if ($result->data->deliveryForm->orderService == "lolomt") {
+      $data["orderService"] = "LOLO MT (1 Invoice)";
+    } else if ($result->data->deliveryForm->orderService == "jpbicon") {
+      $data["orderService"] = "JPB EX-TRUCK/ STUFFING MUATAN KAPAL ICON";
+    } else if ($result->data->deliveryForm->orderService == "jpbluar") {
+      $data["orderService"] = "JPB EX-TRUCK/ STUFFING MUATAN KAPAL LUAR";
+    } else if ($result->data->deliveryForm->orderService == "ernahandling1inv") {
+      $data["orderService"] = "HANDLING CHARGE ERNA VIA KAPAL ICON (INVOICE ICL) 1 INVOICE";
+    } else if ($result->data->deliveryForm->orderService == "ernahandling2inv") {
+      $data["orderService"] = "HANDLING CHARGE ERNA VIA KAPAL ICON (INVOICE ERNA) 2 INVOICE";
+    } else if ($result->data->deliveryForm->orderService == "ernahandlingluar") {
+      $data["orderService"] = "HANDLING CHARGE ERNA VIA KAPAL LUAR (INVOICE ERNA) 2 INVOICE";
+    } else if ($result->data->deliveryForm->orderService == "sp2dry") {
+      $data["orderService"] = "MUAT DRY SP2";
+    } else if ($result->data->deliveryForm->orderService == "sppsdry") {
+      $data["orderService"] = "MUAT DRY SPPS";
     }
 
 
-    $data["title"] = "Review Form & Calculation Pranota | Delivery Billing System";
-    return view('billing.import.form.review', $data);
+    $data["title"] = "Review Form & Calculation Pranota | Receiving Billing System";
+    return view('billing.export.form.review', $data);
   }
 
   public function storeBilling(Request $request)
@@ -211,7 +217,7 @@ class BillingImportController extends Controller
       "id" => $id,
     ];
     // dd($fields);
-    $url = getenv('API_URL') . '/delivery-service/form/delivery/calculate';
+    $url = getenv('API_URL') . '/delivery-service/form/receiving/calculate';
 
     $req = $client->post(
       $url,
@@ -224,17 +230,6 @@ class BillingImportController extends Controller
 
     $orderService = $result->data->deliveryForm->orderService;
     // dd($orderService);
-    if ($orderService == "sp2iks") {
-      $orderServiceName = "SP2 Kapal Sandar Icon (MT Balik IKS / MKB)";
-    } else if ($orderService == "sp2pelindo") {
-      $orderServiceName = "SP2 Kapal Sandar icon (MT Balik Pelindo)";
-    } else if ($orderService == "spps") {
-      $orderServiceName = "SPPS";
-    } else if ($orderService == "sppsrelokasipelindo") {
-      $orderServiceName = "SPPS (Relokasi Pelindo - ICON)";
-    } else if ($orderService == "sp2icon") {
-      $orderServiceName = "SP2 (MT Balik ICON / MKB)";
-    }
 
     $delivery = $result->data;
     $billingTotal = $result->data->billingTotal;
@@ -242,7 +237,7 @@ class BillingImportController extends Controller
     $customer = $result->data->deliveryForm->customer;
     $containers = $result->data->deliveryForm->containers;
     $grandTotal = $result->data->grandTotal;
-    // dd($billingTotal[0]);
+    // dd($billingTotal);
     // dd($billingTotal[0]->billingName->name[0]);
     $i = 0;
     foreach ($billingTotal as $value) {
@@ -254,8 +249,6 @@ class BillingImportController extends Controller
       $contID = $container->id;
       $hari = $value->differentDays;
       $tarif = $value->tarif;
-      // dd($container);
-      // dd($value);
       // dd($tarif->lift_empty);
       // $test["Billing Name"] = $value->billingName->name;
       // dd($value->billingName);
@@ -268,7 +261,7 @@ class BillingImportController extends Controller
       // }
       foreach ($value->billingName->name as $bill) {
         // dd($bill);
-        foreach ($bill == "DSK" ? $value->table->titleTableDSK : $value->table->titleTableDS as $table) {
+        foreach ($bill == "OSK" || $bill == "OSK(OSK246)" || $bill == "OSK(OSK48)" || $bill == "OSK(OSK212)" ? $value->table->titleTableOSK : $value->table->titleTableOS as $table) {
           // $obj[$contNo][$ctrSize][$table]["Nomor Container"] = $contNo;
           // $obj[$contNo][$ctrSize][$table]["Ukuran"] = $ctrSize;
           // $obj[$contNo][$ctrSize][$table]["Type"] = $ctrType;
@@ -282,15 +275,15 @@ class BillingImportController extends Controller
           } else if ($table == "Lift Off MT") {
             $obj[$contNo]["billing_detail"][$bill][$table]["Tarif Satuan"] = $tarif->lift_off_mt;
             $obj[$contNo]["billing_detail"][$bill][$table]["Amount"] = $value->liftOffMT;
-          } else if ($table == "Pass Truck Keluar") {
+          } else if ($table == "Pass Truck Out") {
             $obj[$contNo]["billing_detail"][$bill][$table]["Tarif Satuan"] = $tarif->pass_truck;
             $obj[$contNo]["billing_detail"][$bill][$table]["Amount"] = $value->passTruckOut;
-          } else if ($table == "Pass Truck Masuk") {
+          } else if ($table == "Pass Truck In") {
             $obj[$contNo]["billing_detail"][$bill][$table]["Tarif Satuan"] = $tarif->pass_truck;
             $obj[$contNo]["billing_detail"][$bill][$table]["Amount"] = $value->passTruckIn;
           } else if ($table == "Pass Truck") {
             $obj[$contNo]["billing_detail"][$bill][$table]["Tarif Satuan"] = $tarif->pass_truck;
-            $obj[$contNo]["billing_detail"][$bill][$table]["Amount"] = $value->passTruck ?? $value->passTruckIn;
+            $obj[$contNo]["billing_detail"][$bill][$table]["Amount"] = $value->passTruck ?? $tarif->passTruckIn;
           } else if ($table == "Administrasi") {
             $obj[$contNo]["billing_detail"][$bill][$table]["Tarif Satuan"] = $tarif->administrasi;
             $obj[$contNo]["billing_detail"][$bill][$table]["Amount"] = $value->administration;
@@ -312,15 +305,30 @@ class BillingImportController extends Controller
             $obj[$contNo]["billing_detail"][$bill][$table]["Hari"] = $hari[$i]->masa3;
             $obj[$contNo]["billing_detail"][$bill][$table]["Tarif Satuan"] = $tarif->masa3;
             $obj[$contNo]["billing_detail"][$bill][$table]["Amount"] = $value->penumpukanMasa3;
+          } else if ($table == "JPB Extruck") {
+            $obj[$contNo]["billing_detail"][$bill][$table]["Tarif Satuan"] = $tarif->jpbExtruck;
+            $obj[$contNo]["billing_detail"][$bill][$table]["Amount"] = $value->jpbExtruck;
+          } else if ($table == "Handling Charge") {
+            $obj[$contNo]["billing_detail"][$bill][$table]["Tarif Satuan"] = $tarif->handlingCharge;
+            $obj[$contNo]["billing_detail"][$bill][$table]["Amount"] = $value->handlingCharge;
+          } else if ($table == "Paket Stuffing") {
+            $obj[$contNo]["billing_detail"][$bill][$table]["Tarif Satuan"] = $tarif->paketStuffing;
+            $obj[$contNo]["billing_detail"][$bill][$table]["Amount"] = $value->paketStuffing;
+          } else if ($table == "Cargo Dooring") {
+            $obj[$contNo]["billing_detail"][$bill][$table]["Tarif Satuan"] = $tarif->cargoDooring;
+            $obj[$contNo]["billing_detail"][$bill][$table]["Amount"] = $value->cargoDooring;
+          } else if ($table == "Sewa Crane") {
+            $obj[$contNo]["billing_detail"][$bill][$table]["Tarif Satuan"] = $tarif->sewaCrane;
+            $obj[$contNo]["billing_detail"][$bill][$table]["Amount"] = $value->sewaCrane;
           } else {
             $obj[$contNo]["billing_detail"][$bill][$table]["Hari"] = "Not Found!";
             $obj[$contNo]["billing_detail"][$bill][$table]["Tarif Satuan"] = "Not Found!";
             $obj[$contNo]["billing_detail"][$bill][$table]["Amount"] = "Not Found!";
           }
           // dd($deliveryForm->orderService);
-          $obj[$contNo]["Summary"][$bill]["Total Amount"] = $bill == "DSK" ? $value->initialDSK : $value->initialDS;
-          $obj[$contNo]["Summary"][$bill]["Tax"] = $bill == "DSK" ? $value->taxDSK : $value->taxDS;
-          $obj[$contNo]["Summary"][$bill]["Grand Total"] = $bill == "DSK" ? $delivery->grandTotal[$i]->totalDSK : $delivery->grandTotal[$i]->totalDS;
+          $obj[$contNo]["Summary"][$bill]["Total Amount"] = $bill == "OSK" || $bill == "OSK(OSK246)" || $bill == "OSK(OSK48)" || $bill == "OSK(OSK212)" ? $value->initialOSK : $value->initialOS;
+          $obj[$contNo]["Summary"][$bill]["Tax"] = $bill == "OSK" || $bill == "OSK(OSK246)" || $bill == "OSK(OSK48)" || $bill == "OSK(OSK212)" ? $value->taxOSK : $value->taxOS;
+          $obj[$contNo]["Summary"][$bill]["Grand Total"] = $bill == "OSK" || $bill == "OSK(OSK246)" || $bill == "OSK(OSK48)" || $bill == "OSK(OSK212)" ? $delivery->grandTotal[$i]->totalOSK : $delivery->grandTotal[$i]->totalOS;
 
           $obj[$contNo]["container_detail"]["ContainerID"] = $contID;
           $obj[$contNo]["container_detail"]["Container Number"] = $contNo;
@@ -332,9 +340,7 @@ class BillingImportController extends Controller
         }
       }
       $i++;
-      // $arrCont[$value->billingName->container->container_no] = $value->billingName->container;
     }
-    // dd($arrCont);
     // dd($orderService);
     $billingDetail =  $obj;
 
@@ -358,12 +364,11 @@ class BillingImportController extends Controller
     // dd($result);
 
     if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-      return redirect('/delivery/billing')->with('success', 'Invoice berhasil dibuat & disimpan!');
+      return redirect('/receiving/billing')->with('success', 'Invoice berhasil dibuat & disimpan!');
     } else {
-      return redirect('/delivery/billing')->with('success', 'Data gagal disimpan! kode error : #st2del');
+      return redirect('/receiving/billing')->with('success', 'Data gagal disimpan! kode error : #st2del');
     }
   }
-
   public function pranotaIndex(Request $request)
   {
     $data = [];
@@ -388,7 +393,7 @@ class BillingImportController extends Controller
     $data["payments"] = $result_single_payment->data;
     $data["invoices"] = $result_single_invoice->data;
     $data["title"] = "Pranota ";
-    return view('billing.import.pranota', $data);
+    return view('billing.export.pranota', $data);
   }
   public function invoiceIndex(Request $request)
   {
@@ -414,76 +419,8 @@ class BillingImportController extends Controller
     $data["payments"] = $result_single_payment->data;
     $data["invoices"] = $result_single_invoice->data;
     $data["title"] = "Invoice ";
-    return view('billing.import.invoice', $data);
+    return view('billing.export.invoice', $data);
   }
-
-  public function singleInvoice(Request $request)
-  {
-    $client = new Client();
-
-    $id_invoice = $request->id;
-    // GET SINGLE FORM
-    $url_single_invoice = getenv('API_URL') . '/delivery-service/invoice/v2/single/' . $id_invoice;
-    $req_single_invoice = $client->get($url_single_invoice);
-    $response_single_invoice = $req_single_invoice->getBody()->getContents();
-    $result_single_invoice = json_decode($response_single_invoice);
-    // dd($result_single_invoice);
-
-    echo $response_single_invoice;
-  }
-
-  public function VerifyPayment(Request $request)
-  {
-    $client = new Client();
-
-    $id = $request->id;
-    // var_dump($id);
-    // die();
-    $fields =
-      [
-        "id" => $id,
-        "isPaid" => 1,
-      ];
-    $url = getenv('API_URL') . '/delivery-service/invoice/v2/setVerify';
-    $req = $client->post(
-      $url,
-      [
-        "json" => $fields
-      ]
-    );
-    $response = $req->getBody()->getContents();
-    // var_dump($response);
-    // die();
-
-    echo $response;
-  }
-
-  public function VerifyPiutang(Request $request)
-  {
-    $client = new Client();
-
-    $id = $request->id;
-    // var_dump($id);
-    // die();
-    $fields =
-      [
-        "id" => $id,
-        "isPiutang" => 1,
-      ];
-    $url = getenv('API_URL') . '/delivery-service/invoice/v2/setVerify';
-    $req = $client->post(
-      $url,
-      [
-        "json" => $fields
-      ]
-    );
-    $response = $req->getBody()->getContents();
-    // var_dump($response);
-    // die();
-
-    echo $response;
-  }
-
   public function jobIndex(Request $request)
   {
     $client = new Client();
@@ -513,6 +450,6 @@ class BillingImportController extends Controller
     $data["invoice"] = $result_single_invoice->data;
     $data["delivery"] = $result_single_invoice->data->deliveryForm;
     $data["title"] = "Job Page | Icon Sarana";
-    return view('billing.import.job', $data, compact('qrcodes'));
+    return view('billing.export.job', $data, compact('qrcodes'));
   }
 }
