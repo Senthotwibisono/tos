@@ -40,6 +40,7 @@ use App\Http\Controllers\SoapController;
 use App\Http\Controllers\DocsController;
 
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes

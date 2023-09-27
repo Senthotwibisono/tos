@@ -8,7 +8,7 @@
   <p>Review Data Pranota Form & Kalkulasi</p>
 </div>
 <div class="page content mb-5">
-  <form action="/delivery/form/storeBilling" method="POST" enctype="multipart/form-data">
+  <form action="/receiving/form/storeBilling" method="POST" enctype="multipart/form-data">
     @CSRF
     <input type="hidden" name="deliveryFormId" value="<?= $deliveryForm->id ?>">
     <div class="card">
@@ -16,9 +16,9 @@
         <div class="row">
           <div class="col-12">
             <h4 class="card-title">
-              Delivery Form Detail
+              Receiving Form Detail
             </h4>
-            <p>Informasi Detil Formulir Delivery</p>
+            <p>Informasi Detil Formulir Receiving</p>
           </div>
           <div class="col-4">
             <div class="form-group">
@@ -34,7 +34,7 @@
           </div>
           <div class="col-4">
             <div class="form-group">
-              <label for="">Expired Date</label>
+              <label for="">Deparature Date</label>
               <input type="text" class="form-control" readonly value="<?= $deliveryForm->exp_date ?>">
             </div>
           </div>
@@ -46,8 +46,8 @@
           </div>
           <div class="col-6">
             <div class="form-group">
-              <label for="">DO Number</label>
-              <input type="text" class="form-control" readonly value="<?= $deliveryForm->do_number ?>">
+              <label for="">Booking Number</label>
+              <input type="text" class="form-control" readonly value="<?= $deliveryForm->booking_no ?>">
             </div>
           </div>
           <div class="col-6">
@@ -122,7 +122,7 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <?php foreach ($data == "DSK" ? $value->table->titleTableDSK : $value->table->titleTableDS as $table) { ?>
+                        <?php foreach ($data == "OSK" || $data == "OSK(OSK246)" || $data == "OSK(OSK48)" || $data == "OSK(OSK212)" ? $value->table->titleTableOSK : $value->table->titleTableOS as $table) { ?>
                           <tr>
                             <td><?= $table ?></td>
                             <td><?= $value->billingName->container->ctr_size ?></td>
@@ -136,10 +136,18 @@
                               <td>0 Hari</td>
                               <td>Rp. <?= rupiah($value->tarif->lift_empty) ?>,00 ~</td>
                               <td>Rp. <?= rupiah($value->liftEmpty) ?>,00 ~</td>
-                            <?php } else if ($table == "Lift Off MT") { ?>
+                            <?php } else if ($table == "Lift On / Off MT") { ?>
                               <td>0 Hari</td>
                               <td>Rp. <?= rupiah($value->tarif->lift_off_mt) ?>,00 ~</td>
-                              <td>Rp. <?= rupiah($value->liftOffMT) ?>,00 ~</td>
+                              <td>Rp. <?= rupiah($value->liftFull) ?>,00 ~</td>
+                            <?php } else if ($table == "Pass Truck Out") { ?>
+                              <td>0 Hari</td>
+                              <td>Rp. <?= rupiah($value->tarif->pass_truck) ?>,00 ~</td>
+                              <td>Rp. <?= rupiah($value->passTruckOut) ?>,00 ~</td>
+                            <?php } else if ($table == "Pass Truck In") { ?>
+                              <td>0 Hari</td>
+                              <td>Rp. <?= rupiah($value->tarif->pass_truck) ?>,00 ~</td>
+                              <td>Rp. <?= rupiah($value->passTruckIn) ?>,00 ~</td>
                             <?php } else if ($table == "Pass Truck Keluar") { ?>
                               <td>0 Hari</td>
                               <td>Rp. <?= rupiah($value->tarif->pass_truck) ?>,00 ~</td>
@@ -176,6 +184,26 @@
                               <td><?= $value->differentDays[$i]->masa3 ?> Hari</td>
                               <td>Rp. <?= rupiah($value->tarif->masa3) ?>,00 ~</td>
                               <td>Rp. <?= rupiah($value->penumpukanMasa3) ?>,00 ~</td>
+                            <?php } else if ($table == "JPB Extruck") { ?>
+                              <td>0 Hari</td>
+                              <td>Rp. <?= rupiah($value->tarif->jpbExtruck) ?>,00 ~</td>
+                              <td>Rp. <?= rupiah($value->jpbExtruck) ?>,00 ~</td>
+                            <?php } else if ($table == "Handling Charge") { ?>
+                              <td>0 Hari</td>
+                              <td>Rp. <?= rupiah($value->tarif->handlingCharge) ?>,00 ~</td>
+                              <td>Rp. <?= rupiah($value->handlingCharge) ?>,00 ~</td>
+                            <?php } else if ($table == "Paket Stuffing") { ?>
+                              <td>0 Hari</td>
+                              <td>Rp. <?= rupiah($value->tarif->paketStuffing) ?>,00 ~</td>
+                              <td>Rp. <?= rupiah($value->paketStuffing) ?>,00 ~</td>
+                            <?php } else if ($table == "Cargo Dooring") { ?>
+                              <td>0 Hari</td>
+                              <td>Rp. <?= rupiah($value->tarif->cargoDooring) ?>,00 ~</td>
+                              <td>Rp. <?= rupiah($value->cargoDooring) ?>,00 ~</td>
+                            <?php } else if ($table == "Sewa Crane") { ?>
+                              <td>0 Hari</td>
+                              <td>Rp. <?= rupiah($value->tarif->sewaCrane) ?>,00 ~</td>
+                              <td>Rp. <?= rupiah($value->sewaCrane) ?>,00 ~</td>
 
                             <?php } else { ?>
                               <td>Data Tidak Ditemukan!</td>
@@ -203,9 +231,9 @@
                       </div>
                       <div class="col-6 mt-4" style="text-align:right;">
                         <!-- <h1 style="opacity: 0%;">.</h1> -->
-                        <h4 class="text-white">Rp. <?= $data == "DSK" ? rupiah($value->initialDSK) : rupiah($value->initialDS) ?>,00 ~</h4>
-                        <h4 class="text-white">Rp. <?= $data == "DSK" ? rupiah($value->taxDSK) : rupiah($value->taxDS) ?>,00 ~</h4>
-                        <h4 style="color:#ff5265;">Rp. <?= $data == "DSK" ? rupiah($grandTotal[$i]->totalDSK) : rupiah($grandTotal[$i]->totalDS) ?>,00 ~</h4>
+                        <h4 class="text-white">Rp. <?= $data == "OSK" || $data == "OSK(OSK246)" || $data == "OSK(OSK48)" || $data == "OSK(OSK212)" ? rupiah($value->initialOSK) : rupiah($value->initialOS) ?>,00 ~</h4>
+                        <h4 class="text-white">Rp. <?= $data == "OSK" || $data == "OSK(OSK246)" || $data == "OSK(OSK48)" || $data == "OSK(OSK212)" ? rupiah($value->taxOSK) : rupiah($value->taxOS) ?>,00 ~</h4>
+                        <h4 style="color:#ff5265;">Rp. <?= $data == "OSK" || $data == "OSK(OSK246)" || $data == "OSK(OSK48)" || $data == "OSK(OSK212)" ? rupiah($grandTotal[$i]->totalOSK) : rupiah($grandTotal[$i]->totalOS) ?>,00 ~</h4>
                       </div>
                     </div>
                   </div>
