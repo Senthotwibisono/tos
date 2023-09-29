@@ -7,7 +7,7 @@
         <span>Dashboard</span>
       </a>
     </li>
-    <li class="menu-item has-sub">
+    <!-- <li class="menu-item has-sub">
       <a href="/invoice" class="menu-link">
         <i class="fa-solid fa-ship"></i>
         Billing System
@@ -27,8 +27,16 @@
             <li class="submenu-item">
               <a class="submenu-link" href="/export">Receiving</a>
             </li>
-            <li class="submenu-item">
-              <a class="submenu-link" href="/export/stuffing">Export Stuffing</a>
+            <li class="submenu-item has-sub">
+              <a type="button" class="submenu-link">Export Stuffing</a>
+              <ul class="subsubmenu">
+                <li class="subsubmenu-item">
+                  <a href="/export/stuffing-in" class="subsubmenu-link">Export Stuffing Dalam</a>
+                </li>
+                <li class="subsubmenu-item">
+                  <a href="/export/stuffing-out" class="subsubmenu-link">Export Stuffing Dalam</a>
+                </li>
+              </ul>
             </li>
             <li class="submenu-item">
               <a class="submenu-link" href="/invoice/customer">Customer</a>
@@ -50,6 +58,65 @@
           </ul>
         </div>
       </div>
+    </li> -->
+
+    <li class="menu-item has-sub">
+      <a type="button" class="menu-link">
+        <i class="fa-solid fa-ship"></i>
+        Delivery
+      </a>
+      <div class="submenu">
+        <div class="submenu-group-wrapper">
+          <ul class="submenu-group">
+            <li class="submenu-item">
+              <a href="/delivery/billing" class="submenu-link">Delivery Billing System</a>
+            </li>
+            <li class="submenu-item">
+              <a href="/delivery/form" class="submenu-link">Delivery Form</a>
+            </li>
+            <li class="submenu-item">
+              <a href="/delivery/extend" class="submenu-link">Delivery Form Extend</a>
+            </li>
+            <li class="submenu-item">
+              <a href="" class="submenu-link">Master Tarif</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </li>
+    <li class="menu-item has-sub">
+      <a type="button" class="menu-link">
+        <i class="fa-solid fa-ship"></i>
+        Receiving
+      </a>
+      <div class="submenu">
+        <div class="submenu-group-wrapper">
+          <ul class="submenu-group">
+            <li class="submenu-item">
+              <a href="/receiving/billing" class="submenu-link">Receiving Billing System</a>
+            </li>
+            <li class="submenu-item">
+              <a href="/receiving/form" class="submenu-link">Receiving Form</a>
+            </li>
+            <li class="submenu-item">
+              <a href="" class="submenu-link">Master Tarif</a>
+            </li>
+            <li class="submenu-item">
+              <a href="" class="submenu-link">Stuffing Dalam</a>
+            </li>
+            <li class="submenu-item">
+              <a href="" class="submenu-link">Stuffing Luar</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </li>
+    <li class="menu-item">
+      <a href="" class="menu-link">
+        <i class="fa-solid fa-user">
+        </i>
+        Customer
+      </a>
     </li>
 
     <!-- <li class="menu-item has-sub">
