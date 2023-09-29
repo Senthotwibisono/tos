@@ -333,6 +333,14 @@ class Gato extends Controller
         return view('gate.stuffing.gate-out', compact('title'), compact('ro', 'ro_table'));
     }
 
+    public function stuff_android_out()
+    {
+        $title="Gate-out Stuffing";
+        $ro = RO_Gate::whereIn('status', ['2', '5', '8'])->get();
+        $ro_table = RO_Gate::where('truck_out_date', '!=', null)->orderBy('update_time', 'desc')->take(3)->get();
+        return view('gate.stuffing.gate-out-android', compact('title'), compact('ro', 'ro_table'));
+    }
+
     public function gato_stuf(Request $request)
     {
         $now = Carbon::now();

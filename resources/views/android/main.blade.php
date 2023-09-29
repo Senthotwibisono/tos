@@ -22,22 +22,22 @@
         </div>
         
         <button class="btn btn-danger rounded-pill">
-                <a class="dropdown-item" href="{{ route('logout') }}"
-                        onclick="event.preventDefault();
-                                        document.getElementById('logout-form').submit();"><i
-                                    class="icon-mid bi bi-box-arrow-left me-2"></i> 
-                            {{ __('Logout') }}
-                        </a>
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                            @csrf
-                        </form>
+            <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
+                                                                document.getElementById('logout-form').submit();"><i class="icon-mid bi bi-box-arrow-left me-2"></i>
+                {{ __('Logout') }}
+            </a>
+
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                @csrf
+            </form>
         </button>
     </nav>
     <!-- Header -->
         <div class="container">
+        <h3>Android Dashboard</h3>
             <div class="card mt-5">
                 <div class="card-header">
-                    <h4 class="card-title">Android Menu</h4>
+                    <h4 class="card-title">Menu</h4>
                 </div>
                 <div class="card-body">
                     <div class="col-12">

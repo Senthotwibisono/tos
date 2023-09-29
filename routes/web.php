@@ -35,8 +35,7 @@ use App\Http\Controllers\LoadController;
 use App\Http\Controllers\BeaController;
 use App\Http\Controllers\SoapController;
 use App\Http\Controllers\ProfileKapal;
-
-
+use App\Http\Controllers\Auth\LoginController;
 
 use App\Http\Controllers\DocsController;
 
@@ -328,6 +327,7 @@ Route::get('/disch/confirm_disch', [DischargeController::class, 'index']);
 Route::post('/search-container', [DischargeController::class, 'container']);
 Route::post('/get-container-key', [DischargeController::class, 'get_key']);
 Route::post('/confirm', [DischargeController::class, 'confirm']);
+Route::get('/redirect', [AndroidController::class, 'redirectToRole'])->name('redirect');
 
 
 // Android user Gate
@@ -608,8 +608,13 @@ Route::get('/stuffing/gate-in', [Gati::class, 'index_stuf']);
 Route::post('/stuf-gate-in', [Gati::class, 'gati_stuf']);
 Route::post('/stuf-gate-in-full', [Gati::class, 'gati_stuf_full']);
 
+
 Route::get('/stuffing/gate-out', [Gato::class, 'index_stuf_out']);
 Route::post('/stuf-gate-out', [Gato::class, 'gato_stuf']);
+
+// Android
+Route::get('/stuffing/gate-in-stuffing-android', [Gati::class, 'stuf_android']);
+Route::get('/stuffing/gate-out-stuffing-android', [Gato::class, 'stuff_android_out']);
 
 
 Route::get('/stuffing', [Stuffing::class, 'index']);
