@@ -38,7 +38,8 @@ use App\Http\Controllers\BeaController;
 use App\Http\Controllers\SoapController;
 use App\Http\Controllers\DocsController;
 use App\Http\Controllers\EquipmentController;
-use App\Http\Controllers\BCGatterController;
+use App\Http\Controllers\GateRelokasiController;
+use App\Http\Controllers\TruckingController;
 
 
 /*
@@ -337,6 +338,7 @@ Route::post('/getname', [BayplanImportController::class, 'name']);
 Route::post('/getvoy', [BayplanImportController::class, 'voy']);
 Route::post('/getagent', [BayplanImportController::class, 'agent']);
 Route::post('/planning/bayplan_import', [BayplanImportController::class, 'store']);
+Route::post('/planning/bayplan_pelindo', [BayplanImportController::class, 'pelindo']);
 Route::get('/planning/edit_bayplanimport_{container_key}', [BayplanImportController::class, 'edit']);
 Route::post('/getsize_edit', [BayplanImportController::class, 'size_edit']);
 Route::post('/gettype_edit', [BayplanImportController::class, 'type_edit']);
@@ -459,7 +461,8 @@ Route::post('/stripping-place', [Stripping::class, 'stripping_place']);
 Route::get('/delivery/gate-in', [Gati::class, 'index']);
 Route::post('/gati-data_container', [Gati::class, 'data_container']);
 Route::post('/gati-del', [Gati::class, 'gati_del']);
-
+Route::post('/gati-del/update-truck', [Gati::class, 'update_truck']);
+Route::get('/gati-del/edit-{container_key}', [Gati::class, 'edit_truck']);
 Route::get('/delivery/gate-out', [Gato::class, 'index']);
 Route::post('/gato-data_container', [Gato::class, 'data_container']);
 Route::post('/gato-del', [Gato::class, 'gato_del']);
@@ -687,3 +690,12 @@ Route::get('/bea-cukai-sevice', [BCGatterController::class, 'index']);
 Route::get('/bea-cukai-sevice/container-hold', [BCGatterController::class, 'hold_index']);
 Route::post('/release-cont', [BCGatterController::class, 'release_cont']);
 Route::get('/bea-cukai-sevice/container-hold-p2', [BCGatterController::class, 'holdingp2_index']);
+
+// Gate Relokasi
+Route::get('/delivery/balik-relokasi', [GateRelokasiController::class, 'index']);
+Route::post('/gate-relokasi', [GateRelokasiController::class, 'permit']);
+
+// Trucking
+Route::get('/yard/trucking', [TruckingController::class, 'index']);
+Route::post('/trucking-get-truck', [TruckingController::class, 'get_truck']);
+Route::post('/trucking', [TruckingController::class, 'trucking']);

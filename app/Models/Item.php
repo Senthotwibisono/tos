@@ -33,6 +33,7 @@ class item extends Model
         'ctr_type',
         'ctr_status',
         'ctr_intern_status',
+        'order_service',
         'disc_load_trans_shift',
         'land_ship_crane',
         'shift_by',

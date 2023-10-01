@@ -199,6 +199,7 @@ class Stripping extends Controller
             'yard_slot'  => 'required',
             'yard_row'  => 'required',
             'yard_tier' => 'required',
+            
 
         ], [
             'container_no.required' => 'Container Number is required.',
@@ -216,7 +217,7 @@ class Stripping extends Controller
             ->first();
 
         if (is_null($yard_rowtier->container_key)) {
-            $id_alat = $request->alat;
+            $id_alat = $request->id_alat;
             $alat = MasterAlat::where('id', $id_alat )->first();
 
             $item->update([
@@ -231,10 +232,11 @@ class Stripping extends Controller
                 'commodity_code'=>null,
                 'commodity_name'=>null,
                 'agent'=>null,
+                'ctr_status'=>'MTY',
             ]);
 
             $act_alat = ActAlat::create([
-                'id_alat' =>  $request->alat,
+                'id_alat' =>  $request->id_alat,
                 'category' => $alat->category,
                 'nama_alat' => $alat->name,
                 'container_key' => $request->container_key,

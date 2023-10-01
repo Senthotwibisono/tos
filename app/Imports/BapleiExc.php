@@ -80,11 +80,11 @@ if ($isoCodeData) {
             'ves_name' => $this->ves_name,
             'voy_no' => $this->voy_no,
              'disch_port' => trim($row[0]),
-             'load_port' => $row[1],
+             'load_port' => trim($row[1]),
              'bay_slot'  => $bay_slot,
              'bay_row'   => $bay_row,
              'bay_tier'  => $bay_tier,
-             'container_no' => $row[3],
+             'container_no' => trim($row[3]),
              'iso_code' => $iso_code,
              'ctr_size' => $ctr_size,
              'ctr_type' => $ctr_type,
@@ -95,6 +95,7 @@ if ($isoCodeData) {
              'ctr_i_e_t'=> 'I',                          
              'disc_load_trans_shift'=>'DISC',
              'user_id' => $this->user_id,
+             'ctr_active_yn' => 'Y',
     ];
    
  

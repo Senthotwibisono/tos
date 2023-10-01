@@ -150,32 +150,49 @@ class Gato extends Controller
         
         if ($item->truck_no === $request->truck_no) {
             if ($item->bc_flag != 'HOLD') {
-                $item->update([
-                    'ctr_intern_status' => '09',
-                    'truck_no' => $request->truck_no,
-                    'truck_out_date' => $request->truck_out_date,
-                    'ctr_active_yn'=>'N',
-                ]);
-                    // $client = new Client();
+                if ($item->order_service === 'sp2iks') {
+                    $item->update([
+                        'ctr_intern_status' => '11',
+                        'truck_no' => $request->truck_no,
+                        'truck_out_date' => $request->truck_out_date,
+                        'ctr_active_yn'=>'N',
+                    ]);
+                    $client = new Client();
         
-                    // $fields = [
-                    //     "container_key" => $request->container_key,
-                    //     "ctr_intern_status" => "09",
-                    // ];
-                    // // dd($fields, $item->getAttributes());
+                    $fields = [
+                        "container_key" => $request->container_key,
+                        "ctr_intern_status" => "11",
+                    ];
+                } else {
+                    $item->update([
+                        'ctr_intern_status' => '09',
+                        'truck_no' => $request->truck_no,
+                        'truck_out_date' => $request->truck_out_date,
+                        'ctr_active_yn'=>'N',
+                    ]);
+                    $client = new Client();
         
-                    // $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
-                    // $req = $client->post(
-                    //     $url,
-                    //     [
-                    //         "json" => $fields
-                    //     ]
-                    // );
-                    // $response = $req->getBody()->getContents();
-                    // $result = json_decode($response);
-                    // // var_dump($result);
-                    // // die();
-                    // if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+                    $fields = [
+                        "container_key" => $request->container_key,
+                        "ctr_intern_status" => "09",
+                    ];
+                }
+               
+                    
+                    // dd($fields, $item->getAttributes());
+        
+                    $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
+                    $req = $client->post(
+                        $url,
+                        [
+                            "json" => $fields
+                        ]
+                    );
+                    $response = $req->getBody()->getContents();
+                    $result = json_decode($response);
+                    // var_dump($result);
+                    // die();
+                    if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
                         // $item->save();
         
                         return response()->json([
@@ -183,12 +200,12 @@ class Gato extends Controller
                             'message' => 'updated successfully!',
                             'data'    => $item,
                         ]);
-                    // } else {
-                    //     return response()->json([
-                    //         'success' => false,
-                    //         'message' => 'Nomor Truck Berbeda Pada Saat Gate In !!',
-                    //     ]);
-                    // }
+                    } else {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Nomor Truck Berbeda Pada Saat Gate In !!',
+                        ]);
+                    }
             }else {
                 return response()->json([
                     'success' => false,

@@ -195,6 +195,10 @@
             <li class="submenu-item <?php if(Request::is('stuffing')): ?> active <?php endif; ?>">
                 <a href="/stuffing">Stuffing</a>
             </li>
+            <hr>
+            <li class="submenu-item <?php if(Request::is('yard/trucking')): ?> active <?php endif; ?>">
+                <a href="/yard/trucking">Trucking</a>
+            </li>
             <!-- <li class="submenu-item ">
                         <a href="form-element-textarea.html">Reefer Monitoring</a>
                     </li> <li class="submenu-item ">
@@ -279,7 +283,10 @@
             <li class="submenu-item <?php if(Request::is('delivery/gate-out')): ?> active <?php endif; ?>">
                 <a href="/delivery/gate-out">Gate Out Delivery</a>
             </li>
-
+            <hr>
+            <li class="submenu-item <?php if(Request::is('delivery/balik-relokasi')): ?> active <?php endif; ?>">
+                <a href="/delivery/balik-relokasi">Gate MT Balik IKS & Relokasi Pelindo</a>
+            </li>
             <hr>
 
             <li class="submenu-item <?php if(Request::is('reciving/gate-in')): ?> active <?php endif; ?>">

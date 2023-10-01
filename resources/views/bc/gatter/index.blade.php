@@ -1,4 +1,5 @@
 @extends('partial.main')
+@section('custom_styles')
 <style>
     .border {
         border: 1px solid transparent; /* Set border dulu ke transparan */
@@ -6,7 +7,6 @@
         border-image-slice: 1; /* Memastikan border image mencakup seluruh border */
     }
 </style>
-@section('custom_styles')
 @endsection
 
 @section('content')

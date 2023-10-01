@@ -32,6 +32,7 @@
               <th>Container No</th>
               <th>Truck No</th>
               <th>Truck In</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -40,6 +41,9 @@
               <td>{{$d['container_no']}}</td>
               <td>{{$d['truck_no']}}</td>
               <td>{{$d['truck_in_date']}}</td>
+              <td>
+                <button type="button" class="btn icon icon-left btn-outline-info edit" data-bs-toggle="modal" data-id="{{$d['container_key']}}">edit</button>
+              </td>
             </tr>
             @endforeach
           </tbody>
@@ -89,6 +93,7 @@
                     <div class="form-group">
                       <label for="first-name-vertical">Order Service</label>
                       <input type="text" id="orderservice" class="form-control"  readonly>
+                      <input type="text" id="orderserviceCode" class="form-control"  readonly>
                     </div>
                 </div>
               </div>
@@ -124,6 +129,44 @@
     </div>
   </div>
 </div>
+
+
+<!-- edit truck -->
+<div class="modal fade text-left" id="edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel130" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title white" id="myModalLabel130">Info Modal</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- content -->
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="">Container</label>
+                        <input type="text" class="form-control" id="cont" disabled>
+                        <input type="hidden" class="form-control" id="contKey">
+                      </div>
+                    </div>
+                    <br>
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="">Truck</label>
+                        <input type="text" id="nomor_truck" class="form-control">
+                      </div>
+                    </div>
+                    <!-- end content -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i><span class="d-none d-sm-block">Close</span></button>
+                    <button type="button" class="btn btn-info ml-1 edit-truck" data-bs-dismiss="modal"><i class="bx bx-check d-block d-sm-none"></i><span class="d-none d-sm-block">Accept</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 @section('custom_js')
 <script src="{{ asset('vendor/components/jquery/jquery.min.js') }}"></script>
@@ -141,13 +184,19 @@
     e.preventDefault();
     var container_key = $('#key').val();
     var container_no = $('#container_no').val();
+    var invoice_no = $('#invoice').val();
+    var job_no = $('#job').val();
     var truck_no = $('#tayo').val();
     var truck_in_date = $('#datein').val();
+    var order_service = $('#orderserviceCode').val();
     var data = {
       'container_key': $('#key').val(),
       'container_no': $('#container_no').val(),
       'truck_no': $('#tayo').val(),
       'truck_in_date': $('#datein').val(),
+      'order_service': $('#orderserviceCode').val(),
+      'invoice_no': $('#invoice').val(),
+      'job_no': $('#job').val(),
 
 
     }
@@ -236,7 +285,20 @@
             $('#container_no').val(res.data.jobData.container_no);
             $('#job').val(res.data.jobData.jobNumber);
             $('#invoice').val(res.data.jobData.invoiceNumber);
+            $('#orderserviceCode').val(res.data.jobData.orderService);
             $('#orderservice').val(res.data.jobData.orderService);
+              
+              if (res.data.jobData.orderService === "sp2iks") {
+                $('#orderservice').val("SP2 Kapal Sandar Icon (MT Balik IKS / MKB)");
+              } else if (res.data.jobData.orderService === "sp2pelindo") {
+                $('#orderservice').val("SP2 Kapal Sandar Icon (MT Balik Pelindo)");
+              } else if (res.data.jobData.orderService === "spps") {
+                $('#orderservice').val("SPPS");
+              } else if (res.data.jobData.orderService === "sppsrelokasipelindo") {
+                $('#orderservice').val("SPPS (Relokasi Pelindo - ICON)");
+              } else if (res.data.jobData.orderService === "sp2icon") {
+                $('#orderservice').val("SP2 (MT Balik ICON / MKB)");
+              }
           },
           error: function(data) {
             console.log('error:', data);
@@ -264,6 +326,116 @@
     //             })               
     //         })
     //     })
+  });
+</script>
+<script>
+  $(function() {
+   $.ajaxSetup({
+      headers: {
+         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+   });
+
+   $(document).on('click', '.edit', function() {
+      let id = $(this).data('id');
+      $.ajax({
+         type: 'GET',
+         url: '/gati-del/edit-' + id,
+         cache: false,
+         data: {
+            container_key: id
+         },
+         dataType: 'json',
+         success: function(response) {
+            console.log(response);
+            $('#edit').modal('show');
+            $('#edit #cont').val(response.data.container_no);
+            $('#edit #contKey').val(response.data.container_key);
+        
+        
+         },
+         error: function(data) {
+            console.log('error:', data);
+         }
+      });
+   });
+});
+
+</script>
+
+<script>
+  $(document).on('click', '.edit-truck', function(e) {
+    e.preventDefault();
+    var container_key = $('#contKey').val();
+    var truck = $('#nomor_truck').val();
+    var data = {
+      'container_key': $('#contKey').val(),
+      'truck': $('#nomor_truck').val(),
+      
+
+
+    }
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+    Swal.fire({
+      title: 'Are you Sure?',
+      text: "Ganti Nomor Truck ? ",
+      icon: 'warning',
+      showDenyButton: false,
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      confirmButtonText: 'Confirm',
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+
+
+        $.ajax({
+          type: 'POST',
+          url: '/gati-del/update-truck',
+          data: data,
+          cache: false,
+          dataType: 'json',
+          success: function(response) {
+            console.log(response);
+                        if (response.success) {
+                            Swal.fire('Saved!', '', 'success')
+                            .then(() => {
+                            // Memuat ulang halaman setelah berhasil menyimpan data
+                            window.location.reload();
+                        });
+                        } else {
+                          console.log('error:', response);
+                        }
+          },
+          error: function(response) {
+            var errors = response.responseJSON.errors;
+            if (errors) {
+              var errorMessage = '';
+              $.each(errors, function(key, value) {
+                errorMessage += value[0] + '<br>';
+              });
+              Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                html: errorMessage,
+              });
+            } else {
+              console.log('error:', response);
+            }
+          },
+        });
+
+      } else if (result.isDenied) {
+        Swal.fire('Changes are not saved', '', 'info')
+      }
+
+
+    })
+
   });
 </script>
 
