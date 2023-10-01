@@ -242,7 +242,7 @@ class BillingImportController extends Controller
     $customer = $result->data->deliveryForm->customer;
     $containers = $result->data->deliveryForm->containers;
     $grandTotal = $result->data->grandTotal;
-    // dd($billingTotal);
+    // dd($billingTotal[0]);
     // dd($billingTotal[0]->billingName->name[0]);
     $i = 0;
     foreach ($billingTotal as $value) {
@@ -254,6 +254,8 @@ class BillingImportController extends Controller
       $contID = $container->id;
       $hari = $value->differentDays;
       $tarif = $value->tarif;
+      // dd($container);
+      // dd($value);
       // dd($tarif->lift_empty);
       // $test["Billing Name"] = $value->billingName->name;
       // dd($value->billingName);
@@ -288,7 +290,7 @@ class BillingImportController extends Controller
             $obj[$contNo]["billing_detail"][$bill][$table]["Amount"] = $value->passTruckIn;
           } else if ($table == "Pass Truck") {
             $obj[$contNo]["billing_detail"][$bill][$table]["Tarif Satuan"] = $tarif->pass_truck;
-            $obj[$contNo]["billing_detail"][$bill][$table]["Amount"] = $value->passTruck ?? $tarif->passTruckIn;
+            $obj[$contNo]["billing_detail"][$bill][$table]["Amount"] = $value->passTruck ?? $value->passTruckIn;
           } else if ($table == "Administrasi") {
             $obj[$contNo]["billing_detail"][$bill][$table]["Tarif Satuan"] = $tarif->administrasi;
             $obj[$contNo]["billing_detail"][$bill][$table]["Amount"] = $value->administration;
@@ -330,7 +332,9 @@ class BillingImportController extends Controller
         }
       }
       $i++;
+      // $arrCont[$value->billingName->container->container_no] = $value->billingName->container;
     }
+    // dd($arrCont);
     // dd($orderService);
     $billingDetail =  $obj;
 

@@ -8,6 +8,7 @@ use App\Http\Controllers\BayplanImportController;
 use App\Http\Controllers\DischargeController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\BillingImportController;
+use App\Http\Controllers\BillingExportController;
 use App\Http\Controllers\DoOnlineController;
 use App\Http\Controllers\CoparnsController;
 use App\Http\Controllers\ExportInvoice;
@@ -40,6 +41,7 @@ use App\Http\Controllers\DocsController;
 use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\GateRelokasiController;
 use App\Http\Controllers\TruckingController;
+
 
 
 /*
@@ -286,6 +288,27 @@ Route::prefix('delivery')->group(function () {
     Route::post('/singleInvoice', [BillingImportController::class, 'singleInvoice']);
     Route::post('/verifyPayment ', [BillingImportController::class, 'verifyPayment']);
     Route::post('/verifyPiutang', [BillingImportController::class, 'verifyPiutang']);
+  });
+});
+
+Route::prefix('receiving')->group(function () {
+  Route::prefix('billing')->group(function () {
+    Route::get('/', [BillingExportController::class, 'billingIndex']);
+    Route::get('/pranota', [BillingExportController::class, 'pranotaIndex']);
+    Route::get('/invoice', [BillingExportController::class, 'invoiceIndex']);
+    Route::get('/job', [BillingExportController::class, 'jobIndex']);
+  });
+  Route::prefix('form')->group(function () {
+    Route::get('/', [BillingExportController::class, 'formIndex']);
+    Route::get('/create', [BillingExportController::class, 'createIndex']);
+    Route::get('/review', [BillingExportController::class, 'reviewIndex']);
+    Route::post('/storeForm', [BillingExportController::class, 'storeForm']);
+    Route::post('/storeBilling', [BillingExportController::class, 'storeBilling']);
+  });
+  Route::prefix('ajx')->group(function () {
+    Route::post('/singleInvoice', [BillingExportController::class, 'singleInvoice']);
+    Route::post('/verifyPayment ', [BillingExportController::class, 'verifyPayment']);
+    Route::post('/verifyPiutang', [BillingExportController::class, 'verifyPiutang']);
   });
 });
 
