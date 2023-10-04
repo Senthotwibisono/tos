@@ -98,6 +98,18 @@
             </div>
             </div>
             <div class="col-12">
+                            <div class="form-group">
+                                <label for="first-name-vertical">Alat</label>
+                                <select class="choices form-select" id="alat" required>
+                                    <option value="">Pilih Alata</option>
+                                    @foreach($alat as $alt)
+                                    <option value="{{$alt->id}}">{{$alt->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            {{ csrf_field()}}
+                        </div>
+            <div class="col-12">
               <div class="form-group">
                 <label for="first-name-vertical">Choose Container Number</label>
                 <select class="choices form-select" id="key" name="container_key" required>
@@ -237,6 +249,7 @@
         var yard_tier = $('#tier').val();
         var truck_no = $('#truck').val();
         var ro_id_gati = $('#id_truck').val();
+        var alat = $('#alat').val();
         var data = {
          
           'ves_id' : $('#Vessel').val(),
@@ -252,6 +265,7 @@
           'user_id': $('#user').val(),
           'truck_no' : $('#truck').val(),
           'ro_id_gati' : $('#id_truck').val(),
+          'alat' : $('#alat').val(),
 
         }
         $.ajaxSetup({

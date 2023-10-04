@@ -213,6 +213,7 @@ class Gati extends Controller
             'truck_in_date' => $request->truck_in_date,
             'job_no' => $request->job_no,
             'invoice_no' => $request->invoice_no,
+            'order_service' => $request->order_service,
         ]);
         // var_dump($item);
         // die();
@@ -492,6 +493,8 @@ class Gati extends Controller
             'ves_name'=>$request->ves_name,
             'voy_no'=>$request->voy_no,
             'user_id' => $request->user_id,
+            'ctr_active_yn'=>'Y',
+            'ctr_i_e_t'=>'E',
         ]);
         // var_dump($item);
         // die();
@@ -607,5 +610,40 @@ class Gati extends Controller
             ]);
         }
         
+    }
+
+    public function edit_truck(Request $request)
+    {
+        $id = $request->container_key;
+        $truck = Item::where('container_key', '=', $id)->first();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Updated successfully!',
+            'data' => $truck,
+        ]);
+    }
+
+    public function update_truck(Request $request)
+    {
+        $key = $request->container_key;
+        $item = Item::where('container_key', $key)->first();
+
+        if ($item) {
+            $item->update([
+                'truck_no'=> $request->truck,
+            ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Updated successfully!',
+                'data' => $item,
+            ]);
+        }else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong!!',
+                
+            ]);
+        }
     }
 }

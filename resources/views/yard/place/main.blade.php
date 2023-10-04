@@ -180,6 +180,20 @@
                             {{ csrf_field()}}
                         </div>
                         <div class="col-12">
+                            <div class="form-group">
+                                <label for="first-name-vertical">Alat</label>
+                                <select class="choices form-select" id="alat" required>
+                                    <option value="">Pilih Alata</option>
+                                    @foreach($alat as $alt)
+                                    <option value="{{$alt->id}}">{{$alt->name}}</option>
+                                    @endforeach
+                                </select>
+                                <input type="hidden" id="container_no" class="form-control" name="container_no">
+                                <input type="hidden" id="container_key" class="form-control" name="container_key">
+                            </div>
+                            {{ csrf_field()}}
+                        </div>
+                        <div class="col-12">
                             <div class="row">
                                 <div class="col-6">
                                     <div class="form-group">
@@ -306,6 +320,7 @@
         var yard_slot = $('#slot').val();
         var yard_raw = $('#raw').val();
         var yard_tier = $('#tier').val();
+        var alat = $('#alat').val();
         var data = {
             'container_key': $('#key').val(),
             'container_no': $('#container_no').val(),
@@ -314,6 +329,7 @@
             'yard_row': $('#row').val(),
             'yard_tier': $('#tier').val(),
             'user_id': $('#user').val(),
+            'alat': $('#alat').val(),
 
         }
         $.ajaxSetup({

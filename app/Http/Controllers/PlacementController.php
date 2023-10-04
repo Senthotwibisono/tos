@@ -7,6 +7,8 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Yard;
 use Auth;
+use App\Models\MasterAlat;
+use App\Models\ActAlat;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
@@ -18,6 +20,7 @@ class PlacementController extends Controller
     {
         $this->middleware('auth');
     }
+
     public function index()
     {
         $title = 'PLC';
@@ -64,8 +67,10 @@ class PlacementController extends Controller
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
         $data["active"] = "yard";
         $data["subactive"] = "placement";
-        return view('yard.place.main', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier'), $data);
+        $alat = MasterAlat::where('category', '=', 'Yard')->get();
+        return view('yard.place.main', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'alat'), $data);
     }
+
     public function android()
     {
         $title = 'PLC';
@@ -164,6 +169,8 @@ class PlacementController extends Controller
             ->first();
 
         if (is_null($yard_rowtier->container_key)) {
+            $id_alat = $request->alat;
+            $alat = MasterAlat::where('id', $id_alat )->first();
             $item->update([
                 'yard_block' => $request->yard_block,
                 'yard_slot' => $request->yard_slot,
@@ -172,6 +179,16 @@ class PlacementController extends Controller
                 'ctr_intern_status' => ($item->ctr_intern_status === '02' || $item->ctr_intern_status === '03') ? '03' : (($item->ctr_intern_status === '50') ? '51' : $item->ctr_intern_status),
                 'wharf_yard_oa' => $request->wharf_yard_oa,
             ]);
+
+            $act_alat = ActAlat::create([
+                'id_alat' =>  $request->alat,
+                'category' => $alat->category,
+                'nama_alat' => $alat->name,
+                'container_key' => $request->container_key,
+                'container_no' => $request->container_no,
+                'activity' => 'PLC',
+              ]);
+        
 
             $client = new Client();
 

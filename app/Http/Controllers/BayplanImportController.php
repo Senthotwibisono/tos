@@ -30,7 +30,7 @@ class BayplanImportController extends Controller
     {
         $title = 'Bay Plan Import';
 
-        $item = Item::where('ctr_intern_status', '=', '01')->orderBy('container_key', 'desc')->get();
+        $item = Item::whereIn('ctr_intern_status', ['01', '15'])->whereNot('container_no', '=', '')->orderBy('container_key', 'desc')->get();
         $formattedData = [];
         $data = [];
 
@@ -315,5 +315,112 @@ class BayplanImportController extends Controller
 
         Item::where('container_key', $container_key)->delete();
         return back();
+    }
+
+
+    public function pelindo(request $request)
+    {
+
+        $cont = $request->container_no;
+        $cont_item = Item::where('container_no', $cont)->get();
+    
+        foreach ($cont_item as $item) {
+            if ($item->ctr_intern_status !== '09' && $item->ctr_intern_status !== '56') {
+                return redirect()->back()->with('error', 'Container sudah ada dan tidak memenuhi syarat untuk pembuatan baru.')->withInput();
+            }
+        }
+    
+        $request->validate([
+            'container_no' => 'required|max:13',
+            'gross' => 'required',
+            'gross_class' => 'required',
+            'commodity_name' => 'required',
+            'load_port' => 'required',
+            'disch_port' => 'required',
+            'iso_code' => 'required',
+            'ctr_opr' => 'required',
+        ]);
+    
+        try {
+            $item = Item::create([
+                'container_no' => $request->container_no,
+                'ves_id' => 'PELINDO',
+                'ves_code' => 'PELINDO',
+                'ves_name' => 'PELINDO',
+                'voy_no' => 'PELINDO',
+                'ctr_i_e_t' => $request->ctr_i_e_t,
+                'ctr_size' => $request->ctr_size,
+                'ctr_type' => $request->ctr_type,
+                'ctr_status' => $request->ctr_status,
+                'ctr_intern_status' => '15',
+                'disc_load_trans_shift' => $request->disc_load_trans_shift,
+                'gross' => $request->gross,
+                'gross_class' => $request->gross_class,
+                'over_height' => $request->over_height,
+                'over_weight' => $request->over_weight,
+                'over_length' => $request->over_length,
+                'commodity_name' => $request->commodity_name,
+                'load_port' => $request->load_port,
+                'disch_port' => $request->disch_port,
+                'agent' => 'RELK',
+                'chilled_temp' => $request->chilled_temp,
+                'imo_code' => $request->imo_code,
+                'dangerous_yn' => $request->dangerous_yn,
+                'dangerous_label_yn' => $request->dangerous_label_yn,
+                'bl_no' => $request->bl_no,
+                'seal_no' => $request->seal_no,
+                'disc_load_seq' => '--',
+                'bay_slot' => '--',
+                'bay_row' => '--',
+                'bay_tier' => '--',
+                'iso_code' => $request->iso_code,
+                'ctr_opr' => $request->ctr_opr,
+                'user_id' => $request->user_id,
+            ]);
+
+            $client = new Client();
+            $now = Carbon::now();
+            $fields = [
+              "container_key" => $item->container_key,
+              "ctr_intern_status" => "15",
+              "disc_date" => $now,
+              'ves_id' => 'PELINDO',
+                'ves_code' => 'PELINDO',
+                'ves_name' => 'PELINDO',
+                'voy_no' => 'PELINDO',
+              "container_no" => $request->container_no,
+              "ctr_status" => $request->ctr_status,
+              "ctr_type" => $request->ctr_type,
+              "ctr_size" => $request->ctr_size,
+              "ctr_opr" => $request->ctr_opr,
+              "disc_load_trans_shift" => $request->disc_load_trans_shift,
+              "load_port" => $request->load_port,
+              "disch_port" => $request->disch_port,
+              "fdisch_port" => "",
+              "bay_slot" => $request->bay_slot,
+              "bay_row" => $request->bay_row,
+              "bay_tier" => $request->bay_tier,
+              "gross" => $request->gross,
+              "iso_code" => $request->iso_code,
+            ];
+            // dd($fields, $item->getAttributes());
+        
+            $url = getenv('API_URL') . '/delivery-service/container/create';
+            $req = $client->post(
+              $url,
+              [
+                "json" => $fields
+              ]
+            );
+            $response = $req->getBody()->getContents();
+            $result = json_decode($response);
+            if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+            return redirect('/planning/bayplan_import')->with('success', "Container Berhasil Dibuat");
+        } else {
+            return redirect('/planning/bayplan_import')->with('error', "Terjadi Kesalahan");
+          };
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi Kesalahan')->withInput();
+        }
     }
 }

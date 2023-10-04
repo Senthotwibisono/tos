@@ -47,6 +47,7 @@
                   <?php
                   $i = 1;
                   foreach ($deliveries as $data) { ?>
+                    <?php if ($data->orderService == "sp2" || $data->orderService == "spps") { ?>
 
                     <tr>
                       <td><?= $i ?></td>
@@ -74,6 +75,7 @@
                         <?php } ?>
                       </td>
                     </tr>
+                    <?php } ?>
 
                   <?php
                     $i++;
