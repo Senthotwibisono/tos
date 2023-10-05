@@ -2762,12 +2762,16 @@
 
   function beacukaiCheckValueExport() {
     let check = $("#beacukaiChecking").val();
+    let expDate = $("#departure").val();
+    let orderService = $("#orderService").val();
     // let doCheck = $("#do_exp_date").val();
     let ctr = $("#ctr").val();
 
+    console.log(check, expDate, orderService, ctr);
+
 
     if (check == "true") {
-      if (!ctr) {
+      if (!ctr || !expDate || !orderService) {
         event.preventDefault(); // Prevent form submission
         // alert("Please enter a date."); // Display an alert or use another method to notify the user
         Swal.fire({
@@ -2807,4 +2811,21 @@
     // console.log(formattedDate); // Output: "2023-07-24"
     return formattedDate;
   };
+</script>
+
+<script>
+  $('#orderService').on('change', function() {
+    var orderService = $(this).val();
+    if (orderService == "ernahandling2inv" || orderService == "ernahandlingluar" || orderService == "sppsdry") {
+      $("#RoInput").css('display', 'block');
+      $("#bookingInput").css('display', 'none');
+      $("#roNumber").select2("destroy");
+      $("#roNumber").select2();
+    } else {
+      $("#RoInput").css('display', 'none');
+      $("#bookingInput").css('display', 'block');
+      $("#booking").select2("destroy");
+      $("#booking").select2();
+    }
+  });
 </script>
