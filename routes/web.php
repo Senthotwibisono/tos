@@ -38,6 +38,10 @@ use App\Http\Controllers\LoadController;
 use App\Http\Controllers\BeaController;
 use App\Http\Controllers\SoapController;
 use App\Http\Controllers\DocsController;
+use App\Http\Controllers\EquipmentController;
+use App\Http\Controllers\GateRelokasiController;
+use App\Http\Controllers\TruckingController;
+use App\Http\Controllers\BCGatterController;
 
 
 
@@ -358,6 +362,7 @@ Route::post('/getname', [BayplanImportController::class, 'name']);
 Route::post('/getvoy', [BayplanImportController::class, 'voy']);
 Route::post('/getagent', [BayplanImportController::class, 'agent']);
 Route::post('/planning/bayplan_import', [BayplanImportController::class, 'store']);
+Route::post('/planning/bayplan_pelindo', [BayplanImportController::class, 'pelindo']);
 Route::get('/planning/edit_bayplanimport_{container_key}', [BayplanImportController::class, 'edit']);
 Route::post('/getsize_edit', [BayplanImportController::class, 'size_edit']);
 Route::post('/gettype_edit', [BayplanImportController::class, 'type_edit']);
@@ -480,7 +485,8 @@ Route::post('/stripping-place', [Stripping::class, 'stripping_place']);
 Route::get('/delivery/gate-in', [Gati::class, 'index']);
 Route::post('/gati-data_container', [Gati::class, 'data_container']);
 Route::post('/gati-del', [Gati::class, 'gati_del']);
-
+Route::post('/gati-del/update-truck', [Gati::class, 'update_truck']);
+Route::get('/gati-del/edit-{container_key}', [Gati::class, 'edit_truck']);
 Route::get('/delivery/gate-out', [Gato::class, 'index']);
 Route::post('/gato-data_container', [Gato::class, 'data_container']);
 Route::post('/gato-del', [Gato::class, 'gato_del']);
@@ -692,3 +698,34 @@ Route::get('/docs/dokumen/ro/detail-{ro_no}', [DocsController::class, 'container
 
 // Inven
 Route::get('docs/inventory/items', [DocsController::class, 'index_items'])->name('inventory.items');
+
+
+// Alat
+Route::get('/master/alat', [EquipmentController::class, 'index']);
+Route::post('/kategori-alat', [EquipmentController::class, 'addCategory']);
+Route::post('/add-alat', [EquipmentController::class, 'addAlat']);
+Route::get('/reports/equipment', [EquipmentController::class, 'report']);
+Route::post('/get-alat', [EquipmentController::class, 'get_alat']);
+Route::post('/get-data-alat', [EquipmentController::class, 'get_data_alat']);
+Route::get('/laporan-alat', [EquipmentController::class, 'laporan_alat'])->name('laporan-alat');
+
+// BC Gatter
+Route::get('/bea-cukai-sevice', [BCGatterController::class, 'index']);
+Route::get('/bea-cukai-sevice/container-hold', [BCGatterController::class, 'hold_index']);
+Route::post('/release-cont', [BCGatterController::class, 'release_cont']);
+Route::post('/hold-cont', [BCGatterController::class, 'holding_cont']);
+Route::get('/bea-cukai-sevice/container-hold-p2', [BCGatterController::class, 'holdingp2_index']);
+Route::get('/container-hold-p2-{container_key}', [BCGatterController::class, 'holdingp2_cont']);
+Route::get('/bea-cukai-sevice/container-proses-release-p2', [BCGatterController::class, 'proses_releaseP2']);
+Route::get('/show-document/{file}', [BCGatterController::class, 'showDocument'])->name('show-document');
+Route::get('/bea-cukai-sevice/dok-hold-p2', [BCGatterController::class, 'document']);
+Route::post('/release-cont-p2', [BCGatterController::class, 'release_p2']);
+
+// Gate Relokasi
+Route::get('/delivery/balik-relokasi', [GateRelokasiController::class, 'index']);
+Route::post('/gate-relokasi', [GateRelokasiController::class, 'permit']);
+
+// Trucking
+Route::get('/yard/trucking', [TruckingController::class, 'index']);
+Route::post('/trucking-get-truck', [TruckingController::class, 'get_truck']);
+Route::post('/trucking', [TruckingController::class, 'trucking']);
