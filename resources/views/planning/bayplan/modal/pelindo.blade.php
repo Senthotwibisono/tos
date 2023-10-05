@@ -182,6 +182,12 @@
                                 </select>
                               </div>
                             </div>
+                            <div class="col-md-10 col-12">
+                              <div class="form-group">
+                                <label for="">Rencana Masuk</label>
+                                <input type="datetime-local" name="disc_date" class="form-control" required>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>

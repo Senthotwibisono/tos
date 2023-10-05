@@ -41,7 +41,7 @@
                 <div class="list-group list-group-horizontal-sm mb-1 text-center" role="tablist">
                     <a class="list-group-item list-group-item-action active" id="list-sunday-list" data-bs-toggle="list" href="#import" role="tab">Import</a>
                     <a class="list-group-item list-group-item-action" id="list-monday-list" data-bs-toggle="list" href="#export" role="tab">Export</a>
-                    <a class="list-group-item list-group-item-action" id="list-tuesday-list" data-bs-toggle="list" href="#exstrip" role="tab">Empty/Ex-Stripping</a>
+                    <a class="list-group-item list-group-item-action" id="list-tuesday-list" data-bs-toggle="list" href="#exstrip" role="tab">SP2 Relokasi</a>
                 </div>
                 <div class="tab-content text-justify" id="load_ini">
                     <div class="tab-pane fade show active" id="import" role="tabpanel" aria-labelledby="list-sunday-list">
@@ -61,7 +61,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach($formattedData as $d)
-                                        @if($d['ctr_intern_status'] === '03')
+                                        @if($d['ctr_intern_status'] === '03' && $d['ctr_intern_status'] != 'sp2icon' )
                                         <tr>
                                             <td>{{$d['container_no']}}</td>
                                             <td>{{$d['ctr_type']}}</td>
@@ -131,7 +131,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach($formattedData as $d)
-                                        @if($d['ctr_intern_status'] === '04')
+                                        @if($d['ctr_intern_status'] === '03' && $d['order_service'] === 'sp2icon' )
                                         <tr>
                                             <td>{{$d['container_no']}}</td>
                                             <td>{{$d['ctr_type']}}</td>

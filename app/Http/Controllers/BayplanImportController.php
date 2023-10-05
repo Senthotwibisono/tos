@@ -339,6 +339,7 @@ class BayplanImportController extends Controller
             'disch_port' => 'required',
             'iso_code' => 'required',
             'ctr_opr' => 'required',
+            'disc_date' => 'required',
         ]);
     
         try {
@@ -376,6 +377,7 @@ class BayplanImportController extends Controller
                 'iso_code' => $request->iso_code,
                 'ctr_opr' => $request->ctr_opr,
                 'user_id' => $request->user_id,
+                'disc_date' => $request->disc_date,
             ]);
 
             $client = new Client();
@@ -383,7 +385,7 @@ class BayplanImportController extends Controller
             $fields = [
               "container_key" => $item->container_key,
               "ctr_intern_status" => "15",
-              "disc_date" => $now,
+              "disc_date" => $request->disc_date,
               'ves_id' => 'PELINDO',
                 'ves_code' => 'PELINDO',
                 'ves_name' => 'PELINDO',

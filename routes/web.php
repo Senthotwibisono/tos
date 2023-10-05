@@ -41,6 +41,7 @@ use App\Http\Controllers\DocsController;
 use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\GateRelokasiController;
 use App\Http\Controllers\TruckingController;
+use App\Http\Controllers\BCGatterController;
 
 
 
@@ -712,7 +713,13 @@ Route::get('/laporan-alat', [EquipmentController::class, 'laporan_alat'])->name(
 Route::get('/bea-cukai-sevice', [BCGatterController::class, 'index']);
 Route::get('/bea-cukai-sevice/container-hold', [BCGatterController::class, 'hold_index']);
 Route::post('/release-cont', [BCGatterController::class, 'release_cont']);
+Route::post('/hold-cont', [BCGatterController::class, 'holding_cont']);
 Route::get('/bea-cukai-sevice/container-hold-p2', [BCGatterController::class, 'holdingp2_index']);
+Route::get('/container-hold-p2-{container_key}', [BCGatterController::class, 'holdingp2_cont']);
+Route::get('/bea-cukai-sevice/container-proses-release-p2', [BCGatterController::class, 'proses_releaseP2']);
+Route::get('/show-document/{file}', [BCGatterController::class, 'showDocument'])->name('show-document');
+Route::get('/bea-cukai-sevice/dok-hold-p2', [BCGatterController::class, 'document']);
+Route::post('/release-cont-p2', [BCGatterController::class, 'release_p2']);
 
 // Gate Relokasi
 Route::get('/delivery/balik-relokasi', [GateRelokasiController::class, 'index']);

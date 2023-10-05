@@ -612,9 +612,9 @@
             <span>Holding Proccess P2</span>
         </a>
     </li>
-    <li class="sidebar-item <?php if(Request::is(' ')): ?> active <?php endif; ?>">
-        <a href="#" class='sidebar-link'>
-            <span>Proses Segel P2</span>
+    <li class="sidebar-item <?php if(Request::is('bea-cukai-sevice/container-proses-release-p2 ')): ?> active <?php endif; ?>">
+        <a href="/bea-cukai-sevice/container-proses-release-p2" class='sidebar-link'>
+            <span>Release Proccess P2</span>
         </a>
     </li>
     <?php endif; ?>

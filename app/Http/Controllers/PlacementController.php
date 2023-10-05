@@ -54,10 +54,12 @@ class PlacementController extends Controller
                 'yard_tier' => $tem->yard_tier,
                 'update_time' => $diff . ' yang lalu',
                 'container_key' => $tem->container_key,
-                'ctr_intern_status' => $tem->ctr_intern_status
+                'ctr_intern_status' => $tem->ctr_intern_status,
+                'order_service' => $tem->order_service,
+
             ];
         }
-        $items = Item::whereIn('ctr_intern_status', [02, 03, 04, 50, 51])->get();
+        $items = Item::whereIn('ctr_intern_status', [02, 03, 04, 50, 51, 13])->get();
         $users = User::all();
         $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
         $yard_slot = Yard::distinct('yard_slot')->pluck('yard_slot');
@@ -107,7 +109,7 @@ class PlacementController extends Controller
                 'ctr_intern_status' => $tem->ctr_intern_status
             ];
         }
-        $items = Item::whereIn('ctr_intern_status', [02, 03, 04, 50, 51])->get();
+        $items = Item::whereIn('ctr_intern_status', [02, 03, 04, 50, 51, 13])->get();
         $users = User::all();
         $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
         $yard_slot = Yard::distinct('yard_slot')->pluck('yard_slot');
@@ -176,7 +178,7 @@ class PlacementController extends Controller
                 'yard_slot' => $request->yard_slot,
                 'yard_row' => $request->yard_row,
                 'yard_tier' => $request->yard_tier,
-                'ctr_intern_status' => ($item->ctr_intern_status === '02' || $item->ctr_intern_status === '03') ? '03' : (($item->ctr_intern_status === '50') ? '51' : $item->ctr_intern_status),
+                'ctr_intern_status' => ($item->ctr_intern_status === '02' || $item->ctr_intern_status === '03'|| $item->ctr_intern_status === '13') ? '03' : (($item->ctr_intern_status === '50') ? '51' : $item->ctr_intern_status),
                 'wharf_yard_oa' => $request->wharf_yard_oa,
             ]);
 
