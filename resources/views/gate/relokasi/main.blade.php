@@ -51,7 +51,7 @@
                 <br>
                 <div class="row">
                     <div class="col-4">
-                        <h6 >Nomor Truck</h6>
+                        <h6 >Container</h6>
                     </div>
                     <div class="col-1">
                         :
@@ -98,6 +98,12 @@
                          <td>
                             @if($itm->order_service === 'sp2iks')
                             SP2 Kapal Sandar Icon (MT Balik IKS / MKB)
+                            @endif
+                            @if($itm->order_service === 'sp2icon')
+                            SP2 Relokasi Pelindo
+                            @endif
+                            @if($itm->order_service === 'sppsrelokasipelindo')
+                            SPPS (Relokasi Pelindo - ICON)
                             @endif
                          </td>
                     </tr>

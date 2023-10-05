@@ -41,7 +41,7 @@
                                 <span class="badge bg-success text-white">Release</span>
                             </td>
                             <td>
-                            <button class="btn icon icon-left btn-danger hold" data-id="{{$items->container_key}}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>Hold</button>
+                             <a href="javascript:void(0)"class="btn icon icon-left btn-outline-danger hold" data-id="{{$items->container_key}}">Hold</a>
                             </td>
                         </tr>
                         @endforeach
@@ -49,6 +49,66 @@
                 </table>
     </div>
 </div>
+
+<div class="modal fade text-left" id="holdModal" role="dialog" aria-labelledby="myModalLabel110" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-danger">
+        <h5 class="modal-title white" id="myModalLabel110">Holding Proccess</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><i data-feather="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <!-- form -->
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="">Container No</label>
+                        <input type="text" class="form-control" id="contNo" readonly>
+                        <input type="text" class="form-control" id="contKey" readonly>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="">No Dok</label>
+                        <input type="text" class="form-control" id="dok">
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="">Jenis Dok</label>
+                        <input type="text" class="form-control" id="Jenisdok">
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="">Alasan Segel</label>
+                        <select name="" class="choices form-select" id="alasan">
+                          <option value="" disabled selected values>Pilih Satu</option>
+                          @foreach($alseg as $seg)
+                          <option value="{{$seg->name}}">{{$seg->name}}</option>
+                          @endforeach
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="">Dokumen Segel</label>
+                        <input type="file" class="form-control" id="file">
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="">Keterangan</label>
+                        <textarea name="" class="form-control" id="keterangan" cols="30" rows="5"></textarea>
+                      </div>
+                    </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i><span class="d-none d-sm-block">Close</span></button>
+            <button type="submit" class="btn btn-danger ml-1 update_hold"><i class="bx bx-check d-block d-sm-none"></i><span class="d-none d-sm-block">Hold</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
 
 @endsection
 
@@ -74,10 +134,10 @@
             dataType: 'json',
             success: function(response) {
                 console.log(response);
-                $('#hold').modal('show');
-                $("#hold #nomor_ro").val(response.data.ro_no);
-                $("#hold #truck").val(response.data.truck_no);
-                $("#hold #id_truck").val(response.data.ro_id_gati);
+                $('#holdModal').modal('show');
+                $('#holdModal #contKey').val(response.data.container_key);
+                $('#holdModal #contNo').val(response.data.container_no);
+              
                 
                 
             },
@@ -89,9 +149,18 @@
 });
     </script>
 <script>
-$(document).on('click', '.holdAction', function(e) {
+$(document).on('click', '.update_hold', function(e) {
         e.preventDefault();
-        var id = $(this).data('id');
+        var container_key = $('#contKey').val();
+        var fileInput = document.getElementById('file'); // Mengambil elemen input file
+        var file = fileInput.files[0]; 
+        var alasan_segel = $('#alasan').val();
+        var keterangan = $('#keterangan').val();
+        var formData = new FormData();
+            formData.append('container_key', container_key);
+            formData.append('alasan_segel', alasan_segel);
+            formData.append('keterangan', keterangan);
+            formData.append('file', file);
         $.ajaxSetup({
           headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -111,10 +180,12 @@ $(document).on('click', '.holdAction', function(e) {
 
             $.ajax({
               type: 'POST',
-              url: '/release-cont',
-              data: { container_key: id },
-              cache: false,
-              dataType: 'json',
+              url: '/hold-cont',
+              data: formData,
+                    cache: false,
+                    contentType: false, // Set contentType ke false
+                processData: false, // Set processData ke false
+                    dataType: 'json',
               success: function(response) {
                 console.log(response);
                 if (response.success) {
@@ -128,7 +199,7 @@ $(document).on('click', '.holdAction', function(e) {
                 }
               },
               error: function(response) {
-               
+                console.log('error:', response);
               },
             });
 
