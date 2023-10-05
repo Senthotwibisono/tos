@@ -2767,7 +2767,7 @@
     // let doCheck = $("#do_exp_date").val();
     let ctr = $("#ctr").val();
 
-    console.log(check, expDate, orderService, ctr);
+    // console.log(check, expDate, orderService, ctr);
 
 
     if (check == "true") {
