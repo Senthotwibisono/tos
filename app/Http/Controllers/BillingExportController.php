@@ -86,6 +86,14 @@ class BillingExportController extends Controller
     $result_booking = json_decode($response_booking);
     // dd($result_booking);
 
+    // GET ALL RO
+    $url_ro = getenv('API_URL') . '/delivery-service/container/ro/all';
+    $req_ro = $client->get($url_ro);
+    $response_ro = $req_ro->getBody()->getContents();
+    $result_ro = json_decode($response_ro);
+    // dd($result_ro);
+    $data["ro"] = $result_ro->data;
+
     $data["booking"] = $result_booking->data;
     $data["vessel"] = $vessel_voyage;
     $data["customer"] = $result_customer->data;
@@ -127,7 +135,7 @@ class BillingExportController extends Controller
       "documentDate" => $documentDate,
 
     ];
-    // dd($fields);
+    dd($fields);
 
     $url = getenv('API_URL') . '/delivery-service/form/create';
     $req = $client->post(
