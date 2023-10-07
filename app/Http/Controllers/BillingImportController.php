@@ -185,7 +185,9 @@ class BillingImportController extends Controller
     $data["containers"] = $result->data->deliveryForm->containers;
     // $data["tarifCheckResults"] = $result->data->tarifCheckResults;
     if ($result->data->deliveryForm->orderService == "sp2iks") {
-      $data["orderService"] = "SP2 Kapal Sandar Icon (MT Balik IKS / MKB)";
+      $data["orderService"] = "SP2 Kapal Sandar Icon (MT Balik IKS )";
+    } else if ($result->data->deliveryForm->orderService == "sp2mkb") {
+      $data["orderService"] = "SP2 Kapal Sandar icon (MKB)";
     } else if ($result->data->deliveryForm->orderService == "sp2pelindo") {
       $data["orderService"] = "SP2 Kapal Sandar icon (MT Balik Pelindo)";
     } else if ($result->data->deliveryForm->orderService == "spps") {
@@ -193,7 +195,7 @@ class BillingImportController extends Controller
     } else if ($result->data->deliveryForm->orderService == "sppsrelokasipelindo") {
       $data["orderService"] = "SPPS (Relokasi Pelindo - ICON)";
     } else if ($result->data->deliveryForm->orderService == "sp2icon") {
-      $data["orderService"] = "SP2 (MT Balik ICON / MKB)";
+      $data["orderService"] = "SP2 (Relokasi Pelindo - ICON)";
     }
 
 
@@ -225,7 +227,9 @@ class BillingImportController extends Controller
     $orderService = $result->data->deliveryForm->orderService;
     // dd($orderService);
     if ($orderService == "sp2iks") {
-      $orderServiceName = "SP2 Kapal Sandar Icon (MT Balik IKS / MKB)";
+      $orderServiceName = "SP2 Kapal Sandar Icon (MT Balik IKS)";
+    } else if ($orderService == "sp2mkb") {
+      $orderServiceName = "SP2 Kapal Sandar Icon (MKB)";
     } else if ($orderService == "sp2pelindo") {
       $orderServiceName = "SP2 Kapal Sandar icon (MT Balik Pelindo)";
     } else if ($orderService == "spps") {
@@ -233,7 +237,7 @@ class BillingImportController extends Controller
     } else if ($orderService == "sppsrelokasipelindo") {
       $orderServiceName = "SPPS (Relokasi Pelindo - ICON)";
     } else if ($orderService == "sp2icon") {
-      $orderServiceName = "SP2 (MT Balik ICON / MKB)";
+      $orderServiceName = "SP2 (Relokasi Pelindo - ICON)";
     }
 
     $delivery = $result->data;
@@ -507,9 +511,9 @@ class BillingImportController extends Controller
 
     $jobData = $result_single_job->data;
     // dd($jobData);
-    $qrcodes = QrCode::size(100)->generate($jobData->container_no);
+    $qrcodes = QrCode::size(100)->generate($jobData->containers[0]->jobContainer->container_no);
     // dd($qrcodes);
-    $data["job"] = $jobData;
+    $data["job"] = $jobData->containers[0]->jobContainer;
     $data["invoice"] = $result_single_invoice->data;
     $data["delivery"] = $result_single_invoice->data->deliveryForm;
     $data["title"] = "Job Page | Icon Sarana";

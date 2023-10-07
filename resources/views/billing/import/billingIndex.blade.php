@@ -42,595 +42,154 @@
     </div>
   </section>
 
-  <section class="row">
-    <div class="col-12">
-      <div class="card">
-        <div class="card-header">
-          <h4 class="card-title">Tabel Data Billing Delivery SP2 Kapal Sandar Icon (MT Balik IKS / MKB)</h4>
-          <p>Rekap Data Billing Delivery</p>
-        </div>
-        <div class="card-body">
-          <form action="/invoice/export" method="POST" enctype="multipart/form-data">
-            @CSRF
+  <?php
+  $menuArr = [
+    "SP2 Kapal Sandar icon (MT Balik IKS)",
+    "SP2 Kapal Sandar icon (MKB)",
+    "SP2 Kapal Sandar icon (MT Balik Pelindo)",
+    "SPPS",
+    "SPPS (Relokasi Pelindo - ICON)",
+    "SP2 (Relokasi Pelindo - ICON)",
+  ];
+  $orderServiceArr = [
+    "sp2iks",
+    "sp2mkb",
+    "sp2pelindo",
+    "spps",
+    "sppsrelokasipelindo",
+    "sp2icon",
+  ];
+
+  ?>
+  <?php
+  $i = 1;
+  $k = 0;
+  foreach ($menuArr as $menu) { ?>
+    <section class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title">Tabel Data Billing Receiving <?= $menu ?></h4>
+            <p>Rekap Data Billing</p>
+          </div>
+          <div class="card-body">
+            <form action="/invoice/export" method="POST" enctype="multipart/form-data">
+              @CSRF
+              <div class="row">
+
+                <div class="col-4">
+                  <div class="form-group">
+                    <label>Pick Start Date Range</label>
+                    <input name="start" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-group">
+                    <label>Pick End Date Range</label>
+                    <input name="end" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
+                  </div>
+                </div>
+                <div class="col-4 mt-4">
+                  <button class="btn btn-primary" type="submit"><i class=" fa fa-file"></i> Export Active Invoice to Excel</button>
+                </div>
+              </div>
+            </form>
+
             <div class="row">
 
-              <div class="col-4">
-                <div class="form-group">
-                  <label>Pick Start Date Range</label>
-                  <input name="start" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
-                </div>
-              </div>
-              <div class="col-4">
-                <div class="form-group">
-                  <label>Pick End Date Range</label>
-                  <input name="end" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
-                </div>
-              </div>
-              <div class="col-4 mt-4">
-                <button class="btn btn-primary" type="submit"><i class=" fa fa-file"></i> Export Active Invoice to Excel</button>
-              </div>
-            </div>
-          </form>
+              <div class="col-12">
+                <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table<?= $i ?>">
+                  <thead>
+                    <tr>
+                      <th>Proforma No</th>
+                      <th>Customer</th>
+                      <th>Container No</th>
+                      <th>Order Service</th>
+                      <th>Tipe Invoice</th>
+                      <th>Dibuat Pada</th>
+                      <th>Status</th>
+                      <th>Piutang</th>
+                      <th>Pranota</th>
+                      <th>Invoice</th>
+                      <th>Job</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php foreach ($invoices as $value) { ?>
+                      <?php if ($value->orderService == $orderServiceArr[$k]) { ?>
+                        <tr>
+                          <td><?= $value->proformaId ?></td>
+                          <!-- <td>Vessel Name</td> -->
+                          <td><?= $value->deliveryForm->customer->customer_name ?></td>
+                          <td><?= $value->containerDetail->{'Container Number'} ?></td>
+                          <td><?= $value->orderService ?></td>
+                          <td><?= $value->billingName ?></td>
+                          <!-- <td>Service Name</td> -->
+                          <td><?= DateTimeFormat($value->createdAt) ?></td>
+                          <td>
+                            <?php if ($value->isPaid == 0) { ?>
+                              <span class="badge bg-danger text-white">Not Paid</span>
+                            <?php } else { ?>
+                              <span class="badge bg-success text-white">Paid</span>
+                            <?php } ?>
+                          </td>
+                          <td>
+                            <?php if ($value->isPiutang == 0) { ?>
+                              <span class="badge bg-danger text-white">Not Piutang</span>
+                            <?php } else { ?>
+                              <span class="badge bg-warning text-white">Piutang</span>
+                            <?php } ?>
+                          </td>
+                          <td>
+                            <a type="button" href="/delivery/billing/pranota?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
+                          </td>
+                          <td>
+                            <?php if ($value->isPiutang == 1 && $value->isPaid == 1) { ?>
+                              <a type="button" href="/delivery/billing/invoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
+                            <?php } else if ($value->isPiutang == 1 && $value->isPaid == 0) { ?>
+                              <a type="button" href="/delivery/billing/invoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
+                            <?php } else if ($value->isPiutang == 0 && $value->isPaid == 1) { ?>
+                              <a type="button" href="/delivery/billing/invoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
+                            <?php } else if ($value->isPiutang == 0 && $value->isPaid == 0) { ?>
+                              <a type="button" class="btn btn-sm btn-primary text-white disabled"><i class="fa fa-dollar"></i></a>
+                            <?php } ?>
+                          </td>
 
-          <div class="row">
+                          <td>
+                            <?php if ($value->isPiutang == 1 && $value->isPaid == 1) { ?>
+                              <a type="button" href="/delivery/billing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
+                            <?php } else if ($value->isPiutang == 1 && $value->isPaid == 0) { ?>
+                              <a type="button" href="/delivery/billing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
+                            <?php } else if ($value->isPiutang == 0 && $value->isPaid == 1) { ?>
+                              <a type="button" href="/delivery/billing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
+                            <?php } else if ($value->isPiutang == 0 && $value->isPaid == 0) { ?>
+                              <a type="button" class="btn btn-sm btn-info text-white disabled"><i class="fa fa-ship"></i></a>
+                            <?php } ?>
 
-            <div class="col-12">
-              <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
-                <thead>
-                  <tr>
-                    <th>Proforma No</th>
-                    <th>Customer</th>
-                    <th>Container No</th>
-                    <th>Order Service</th>
-                    <th>Tipe Invoice</th>
-                    <th>Dibuat Pada</th>
-                    <th>Status</th>
-                    <th>Piutang</th>
-                    <th>Pranota</th>
-                    <th>Invoice</th>
-                    <th>Job</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php foreach ($invoices as $value) { ?>
-                    <?php if ($value->orderService == "sp2iks") { ?>
-                      <tr>
-                        <td><?= $value->proformaId ?></td>
-                        <!-- <td>Vessel Name</td> -->
-                        <td><?= $value->deliveryForm->customer->customer_name ?></td>
-                        <td><?= $value->containerDetail->{'Container Number'} ?></td>
-                        <td><?= $value->orderService ?></td>
-                        <td><?= $value->billingName ?></td>
-                        <!-- <td>Service Name</td> -->
-                        <td><?= DateTimeFormat($value->createdAt) ?></td>
-                        <td>
-                          <?php if ($value->isPaid == 0) { ?>
-                            <span class="badge bg-danger text-white">Not Paid</span>
-                          <?php } else { ?>
-                            <span class="badge bg-success text-white">Paid</span>
-                          <?php } ?>
-                        </td>
-                        <td>
-                          <?php if ($value->isPiutang == 0) { ?>
-                            <span class="badge bg-danger text-white">Not Piutang</span>
-                          <?php } else { ?>
-                            <span class="badge bg-warning text-white">Piutang</span>
-                          <?php } ?>
-                        </td>
-                        <td>
-                          <a type="button" href="/delivery/billing/pranota?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
-                        </td>
-                        <td>
-                          <?php if ($value->isPiutang == 1 && $value->isPaid == 1) { ?>
-                            <a type="button" href="/delivery/billing/invoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                          <?php } else if ($value->isPiutang == 1 && $value->isPaid == 0) { ?>
-                            <a type="button" href="/delivery/billing/invoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                          <?php } else if ($value->isPiutang == 0 && $value->isPaid == 1) { ?>
-                            <a type="button" href="/delivery/billing/invoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                          <?php } else if ($value->isPiutang == 0 && $value->isPaid == 0) { ?>
-                            <a type="button" class="btn btn-sm btn-primary text-white disabled"><i class="fa fa-dollar"></i></a>
-                          <?php } ?>
-                        </td>
+                          </td>
+                          <td><a type="button" onclick="paidConfigv2(`<?= $value->id ?>`)" class="btn btn-sm btn-success"><i class="fa fa-cogs"></i></a></td>
 
-                        <td>
-                          <?php if ($value->isPiutang == 1 && $value->isPaid == 1) { ?>
-                            <a type="button" href="/delivery/billing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
-                          <?php } else if ($value->isPiutang == 1 && $value->isPaid == 0) { ?>
-                            <a type="button" href="/delivery/billing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
-                          <?php } else if ($value->isPiutang == 0 && $value->isPaid == 1) { ?>
-                            <a type="button" href="/delivery/billing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
-                          <?php } else if ($value->isPiutang == 0 && $value->isPaid == 0) { ?>
-                            <a type="button" class="btn btn-sm btn-info text-white disabled"><i class="fa fa-ship"></i></a>
-                          <?php } ?>
+                        </tr>
+                      <?php } ?>
 
-                        </td>
-                        <td><a type="button" onclick="paidConfigv2(`<?= $value->id ?>`)" class="btn btn-sm btn-success"><i class="fa fa-cogs"></i></a></td>
-
-                      </tr>
                     <?php } ?>
-
-                  <?php } ?>
-                </tbody>
-              </table>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+  <?php
+    $i++;
+    $k++;
+  } ?>
 
-  <section class="row">
-    <div class="col-12">
-      <div class="card">
-        <div class="card-header">
-          <h4 class="card-title">Tabel Data Billing Delivery SP2 Kapal Sandar icon (MT Balik Pelindo)</h4>
-          <p>Rekap Data Billing Delivery</p>
-        </div>
-        <div class="card-body">
-          <form action="/invoice/export" method="POST" enctype="multipart/form-data">
-            @CSRF
-            <div class="row">
 
-              <div class="col-4">
-                <div class="form-group">
-                  <label>Pick Start Date Range</label>
-                  <input name="start" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
-                </div>
-              </div>
-              <div class="col-4">
-                <div class="form-group">
-                  <label>Pick End Date Range</label>
-                  <input name="end" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
-                </div>
-              </div>
-              <div class="col-4 mt-4">
-                <button class="btn btn-primary" type="submit"><i class=" fa fa-file"></i> Export Active Invoice to Excel</button>
-              </div>
-            </div>
-          </form>
 
-          <div class="row">
 
-            <div class="col-12">
-              <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table2">
-                <thead>
-                  <tr>
-                    <th>Proforma No</th>
-                    <th>Customer</th>
-                    <th>Container No</th>
-                    <th>Order Service</th>
-                    <th>Tipe Invoice</th>
-                    <th>Dibuat Pada</th>
-                    <th>Status</th>
-                    <th>Piutang</th>
-                    <th>Pranota</th>
-                    <th>Invoice</th>
-                    <th>Job</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php foreach ($invoices as $value) { ?>
-                    <?php if ($value->orderService == "sp2pelindo") { ?>
-                      <tr>
-                        <td><?= $value->proformaId ?></td>
-                        <!-- <td>Vessel Name</td> -->
-                        <td><?= $value->deliveryForm->customer->customer_name ?></td>
-                        <td><?= $value->containerDetail->{'Container Number'} ?></td>
-                        <td><?= $value->orderService ?></td>
-                        <td><?= $value->billingName ?></td>
-                        <!-- <td>Service Name</td> -->
-                        <td><?= DateTimeFormat($value->createdAt) ?></td>
-                        <td>
-                          <?php if ($value->isPaid == 0) { ?>
-                            <span class="badge bg-danger text-white">Not Paid</span>
-                          <?php } else { ?>
-                            <span class="badge bg-success text-white">Paid</span>
-                          <?php } ?>
-                        </td>
-                        <td>
-                          <?php if ($value->isPiutang == 0) { ?>
-                            <span class="badge bg-danger text-white">Not Piutang</span>
-                          <?php } else { ?>
-                            <span class="badge bg-warning text-white">Piutang</span>
-                          <?php } ?>
-                        </td>
-                        <td>
-                          <a type="button" href="/delivery/billing/pranota?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
-                        </td>
-                        <td>
-                          <?php if ($value->isPiutang == 1 && $value->isPaid == 1) { ?>
-                            <a type="button" href="/delivery/billing/invoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                          <?php } else if ($value->isPiutang == 1 && $value->isPaid == 0) { ?>
-                            <a type="button" href="/delivery/billing/invoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                          <?php } else if ($value->isPiutang == 0 && $value->isPaid == 1) { ?>
-                            <a type="button" href="/delivery/billing/invoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                          <?php } else if ($value->isPiutang == 0 && $value->isPaid == 0) { ?>
-                            <a type="button" class="btn btn-sm btn-primary text-white disabled"><i class="fa fa-dollar"></i></a>
-                          <?php } ?>
-                        </td>
-
-                        <td>
-                          <?php if ($value->isPiutang == 1 && $value->isPaid == 1) { ?>
-                            <a type="button" href="/delivery/billing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
-                          <?php } else if ($value->isPiutang == 1 && $value->isPaid == 0) { ?>
-                            <a type="button" href="/delivery/billing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
-                          <?php } else if ($value->isPiutang == 0 && $value->isPaid == 1) { ?>
-                            <a type="button" href="/delivery/billing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
-                          <?php } else if ($value->isPiutang == 0 && $value->isPaid == 0) { ?>
-                            <a type="button" class="btn btn-sm btn-info text-white disabled"><i class="fa fa-ship"></i></a>
-                          <?php } ?>
-
-                        </td>
-                        <td><a type="button" onclick="paidConfigv2(`<?= $value->id ?>`)" class="btn btn-sm btn-success"><i class="fa fa-cogs"></i></a></td>
-
-                      </tr>
-                    <?php } ?>
-
-                  <?php } ?>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="row">
-    <div class="col-12">
-      <div class="card">
-        <div class="card-header">
-          <h4 class="card-title">Tabel Data Billing Delivery SPPS</h4>
-          <p>Rekap Data Billing Delivery</p>
-        </div>
-        <div class="card-body">
-          <form action="/invoice/export" method="POST" enctype="multipart/form-data">
-            @CSRF
-            <div class="row">
-
-              <div class="col-4">
-                <div class="form-group">
-                  <label>Pick Start Date Range</label>
-                  <input name="start" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
-                </div>
-              </div>
-              <div class="col-4">
-                <div class="form-group">
-                  <label>Pick End Date Range</label>
-                  <input name="end" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
-                </div>
-              </div>
-              <div class="col-4 mt-4">
-                <button class="btn btn-primary" type="submit"><i class=" fa fa-file"></i> Export Active Invoice to Excel</button>
-              </div>
-            </div>
-          </form>
-
-          <div class="row">
-
-            <div class="col-12">
-              <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table3">
-                <thead>
-                  <tr>
-                    <th>Proforma No</th>
-                    <th>Customer</th>
-                    <th>Container No</th>
-                    <th>Order Service</th>
-                    <th>Tipe Invoice</th>
-                    <th>Dibuat Pada</th>
-                    <th>Status</th>
-                    <th>Piutang</th>
-                    <th>Pranota</th>
-                    <th>Invoice</th>
-                    <th>Job</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php foreach ($invoices as $value) { ?>
-                    <?php if ($value->orderService == "spps") { ?>
-                      <tr>
-                        <td><?= $value->proformaId ?></td>
-                        <!-- <td>Vessel Name</td> -->
-                        <td><?= $value->deliveryForm->customer->customer_name ?></td>
-                        <td><?= $value->containerDetail->{'Container Number'} ?></td>
-                        <td><?= $value->orderService ?></td>
-                        <td><?= $value->billingName ?></td>
-                        <!-- <td>Service Name</td> -->
-                        <td><?= DateTimeFormat($value->createdAt) ?></td>
-                        <td>
-                          <?php if ($value->isPaid == 0) { ?>
-                            <span class="badge bg-danger text-white">Not Paid</span>
-                          <?php } else { ?>
-                            <span class="badge bg-success text-white">Paid</span>
-                          <?php } ?>
-                        </td>
-                        <td>
-                          <?php if ($value->isPiutang == 0) { ?>
-                            <span class="badge bg-danger text-white">Not Piutang</span>
-                          <?php } else { ?>
-                            <span class="badge bg-warning text-white">Piutang</span>
-                          <?php } ?>
-                        </td>
-                        <td>
-                          <a type="button" href="/delivery/billing/pranota?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
-                        </td>
-                        <td>
-                          <?php if ($value->isPiutang == 1 && $value->isPaid == 1) { ?>
-                            <a type="button" href="/delivery/billing/invoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                          <?php } else if ($value->isPiutang == 1 && $value->isPaid == 0) { ?>
-                            <a type="button" href="/delivery/billing/invoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                          <?php } else if ($value->isPiutang == 0 && $value->isPaid == 1) { ?>
-                            <a type="button" href="/delivery/billing/invoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                          <?php } else if ($value->isPiutang == 0 && $value->isPaid == 0) { ?>
-                            <a type="button" class="btn btn-sm btn-primary text-white disabled"><i class="fa fa-dollar"></i></a>
-                          <?php } ?>
-                        </td>
-
-                        <td>
-                          <?php if ($value->isPiutang == 1 && $value->isPaid == 1) { ?>
-                            <a type="button" href="/delivery/billing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
-                          <?php } else if ($value->isPiutang == 1 && $value->isPaid == 0) { ?>
-                            <a type="button" href="/delivery/billing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
-                          <?php } else if ($value->isPiutang == 0 && $value->isPaid == 1) { ?>
-                            <a type="button" href="/delivery/billing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
-                          <?php } else if ($value->isPiutang == 0 && $value->isPaid == 0) { ?>
-                            <a type="button" class="btn btn-sm btn-info text-white disabled"><i class="fa fa-ship"></i></a>
-                          <?php } ?>
-
-                        </td>
-                        <td><a type="button" onclick="paidConfigv2(`<?= $value->id ?>`)" class="btn btn-sm btn-success"><i class="fa fa-cogs"></i></a></td>
-
-                      </tr>
-                    <?php } ?>
-
-                  <?php } ?>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="row">
-    <div class="col-12">
-      <div class="card">
-        <div class="card-header">
-          <h4 class="card-title">Tabel Data Billing Delivery SPPS (Relokasi Pelindo - ICON)</h4>
-          <p>Rekap Data Billing Delivery</p>
-        </div>
-        <div class="card-body">
-          <form action="/invoice/export" method="POST" enctype="multipart/form-data">
-            @CSRF
-            <div class="row">
-
-              <div class="col-4">
-                <div class="form-group">
-                  <label>Pick Start Date Range</label>
-                  <input name="start" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
-                </div>
-              </div>
-              <div class="col-4">
-                <div class="form-group">
-                  <label>Pick End Date Range</label>
-                  <input name="end" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
-                </div>
-              </div>
-              <div class="col-4 mt-4">
-                <button class="btn btn-primary" type="submit"><i class=" fa fa-file"></i> Export Active Invoice to Excel</button>
-              </div>
-            </div>
-          </form>
-
-          <div class="row">
-
-            <div class="col-12">
-              <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table4">
-                <thead>
-                  <tr>
-                    <th>Proforma No</th>
-                    <th>Customer</th>
-                    <th>Container No</th>
-                    <th>Order Service</th>
-                    <th>Tipe Invoice</th>
-                    <th>Dibuat Pada</th>
-                    <th>Status</th>
-                    <th>Piutang</th>
-                    <th>Pranota</th>
-                    <th>Invoice</th>
-                    <th>Job</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php foreach ($invoices as $value) { ?>
-                    <?php if ($value->orderService == "sppsrelokasipelindo") { ?>
-                      <tr>
-                        <td><?= $value->proformaId ?></td>
-                        <!-- <td>Vessel Name</td> -->
-                        <td><?= $value->deliveryForm->customer->customer_name ?></td>
-                        <td><?= $value->containerDetail->{'Container Number'} ?></td>
-                        <td><?= $value->orderService ?></td>
-                        <td><?= $value->billingName ?></td>
-                        <!-- <td>Service Name</td> -->
-                        <td><?= DateTimeFormat($value->createdAt) ?></td>
-                        <td>
-                          <?php if ($value->isPaid == 0) { ?>
-                            <span class="badge bg-danger text-white">Not Paid</span>
-                          <?php } else { ?>
-                            <span class="badge bg-success text-white">Paid</span>
-                          <?php } ?>
-                        </td>
-                        <td>
-                          <?php if ($value->isPiutang == 0) { ?>
-                            <span class="badge bg-danger text-white">Not Piutang</span>
-                          <?php } else { ?>
-                            <span class="badge bg-warning text-white">Piutang</span>
-                          <?php } ?>
-                        </td>
-                        <td>
-                          <a type="button" href="/delivery/billing/pranota?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
-                        </td>
-                        <td>
-                          <?php if ($value->isPiutang == 1 && $value->isPaid == 1) { ?>
-                            <a type="button" href="/delivery/billing/invoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                          <?php } else if ($value->isPiutang == 1 && $value->isPaid == 0) { ?>
-                            <a type="button" href="/delivery/billing/invoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                          <?php } else if ($value->isPiutang == 0 && $value->isPaid == 1) { ?>
-                            <a type="button" href="/delivery/billing/invoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                          <?php } else if ($value->isPiutang == 0 && $value->isPaid == 0) { ?>
-                            <a type="button" class="btn btn-sm btn-primary text-white disabled"><i class="fa fa-dollar"></i></a>
-                          <?php } ?>
-                        </td>
-
-                        <td>
-                          <?php if ($value->isPiutang == 1 && $value->isPaid == 1) { ?>
-                            <a type="button" href="/delivery/billing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
-                          <?php } else if ($value->isPiutang == 1 && $value->isPaid == 0) { ?>
-                            <a type="button" href="/delivery/billing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
-                          <?php } else if ($value->isPiutang == 0 && $value->isPaid == 1) { ?>
-                            <a type="button" href="/delivery/billing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
-                          <?php } else if ($value->isPiutang == 0 && $value->isPaid == 0) { ?>
-                            <a type="button" class="btn btn-sm btn-info text-white disabled"><i class="fa fa-ship"></i></a>
-                          <?php } ?>
-
-                        </td>
-                        <td><a type="button" onclick="paidConfigv2(`<?= $value->id ?>`)" class="btn btn-sm btn-success"><i class="fa fa-cogs"></i></a></td>
-
-                      </tr>
-                    <?php } ?>
-
-                  <?php } ?>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="row">
-    <div class="col-12">
-      <div class="card">
-        <div class="card-header">
-          <h4 class="card-title">Tabel Data Billing Delivery SP2 (MT Balik ICON / MKB)</h4>
-          <p>Rekap Data Billing Delivery</p>
-        </div>
-        <div class="card-body">
-          <form action="/invoice/export" method="POST" enctype="multipart/form-data">
-            @CSRF
-            <div class="row">
-
-              <div class="col-4">
-                <div class="form-group">
-                  <label>Pick Start Date Range</label>
-                  <input name="start" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
-                </div>
-              </div>
-              <div class="col-4">
-                <div class="form-group">
-                  <label>Pick End Date Range</label>
-                  <input name="end" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
-                </div>
-              </div>
-              <div class="col-4 mt-4">
-                <button class="btn btn-primary" type="submit"><i class=" fa fa-file"></i> Export Active Invoice to Excel</button>
-              </div>
-            </div>
-          </form>
-
-          <div class="row">
-
-            <div class="col-12">
-              <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table5">
-                <thead>
-                  <tr>
-                    <th>Proforma No</th>
-                    <th>Customer</th>
-                    <th>Container No</th>
-                    <th>Order Service</th>
-                    <th>Tipe Invoice</th>
-                    <th>Dibuat Pada</th>
-                    <th>Status</th>
-                    <th>Piutang</th>
-                    <th>Pranota</th>
-                    <th>Invoice</th>
-                    <th>Job</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php foreach ($invoices as $value) { ?>
-                    <?php if ($value->orderService == "sp2icon") { ?>
-                      <tr>
-                        <td><?= $value->proformaId ?></td>
-                        <!-- <td>Vessel Name</td> -->
-                        <td><?= $value->deliveryForm->customer->customer_name ?></td>
-                        <td><?= $value->containerDetail->{'Container Number'} ?></td>
-                        <td><?= $value->orderService ?></td>
-                        <td><?= $value->billingName ?></td>
-                        <!-- <td>Service Name</td> -->
-                        <td><?= DateTimeFormat($value->createdAt) ?></td>
-                        <td>
-                          <?php if ($value->isPaid == 0) { ?>
-                            <span class="badge bg-danger text-white">Not Paid</span>
-                          <?php } else { ?>
-                            <span class="badge bg-success text-white">Paid</span>
-                          <?php } ?>
-                        </td>
-                        <td>
-                          <?php if ($value->isPiutang == 0) { ?>
-                            <span class="badge bg-danger text-white">Not Piutang</span>
-                          <?php } else { ?>
-                            <span class="badge bg-warning text-white">Piutang</span>
-                          <?php } ?>
-                        </td>
-                        <td>
-                          <a type="button" href="/delivery/billing/pranota?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
-                        </td>
-                        <td>
-                          <?php if ($value->isPiutang == 1 && $value->isPaid == 1) { ?>
-                            <a type="button" href="/delivery/billing/invoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                          <?php } else if ($value->isPiutang == 1 && $value->isPaid == 0) { ?>
-                            <a type="button" href="/delivery/billing/invoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                          <?php } else if ($value->isPiutang == 0 && $value->isPaid == 1) { ?>
-                            <a type="button" href="/delivery/billing/invoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                          <?php } else if ($value->isPiutang == 0 && $value->isPaid == 0) { ?>
-                            <a type="button" class="btn btn-sm btn-primary text-white disabled"><i class="fa fa-dollar"></i></a>
-                          <?php } ?>
-                        </td>
-
-                        <td>
-                          <?php if ($value->isPiutang == 1 && $value->isPaid == 1) { ?>
-                            <a type="button" href="/delivery/billing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
-                          <?php } else if ($value->isPiutang == 1 && $value->isPaid == 0) { ?>
-                            <a type="button" href="/delivery/billing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
-                          <?php } else if ($value->isPiutang == 0 && $value->isPaid == 1) { ?>
-                            <a type="button" href="/delivery/billing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
-                          <?php } else if ($value->isPiutang == 0 && $value->isPaid == 0) { ?>
-                            <a type="button" class="btn btn-sm btn-info text-white disabled"><i class="fa fa-ship"></i></a>
-                          <?php } ?>
-
-                        </td>
-                        <td><a type="button" onclick="paidConfigv2(`<?= $value->id ?>`)" class="btn btn-sm btn-success"><i class="fa fa-cogs"></i></a></td>
-
-                      </tr>
-                    <?php } ?>
-
-                  <?php } ?>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 </div>
 
 <!-- Edit Modal Single Data Table  -->

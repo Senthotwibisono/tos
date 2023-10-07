@@ -120,14 +120,11 @@ class BillingExportController extends Controller
     $documentType = $request->documentType;
     $documentDate = $request->documentDate;
     $bookingno = $request->booking;
+    $rono = $request->roNumber;
 
     $fields = [
       "exp_date" => $departure,
       "customer_id" => $customer,
-      // "do_number" => $do_number,
-      // "do_exp_date" => $do_exp_date,
-      // "boln" => $boln,
-      "booking_no" => $bookingno,
       "container" => $container,
       "orderService" => $order_service,
       "documentNumber" => $documentNumber,
@@ -135,7 +132,13 @@ class BillingExportController extends Controller
       "documentDate" => $documentDate,
 
     ];
-    dd($fields);
+    if ($bookingno != null) {
+      $fields["booking_no"] = $bookingno;
+    } else {
+      $fields["roNumber"] = $rono;
+    }
+
+    // dd($fields);
 
     $url = getenv('API_URL') . '/delivery-service/form/create';
     $req = $client->post(
@@ -450,11 +453,12 @@ class BillingExportController extends Controller
     $result_single_job = json_decode($response_single_job);
     // dd($result_single_job);
 
+
     $jobData = $result_single_job->data;
     // dd($jobData);
-    $qrcodes = QrCode::size(100)->generate($jobData->container_no);
+    $qrcodes = QrCode::size(100)->generate($jobData->containers[0]->jobContainer->container_no);
     // dd($qrcodes);
-    $data["job"] = $jobData;
+    $data["job"] = $jobData->containers[0]->jobContainer;
     $data["invoice"] = $result_single_invoice->data;
     $data["delivery"] = $result_single_invoice->data->deliveryForm;
     $data["title"] = "Job Page | Icon Sarana";
