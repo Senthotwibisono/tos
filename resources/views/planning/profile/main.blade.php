@@ -122,6 +122,7 @@
                                     <label for="max_tier">Max Tier:</label>
                                     <input type="number" class="form-control" id="max_tier" name="max_tier" required min="0" max="98">
                                 </div>
+                                <input type="hidden" id="selectedVesCode" name="selected_ves_code" value="">
                             </fieldset>
                         </div>
                     </div>
@@ -151,7 +152,7 @@
             $('#vesCode').text(vesCode);
 
             // Set the vesCode value in the hidden input field
-            $('#vesCodeInput').val(vesCode);
+            $('#selectedVesCode').val(vesCode); // Update the hidden input
 
             // Update the form action with the ves_code
             var form = document.getElementById('bayForm');
@@ -163,12 +164,27 @@
             $('#vesNameLabel').text(vesName);
             $('#vesCodeLabel').text(vesCode);
         });
-    });
-</script>
 
-<script>
+        // Add an event listener to the submit button
+        $('#submitBtn').click(function() {
+            // Call the submitForm function when the button is clicked
+            submitForm();
+        });
+
+        // Add a listener for form submission completion
+        $('#bayForm').on('submit', function(e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            // ... (Your form validation code)
+
+            // After a successful form submission, redirect to the grid view
+            var selectedVesCode = $('#selectedVesCode').val();
+            window.location.href = "{{ route('grid-box.index', ['ves_code' => '__VES_CODE__']) }}"
+                .replace('__VES_CODE__', selectedVesCode);
+        });
+    });
     // Function to validate the form
-    function validateForm() {
+    function submitForm() {
         var maxTierUnder = parseInt($('#max_tier_under').val());
         var maxRowUnder = parseInt($('#max_row_under').val());
         var maxTierOnDeck = parseInt($('#max_tier').val());

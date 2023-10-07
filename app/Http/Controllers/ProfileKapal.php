@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Iluminate\Support\Facades\Redirect;
 use Illuminate\Http\Request;
 use App\Models\VMaster;
 use App\Models\Bay;
+use Illuminate\Support\Facades\Redirect as FacadesRedirect;
 
 class ProfileKapal extends Controller
 {
@@ -69,6 +71,6 @@ class ProfileKapal extends Controller
         $model->save();
 
         // Optionally, you can return a response to indicate success or failure
-        return response()->json(['message' => 'Data saved successfully']);
+        return redirect()->route('grid-box.index', ['ves_code' => $ves_code]);
     }
 }
