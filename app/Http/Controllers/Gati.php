@@ -552,6 +552,13 @@ class Gati extends Controller
         $full = RO_Gate::where('status', '=' , '6')->get();
         return view('gate.stuffing.gate-in', compact('title'), compact('ro', 'full'));
     }
+    public function stuf_android()
+    {
+        $title="Gate-In Stuffing";
+        $ro = RO_Gate::whereIn('status', ['1', '2', '4','5', '7'])->get();
+        $full = RO_Gate::where('status', '=' , '6')->get();
+        return view('gate.stuffing.gate-in-android', compact('title'), compact('ro', 'full'));
+    }
 
     public function gati_stuf(Request $request)
     {
