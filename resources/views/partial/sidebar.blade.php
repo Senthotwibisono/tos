@@ -1,4 +1,5 @@
 <ul class="menu">
+    @if(Auth::user() && !Auth::user()->hasRole('BeaCukai'))
     <li class="sidebar-title">Menu</li>
 
     <li class="sidebar-item @if(Request::is('dashboard') || Request::is('/')) active @endif">
@@ -198,6 +199,10 @@
             <li class="submenu-item @if(Request::is('stuffing')) active @endif">
                 <a href="/stuffing">Stuffing</a>
             </li>
+            <hr>
+            <li class="submenu-item @if(Request::is('yard/trucking')) active @endif">
+                <a href="/yard/trucking">Trucking</a>
+            </li>
             <!-- <li class="submenu-item ">
                         <a href="form-element-textarea.html">Reefer Monitoring</a>
                     </li> <li class="submenu-item ">
@@ -282,7 +287,10 @@
             <li class="submenu-item @if(Request::is('delivery/gate-out')) active @endif">
                 <a href="/delivery/gate-out">Gate Out Delivery</a>
             </li>
-
+            <hr>
+            <li class="submenu-item @if(Request::is('delivery/balik-relokasi')) active @endif">
+                <a href="/delivery/balik-relokasi">Gate MT Balik IKS & Relokasi Pelindo</a>
+            </li>
             <hr>
 
             <li class="submenu-item @if(Request::is('reciving/gate-in')) active @endif">
@@ -419,6 +427,9 @@
         <ul class="submenu @if(Request::is('reports/*')) active @endif">
             <li class="submenu-item @if(Request::is('reports/hist')) active @endif">
                 <a href="/reports/hist">History Container</a>
+            </li>
+            <li class="submenu-item @if(Request::is('reports/equipment')) active @endif">
+                <a href="/reports/equipment">Equipment Report</a>
             </li>
             <hr>
             <li class="submenu-item @if(Request::is('reports/disch')) active @endif">
@@ -583,8 +594,35 @@
             <li class="submenu-item @if(Request::is('master/isocode')) active @endif">
                 <a href="/master/isocode">ISO Code Maintenance</a>
             </li>
+            <li class="submenu-item @if(Request::is('master/alat')) active @endif">
+                <a href="/master/alat">Equipment</a>
+            </li>
         </ul>
     </li>
+    @else
+    
+    <li class="sidebar-item @if(Request::is('bea-cukai-sevice')) active @endif">
+        <a href="/bea-cukai-sevice" class='sidebar-link'>
+            <span>Home</span>
+        </a>
+    </li>
+    <li class="sidebar-item @if(Request::is('bea-cukai-sevice/container-hold')) active @endif">
+        <a href="/bea-cukai-sevice/container-hold" class='sidebar-link'>
+            <span>Container in Hold</span>
+        </a>
+    </li>
+    <li class="sidebar-item @if(Request::is('bea-cukai-sevice/container-hold-p2')) active @endif">
+        <a href="/bea-cukai-sevice/container-hold-p2" class='sidebar-link'>
+            <span>Holding Proccess P2</span>
+        </a>
+    </li>
+    <li class="sidebar-item @if(Request::is('bea-cukai-sevice/container-proses-release-p2 ')) active @endif">
+        <a href="/bea-cukai-sevice/container-proses-release-p2" class='sidebar-link'>
+            <span>Release Proccess P2</span>
+        </a>
+    </li>
+    @endif
+    </ul>
 
 
 

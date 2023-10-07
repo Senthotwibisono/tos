@@ -10,6 +10,8 @@ use App\Models\RO_Gate;
 use App\Models\RO_Realisasi;
 use App\Models\RO;
 use App\Models\VVoyage;
+use App\Models\MasterAlat;
+use App\Models\ActAlat;
 use Auth;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
@@ -86,9 +88,10 @@ class Stuffing extends Controller
         ->selectRaw('truck_id, count(distinct container_no) as container_count')
         ->pluck('container_count', 'truck_id');
         $vessel = VVoyage::where('deparature_date','>=',$now)->get();
-
-        return view('stuffing.main', $data, compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys', 'ro_gate_dalam','ro_stuffing_dalam', 'vessel', 'container_truck', 'ro_gate_luar','ro_stuffing_luar', 'container_truck_luar'), $data);
+        $alat = MasterAlat::where('category', '=', 'Yard')->get();
+        return view('stuffing.main', $data, compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys', 'ro_gate_dalam','ro_stuffing_dalam', 'vessel', 'container_truck', 'ro_gate_luar','ro_stuffing_luar', 'container_truck_luar', 'alat'), $data);
     }
+
     public function android()
     {
         $title = 'Stuffing';
@@ -222,6 +225,8 @@ class Stuffing extends Controller
 
          
                 if ($cont_check > $cont) {
+                    $id_alat = $request->alat;
+                    $alat = MasterAlat::where('id', $id_alat )->first();
 
                     $truck = $request->ro_id_gati;
                     $ro_gate = RO_Gate::where('ro_id_gati', $truck)->first();
@@ -256,12 +261,59 @@ class Stuffing extends Controller
                         'truck_in_date' => $ro_gate->truck_in_date,
                         'stuffing_procces' => $ro->stuffing_service,
                     ]);
+                    $act_alat = ActAlat::create([
+                        'id_alat' =>  $request->alat,
+                        'category' => $alat->category,
+                        'nama_alat' => $alat->name,
+                        'container_key' => $request->container_key,
+                        'container_no' => $request->container_no,
+                        'activity' => 'STFG-IN',
+                      ]);
+
+                    $client = new Client();
+
+                    $fields = [
+                        "container_key" => $request->container_key,
+                        "ctr_intern_status" => "53",
+                        'yard_block' => $request->yard_block,
+                        'yard_slot' => $request->yard_slot,
+                        'yard_row' => $request->yard_row,
+                        'yard_tier' => $request->yard_tier,
+                        'roNumber' => $request->ro_no,
+                        'ves_id'=> $request->ves_id,
+                        'ves_name' => $request->ves_name,
+                        'ves_code' => $request->ves_code,
+                        'voy_no' => $request->voy_no,
+                    ];
+                    // dd($fields, $item->getAttributes());
+                
+                    $url = getenv('API_URL') . '/delivery-service/container/confirmPlacement';
+                    $req = $client->post(
+                        $url,
+                        [
+                            "json" => $fields
+                        ]
+                    );
+                    $response = $req->getBody()->getContents();
+                    $result = json_decode($response);
+                
+                    if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
                     
-                    return response()->json([
-                        'success' => true,
-                        'message' => 'Updated successfully!',
-                        'item' => $item,
-                    ]);
+                        return response()->json([
+                            'success' => true,
+                            'message' => 'Updated successfully!',
+                            'item' => $item,
+                        ]);
+                    
+                    
+                    } else {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Something wrong happened while updating with api',
+                        ]);
+                    }
+
+                   
                
             }else {
                 return response()->json([
@@ -285,6 +337,8 @@ class Stuffing extends Controller
 
          
             if ($cont_check > $cont) {
+                $id_alat = $request->alat;
+                $alat = MasterAlat::where('id', $id_alat )->first();
 
                 $truck = $request->ro_id_gati;
                 $ro_gate = RO_Gate::where('ro_id_gati', $truck)->first();
@@ -309,6 +363,16 @@ class Stuffing extends Controller
                     'truck_in_date' => $ro_gate->truck_in_date,
                     'stuffing_procces' => $ro->stuffing_service,
                 ]);
+
+                $act_alat = ActAlat::create([
+                    'id_alat' =>  $request->alat,
+                    'category' => $alat->category,
+                    'nama_alat' => $alat->name,
+                    'container_key' => $request->container_key,
+                    'container_no' => $item->container_no,
+                    'activity' => 'STFG-OUT',
+                  ]);
+
                 $ro_gate->update([
                     'status' => '4',
                 ]);
@@ -488,8 +552,8 @@ class Stuffing extends Controller
        
        $truck_table = RO_Realisasi::where('truck_id', '=', $ro_id_gati)->where('status','=', '1')->get();
        $vessel = VVoyage::where('deparature_date','>=',$now)->get();
-
-        return view('stuffing.luar.place_cont', compact('truck', 'truck_table', 'vessel', 'now', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'ro', 'container', 'truck_id'));
+       $alat = MasterAlat::where('category', '=', 'Yard')->get();
+        return view('stuffing.luar.place_cont', compact('truck', 'truck_table', 'vessel', 'now', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'ro', 'container', 'truck_id', 'alat'));
     }
 
     public function update_place_cont_luar(Request $request)
@@ -522,6 +586,8 @@ class Stuffing extends Controller
 
         if (is_null($yard_rowtier->container_key)) {
             $now = Carbon::now();
+            $id_alat = $request->alat;
+            $alat = MasterAlat::where('id', $id_alat )->first();
 
            
             
@@ -545,6 +611,15 @@ class Stuffing extends Controller
                         'stuffing_date' => $now,
                         'ctr_status' => 'FCL', 
                     ]);
+
+                    $act_alat = ActAlat::create([
+                        'id_alat' =>  $request->alat,
+                        'category' => $alat->category,
+                        'nama_alat' => $alat->name,
+                        'container_key' => $request->container_key,
+                        'container_no' => $item->container_no,
+                        'activity' => 'STFG-OUT-FULL',
+                      ]);
                     
                     return response()->json([
                         'success' => true,

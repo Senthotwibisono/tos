@@ -76,16 +76,28 @@
                   <option value="">Select Container</option>
                   <?php
                   foreach ($jobContainers->container as $value) { ?>
-                    <?php if (($value->ctr_intern_status == "03"  || $value->ctr_intern_status == "04") &&($value->orderService == "spps")) { ?>
+                    <?php if (($value->ctr_intern_status == "03"  || $value->ctr_intern_status == "04"|| $value->ctr_intern_status == "12") &&($value->orderService == "spps" || $value->orderService == "sp2iks")) { ?>
                       <option value="<?= $value->container_key ?>"><?= $value->container_no ?></option>
                     <?php } ?>
                   <?php } ?>
                 </select>
                 <input type="hidden" id="container_no" class="form-control" name="container_no">
-                <input type="text" id="container_key" class="form-control" name="container_key" readonly>
+                <input type="hidden" id="container_key" class="form-control" name="container_key" readonly>
               </div>
               {{ csrf_field()}}
             </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label for="first-name-vertical">Alat</label>
+                <select class="choices form-select" id="alat" required>
+                  <option value="" disabeled selected values>Pilih Alat</option>
+                  @foreach($alat as $alt)
+                  <option value="{{$alt->id}}">{{$alt->name}}</option>
+                  @endforeach
+                </select>
+              </div>
+              {{ csrf_field()}}
+              <div>
             <div class="col-12">
               <div class="form-group">
                 <label for="first-name-vertical">Type</label>
@@ -228,6 +240,7 @@
         var yard_slot = $('#slot').val();
         var yard_raw = $('#raw').val();
         var yard_tier = $('#tier').val();
+        var id_alat = $('#alat').val();
         var data = {
           'container_key': $('#container_key').val(),
           'container_no': $('#container_no').val(),
@@ -236,7 +249,7 @@
           'yard_row': $('#row').val(),
           'yard_tier': $('#tier').val(),
           'user_id': $('#user').val(),
-
+           'id_alat' : $('#alat').val(), 
         }
         $.ajaxSetup({
           headers: {

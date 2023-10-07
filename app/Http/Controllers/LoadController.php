@@ -6,6 +6,8 @@ use App\Models\Item;
 use App\Models\VVoyage;
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\MasterAlat;
+use App\Models\ActAlat;
 use GuzzleHttp\Client;
 
 use Auth;
@@ -62,7 +64,8 @@ class LoadController extends Controller
       $currentDateTime = Carbon::now();
       $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
       $vessel_voyage = VVoyage::whereDate('deparature_date', '>=', now())->orderBy('deparature_date', 'desc')->get();
-      return view('load.main', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'vessel_voyage'), $data);
+      $alat = MasterAlat::where('category', '=', 'Bay')->get();
+      return view('load.main', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'vessel_voyage', 'alat'), $data);
     }
     
     //android
@@ -164,6 +167,8 @@ class LoadController extends Controller
     public function confirm(Request $request)
     {
       $container_key = $request->container_key;
+      $id_alat = $request->cc_tt_no;
+      $alat = MasterAlat::where('id', $id_alat )->first();
       $item = Item::where('container_key', $container_key)->first();
       $request->validate([
         'container_no' => 'required',
@@ -178,53 +183,62 @@ class LoadController extends Controller
         'cc_tt_no.required' => 'Nomor Alat Number is required.',
         'cc_tt_oper.required' => 'Operator Alat Number is required.',
       ]);
+      $act_alat = ActAlat::create([
+        'id_alat' =>  $request->cc_tt_no,
+        'category' => 'Bay',
+        'nama_alat' => $alat->name,
+        'container_key' => $request->container_key,
+        'container_no' => $request->container_no,
+        'activity' => 'LOAD',
+      ]);
       Item::where('container_key', $container_key)->update([ 
         'bay_slot' => $request->bay_slot,
         'bay_row' => $request->bay_row,
         'bay_tier' => $request->bay_tier,
         'load_date' => $request->load_date,
-        'cc_tt_no'  =>$request->cc_tt_no,
+        'cc_tt_no'  =>$alat->name,
         'cc_tt_oper'  =>$request->cc_tt_oper,
         'ctr_intern_status' => '56',
+        'ctr_active_yn'=>'N',
   
       ]);
-      // $client = new Client();
+      $client = new Client();
 
-      //       $fields = [
-      //         "container_key" => $request->container_key,
-      //         'bay_slot' => $request->bay_slot,
-      //         'bay_row' => $request->bay_row,
-      //         'bay_tier' => $request->bay_tier,
-      //         'load_date' => $request->load_date,
-      //         'cc_tt_no'  =>$request->cc_tt_no,
-      //         'cc_tt_oper'  =>$request->cc_tt_oper,
-      //         'ctr_intern_status' => '56',
-      //       ];
-      //       // dd($fields, $item->getAttributes());
+            $fields = [
+              "container_key" => $request->container_key,
+              'bay_slot' => $request->bay_slot,
+              'bay_row' => $request->bay_row,
+              'bay_tier' => $request->bay_tier,
+              'load_date' => $request->load_date,
+              'cc_tt_no'  =>$request->cc_tt_no,
+              'cc_tt_oper'  =>$request->cc_tt_oper,
+              'ctr_intern_status' => '56',
+            ];
+            // dd($fields, $item->getAttributes());
 
-      //       $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
-      //       $req = $client->post(
-      //           $url,
-      //           [
-      //               "json" => $fields
-      //           ]
-      //       );
-      //       $response = $req->getBody()->getContents();
-      //       $result = json_decode($response);
+            $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
+            $req = $client->post(
+                $url,
+                [
+                    "json" => $fields
+                ]
+            );
+            $response = $req->getBody()->getContents();
+            $result = json_decode($response);
 
-      //       if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-                // $item->save();
+            if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+                $item->save();
 
                 return response()->json([
                     'success' => true,
                     'message' => 'Updated successfully!',
                     'item' => $item,
                 ]);
-            // } else {
-            //     return response()->json([
-            //         'success' => false,
-            //         'message' => 'Something wrong happened while updating with api',
-            //     ]);
-            // }
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Something wrong happened while updating with api',
+                ]);
+            }
     }
 }

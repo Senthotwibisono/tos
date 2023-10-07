@@ -163,56 +163,14 @@
                         console.log(response);
                         if (response.success) {
                             Swal.fire('Saved!', '', 'success')
-                            $('#load_ini').load(window.location.href + ' #load_ini');
-                            $('#place_cont').load(window.location.href + ' #place_cont', function() {
-                                $(document).ready(function() {
-                                    let choices = document.querySelectorAll('.choices');
-                                        let initChoice;
-                                        for(let i=0; i<choices.length;i++) {
-                                          if (choices[i].classList.contains("multiple-remove")) {
-                                            initChoice = new Choices(choices[i],
-                                              {
-                                                delimiter: ',',
-                                                editItems: true,
-                                                maxItemCount: -1,
-                                                removeItemButton: true,
-                                              });
-                                          }else{
-                                            initChoice = new Choices(choices[i]);
-                                          }
-                                        }
-                                    $('.container').select2({
-                                        dropdownParent: '#success',
-                                    });
-                                    $(document).ready(function() {
-                                        $('#key').on('change', function() {
-                                            let id = $(this).val();
-                                            $.ajax({
-                                                type: 'POST',
-                                                url: '/gato-data_container',
-                                                data: {
-                                                    container_key: id
-                                                },
-                                                success: function(response) {
-
-                                                    $('#container_no').val(response.container_no);
-                                                    $('#job').val(response.job);
-                                                    $('#invoice').val(response.invoice);
-                                                },
-                                                error: function(data) {
-                                                    console.log('error:', data);
-                                                },
-                                            });
-                                        });
-                                    });
-                                    // $
-                                });
-
-                                $('#load_ini').load(window.location.href + ' #load_ini');
-                            });
+                            .then(() => {
+                            // Memuat ulang halaman setelah berhasil menyimpan data
+                            window.location.reload();
+                        });
                         } else {
                             Swal.fire('Error', response.message, 'error');
                         }
+                       
                     },
                     error: function(response) {
                     var errors = response.responseJSON.errors;

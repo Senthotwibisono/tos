@@ -54,7 +54,7 @@
             <div class="col-12">
               <div class="form-group">
                 <label>Order Service</label>
-                <select name="order_service" class="form-select" required id="basicSelect">
+                <select name="order_service" class="form-select" required id="orderService">
                   <option value="" default selected disabled>Pilih Salah Satu..</option>
                   <option value="lolofull">LOLO FULL KAPAL SANDAR ICON (2 Invoice)</option>
                   <option value="lolofull1inv">LOLO FULL KAPAL SANDAR ICON(1 Invoice)</option>
@@ -77,13 +77,24 @@
             </div>
             <div class="col-12">
               <div class="row">
-                <div class="col-6">
+                <div class="col-6" id="bookingInput">
                   <div class="form-group">
                     <label for="">Booking Number</label>
                     <select name="booking" id="booking" class="js-example-basic-multiple form-control" style="height: 150%;">
                       <option value="" disabled selected>Pilih Salah Satu</option>
                       <?php foreach ($booking as $data) { ?>
                         <option value="<?= $data->booking_no ?>" data-id="<?= $data->booking_no ?>"><?= $data->booking_no ?></option>
+                      <?php } ?>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-6" id="RoInput" style="display: none !important;">
+                  <div class="form-group">
+                    <label for="">RO Number</label>
+                    <select name="roNumber" id="roNumber" class="js-example-basic-multiple form-control" style="height: 150%;">
+                      <option value="" disabled selected>Pilih Salah Satu</option>
+                      <?php foreach ($ro as $data) { ?>
+                        <option value="<?= $data->roNumber ?>" data-id="<?= $data->roNumber ?>"><?= $data->roNumber ?></option>
                       <?php } ?>
                     </select>
                   </div>
@@ -153,7 +164,7 @@
             <div class="col-2">
               <div class="form-group">
                 <label>Departure Date</label>
-                <input required name="departure" id="departure" type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023" id="departure">
+                <input required name="departure" type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023" id="departure">
               </div>
             </div>
           </div>
@@ -221,7 +232,7 @@
           </div>
           <div class="row mt-5">
             <div class="col-12 text-right">
-              <a type="submit" onclick="beacukaiCheckValue();" class="btn btn-success">Submit</a>
+              <a type="submit" onclick="beacukaiCheckValueExport();" class="btn btn-success">Submit</a>
               <a type="button" onclick="canceladdCustomer();" class="btn btn-secondary">Cancel</a>
             </div>
           </div>

@@ -45,6 +45,9 @@ class LoginController extends Controller
             } elseif ($user->hasRole('cc')) {
                 return '/android-cc';
             }
+            elseif ($user->hasRole('BeaCukai')) {
+                return '/bea-cukai-sevice';
+            }
         }
 
         // Default fallback
@@ -73,6 +76,8 @@ class LoginController extends Controller
             return redirect('/android-yard');
         } elseif ($user->hasRole('cc')) {
             return redirect('/android-cc');
+        } elseif ($user->hasRole('BeaCukai')) {
+            return redirect('/bea-cukai-sevice');
         } else {
             return redirect('/invoice');
         }
