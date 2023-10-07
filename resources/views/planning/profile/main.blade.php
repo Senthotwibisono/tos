@@ -175,7 +175,7 @@
         $('#bayForm').on('submit', function(e) {
             e.preventDefault(); // Prevent the default form submission
 
-            // ... (Your form validation code)
+            // ... (Your form validation code) komat kamit
 
             // After a successful form submission, redirect to the grid view
             var selectedVesCode = $('#selectedVesCode').val();
