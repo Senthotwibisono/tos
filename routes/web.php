@@ -285,6 +285,10 @@ Route::prefix('delivery')->group(function () {
     Route::post('/storeForm', [BillingImportController::class, 'storeForm']);
     Route::post('/storeBilling', [BillingImportController::class, 'storeBilling']);
   });
+  Route::prefix('mastertarif')->group(function () {
+    Route::get('/', [BillingImportController::class, 'masterTarifIndex']);
+    Route::get('/detail', [BillingImportController::class, 'masterTarifDetail']);
+  });
   Route::prefix('ajx')->group(function () {
     Route::post('/singleInvoice', [BillingImportController::class, 'singleInvoice']);
     Route::post('/verifyPayment ', [BillingImportController::class, 'verifyPayment']);

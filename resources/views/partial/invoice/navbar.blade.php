@@ -78,7 +78,7 @@
               <a href="/delivery/extend" class="submenu-link">Delivery Form Extend</a>
             </li>
             <li class="submenu-item">
-              <a href="" class="submenu-link">Master Tarif</a>
+              <a href="/delivery/mastertarif" class="submenu-link">Master Tarif</a>
             </li>
           </ul>
         </div>
@@ -101,18 +101,18 @@
             <li class="submenu-item">
               <a href="" class="submenu-link">Master Tarif</a>
             </li>
-            <li class="submenu-item">
+            <!-- <li class="submenu-item">
               <a href="" class="submenu-link">Stuffing Dalam</a>
             </li>
             <li class="submenu-item">
               <a href="" class="submenu-link">Stuffing Luar</a>
-            </li>
+            </li> -->
           </ul>
         </div>
       </div>
     </li>
     <li class="menu-item">
-      <a href="" class="menu-link">
+      <a href="/invoice/customer" class="menu-link">
         <i class="fa-solid fa-user">
         </i>
         Customer

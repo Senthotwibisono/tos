@@ -519,4 +519,43 @@ class BillingImportController extends Controller
     $data["title"] = "Job Page | Icon Sarana";
     return view('billing.import.job', $data, compact('qrcodes'));
   }
+
+  public function masterTarifIndex()
+  {
+    $client = new Client();
+
+    $data = [];
+
+    // GET ALL MASTER TARIF
+    $url_mastertarif = getenv('API_URL') . '/delivery-service/mastertarif/all';
+    $req_mastertarif = $client->get($url_mastertarif);
+    $response_mastertarif = $req_mastertarif->getBody()->getContents();
+    $result_mastertarif = json_decode($response_mastertarif);
+    // dd($result_mastertarif);
+
+    $data["title"] = "Master Tarif Data Dashboard | Icon Sarana";
+    $data["mastertarif"] = $result_mastertarif->data;
+
+    return view('billing.import.mastertarif.index', $data);
+  }
+
+  public function masterTarifDetail(Request $request)
+  {
+    $client = new Client();
+    $id = $request->id;
+    // dd($id);
+    $data = [];
+
+    // GET SINGLE MASTER TARIF
+    $url_mastertarif = getenv('API_URL') . '/delivery-service/mastertarif/single/' . $id;
+    $req_mastertarif = $client->get($url_mastertarif);
+    $response_mastertarif = $req_mastertarif->getBody()->getContents();
+    $result_mastertarif = json_decode($response_mastertarif);
+    // dd($result_mastertarif);
+
+    $data["title"] = "Master Tarif Detail | Icon Sarana";
+    $data["mastertarif"] = $result_mastertarif->data;
+
+    return view('billing.import.mastertarif.detail', $data);
+  }
 }

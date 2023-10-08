@@ -9,29 +9,6 @@
 
 </div>
 <div class="page-content">
-  <!-- <section class="row">
-    <div class="col-12 text-center">
-      <div class="card">
-        <div class="card-header">
-          <h4 class="card-title">
-            Data Management
-          </h4>
-          <p>Pilihan Pembayaran untuk Delivery</p>
-        </div>
-        <div class="card-body">
-          <div class="row">
-            <div class="col-12">
-              <div class="btn-group mb-3" role="group" aria-label="Basic example">
-                <a href="/invoice/delivery" type="button" class="btn btn-success">
-                  Delivery Form
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section> -->
 
   <section class="row">
     <div class="col-12 mb-3">
