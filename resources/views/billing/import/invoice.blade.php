@@ -122,6 +122,8 @@
                   <strong>Order Service:</strong><br>
                   <?php if ($invoices->deliveryForm->orderService == "sp2iks") { ?>
                     SP2 Kapal Sandar Icon (MT Balik IKS / MKB)
+                  <?php } else if ($invoices->deliveryForm->orderService == "sp2mkb") { ?>
+                    SP2 Kapal Sandar Icon (MKB)
                   <?php } else if ($invoices->deliveryForm->orderService == "sp2pelindo") { ?>
                     SP2 Kapal Sandar icon (MT Balik Pelindo)
                   <?php } else if ($invoices->deliveryForm->orderService == "spps") { ?>
@@ -129,7 +131,7 @@
                   <?php } else if ($invoices->deliveryForm->orderService == "sppsrelokasipelindo") { ?>
                     SPPS (Relokasi Pelindo - ICON)
                   <?php } else if ($invoices->deliveryForm->orderService == "sp2icon") { ?>
-                    SP2 (MT Balik ICON / MKB)
+                    SP2 (Relokasi Pelindo - ICON)
                   <?php } ?>
                 </address>
               </div>
