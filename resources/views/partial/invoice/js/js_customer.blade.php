@@ -1194,7 +1194,7 @@
         let data = res.data;
         // console.log(data.length);
         data.forEach(value => {
-          if (value.ctr_intern_status == "03") {
+          if (value.ctr_intern_status == "03" || value.ctr_intern_status == "15") {
             selcont.push(value.container_no.trim());
             // console.log(value.container_no);
           }
