@@ -650,6 +650,7 @@ Route::get('/planning/ship_planning', [ShipPlanController::class, 'index']);
 Route::get('/planning/plan-ves-{ves_id}', [ShipPlanController::class, 'plan']);
 Route::get('/planning/grid', [GridController::class, 'index'])->name('grid-box.index');
 Route::get('/planning/grid/{ves_code}', [GridController::class, 'index'])->name('grid-box.index');
+Route::get('/planning/grids', [GridController::class, 'detail']);
 
 // Route for displaying the main profile page
 Route::get('/planning/profile-kapal', [ProfileKapal::class, 'index'])->name('profile-kapal.index');
@@ -657,6 +658,7 @@ Route::get('/planning/profile-kapal', [ProfileKapal::class, 'index'])->name('pro
 Route::get('/profile-kapal/select-kapal/{ves_name}/{ves_code}', [ProfileKapal::class, 'showSelectKapalModal'])->name('profile-kapal.show-select-kapal-modal');
 // Route for handling the form submission and storing data
 Route::post('profile-kapal/store/{ves_code}', [ProfileKapal::class, 'store'])->name('profile-kapal.store');
+Route::post('profile-kapal/stores', [ProfileKapal::class, 'stores']);
 
 
 
