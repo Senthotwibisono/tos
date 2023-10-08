@@ -75,9 +75,9 @@
                 <select class="choices form-select" id="key" name="container_key" required>
                   <option value="">Select Container</option>
                   <?php
-                  foreach ($jobContainers->container as $value) { ?>
-                    <?php if (($value->ctr_intern_status == "03"  || $value->ctr_intern_status == "04"|| $value->ctr_intern_status == "12") &&($value->orderService == "spps" || $value->orderService == "sp2iks")) { ?>
-                      <option value="<?= $value->container_key ?>"><?= $value->container_no ?></option>
+                  foreach ($jobContainers->containers as $value) { ?>
+                    <?php if (($value->jobContainer->ctr_intern_status == "03"  || $value->jobContainer->ctr_intern_status == "04"|| $value->jobContainer->ctr_intern_status == "12") &&($value->jobContainer->orderService == "spps" || $value->jobContainer->orderService == "sppsrelokasipelindo" || $value->jobContainer->orderService == "sp2iks")) { ?>
+                      <option value="<?= $value->jobContainer->container_key ?>"><?= $value->jobContainer->container_no ?></option>
                     <?php } ?>
                   <?php } ?>
                 </select>

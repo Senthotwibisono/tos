@@ -39,7 +39,7 @@ class EdiController extends Controller
     public function get_cont(Request $request)
     {
         $ves_id = $request->ves_id;
-        $cont = Item::where('ves_id', $ves_id)->where('ctr_intern_status', '=', '01')->get();
+        $cont = Item::where('ves_id', $ves_id)->where('ctr_intern_status', '=', '01')->whereNot('container_no', '')->get();
 
         if ($cont) {
             return response()->json([

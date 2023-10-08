@@ -23,8 +23,7 @@
 				<div class="accordion" id="accordionExample">
 					<div class="accordion-item">
 						<h2 class="accordion-header" id="headingOne">
-							<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Container
-								Detail</button>
+							<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Container Detail</button>
 						</h2>
 						<div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
 							<div class="accordion-body" id="lw_cont"></div>
@@ -83,51 +82,55 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-12 col-md-4">
-			<div class="card">
-				<div class="card-body py-4 px-4">
-					<div class="d-flex align-items-center">
-						<div class="name ms-3">
-							<h3 class="font-bold" id="lv_cont"></h3>
-							<h5 class="text-muted mb-0" id="lv_ves"></h5>
+		<div class="col-6 col-md-4">
+				<div class="card">
+					<div class="card-body py-4 px-4">
+						<div class="d-flex align-items-center">
+							<div class="name ms-3">
+								<h3 class="font-bold" id="lv_cont"></h3>
+								<h5 class="text-muted mb-0" id="lv_ves"></h5>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+	</div>
+	<div class="row">
+			
+			<div class="col-12">
+				<table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
+					<thead>
+						<tr>
+							<th></th>
+							<th>Container</th>
+							<th>Last Update</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach ($items as $item)
+						<tr>
+							<td>
+								<div class="d-flex align-items-center">
+									<a class="cont_no text-decoration-none" data-url="{{ route('reports.hist.get_cont') }}" data-param="id={{ $item->container_key }}" href="#?id={{ $item->container_key }}" id=""> <i class="bi bi-file-post-fill"></i>
+								</div>
+							</td>
+							<td>
+								{{$item->container_no}}
+							</td>
+							<td>
+								{{$item->update_at}}
+							</td>
+						</tr>
+						@endforeach
+					</tbody>
+				</table>
+			</div>
 	</div>
 </section>
-<table class="table table-hover table-striped table-sm smaller-table" id="tblcont">
-	<thead>
-		<tr>
-			<th>Container</th>
-			<th>Operation Name</th>
-			<th>Sts</th>
-		</tr>
-	</thead>
-	<tbody>
-		@forelse ($items as $item)
-		<tr>
-			<td>
-				<div class="d-flex align-items-center">
-					<a class="cont_no text-decoration-none" data-url="{{ route('reports.hist.get_cont') }}" data-param="id={{ $item->container_key }}" href="#?id={{ $item->container_key }}" id=""> <i class="bi bi-file-post-fill"></i>
-					</a> {{ $item->container_no }}
-				</div>
-			</td>
-			<td>{{ $item->operation_name }}</td>
-			<td>{{ $item->ctr_intern_status }}</td>
-		</tr>
-		@empty
-		<tr>
-			<td class="text-center text-mute" colspan="4">Data is not available</td>
-		</tr>
-		@endforelse
-	</tbody>
-</table>
+
+
 <!-- Add pagination links -->
-<div class="pagination">
-	{{ $items->links() }}
-</div>
+
 
 
 
@@ -145,6 +148,8 @@
 <script src="{{ asset('/vendor/datatables.net/dataTables.bootstrap5.min.js') }}"></script>
 {{--<script src="https://cdn.datatables.net/v/bs5/dt-1.12.1/datatables.min.js"></script>--}}
 <script src="{{ asset('dist/assets/js/pages/new/datatables.js') }}"></script>
+<script src="{{asset('dist/assets/extensions/simple-datatables/umd/simple-datatables.js')}}"></script>
+    <script src="{{asset('dist/assets/js/pages/simple-datatables.js')}}"></script>
 
 <script>
 	  $('[aria-label="&laquo; Previous"]').hide();

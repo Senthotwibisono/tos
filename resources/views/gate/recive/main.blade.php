@@ -70,9 +70,9 @@
                 <select class="choices form-select" id="key" name="container_key" required>
                   <option disabled selected value="">Select Container</option>
                   <?php
-                  foreach ($jobContainers as $value) { ?>
-                    <?php if ($value->ctr_intern_status == "49") { ?>
-                      <option data-id="<?= $value->id ?>" value="<?= $value->id ?>"><?= $value->container_no ?></option>
+                  foreach ($jobContainers->containers as $value) { ?>
+                    <?php if ($value->jobContainer->billingName == "OS") { ?>
+                      <option data-id="<?= $value->jobContainer->containerID ?>" value="<?= $value->jobContainer->containerID ?>"><?= $value->jobContainer->container_no ?></option>
                     <?php } ?>
                   <?php } ?>
                 </select>
@@ -139,6 +139,7 @@
               <div class="form-group">
                 <label for="first-name-vertical">Truck Number</label>
                 <input type="text" id="tayo" class="form-control" name="truck_no" required>
+                <input type="text" id="service" class="form-control" name="truck_no" readonly>
               </div>
             </div>
             
@@ -345,6 +346,7 @@
       'ves_name':$('#vessel').val(),
       'voy_no':$('#voy').val(),
       'user_id':$('#user').val(),
+      'order_service':$('#service').val(),
 
 
     }
@@ -511,6 +513,7 @@
             $('#ow').val(res.data.over_widht);
             $('#ol').val(res.data.over_length);
             $('#id').val(res.data.id);
+            $('#service').val(res.data.orderService);
       }
     })
   })

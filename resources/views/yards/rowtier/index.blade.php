@@ -90,4 +90,45 @@ $(function() {
 	});
 });
 </script>
+
+
+<script>
+ $(function() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+   
+
+    $(document).on('click', '.cont', function() {
+        let id = $(this).data('id');
+        $.ajax({
+            type: 'GET',
+            url: '/yard/viewCont-' + id,
+            cache: false,
+            data: {
+                container_key: id
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                $('#detailCont').modal('show');
+                $('#detailCont #contNo').val(response.data.container_no);
+                $('#detailCont #Ves').val(response.data.ves_name);
+                $('#detailCont #iso').val(response.data.iso_code);
+                $('#detailCont #size').val(response.data.ctr_size);
+                $('#detailCont #status').val(response.data.ctr_status);
+                $('#detailCont #type').val(response.data.ctr_type);
+                $('#detailCont #gross').val(response.data.gross);
+                $('#detailCont #commo').val(response.data.commodity_name);
+               
+            },
+            error: function(data) {
+                console.log('error:', data);
+            }
+        });
+    });
+});
+</script>
 @endsection

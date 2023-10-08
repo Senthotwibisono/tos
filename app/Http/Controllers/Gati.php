@@ -68,7 +68,7 @@ class Gati extends Controller
 
         $client = new Client();
         // GET ALL JOB_CONTAINER
-        $url_jobContainer = getenv('API_URL') . '/delivery-service/job/all';
+        $url_jobContainer = getenv('API_URL') . '/delivery-service/job/osds';
         $req_jobContainer = $client->get($url_jobContainer);
         $response_jobContainer = $req_jobContainer->getBody()->getContents();
         $result_jobContainer = json_decode($response_jobContainer);
@@ -214,6 +214,8 @@ class Gati extends Controller
             'job_no' => $request->job_no,
             'invoice_no' => $request->invoice_no,
             'order_service' => $request->order_service,
+            'no_dok' => $request->no_dok,
+            'jenis_dok' => $request->jenis_dok,
         ]);
         // var_dump($item);
         // die();
@@ -300,7 +302,7 @@ class Gati extends Controller
         
         $client = new Client();
         // GET ALL JOB_CONTAINER
-        $url_jobContainer = getenv('API_URL') . '/delivery-service/container/export/all';
+        $url_jobContainer = getenv('API_URL') . '/delivery-service/job/export/all';
         $req_jobContainer = $client->get($url_jobContainer);
         $response_jobContainer = $req_jobContainer->getBody()->getContents();
         $result_jobContainer = json_decode($response_jobContainer);
@@ -437,7 +439,7 @@ class Gati extends Controller
         $req = $client->get($url_vessel);
         $response_vessel = $req->getBody()->getContents();
         $result_vessel = json_decode($response_vessel);
-        // var_dump($response);
+        // var_dump($response_vessel, $id);
         // die();
         // dd($result);
         if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
@@ -495,6 +497,7 @@ class Gati extends Controller
             'user_id' => $request->user_id,
             'ctr_active_yn'=>'Y',
             'ctr_i_e_t'=>'E',
+            'order_service'=>$request->order_service,
         ]);
         // var_dump($item);
         // die();

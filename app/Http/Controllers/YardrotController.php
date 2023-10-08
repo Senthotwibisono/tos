@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\YardRot; // load model
+use App\Models\Item; // load model
 use Illuminate\Http\Request;
 
 class YardrotController extends Controller
@@ -51,6 +52,7 @@ class YardrotController extends Controller
                 'fr' => $lw_rowtier->load_port,
                 'to' => $lw_rowtier->disch_port,
                 'cnt' => $lw_rowtier->container_no,
+                'key' => $lw_rowtier->container_key,
                 'typ' => $lw_rowtier->iso_code,
                 'qty' => $lw_rowtier->gross,
                 'iso' => $lw_rowtier->gross_class
@@ -58,5 +60,24 @@ class YardrotController extends Controller
             $lt_xy[$lw_rowtier->yard_tier - 1][$lw_rowtier->yard_row - 1] = $disp;
         }
         return $lt_xy;
+    }
+
+    public function view_cont(Request $request)
+    {
+        $id = $request->container_key;
+        $view_cont = Item::where('container_key', $id)->first();
+
+        if ($view_cont) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Updated successfully!',
+                'data' => $view_cont,
+            ]);
+        }else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something Wrong!!',
+            ]);
+        }
     }
 }

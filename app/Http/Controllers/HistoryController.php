@@ -18,12 +18,7 @@ class HistoryController extends Controller
 
     function index(): View
     {
-        $items = HistoryContainer::select('container_key', 'container_no', 'operation_name', 'ctr_intern_status')
-            ->paginate(10); // Adjust the number based on your requirement
-
-            $paginator = new Paginator($items, 10); // Use the same pagination number here
-
-
+        $items = Item::whereNot('container_no', '=', '')->get();
         return view('reports.hist.index', compact('items'));
     }
 

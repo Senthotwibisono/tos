@@ -71,9 +71,9 @@
                 <select class="choices form-select" id="key" name="container_key" required>
                   <option disabled selected value="">Select Container</option>
                   <?php
-                  foreach ($jobContainers->container as $value) { ?>
-                    <?php if ($value->ctr_intern_status == "03") { ?>
-                      <option value="<?= $value->container_key ?>"><?= $value->container_no ?></option>
+                  foreach ($jobContainers->containers as $value) { ?>
+                    <?php if (($value->jobContainer->ctr_intern_status == "03") &&($value->jobContainer->billingName == "DS")) { ?>
+                      <option value="<?= $value->jobContainer->container_key ?>"><?= $value->jobContainer->container_no ?></option>
                     <?php } ?>
                   <?php } ?>
                 </select>
@@ -94,6 +94,18 @@
                       <label for="first-name-vertical">Order Service</label>
                       <input type="text" id="orderservice" class="form-control"  readonly>
                       <input type="text" id="orderserviceCode" class="form-control"  readonly>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                      <label for="first-name-vertical">Dok</label>
+                      <input type="text" id="dok" class="form-control"  readonly>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                      <label for="first-name-vertical">Jenis Dok</label>
+                      <input type="text" id="jenisDok" class="form-control"  readonly>
                     </div>
                 </div>
               </div>
@@ -197,6 +209,8 @@
       'order_service': $('#orderserviceCode').val(),
       'invoice_no': $('#invoice').val(),
       'job_no': $('#job').val(),
+      'jno_dok': $('#dok').val(),
+      'jenis_dok': $('#jenisDok').val(),
 
 
     }
@@ -281,24 +295,30 @@
           },
           success: function(response) {
             let res = JSON.parse(response);
+            let job = res.data.containers[0].findContainer;
+            let delivery = res.data.containers[0].deliveryForm;
             // console.log(res);
-            $('#container_no').val(res.data.jobData.container_no);
-            $('#job').val(res.data.jobData.jobNumber);
-            $('#invoice').val(res.data.jobData.invoiceNumber);
-            $('#orderserviceCode').val(res.data.jobData.orderService);
-            $('#orderservice').val(res.data.jobData.orderService);
+            $('#container_no').val(job.container_no);
+            $('#job').val(job.jobNumber);
+            $('#invoice').val(job.invoiceNumber);
+            $('#orderserviceCode').val(job.orderService);
+            $('#orderservice').val(job.orderService);
               
-              if (res.data.jobData.orderService === "sp2iks") {
-                $('#orderservice').val("SP2 Kapal Sandar Icon (MT Balik IKS / MKB)");
-              } else if (res.data.jobData.orderService === "sp2pelindo") {
+              if (job.orderService === "sp2iks") {
+                $('#orderservice').val("SP2 Kapal Sandar Icon (MT Balik IKS)");
+              } else if (job.orderService === "sp2mkb") {
+                $('#orderservice').val("SP2 Kapal Sandar icon (MKB)");
+              }else if (job.orderService === "sp2pelindo") {
                 $('#orderservice').val("SP2 Kapal Sandar Icon (MT Balik Pelindo)");
-              } else if (res.data.jobData.orderService === "spps") {
+              } else if (job.orderService === "spps") {
                 $('#orderservice').val("SPPS");
-              } else if (res.data.jobData.orderService === "sppsrelokasipelindo") {
+              } else if (job.orderService === "sppsrelokasipelindo") {
                 $('#orderservice').val("SPPS (Relokasi Pelindo - ICON)");
-              } else if (res.data.jobData.orderService === "sp2icon") {
-                $('#orderservice').val("SP2 (MT Balik ICON / MKB)");
+              } else if (job.orderService === "sp2icon") {
+                $('#orderservice').val("SP2 (Relokasi Pelindo - Icon)");
               }
+            $('#dok').val(delivery.documentNumber);
+            $('#jenisDok').val(delivery.documentType);
           },
           error: function(data) {
             console.log('error:', data);
