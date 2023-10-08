@@ -48,6 +48,20 @@
                 <!-- <textarea class="form-control" id="address" name="address" cols="10" rows="4"></textarea> -->
               </div>
             </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label>Order Service</label>
+                <select name="order_service" class="form-select" required id="basicSelect">
+                  <option value="" default selected disabled>Pilih Salah Satu..</option>
+                  <option value="sp2iks">SP2 Kapal Sandar icon (MT Balik IKS)</option>
+                  <option value="sp2mkb">SP2 Kapal Sandar icon (MKB)</option>
+                  <option value="sp2pelindo">SP2 Kapal Sandar icon (MT Balik Pelindo)</option>
+                  <option value="spps">SPPS</option>
+                  <option value="sppsrelokasipelindo">SPPS (Relokasi Pelindo - ICON)</option>
+                  <option value="sp2icon">SP2 (Relokasi Pelindo - ICON)</option>
+                </select>
+              </div>
+            </div>
           </div>
           <div class="row mt-5">
             <div class="col-12">
@@ -105,6 +119,7 @@
                   </select>
                 </div>
               </div>
+
             <?php } ?>
             <div class="col-12 col-md-4">
               <div class="form-group">
@@ -118,19 +133,7 @@
                 <input name="boln" id="boln" required readonly type="text" class="form-control" placeholder="Bill Of Loading Number">
               </div>
             </div>
-            <div class="col-12">
-              <div class="form-group">
-                <label>Order Service</label>
-                <select name="order_service" class="form-select" required id="basicSelect">
-                  <option value="" default selected disabled>Pilih Salah Satu..</option>
-                  <option value="sp2iks">SP2 Kapal Sandar icon (MT Balik IKS / MKB)</option>
-                  <option value="sp2pelindo">SP2 Kapal Sandar icon (MT Balik Pelindo)</option>
-                  <option value="spps">SPPS</option>
-                  <option value="sppsrelokasipelindo">SPPS (Relokasi Pelindo - ICON)</option>
-                  <option value="sp2icon">SP2 (MT Balik ICON / MKB)</option>
-                </select>
-              </div>
-            </div>
+
           </div>
           <div class="row mt-5">
             <div class="col-12">

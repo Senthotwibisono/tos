@@ -156,24 +156,24 @@
 	  $('svg[fill="currentColor"][viewBox="0 0 20 20"]').hide();
 // 	  var divToHide = $('div.hidden.sm\\:flex-1.sm\\:flex.sm\\:items-center.sm\\:justify-between');
 // divToHide.hide();
-// $(document).ready(function() {
-//     var dataTable = $('#tblcont').DataTable({
-//         pagingType: 'full_numbers',
-//         lengthMenu: [10, 25, 50, 100],
-//         language: {
-//             search: '_INPUT_',
-//             searchPlaceholder: 'Search...'
-//         }
-//     });
+$(document).ready(function() {
+    var dataTable = $('#tblcont2').DataTable({
+        pagingType: 'full_numbers',
+        lengthMenu: [10, 25, 50, 100],
+        language: {
+            search: '_INPUT_',
+            searchPlaceholder: 'Search...'
+        }
+    });
 
-//     $('#search').on('keyup', function() {
-//         var searchValue = this.value;
+    $('#search').on('keyup', function() {
+        var searchValue = this.value;
 
         
-//         dataTable.ajax.url(searchContHistUrl + '?search[value]=' + searchValue).load();
-//         dataTable.ajax.url(searchContJobUrl + '?search[value]=' + searchValue).load();
-//     });
-// });
+        dataTable.ajax.url(searchContHistUrl + '?search[value]=' + searchValue).load();
+        dataTable.ajax.url(searchContJobUrl + '?search[value]=' + searchValue).load();
+    });
+});
 
 </script>
 @endsection

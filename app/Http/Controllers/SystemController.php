@@ -37,22 +37,30 @@ class SystemController extends Controller
 
     public function rolestore(Request $request)
     {
-        // dd("masuk");
-        // validasi form input
+        // Validate form input
         $validatedData = $request->validate([
             'name' => 'required|min:2',
         ]);
 
-        // simpan data ke database
+        // Check if the role already exists
+        $existingRole = Role::where('name', $request->name)->first();
+
+        if ($existingRole) {
+            return redirect('/system/role')->with('error', 'Role already exists!');
+        }
+
+        // If the role doesn't exist, create and save it
         Role::create([
             'name' => $request->name,
             'guard_name' => $request->web,
         ]);
-        // redirect ke halaman sukses
+
+        // Redirect to the role view page with a success message
         return redirect('/system/role')->with('success', 'Data berhasil disimpan!');
     }
 
-    public function edit_role($id){
+    public function edit_role($id)
+    {
         $title = 'Edit Role';
         $roles = Role::where('id', $id)->first();
         // dd($role);
@@ -97,11 +105,12 @@ class SystemController extends Controller
         return redirect('/system/user');
     }
 
-    public function edit_user($id){
+    public function edit_user($id)
+    {
         $title = 'Edit User';
         $users = User::where('id', $id)->first();
         $roles = Role::all();
-        return view('system.user.edit', compact('users','roles', 'title'));
+        return view('system.user.edit', compact('users', 'roles', 'title'));
     }
 
     public function update_user(Request $request, $id)

@@ -1194,7 +1194,7 @@
         let data = res.data;
         // console.log(data.length);
         data.forEach(value => {
-          if (value.ctr_intern_status == "03") {
+          if (value.ctr_intern_status == "03" || value.ctr_intern_status == "15") {
             selcont.push(value.container_no.trim());
             // console.log(value.container_no);
           }
@@ -1262,6 +1262,19 @@
                 if (cont.length <= selcont.length && checkIfAllInArray(cont, selcont)) {
                   // console.log("All values in cont are present in selcont.");
                   checking = true;
+                  $("#containerSelectorView")[0].selectedIndex = -1;
+                  $("#containerSelectorView").val([]).trigger('change');
+                  let ctr = 0;
+
+                  containers.forEach((container) => {
+
+                    ctr++;
+                    $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+                    $("#containerSelectorView").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+
+                  });
+                  $("#selector").css("display", "none");
+                  $("#selectorView").css("display", "grid");
                 } else {
                   // console.log("Not all values in cont are present in selcont.");
                   checking = false;
@@ -1402,6 +1415,39 @@
       contentType: false,
       processData: false,
       data: formData,
+      xhr: function() {
+        var xhr = $.ajaxSettings.xhr();
+        xhr.upload.onprogress = function(e) {
+          // Swal.fire({
+          //   html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
+          //   showConfirmButton: false,
+
+          // });
+          let timerInterval
+          Swal.fire({
+            title: 'Processing',
+            // html: 'I will close in <b></b> milliseconds.',
+            timer: 10000,
+            timerProgressBar: true,
+            didOpen: () => {
+              Swal.showLoading()
+              const b = Swal.getHtmlContainer().querySelector('b')
+              timerInterval = setInterval(() => {
+                b.textContent = Swal.getTimerLeft()
+              }, 100)
+            },
+            willClose: () => {
+              clearInterval(timerInterval)
+            }
+          }).then((result) => {
+            /* Read more about handling dismissals below */
+            if (result.dismiss === Swal.DismissReason.timer) {
+              console.log('I was closed by the timer')
+            }
+          })
+        }
+        return xhr;
+      },
       success: function(response) {
         containerSelect.innerHTML = ''; // Clear previous options
         const responseData = JSON.parse(response);
@@ -1497,22 +1543,42 @@
                   let res = JSON.parse(response)
                   // console.log(res.data);
                   value = res.data;
+                  $("#containerSelectorView")[0].selectedIndex = -1;
+                  $("#containerSelectorView").val([]).trigger('change');
                   value.forEach((container) => {
                     console.log(container);
                     $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+                    $("#containerSelectorView").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+
                   });
+                  $("#selector").css("display", "none");
+                  $("#selectorView").css("display", "grid");
                 }
               });
-              $("#do_exp_date").val(containers[0].do_expired).attr("readonly", "true");
-              $("#boln").val(containers[0].bl_no).attr("readonly", "true");
+              // $("#do_exp_date").val(containers[0].do_expired).attr("readonly", "true");
+              // $("#boln").val(containers[0].bl_no).attr("readonly", "true");
             }
           }
         } else {
           console.error('Invalid response format:', response);
         }
       },
-      error(err) {
-        console.log(err);
+      error: function(error) {
+        setTimeout(function() {
+          let res = JSON.parse(response);
+          // console.log(res);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops !',
+            text: 'Something occured Happened, Please try again later',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              location.reload();
+            } else {
+              location.reload();
+            }
+          })
+        }, 700);
       }
     });
   }
@@ -1581,12 +1647,14 @@
           const containers = responseData.data;
           // $("#do_exp_date").val(formattedDate(containers.do_expired)).attr("readonly", "true");
           // $("#boln").val(containers.bl_no).attr("readonly", "true");
-          $("#containerSelector")[0].selectedIndex = -1;
+          $("#containerSelectorView")[0].selectedIndex = -1;
+          $("#containerSelectorView").val([]).trigger('change');
           containers.forEach((container) => {
 
             ctr++;
             $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
             $("#containerSelectorView").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+
           });
           $("#selector").css("display", "none");
           $("#selectorView").css("display", "grid");
@@ -1991,6 +2059,8 @@
           // $("#do_exp_date").val(formattedDate(containers.do_expired)).attr("readonly", "true");
           // $("#boln").val(containers.bl_no).attr("readonly", "true");
           $("#containerSelector")[0].selectedIndex = -1;
+          $("#containerSelectorView")[0].selectedIndex = -1;
+          $("#containerSelectorView").val([]).trigger('change');
           // if (containers[0].isChoosen === "1" && containers[0].ctr_intern_status !== "04") {
           if (containers[0].isChoosen === "1") {
             Swal.fire({
@@ -2762,12 +2832,16 @@
 
   function beacukaiCheckValueExport() {
     let check = $("#beacukaiChecking").val();
+    let expDate = $("#departure").val();
+    let orderService = $("#orderService").val();
     // let doCheck = $("#do_exp_date").val();
     let ctr = $("#ctr").val();
 
+    // console.log(check, expDate, orderService, ctr);
+
 
     if (check == "true") {
-      if (!ctr) {
+      if (!ctr || !expDate || !orderService) {
         event.preventDefault(); // Prevent form submission
         // alert("Please enter a date."); // Display an alert or use another method to notify the user
         Swal.fire({
@@ -2807,4 +2881,23 @@
     // console.log(formattedDate); // Output: "2023-07-24"
     return formattedDate;
   };
+</script>
+
+<script>
+  $('#orderService').on('change', function() {
+    var orderService = $(this).val();
+
+    if (orderService == "ernahandling2inv" || orderService == "ernahandlingluar" || orderService == "sppsdry" || orderService == "jpbicon" || orderService == "jpbluar") {
+      $("#RoInput").css('display', 'block');
+      $("#bookingInput").css('display', 'none');
+      $("#roNumber").select2("destroy");
+      $("#roNumber").select2();
+    } else {
+      $("#RoInput").css('display', 'none');
+      $("#bookingInput").css('display', 'block');
+      $("#booking").select2("destroy");
+      $("#booking").select2();
+
+    }
+  });
 </script>

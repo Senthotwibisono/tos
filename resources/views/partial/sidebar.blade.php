@@ -40,6 +40,10 @@
             <li class="submenu-item @if(Request::is('planning/ship_planning')) active @endif">
                 <a href="/planning/ship_planning">Ship Planning</a>
             </li>
+            </li>
+            <li class="submenu-item @if(Request::is('planning/profile-kapal')) active @endif">
+                <a href="/planning/profile-kapal">Ship Profile</a>
+            </li>
             <hr>
             <li class="submenu-item @if(Request::is('planning/report')) active @endif">
                 <a href="/planning/report">Discharge List</a>
