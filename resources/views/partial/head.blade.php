@@ -5,7 +5,7 @@
 @if (isset($title))
 <title>{{ $title }}</title>
 @endif
-
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <link rel="stylesheet" href="{{asset('dist/assets/css/main/app.css')}}">
 <link rel="stylesheet" href="{{asset('dist/assets/css/main/app-dark.css')}}">
 <link rel="shortcut icon" href="{{asset('logo/icon.png')}}" type="image/x-icon">
@@ -20,6 +20,7 @@
 <link rel="stylesheet" href="{{asset('dist/assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css')}}">
 <link rel="stylesheet" href="{{asset('dist/assets/extensions/choices.js/public/assets/styles/choices.css')}}">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
 
 <style>
   .select2-container--default .select2-selection--single {
