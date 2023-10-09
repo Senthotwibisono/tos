@@ -63,7 +63,7 @@ class DischargeController extends Controller
     $alat = MasterAlat::where('category', '=', 'Bay')->get();
     return view('disch.main', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'vessel_voyage', 'alat'), $data);
   }
-  
+
   //android
   public function android()
   {
@@ -104,20 +104,22 @@ class DischargeController extends Controller
     $data["subactive"] = "confirm";
     $currentDateTime = Carbon::now();
     $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
-    $vessel_voyage = VVoyage::whereDate('deparature_date', '>=', now())->orderBy('arrival_date', 'desc')->get();
-    return view('disch.android', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'vessel_voyage'), $data);
+    $vessel_voyage = VVoyage::whereDate('deparature_date', '>=', now())->orderBy('deparature_date', 'desc')->get();
+
+    $alat = MasterAlat::where('category', '=', 'Bay')->get();
+    return view('disch.android', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'vessel_voyage', 'alat'), $data);
   }
 
   public function get_cont(request $request)
   {
     $ves_id = $request->ves_id;
     $container_key = Item::where('ves_id', $ves_id)->whereIn('ctr_intern_status', ['01'])->get();
-    
+
     $option = [];
 
     if ($container_key->isEmpty()) {
-        // Return empty response when no containers are found
-        return response()->json($option);
+      // Return empty response when no containers are found
+      return response()->json($option);
     }
     foreach ($container_key as $kode) {
       // echo "<option value='$kode->container_key'>$kode->container_no</option>";
@@ -180,7 +182,7 @@ class DischargeController extends Controller
     $container_key = $request->container_key;
     $item = Item::where('container_key', $container_key)->first();
     $id_alat = $request->cc_tt_no;
-    $alat = MasterAlat::where('id', $id_alat )->first();
+    $alat = MasterAlat::where('id', $id_alat)->first();
     $request->validate([
       'container_no' => 'required',
       'cc_tt_no' => 'required | max : 7',
@@ -227,13 +229,13 @@ class DischargeController extends Controller
         'bay_tier' => $request->bay_tier,
         'gross' => $request->gross,
         'iso_code' => $request->iso_code,
-        'ctr_active_yn'=>'Y',
+        'ctr_active_yn' => 'Y',
       ]);
-  
-     
-  
+
+
+
       $client = new Client();
-  
+
       $fields = [
         "container_key" => $request->container_key,
         "ctr_intern_status" => "02",
@@ -257,7 +259,7 @@ class DischargeController extends Controller
         "iso_code" => $request->iso_code,
       ];
       // dd($fields, $item->getAttributes());
-  
+
       $url = getenv('API_URL') . '/delivery-service/container/create';
       $req = $client->post(
         $url,
@@ -269,8 +271,8 @@ class DischargeController extends Controller
       $result = json_decode($response);
       // dd($result);
       if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-       
-  
+
+
         return response()->json([
           'success' => true,
           'message' => 'updated successfully!',
@@ -283,6 +285,5 @@ class DischargeController extends Controller
         ]);
       };
     }
-    
   }
 }
