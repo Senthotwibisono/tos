@@ -53,7 +53,7 @@ class Stripping extends Controller
                 'container_key' => $tem->container_key
             ];
         }
-        $containerKeys = Item::where('ctr_intern_status', '=', [03,04])
+        $containerKeys = Item::where('ctr_intern_status', '=', [03, 04])
             ->whereHas('job', function ($query) {
                 $query->where('order_service_code', 'SPPS');
             })
@@ -122,7 +122,7 @@ class Stripping extends Controller
                 'container_key' => $tem->container_key
             ];
         }
-        $containerKeys = Item::where('ctr_intern_status', '=', [03,04])
+        $containerKeys = Item::where('ctr_intern_status', '=', [03, 04])
             ->whereHas('job', function ($query) {
                 $query->where('order_service_code', 'SPPS');
             })
@@ -144,7 +144,7 @@ class Stripping extends Controller
         // GET ALL JOB_CONTAINER
 
         $client = new Client();
-        $url_jobContainer = getenv('API_URL') . '/delivery-service/job/all';
+        $url_jobContainer = getenv('API_URL') . '/delivery-service/job/osds';
         $req_jobContainer = $client->get($url_jobContainer);
         $response_jobContainer = $req_jobContainer->getBody()->getContents();
         $result_jobContainer = json_decode($response_jobContainer);
@@ -152,7 +152,9 @@ class Stripping extends Controller
         // dd($containerKeys);
 
         $data["jobContainers"] = $result_jobContainer->data;
-        return view('stripping.android', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'),$data);
+
+        $alat = MasterAlat::where('category', '=', 'Yard')->get();
+        return view('stripping.android', $data, compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys', 'alat'));
     }
 
     public function get_stripping(Request $request)
@@ -199,7 +201,7 @@ class Stripping extends Controller
             'yard_slot'  => 'required',
             'yard_row'  => 'required',
             'yard_tier' => 'required',
-            
+
 
         ], [
             'container_no.required' => 'Container Number is required.',
@@ -218,7 +220,7 @@ class Stripping extends Controller
 
         if (is_null($yard_rowtier->container_key)) {
             $id_alat = $request->id_alat;
-            $alat = MasterAlat::where('id', $id_alat )->first();
+            $alat = MasterAlat::where('id', $id_alat)->first();
 
             $item->update([
                 'yard_block' => $request->yard_block,
@@ -227,12 +229,12 @@ class Stripping extends Controller
                 'yard_tier' => $request->yard_tier,
                 'ctr_intern_status' => '04',
                 'wharf_yard_oa' => $request->wharf_yard_oa,
-                'gross'=>null,
-                'gross_class'=>null,
-                'commodity_code'=>null,
-                'commodity_name'=>null,
-                'agent'=>null,
-                'ctr_status'=>'MTY',
+                'gross' => null,
+                'gross_class' => null,
+                'commodity_code' => null,
+                'commodity_name' => null,
+                'agent' => null,
+                'ctr_status' => 'MTY',
             ]);
 
             $act_alat = ActAlat::create([
@@ -242,7 +244,7 @@ class Stripping extends Controller
                 'container_key' => $request->container_key,
                 'container_no' => $request->container_no,
                 'activity' => 'STR',
-              ]);
+            ]);
 
             $client = new Client();
 
@@ -255,9 +257,9 @@ class Stripping extends Controller
                 "ctr_intern_status" => "04",
                 "ctr_type" => "DRY",
                 "ctr_size" => "20",
-                'gross'=>null,
-                'commoditor'=>null,
-                'isChoosen' =>"0",
+                'gross' => null,
+                'commoditor' => null,
+                'isChoosen' => "0",
             ];
             // dd($fields, $item->getAttributes());
 
