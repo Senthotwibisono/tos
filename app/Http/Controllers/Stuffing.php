@@ -199,6 +199,7 @@ class Stuffing extends Controller
             'yard_row'  => 'required',
             'yard_tier' => 'required',
             'truck_no' => 'required',
+            'id_alat' => 'required',
 
         ], [
             'container_no.required' => 'Container Number is required.',
@@ -287,7 +288,7 @@ class Stuffing extends Controller
                     ];
                     // dd($fields, $item->getAttributes());
                 
-                    $url = getenv('API_URL') . '/delivery-service/container/confirmPlacement';
+                    $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
                     $req = $client->post(
                         $url,
                         [
@@ -567,6 +568,7 @@ class Stuffing extends Controller
             'yard_row'  => 'required',
             'yard_tier' => 'required',
             'truck_no' => 'required',
+            'id_alat' => 'required',
 
         ], [
             'container_key.required' => 'Container Number is required.',
@@ -621,13 +623,48 @@ class Stuffing extends Controller
                         'activity' => 'STFG-OUT-FULL',
                       ]);
                     
-                    return response()->json([
-                        'success' => true,
-                        'message' => 'Updated successfully!',
-                        'item' => $item,
-                    ]);
-               
-            
+                      $client = new Client();
+
+                      $fields = [
+                          "container_key" => $request->container_key,
+                          "ctr_intern_status" => "53",
+                          'yard_block' => $request->yard_block,
+                          'yard_slot' => $request->yard_slot,
+                          'yard_row' => $request->yard_row,
+                          'yard_tier' => $request->yard_tier,
+                          'roNumber' => $request->ro_no,
+                          'ves_id'=> $request->ves_id,
+                          'ves_name' => $request->ves_name,
+                          'ves_code' => $request->ves_code,
+                          'voy_no' => $request->voy_no,
+                      ];
+                      // dd($fields, $item->getAttributes());
+                  
+                      $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
+                      $req = $client->post(
+                          $url,
+                          [
+                              "json" => $fields
+                          ]
+                      );
+                      $response = $req->getBody()->getContents();
+                      $result = json_decode($response);
+                  
+                      if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+                      
+                          return response()->json([
+                              'success' => true,
+                              'message' => 'Updated successfully!',
+                              'item' => $item,
+                          ]);
+                      
+                      
+                      } else {
+                          return response()->json([
+                              'success' => false,
+                              'message' => 'Something wrong happened while updating with api',
+                          ]);
+                      }
         } else {
             return response()->json([
                 'success' => false,

@@ -45,7 +45,7 @@
                         :
                     </div>
                     <div class="col-6">
-                        <input type="text" class="form-control" id="truck">
+                        <input type="text" class="form-control" id="truck" required>
                     </div>
                 </div>
                 <br>
@@ -59,15 +59,53 @@
                     <div class="col-6">
                         <select class="choices form-control" name="container_key" id="container">
                             <option value="" disabled values selected>Selecet Container</option>
-                            @foreach($item as $itm)
-                            <option value="{{$itm->container_key}}">{{$itm->container_no}}</option>
-                            @endforeach
+                                <?php
+                                 foreach ($jobContainers->containers as $value) { ?>
+                                   <?php if (($value->jobContainer->ctr_intern_status == "11") || ($value->jobContainer->ctr_intern_status == "15" && $value->jobContainer->billingName == "DS" )) { ?>
+                                     <option value="<?= $value->jobContainer->container_key ?>"><?= $value->jobContainer->container_no ?></option>
+                                   <?php } ?>
+                                 <?php } ?>
                            
                         </select>
                         
                     </div>
                 </div>
                 <br>
+                <div class="row">
+                    <div class="col-4">
+                        <h6 >Invoice</h6>
+                    </div>
+                    <div class="col-1">
+                        :
+                    </div>
+                    <div class="col-3">
+                        <label for="">Invoice No</label>
+                        <input type="text" class="form-control" id="invoice">
+                    </div>
+                    <div class="col-3">
+                        <label for="">Job No</label>
+                        <input type="text" class="form-control" id="job">
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-4">
+                        <h6 >Dokumen BC</h6>
+                    </div>
+                    <div class="col-1">
+                        :
+                    </div>
+                    <div class="col-3">
+                        <label for="">Order Service</label>
+                        <input type="text" class="form-control" id="orderservice" required>
+                        <input type="hidden" class="form-control" id="orderserviceCode">
+                    </div>
+                    <div class="col-3">
+                        <label for="">Dok BC</label>
+                        <input type="text" class="form-control" id="dok">
+                        <input type="hidden" class="form-control" id="jenisDok">
+                    </div>
+                </div>
         </div>
         <div class="card-footer">
             <div class="d-flex justify-content-end">
@@ -126,6 +164,12 @@
         var container_key = $('#container').val();
         var data = {
             'container_key': $('#container').val(),
+            'order_service': $('#orderserviceCode').val(),
+            'job_no': $('#job').val(),
+            'invoice_no': $('#invoice').val(),
+            'jenis_dok': $('#dok').val(),
+            'no_dok': $('#jenisDok').val(),
+            'truck_no': $('#truck').val(),
             
             
             
@@ -194,5 +238,56 @@
         })
 
     });
+</script>
+
+<script>
+    $(function() {
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+    $(document).ready(function() {
+      $('#container').on('change', function() {
+        let id = $(this).val();
+        $.ajax({
+          type: 'POST',
+          url: '/relokasi-data_container',
+          data: {
+            container_key: id
+          },
+          success: function(response) {
+            let res = JSON.parse(response);
+            let job = res.data.containers[0].findContainer;
+            let delivery = res.data.containers[0].deliveryForm;
+            // console.log(res);
+            $('#job').val(job.jobNumber);
+            $('#invoice').val(job.invoiceNumber);
+            $('#orderserviceCode').val(job.orderService);
+            $('#orderservice').val(job.orderService);
+              
+              if (job.orderService === "sp2iks") {
+                $('#orderservice').val("SP2 Kapal Sandar Icon (MT Balik IKS)");
+              } else if (job.orderService === "sp2mkb") {
+                $('#orderservice').val("SP2 Kapal Sandar icon (MKB)");
+              }else if (job.orderService === "sp2pelindo") {
+                $('#orderservice').val("SP2 Kapal Sandar Icon (MT Balik Pelindo)");
+              } else if (job.orderService === "spps") {
+                $('#orderservice').val("SPPS");
+              } else if (job.orderService === "sppsrelokasipelindo") {
+                $('#orderservice').val("SPPS (Relokasi Pelindo - ICON)");
+              } else if (job.orderService === "sp2icon") {
+                $('#orderservice').val("SP2 (Relokasi Pelindo - Icon)");
+              }
+            $('#dok').val(delivery.documentNumber);
+            $('#jenisDok').val(delivery.documentType);
+          },
+          error: function(data) {
+            console.log('error:', data);
+          },
+        });
+      });
+    });
+});
 </script>
 @endsection

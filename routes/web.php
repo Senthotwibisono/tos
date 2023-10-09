@@ -288,6 +288,10 @@ Route::prefix('delivery')->group(function () {
     Route::post('/storeForm', [BillingImportController::class, 'storeForm']);
     Route::post('/storeBilling', [BillingImportController::class, 'storeBilling']);
   });
+  Route::prefix('mastertarif')->group(function () {
+    Route::get('/', [BillingImportController::class, 'masterTarifIndex']);
+    Route::get('/detail', [BillingImportController::class, 'masterTarifDetail']);
+  });
   Route::prefix('ajx')->group(function () {
     Route::post('/singleInvoice', [BillingImportController::class, 'singleInvoice']);
     Route::post('/verifyPayment ', [BillingImportController::class, 'verifyPayment']);
@@ -747,8 +751,14 @@ Route::post('/release-cont-p2', [BCGatterController::class, 'release_p2']);
 Route::get('/delivery/balik-relokasi', [GateRelokasiController::class, 'index']);
 Route::post('/gate-relokasi', [GateRelokasiController::class, 'permit']);
 Route::get('/delivery/balik-relokasi-android', [GateRelokasiController::class, 'android']);
+Route::post('/relokasi-data_container', [GateRelokasiController::class, 'data_container']);
+
 // Trucking
 Route::get('/yard/trucking', [TruckingController::class, 'index']);
 Route::get('/yard/trucking-android', [TruckingController::class, 'android']);
 Route::post('/trucking-get-truck', [TruckingController::class, 'get_truck']);
 Route::post('/trucking', [TruckingController::class, 'trucking']);
+
+
+// detail-cont Yard Row
+Route::get('/yard/viewCont-{container_key}', [YardrotController::class, 'view_cont']);

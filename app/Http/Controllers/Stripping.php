@@ -75,7 +75,7 @@ class Stripping extends Controller
         // GET ALL JOB_CONTAINER
 
         $client = new Client();
-        $url_jobContainer = getenv('API_URL') . '/delivery-service/job/all';
+        $url_jobContainer = getenv('API_URL') . '/delivery-service/job/osds';
         $req_jobContainer = $client->get($url_jobContainer);
         $response_jobContainer = $req_jobContainer->getBody()->getContents();
         $result_jobContainer = json_decode($response_jobContainer);
@@ -176,7 +176,7 @@ class Stripping extends Controller
         );
         $response = $req->getBody()->getContents();
         $result = json_decode($response);
-        $invoice = $result->data->jobData->invoiceNumber;
+        $invoice = $result->data->containers[0]->findContainer->invoiceNumber;
         // var_dump($response);
         // die();
         // dd($result);
