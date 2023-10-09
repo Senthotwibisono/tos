@@ -21,9 +21,17 @@ class GateRelokasiController extends Controller
     public function index()
     {
         $title = 'Gate Rlokasi';
-        $item = Item::whereIn('order_service', ['sp2iks', 'sp2icon', 'sppsrelokasipelindo'])->whereIn('ctr_intern_status',  ['11', '15'] )->get();
-        $item_confirmed = Item::whereiN('ctr_intern_status',  ['12','13'] )->get();
+        $item = Item::whereIn('order_service', ['sp2iks', 'sp2icon', 'sppsrelokasipelindo'])->whereIn('ctr_intern_status',  ['11', '15'])->get();
+        $item_confirmed = Item::whereiN('ctr_intern_status',  ['12', '13'])->get();
         return view('gate.relokasi.main', compact('item', 'title', 'item_confirmed'));
+    }
+
+    public function android()
+    {
+        $title = 'Gate Rlokasi';
+        $item = Item::whereIn('order_service', ['sp2iks', 'sp2icon', 'sppsrelokasipelindo'])->whereIn('ctr_intern_status',  ['11', '15'])->get();
+        $item_confirmed = Item::whereiN('ctr_intern_status',  ['12', '13'])->get();
+        return view('gate.relokasi.android', compact('item', 'title', 'item_confirmed'));
     }
 
     public function permit(Request $request)
@@ -39,7 +47,7 @@ class GateRelokasiController extends Controller
                     'ctr_active_yn' => 'Y',
                 ]);
                 $client = new Client();
-    
+
                 $fields = [
                     "container_key" => $request->container_key,
                     "ctr_intern_status" => "12",
@@ -59,7 +67,7 @@ class GateRelokasiController extends Controller
                 // die();
                 if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
                     // $item->save();
-        
+
                     return response()->json([
                         'success' => true,
                         'message' => 'Silahkan Menuju Bagian Stripping',
@@ -71,18 +79,18 @@ class GateRelokasiController extends Controller
                         'message' => 'updated successfully!',
                     ]);
                 }
-            }elseif ($item->order_service === 'sppsrelokasipelindo') {
+            } elseif ($item->order_service === 'sppsrelokasipelindo') {
                 $item->update([
                     'ctr_intern_status' => 12,
                 ]);
                 $client = new Client();
-    
+
                 $fields = [
                     "container_key" => $request->container_key,
                     "ctr_intern_status" => "12",
                 ];
                 // dd($fields, $item->getAttributes());
-        
+
                 $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
                 $req = $client->post(
                     $url,
@@ -96,7 +104,7 @@ class GateRelokasiController extends Controller
                 // die();
                 if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
                     // $item->save();
-        
+
                     return response()->json([
                         'success' => true,
                         'message' => 'Silahkan Menuju Bagian Stripping',
@@ -108,19 +116,19 @@ class GateRelokasiController extends Controller
                         'message' => 'updated successfully!',
                     ]);
                 }
-            }elseif ($item->order_service === 'sp2icon') {
+            } elseif ($item->order_service === 'sp2icon') {
                 $item->update([
                     'ctr_intern_status' => 13,
                 ]);
                 $client = new Client();
-    
+
                 $fields = [
                     "container_key" => $request->container_key,
                     "ctr_intern_status" => "13",
                 ];
                 // dd($fields, $item->getAttributes());
                 // var_dump($fields);die();
-        
+
                 $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
                 $req = $client->post(
                     $url,
@@ -134,7 +142,7 @@ class GateRelokasiController extends Controller
                 die();
                 if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
                     // $item->save();
-        
+
                     return response()->json([
                         'success' => true,
                         'message' => 'Silahkan Menuju Bagian Placement',
@@ -147,7 +155,6 @@ class GateRelokasiController extends Controller
                     ]);
                 }
             }
-           
         }
     }
 }

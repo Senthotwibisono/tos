@@ -35,6 +35,21 @@ class TruckingController extends Controller
 
         return view('yard.trucking.main', compact('item', 'alat', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'title'));
     }
+    public function android()
+    {
+        $title = 'Trucking';
+
+        $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
+        $yard_slot = Yard::distinct('yard_slot')->pluck('yard_slot');
+        $yard_row = Yard::distinct('yard_row')->pluck('yard_row');
+        $yard_tier = Yard::distinct('yard_tier')->pluck('yard_tier');
+
+        $item = Item::where('ctr_intern_status', '=', '10')->get();
+        $alat = MasterAlat::where('category', '=', 'Yard')->get();
+
+
+        return view('yard.trucking.android', compact('item', 'alat', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'title'));
+    }
 
     public function get_truck(Request $request)
     {

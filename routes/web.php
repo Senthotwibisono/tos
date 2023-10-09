@@ -746,8 +746,9 @@ Route::post('/release-cont-p2', [BCGatterController::class, 'release_p2']);
 // Gate Relokasi
 Route::get('/delivery/balik-relokasi', [GateRelokasiController::class, 'index']);
 Route::post('/gate-relokasi', [GateRelokasiController::class, 'permit']);
-
+Route::get('/delivery/balik-relokasi-android', [GateRelokasiController::class, 'android']);
 // Trucking
 Route::get('/yard/trucking', [TruckingController::class, 'index']);
+Route::get('/yard/trucking-android', [TruckingController::class, 'android']);
 Route::post('/trucking-get-truck', [TruckingController::class, 'get_truck']);
 Route::post('/trucking', [TruckingController::class, 'trucking']);
