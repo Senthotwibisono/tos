@@ -31,12 +31,13 @@ class HomeController extends Controller
         $history_container = HistoryContainer::orderBy('update_time', 'desc')->take(3)->get();
         $data = [];
 
+        $total = 1600;
         $countNotNull = Yard::whereNotNull('container_key')->count();
-        $countNull = Yard::whereNull('container_key')->count();
+        $countNull = $total - $countNotNull;
         $data["active"] = "Dashboard";
         $data["subactive"] = "";
         // dd($data);
-        return view('dashboard', compact('title', 'vessel_voyage', 'history_container'),  [
+        return view('dashboard', compact('title', 'vessel_voyage', 'history_container', 'total'),  [
             'countNotNull' => $countNotNull,
             'countNull' => $countNull,
             'active' => "Dashboard",

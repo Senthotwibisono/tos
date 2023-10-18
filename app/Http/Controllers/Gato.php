@@ -72,6 +72,7 @@ class Gato extends Controller
         $title = 'Gate Out Delivery';
         $confirmed = Item::where('ctr_intern_status', '=', '09',)->orderBy('update_time', 'desc')->get();
         $formattedData = [];
+        $data = [];
 
         foreach ($confirmed as $tem) {
             $now = Carbon::now();
@@ -98,7 +99,7 @@ class Gato extends Controller
             ];
         }
         $containerKeys = Item::where('ctr_intern_status', '10')
-            ->whereNotNull('job_no')
+            ->whereNotNull('truck_no')
             ->pluck('container_no', 'container_key');
         $users = User::all();
         $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
@@ -107,7 +108,9 @@ class Gato extends Controller
         $yard_tier = Yard::distinct('yard_tier')->pluck('yard_tier');
         $currentDateTime = Carbon::now();
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
-        return view('gate.delivery.android_out', compact('confirmed', 'title', 'formattedData', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'));
+        $data["active"] = "delivery";
+        $data["subactive"] = "gateout";
+        return view('gate.delivery.android_out', $data, compact('confirmed', 'title', 'formattedData', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'));
     }
 
 
@@ -140,14 +143,14 @@ class Gato extends Controller
         $container_key = $request->container_key;
         $item = Item::where('container_key', $container_key)->first();
         $request->validate([
-            'container_no'=> 'required',
+            'container_no' => 'required',
             'truck_no' => 'required',
         ], [
             'container_no.required' => 'Container Number is required.',
             'truck_no.required' => 'Truck Number is required.',
         ]);
-        
-        
+
+
         if ($item->truck_no === $request->truck_no) {
             if ($item->bc_flag != 'HOLD') {
                 if ($item->order_service === 'sp2iks') {
@@ -155,10 +158,10 @@ class Gato extends Controller
                         'ctr_intern_status' => '11',
                         'truck_no' => $request->truck_no,
                         'truck_out_date' => $request->truck_out_date,
-                        'ctr_active_yn'=>'N',
+                        'ctr_active_yn' => 'N',
                     ]);
                     $client = new Client();
-        
+
                     $fields = [
                         "container_key" => $request->container_key,
                         "ctr_intern_status" => "11",
@@ -168,52 +171,51 @@ class Gato extends Controller
                         'ctr_intern_status' => '09',
                         'truck_no' => $request->truck_no,
                         'truck_out_date' => $request->truck_out_date,
-                        'ctr_active_yn'=>'N',
+                        'ctr_active_yn' => 'N',
                     ]);
                     $client = new Client();
-        
+
                     $fields = [
                         "container_key" => $request->container_key,
                         "ctr_intern_status" => "09",
                     ];
                 }
-               
-                    
-                    // dd($fields, $item->getAttributes());
-        
-                    $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
-                    $req = $client->post(
-                        $url,
-                        [
-                            "json" => $fields
-                        ]
-                    );
-                    $response = $req->getBody()->getContents();
-                    $result = json_decode($response);
-                    // var_dump($result);
-                    // die();
-                    if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-                        // $item->save();
-        
-                        return response()->json([
-                            'success' => true,
-                            'message' => 'updated successfully!',
-                            'data'    => $item,
-                        ]);
-                    } else {
-                        return response()->json([
-                            'success' => false,
-                            'message' => 'Nomor Truck Berbeda Pada Saat Gate In !!',
-                        ]);
-                    }
-            }else {
+
+
+                // dd($fields, $item->getAttributes());
+
+                $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
+                $req = $client->post(
+                    $url,
+                    [
+                        "json" => $fields
+                    ]
+                );
+                $response = $req->getBody()->getContents();
+                $result = json_decode($response);
+                // var_dump($result);
+                // die();
+                if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+                    // $item->save();
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'updated successfully!',
+                        'data'    => $item,
+                    ]);
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Nomor Truck Berbeda Pada Saat Gate In !!',
+                    ]);
+                }
+            } else {
                 return response()->json([
                     'success' => false,
                     'message' => 'Status Container HOLD, Silahkan Menghubungi Bea Cukai',
                 ]);
             }
-        
-        }else {
+        } else {
             return response()->json([
                 'success' => false,
                 'message' => 'Nomor Truck Berbeda Pada Saat Gate In !!',
@@ -224,7 +226,7 @@ class Gato extends Controller
     public function index_rec()
     {
         $title = 'Gate Out Reciving';
-        $confirmed = Item::where('ctr_intern_status', '=', ['50', '51', '53'],)-> whereNotNull('truck_out_date')->whereNotNull('truck_no')->orderBy('update_time', 'desc')->get();
+        $confirmed = Item::where('ctr_intern_status', '=', ['50', '51', '53'],)->whereNotNull('truck_out_date')->whereNotNull('truck_no')->orderBy('update_time', 'desc')->get();
         $formattedData = [];
         $data = [];
 
@@ -260,12 +262,12 @@ class Gato extends Controller
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
         $data["active"] = "delivery";
         $data["subactive"] = "gateout";
-        return view('gate.recive.main_out', $data, compact('confirmed', 'title', 'formattedData', 'users', 'currentDateTimeString','containerKeys'));
+        return view('gate.recive.main_out', $data, compact('confirmed', 'title', 'formattedData', 'users', 'currentDateTimeString', 'containerKeys'));
     }
     public function android_rec()
     {
         $title = 'Gate Out Reciving';
-        $confirmed = Item::where('ctr_intern_status', '=', '51',)-> whereNotNull('truck_out_date')->whereNotNull('truck_no')->orderBy('update_time', 'desc')->get();
+        $confirmed = Item::where('ctr_intern_status', '=', ['50', '51', '53'],)->whereNotNull('truck_out_date')->whereNotNull('truck_no')->orderBy('update_time', 'desc')->get();
         $formattedData = [];
         $data = [];
 
@@ -293,7 +295,7 @@ class Gato extends Controller
                 'container_key' => $tem->container_key
             ];
         }
-        $containerKeys = Item::where('ctr_intern_status', ['51', '53', '56'])
+        $containerKeys = Item::where('ctr_intern_status', ['50', '51', '53', '56'])
             ->whereNotNull('truck_in_date')->where('truck_out_date', '=', null)
             ->pluck('container_no', 'container_key');
         $users = User::all();
@@ -301,7 +303,7 @@ class Gato extends Controller
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
         $data["active"] = "delivery";
         $data["subactive"] = "gateout";
-        return view('gate.recive.android_out', $data, compact('confirmed', 'title', 'formattedData', 'users', 'currentDateTimeString','containerKeys'));
+        return view('gate.recive.android_out', $data, compact('confirmed', 'title', 'formattedData', 'users', 'currentDateTimeString', 'containerKeys'));
     }
 
     public function data_container_rec(Request $request)
@@ -322,28 +324,27 @@ class Gato extends Controller
         $container_key = $request->container_key;
         $item = Item::where('container_key', $container_key)->first();
         $request->validate([
-            'container_no'=> 'required',
+            'container_no' => 'required',
             'truck_no' => 'required',
         ], [
             'container_no.required' => 'Container Number is required.',
             'truck_no.required' => 'Truck Number is required.',
         ]);
-        
-        
-        if ($item->truck_no === $request->truck_no) {
-        $item->update([
-            'truck_no' => $request->truck_no,
-            'truck_out_date' => $request->truck_out_date,
-        ]);
-            
 
-                return response()->json([
-                    'success' => true,
-                    'message' => 'updated successfully!',
-                    'data'    => $item,
-                ]);
-           
-        }else {
+
+        if ($item->truck_no === $request->truck_no) {
+            $item->update([
+                'truck_no' => $request->truck_no,
+                'truck_out_date' => $request->truck_out_date,
+            ]);
+
+
+            return response()->json([
+                'success' => true,
+                'message' => 'updated successfully!',
+                'data'    => $item,
+            ]);
+        } else {
             return response()->json([
                 'success' => false,
                 'message' => 'Nomor Truck Berbeda Pada Saat Gate In !!',
@@ -353,12 +354,18 @@ class Gato extends Controller
 
     public function index_stuf_out()
     {
-        $title="Gate-out Stuffing";
+        $title = "Gate-out Stuffing";
         $ro = RO_Gate::whereIn('status', ['2', '5', '8'])->get();
         $ro_table = RO_Gate::where('truck_out_date', '!=', null)->orderBy('update_time', 'desc')->take(3)->get();
         return view('gate.stuffing.gate-out', compact('title'), compact('ro', 'ro_table'));
     }
-
+    public function stuff_android_out()
+    {
+        $title = "Gate-out Stuffing";
+        $ro = RO_Gate::whereIn('status', ['2', '5', '8'])->get();
+        $ro_table = RO_Gate::where('truck_out_date', '!=', null)->orderBy('update_time', 'desc')->take(3)->get();
+        return view('gate.stuffing.gate-out-android', compact('title'), compact('ro', 'ro_table'));
+    }
     public function gato_stuf(Request $request)
     {
         $now = Carbon::now();
@@ -370,50 +377,47 @@ class Gato extends Controller
                 'truck_out_date' => $now,
                 'status' => '3',
             ]);
-           
-    
+
+
             return response()->json([
                 'success' => true,
                 'message' => 'Detail Data Post',
                 'data' => $truck,
-                
+
             ]);
         } elseif ($truck->status === '5') {
             $truck->update([
                 'truck_out_date' => $now,
                 'status' => '6',
             ]);
-           
-    
+
+
             return response()->json([
                 'success' => true,
                 'message' => 'Detail Data Post',
                 'data' => $truck,
-                
+
             ]);
-        }elseif ($truck->status === '8') {
+        } elseif ($truck->status === '8') {
             $truck->update([
                 'truck_out_date' => $now,
                 'status' => '9',
             ]);
-           
-    
+
+
             return response()->json([
                 'success' => true,
                 'message' => 'Detail Data Post',
                 'data' => $truck,
-                
+
             ]);
-        }
-         else {
+        } else {
             return response()->json([
                 'success' => false,
                 'message' => 'Detail Data Post',
-                
-                
+
+
             ]);
         }
-        
     }
-
 }

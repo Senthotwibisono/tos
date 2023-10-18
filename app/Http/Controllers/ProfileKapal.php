@@ -34,6 +34,8 @@ class ProfileKapal extends Controller
 
 
 
+
+
     public function showProfileKapal()
     {
         // Fetch data from the VesselMaster model (adjust the query as needed)
@@ -72,5 +74,38 @@ class ProfileKapal extends Controller
 
         // Optionally, you can return a response to indicate success or failure
         return redirect()->route('grid-box.index', ['ves_code' => $ves_code]);
+    }
+
+    public function stores(Request $request)
+    {
+        // Validate the request data here if needed
+
+        // Create a new instance of your model
+        $model = new Bay();
+
+        // Fill the model with the form data
+        $model->VES_CODE = $request->input('ves_code');
+        $vesselMaster = VMaster::where('ves_code', $request->input('ves_code'))->first();
+        // var_dump($vesselMaster->ves_name);
+        // die();
+        $model->BAY1 = $request->input('bay_name');
+        $model->START_ROW = $request->input('start_row');
+        $model->START_ROW_UNDER = $request->input('start_row_under');
+        $model->TIER = $request->input('max_tier');
+        $model->TIER_UNDER = $request->input('max_tier_under');
+        $model->MAX_ROW = $request->input('max_row');
+        $model->MAX_ROW_UNDER = $request->input('max_row_under');
+        $model->START_TIER = $request->input('start_tier');
+        $model->START_TIER_UNDER = $request->input('start_tier_under');
+
+        // Save the model to the database
+        $model->save();
+
+        // Optionally, you can return a response to indicate success or failure
+        // return redirect()->route('grid-box.index', ['ves_code' => $request->ves_code]);
+        // return redirect()->route('grid-box.index', ['ves_code' => $request->ves_code]);
+        return redirect('/planning/grid?ves_code=' . $request->ves_code . '&ves_name=' . $vesselMaster->ves_name);
+
+        // return redirect()->route('grid-box.index');
     }
 }

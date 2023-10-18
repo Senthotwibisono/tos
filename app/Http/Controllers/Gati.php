@@ -68,7 +68,7 @@ class Gati extends Controller
 
         $client = new Client();
         // GET ALL JOB_CONTAINER
-        $url_jobContainer = getenv('API_URL') . '/delivery-service/job/all';
+        $url_jobContainer = getenv('API_URL') . '/delivery-service/job/osds';
         $req_jobContainer = $client->get($url_jobContainer);
         $response_jobContainer = $req_jobContainer->getBody()->getContents();
         $result_jobContainer = json_decode($response_jobContainer);
@@ -85,6 +85,7 @@ class Gati extends Controller
         $title = 'Gate In Delivery';
         $confirmed = Item::where('ctr_intern_status', '=', 10,)->orderBy('truck_in_date', 'desc')->get();
         $formattedData = [];
+        $data = [];
 
         foreach ($confirmed as $tem) {
             $now = Carbon::now();
@@ -121,7 +122,7 @@ class Gati extends Controller
         $currentDateTime = Carbon::now();
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
 
-         $client = new Client();
+        $client = new Client();
         // GET ALL JOB_CONTAINER
         $url_jobContainer = getenv('API_URL') . '/delivery-service/job/all';
         $req_jobContainer = $client->get($url_jobContainer);
@@ -133,7 +134,7 @@ class Gati extends Controller
         $data["active"] = "delivery";
         $data["subactive"] = "gatein";
         $data["jobContainers"] = $result_jobContainer->data;
-        return view('gate.delivery.android_in', compact('confirmed', 'formattedData', 'title', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'),$data);
+        return view('gate.delivery.android_in', $data, compact('confirmed', 'formattedData', 'title', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'), $data);
     }
     // public function get_tipe(Request $request)
     // {
@@ -214,6 +215,8 @@ class Gati extends Controller
             'job_no' => $request->job_no,
             'invoice_no' => $request->invoice_no,
             'order_service' => $request->order_service,
+            'no_dok' => $request->no_dok,
+            'jenis_dok' => $request->jenis_dok,
         ]);
         // var_dump($item);
         // die();
@@ -297,16 +300,16 @@ class Gati extends Controller
         $currentDateTime = Carbon::now();
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
         $isocode = Isocode::all();
-        
+
         $client = new Client();
         // GET ALL JOB_CONTAINER
-        $url_jobContainer = getenv('API_URL') . '/delivery-service/container/export/all';
+        $url_jobContainer = getenv('API_URL') . '/delivery-service/job/export/all';
         $req_jobContainer = $client->get($url_jobContainer);
         $response_jobContainer = $req_jobContainer->getBody()->getContents();
         $result_jobContainer = json_decode($response_jobContainer);
-        
-         $data["jobContainers"] = $result_jobContainer->data;
-        return view('gate.recive.main', $data, compact('confirmed', 'formattedData', 'title', 'users','isocode', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'), $data);
+
+        $data["jobContainers"] = $result_jobContainer->data;
+        return view('gate.recive.main', $data, compact('confirmed', 'formattedData', 'title', 'users', 'isocode', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'), $data);
     }
 
 
@@ -351,16 +354,16 @@ class Gati extends Controller
         $currentDateTime = Carbon::now();
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
         $isocode = Isocode::all();
-        
+
         $client = new Client();
         // GET ALL JOB_CONTAINER
         $url_jobContainer = getenv('API_URL') . '/delivery-service/container/export/all';
         $req_jobContainer = $client->get($url_jobContainer);
         $response_jobContainer = $req_jobContainer->getBody()->getContents();
         $result_jobContainer = json_decode($response_jobContainer);
-        
-         $data["jobContainers"] = $result_jobContainer->data;
-        return view('gate.recive.android_in', $data, compact('confirmed', 'formattedData', 'title', 'users','isocode', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'), $data);
+
+        $data["jobContainers"] = $result_jobContainer->data;
+        return view('gate.recive.android_in', $data, compact('confirmed', 'formattedData', 'title', 'users', 'isocode', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'), $data);
     }
 
     public function data_container_rec(Request $request)
@@ -383,7 +386,7 @@ class Gati extends Controller
         // ]);
         // }
         // return response()->json(['container_no' => 'data tidak ditemukan', 'gross' => 'data tidak ditemukan', 'iso_code' => 'data tidak ditemukan', 'bl_no' => 'data tidak ditemukan']);
-       $client = new Client();
+        $client = new Client();
 
         $fields = [
             "container_key" => $request->container_key,
@@ -411,7 +414,7 @@ class Gati extends Controller
         }
     }
 
-     public function get_data_reciving(Request $request)
+    public function get_data_reciving(Request $request)
     {
         // $container_key = $request->container_key;
         // $name = Item::where('container_key', $container_key)->first();
@@ -437,7 +440,7 @@ class Gati extends Controller
         $req = $client->get($url_vessel);
         $response_vessel = $req->getBody()->getContents();
         $result_vessel = json_decode($response_vessel);
-        // var_dump($response);
+        // var_dump($response_vessel, $id);
         // die();
         // dd($result);
         if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
@@ -467,8 +470,8 @@ class Gati extends Controller
         // $container_key = $request->container_key;
         // var_dump($request->job_no);
         // die();
-        
-        
+
+
         $request->validate([
             'container_no' => 'required',
             'truck_no' => 'required',
@@ -488,22 +491,23 @@ class Gati extends Controller
             'ctr_type' => $request->ctr_type,
             'ctr_size' => $request->ctr_size,
             'ctr_status' => $request->ctr_status,
-            'ves_id'=>$request->ves_id,
-            'ves_code'=>$request->ves_code,
-            'ves_name'=>$request->ves_name,
-            'voy_no'=>$request->voy_no,
+            'ves_id' => $request->ves_id,
+            'ves_code' => $request->ves_code,
+            'ves_name' => $request->ves_name,
+            'voy_no' => $request->voy_no,
             'user_id' => $request->user_id,
             'ctr_active_yn'=>'Y',
             'ctr_i_e_t'=>'E',
+            'order_service'=>$request->order_service,
         ]);
         // var_dump($item);
         // die();
-       
+
 
         $client = new Client();
         $id = $request->id;
-            $fields = [
-            'container_key' =>$item->container_key,
+        $fields = [
+            'container_key' => $item->container_key,
             'ctr_intern_status' => 50,
             'truck_no' => $request->truck_no,
             'truck_in_date' => $request->truck_in_date,
@@ -512,51 +516,51 @@ class Gati extends Controller
             'ctr_type' => $request->ctr_type,
             'ctr_size' => $request->ctr_size,
             'ctr_status' => $request->ctr_status,
-            'ves_id'=>$request->ves_id,
-            'ves_code'=>$request->ves_code,
-            'vessel_name'=>$request->ves_name,
-            'voy_no'=>$request->voy_no,
-            ];
-            // dd($fields, $item->getAttributes());
+            'ves_id' => $request->ves_id,
+            'ves_code' => $request->ves_code,
+            'vessel_name' => $request->ves_name,
+            'voy_no' => $request->voy_no,
+        ];
+        // dd($fields, $item->getAttributes());
 
-            $url = getenv('API_URL') . '/delivery-service/container/update/' . $id;
-            $req = $client->post(
-                $url,
-                [
-                    "json" => $fields
-                ]
-            );
-            $response = $req->getBody()->getContents();
-            $result = json_decode($response);
+        $url = getenv('API_URL') . '/delivery-service/container/update/' . $id;
+        $req = $client->post(
+            $url,
+            [
+                "json" => $fields
+            ]
+        );
+        $response = $req->getBody()->getContents();
+        $result = json_decode($response);
 
-            // dd($result);
-            if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-                $item->save();
+        // dd($result);
+        if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+            $item->save();
 
-                return response()->json([
-                    'success' => 400,
-                    'message' => 'updated successfully!',
-                    'data'    => $item,
-                ]);
-            } else {
-                return back();
-            }
+            return response()->json([
+                'success' => 400,
+                'message' => 'updated successfully!',
+                'data'    => $item,
+            ]);
+        } else {
+            return back();
+        }
     }
 
 
     // Stuffing Gate
     public function index_stuf()
     {
-        $title="Gate-In Stuffing";
-        $ro = RO_Gate::whereIn('status', ['1', '2', '4','5', '7'])->get();
-        $full = RO_Gate::where('status', '=' , '6')->get();
+        $title = "Gate-In Stuffing";
+        $ro = RO_Gate::whereIn('status', ['1', '2', '4', '5', '7'])->get();
+        $full = RO_Gate::where('status', '=', '6')->get();
         return view('gate.stuffing.gate-in', compact('title'), compact('ro', 'full'));
     }
     public function stuf_android()
     {
-        $title="Gate-In Stuffing";
-        $ro = RO_Gate::whereIn('status', ['1', '2', '4','5', '7'])->get();
-        $full = RO_Gate::where('status', '=' , '6')->get();
+        $title = "Gate-In Stuffing";
+        $ro = RO_Gate::whereIn('status', ['1', '2', '4', '5', '7'])->get();
+        $full = RO_Gate::where('status', '=', '6')->get();
         return view('gate.stuffing.gate-in-android', compact('title'), compact('ro', 'full'));
     }
 
@@ -564,13 +568,13 @@ class Gati extends Controller
     {
         $now = Carbon::now();
         $ro_check = $request->ro_no;
-        $ro_checked = RO::where('ro_no','=', $ro_check)->get();
-        
+        $ro_checked = RO::where('ro_no', '=', $ro_check)->get();
+
         if ($ro_checked->isEmpty()) {
             $ro = RO::create([
-                'ro_no'=>$request->ro_no,
-                'stuffing_service'=>$request->stuffing_service,
-                'jmlh_cont'=>$request->jmlh_cont,
+                'ro_no' => $request->ro_no,
+                'stuffing_service' => $request->stuffing_service,
+                'jmlh_cont' => $request->jmlh_cont,
             ]);
         };
 
@@ -580,12 +584,12 @@ class Gati extends Controller
             'truck_in_date' => $now,
             'status' => '1',
         ]);
-       
+
 
         return response()->json([
             'success' => 200,
             'message' => 'Detail Data Post',
-            
+
         ]);
     }
 
@@ -600,23 +604,22 @@ class Gati extends Controller
                 'truck_in_date_after' => $now,
                 'status' => '7',
             ]);
-           
-    
+
+
             return response()->json([
                 'success' => true,
                 'message' => 'Detail Data Post',
                 'data' => $truck,
-                
+
             ]);
         } else {
             return response()->json([
                 'success' => false,
                 'message' => 'Detail Data Post',
-                
-                
+
+
             ]);
         }
-        
     }
 
     public function edit_truck(Request $request)
@@ -638,18 +641,18 @@ class Gati extends Controller
 
         if ($item) {
             $item->update([
-                'truck_no'=> $request->truck,
+                'truck_no' => $request->truck,
             ]);
             return response()->json([
                 'success' => true,
                 'message' => 'Updated successfully!',
                 'data' => $item,
             ]);
-        }else {
+        } else {
             return response()->json([
                 'success' => false,
                 'message' => 'Something went wrong!!',
-                
+
             ]);
         }
     }
