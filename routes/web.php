@@ -291,6 +291,9 @@ Route::prefix('delivery')->group(function () {
   Route::prefix('mastertarif')->group(function () {
     Route::get('/', [BillingImportController::class, 'masterTarifIndex']);
     Route::get('/detail', [BillingImportController::class, 'masterTarifDetail']);
+    Route::get('/create', [BillingImportController::class, 'masterTarifCreate']);
+    Route::post('/update', [BillingImportController::class, 'masterTarifUpdate']);
+    Route::post('/store', [BillingImportController::class, 'masterTarifStore']);
   });
   Route::prefix('ajx')->group(function () {
     Route::post('/singleInvoice', [BillingImportController::class, 'singleInvoice']);
@@ -312,6 +315,13 @@ Route::prefix('receiving')->group(function () {
     Route::get('/review', [BillingExportController::class, 'reviewIndex']);
     Route::post('/storeForm', [BillingExportController::class, 'storeForm']);
     Route::post('/storeBilling', [BillingExportController::class, 'storeBilling']);
+  });
+  Route::prefix('mastertarif')->group(function () {
+    Route::get('/', [BillingExportController::class, 'masterTarifIndex']);
+    Route::get('/detail', [BillingExportController::class, 'masterTarifDetail']);
+    Route::get('/create', [BillingExportController::class, 'masterTarifCreate']);
+    Route::post('/update', [BillingExportController::class, 'masterTarifUpdate']);
+    Route::post('/store', [BillingExportController::class, 'masterTarifStore']);
   });
   Route::prefix('ajx')->group(function () {
     Route::post('/singleInvoice', [BillingExportController::class, 'singleInvoice']);

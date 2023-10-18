@@ -99,7 +99,7 @@
               <a href="/receiving/form" class="submenu-link">Receiving Form</a>
             </li>
             <li class="submenu-item">
-              <a href="" class="submenu-link">Master Tarif</a>
+              <a href="/receiving/mastertarif" class="submenu-link">Master Tarif</a>
             </li>
             <!-- <li class="submenu-item">
               <a href="" class="submenu-link">Stuffing Dalam</a>

@@ -11,20 +11,28 @@
 <div class="page-content">
   <?php
   $menuArr = [
-    "SP2 Kapal Sandar icon (MT Balik IKS)",
-    "SP2 Kapal Sandar icon (MKB)",
-    "SP2 Kapal Sandar icon (MT Balik Pelindo)",
-    "SPPS",
-    "SPPS (Relokasi Pelindo - ICON)",
-    "SP2 (Relokasi Pelindo - ICON)",
+    "LOLO FULL KAPAL SANDAR ICON (2 Invoice)",
+    "LOLO FULL KAPAL SANDAR ICON(1 Invoice)",
+    "LOLO MT (1 INVOICE)",
+    "JPB EX-TRUCK/ STUFFING MUATAN KAPAL ICON",
+    "JPB EX-TRUCK/ STUFFING MUATAN KAPAL LUAR ",
+    "HANDLING CHARGE ERNA VIA KAPAL ICON (INVOICE ICL) 1 INVOICE",
+    "HANDLING CHARGE ERNA VIA KAPAL ICON (INVOICE ERNA) 2 INVOICE ",
+    "HANDLING CHARGE ERNA VIA KAPAL LUAR (INVOICE ERNA) 2 INVOICE",
+    "MUAT DRY SP2",
+    "MUAT DRY SPPS",
   ];
   $orderServiceArr = [
-    "sp2iks",
-    "sp2mkb",
-    "sp2pelindo",
-    "spps",
-    "sppsrelokasipelindo",
-    "sp2icon",
+    "lolofull",
+    "lolofull1inv",
+    "lolomt",
+    "jpbicon",
+    "jpbluar",
+    "ernahandling1inv",
+    "ernahandling2inv",
+    "ernahandlingluar",
+    "sp2dry",
+    "sppsdry",
   ];
 
   ?>
@@ -38,9 +46,9 @@
         <div class="card">
           <div class="card-header">
             <h4 class="card-title">
-              Tabel Data Master Tarif Delivery <?= $menu ?>
+              Tabel Data Master Tarif Receiving <?= $menu ?>
             </h4>
-            <a href="/delivery/mastertarif/create?orderservice=<?= $orderServiceArr[$k] ?>" class="btn btn-success text-white mb-4" type="button"><i class="fa fa-plus"></i> Tambah</a>
+            <a href="/receiving/mastertarif/create?orderservice=<?= $orderServiceArr[$k] ?>" class="btn btn-success text-white mb-4" type="button"><i class="fa fa-plus"></i> Tambah</a>
           </div>
 
           <div class="card-body">
@@ -65,7 +73,7 @@
                           <td><?= $value->type ?></td>
                           <td><?= $value->size ?></td>
                           <td><?= $value->status ?></td>
-                          <td><a href="/delivery/mastertarif/detail?id=<?= $value->id ?>" class="btn btn-success" type="button"><i class="fa fa-eye"></i></a></td>
+                          <td><a href="/receiving/mastertarif/detail?id=<?= $value->id ?>" class="btn btn-success" type="button"><i class="fa fa-eye"></i></a></td>
                         </tr>
                       <?php } ?>
                     <?php
