@@ -533,7 +533,7 @@ class BillingImportController extends Controller
     $result_mastertarif = json_decode($response_mastertarif);
     // dd($result_mastertarif);
 
-    $data["title"] = "Master Tarif Data Dashboard | Icon Sarana";
+    $data["title"] = "Master Tarif Delivery Data Dashboard | Icon Sarana";
     $data["mastertarif"] = $result_mastertarif->data;
 
     return view('billing.import.mastertarif.index', $data);
@@ -557,5 +557,124 @@ class BillingImportController extends Controller
     $data["mastertarif"] = $result_mastertarif->data;
 
     return view('billing.import.mastertarif.detail', $data);
+  }
+
+  public function masterTarifUpdate(Request $request)
+  {
+    $client = new Client();
+    $input = $request->input();
+    // dd($input);
+    $fields = [
+      "masa1" => str_replace(".", "", $request["masa1"]),
+      "masa2" => str_replace(".", "", $request["masa2"]),
+      "masa3" => str_replace(".", "", $request["masa3"]),
+      "masa4" => str_replace(".", "", $request["masa4"]),
+      "lift_on" => str_replace(".", "", $request["lift_on"]),
+      "lift_off" => str_replace(".", "", $request["lift_off"]),
+      "lift_empty" => str_replace(".", "", $request["lift_empty"]),
+      "lift_full" => str_replace(".", "", $request["lift_full"]),
+      "pass_truck" => str_replace(".", "", $request["pass_truck"]),
+      "gate_pass_admin" => str_replace(".", "", $request["gate_pass_admin"]),
+      "cost_recovery" => str_replace(".", "", $request["cost_recovery"]),
+      "surcharge" => str_replace(".", "", $request["surcharge"]),
+      "packet_plp" => str_replace(".", "", $request["packet_plp"]),
+      "behandle" => str_replace(".", "", $request["behandle"]),
+      "recooling" => str_replace(".", "", $request["recooling"]),
+      "monitoring" => str_replace(".", "", $request["monitoring"]),
+      "administrasi" => str_replace(".", "", $request["administrasi"]),
+      "orderservice" => str_replace(".", "", $request["orderservice"]),
+      "pemindahan" => str_replace(".", "", $request["pemindahan"]),
+      "lift_off_mt" => str_replace(".", "", $request["lift_off_mt"]),
+      "paket_stripping" => str_replace(".", "", $request["paket_stripping"]),
+      "cargoDooring" => str_replace(".", "", $request["cargoDooring"]),
+      "sewaCrane" => str_replace(".", "", $request["sewaCrane"]),
+      "paketStuffing" => str_replace(".", "", $request["paketStuffing"]),
+      "handlingCharge" => str_replace(".", "", $request["handlingCharge"]),
+      "jpbExtruck" => str_replace(".", "", $request["jpbExtruck"]),
+
+    ];
+    // dd($fields);
+    // dd($id);
+    // $data = [];
+    $url = getenv('API_URL') . '/delivery-service/mastertarif/update/' . $request["id"];
+    $req = $client->post(
+      $url,
+      [
+        "json" => $fields
+      ]
+    );
+    $response = $req->getBody()->getContents();
+    $result = json_decode($response);
+    // dd($result);
+    if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+      return redirect('/delivery/mastertarif')->with('success', 'Master Tarif berhasil di edit & disimpan!');
+    } else {
+      return redirect('/delivery/mastertarif')->with('success', 'Data gagal disimpan! kode error : #st2del');
+    }
+  }
+
+  public function masterTarifCreate()
+  {
+    $client = new Client();
+    $data = [];
+    $data["title"] = "Master Tarif Create";
+    return view('billing.import.mastertarif.create', $data);
+  }
+
+  public function masterTarifStore(Request $request)
+  {
+    $client = new Client();
+    $input = $request->input();
+    // dd($input);
+    $fields = [
+      "type" => $request["type"],
+      "size" => $request["size"],
+      "status" => $request["status"],
+      "masa1" => str_replace(".", "", $request["masa1"]),
+      "masa2" => str_replace(".", "", $request["masa2"]),
+      "masa3" => str_replace(".", "", $request["masa3"]),
+      "masa4" => str_replace(".", "", $request["masa4"]),
+      "lift_on" => str_replace(".", "", $request["lift_on"]),
+      "lift_off" => str_replace(".", "", $request["lift_off"]),
+      "lift_empty" => str_replace(".", "", $request["lift_empty"]),
+      "lift_full" => str_replace(".", "", $request["lift_full"]),
+      "pass_truck" => str_replace(".", "", $request["pass_truck"]),
+      "gate_pass_admin" => str_replace(".", "", $request["gate_pass_admin"]),
+      "cost_recovery" => str_replace(".", "", $request["cost_recovery"]),
+      "surcharge" => str_replace(".", "", $request["surcharge"]),
+      "packet_plp" => str_replace(".", "", $request["packet_plp"]),
+      "behandle" => str_replace(".", "", $request["behandle"]),
+      "recooling" => str_replace(".", "", $request["recooling"]),
+      "monitoring" => str_replace(".", "", $request["monitoring"]),
+      "administrasi" => str_replace(".", "", $request["administrasi"]),
+      "orderservice" => str_replace(".", "", $request["orderservice"]),
+      "pemindahan" => str_replace(".", "", $request["pemindahan"]),
+      "lift_off_mt" => str_replace(".", "", $request["lift_off_mt"]),
+      "paket_stripping" => str_replace(".", "", $request["paket_stripping"]),
+      "cargoDooring" => str_replace(".", "", $request["cargoDooring"]),
+      "sewaCrane" => str_replace(".", "", $request["sewaCrane"]),
+      "paketStuffing" => str_replace(".", "", $request["paketStuffing"]),
+      "handlingCharge" => str_replace(".", "", $request["handlingCharge"]),
+      "jpbExtruck" => str_replace(".", "", $request["jpbExtruck"]),
+
+    ];
+    // dd($fields);
+    // dd($id);
+    // $data = [];
+    $url = getenv('API_URL') . '/delivery-service/mastertarif/create';
+    $req = $client->post(
+      $url,
+      [
+        "json" => $fields
+      ]
+    );
+    $response = $req->getBody()->getContents();
+    $result = json_decode($response);
+    // dd($result);
+    if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+      return redirect('/delivery/mastertarif')->with('success', 'Master Tarif berhasil ditambah & disimpan!');
+    } else {
+      return redirect('/delivery/mastertarif')->with('success', 'Data gagal disimpan! kode error : #st2del');
+    }
   }
 }
