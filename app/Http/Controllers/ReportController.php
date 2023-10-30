@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Item;
+use App\Models\VVoyage;
 use PDF;
 use TCPDF;
 use Dompdf\Dompdf;
@@ -338,4 +339,77 @@ public function generateREPT_gato_del(Request $request)
         ]);
 }
 
+
+    public function index_xp()
+    {
+        $title ="Realisasi Export";
+        $kapal = VVoyage::orderBy('deparature_date', 'desc')->get();
+
+        $containerKeyCounts = [];
+
+        foreach ($kapal as $kpl) {
+            $count = Item::where('ctr_intern_status', '56')
+                ->where('ves_id', $kpl->ves_id)
+                ->count();
+    
+            // Menambahkan jumlah ke dalam array
+            $containerKeyCounts[$kpl->ves_id] = $count;
+        }
+        return view('reports.report.exp.main', compact('title', 'kapal', 'containerKeyCounts'));
+    }
+
+    public function detail_cont(Request $request)
+    {
+        $id = $request->ves_id;
+        $cont = Item::where('ves_id', $id)->where('ctr_intern_status', '56')->get();
+
+        if ($cont) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Updated successfully!',
+                'data' => $cont,
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something Wrong!!',
+            ]);
+        }
+    }
+
+    public function get_data_kapal(Request $request)
+    {
+
+        // Simpan data ke database jika diperlukan
+
+        // Arahkan pengguna ke halaman baru dengan membawa data
+        
+        $ves_id = $request->ves_id;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Updated successfully!',
+            'item' => $ves_id,
+        ]);
+    }
+
+    public function laporan_kapal(Request $request)
+    {
+        $title = 'Laporan Produktivitas Alat';
+      
+        $ves_id = $request->id;
+
+        
+
+        $kapal = VVoyage::where('ves_id', $ves_id)->first();
+        $name = $kapal->ves_name;
+        $voy = $kapal->voy_out;
+        $port = $kapal->last_port;
+        $flag = $kapal->reg_flag;
+        $cont = Item::where('ves_id', $ves_id)->where('ctr_intern_status', '56')->get();
+    
+        $total = $cont->count();
+
+        return view('reports.report.exp.pdf', compact('title', 'kapal', 'cont', 'name', 'voy', 'total', 'port', 'flag'));
+    }
 }

@@ -67,20 +67,25 @@
                                         <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_oqt1izjh.json" background="#FFFFFF" speed="1" width="100" height="100" loop autoplay></lottie-player>
                                         <a href="/stuffing/android" class="btn btn-warning rounded-pill">Stuffing</a>
                                     </div>
-                                    <!--</div>
+                                    <div style="width: 300px;">
+                                        <div style="float: left; margin-right: 20px;">
+                                            <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_oqt1izjh.json" background="#FFFFFF" speed="1" width="100" height="100" loop autoplay></lottie-player>
+                                            <a href="/yard/trucking-android" class="btn btn-success rounded-pill">Trucking</a>
+                                        </div>
+                                        <!--</div>
                                             <div style="width: 300px;">
                                                 <div style="float: left; margin-right: 20px;">
                                                     <lottie-player src="https://assets9.lottiefiles.com/packages/lf20_fi0ty9ak.json" background="#FFFFFF" speed="1" width="100" height="100" loop autoplay></lottie-player>
                                                     <a href="#" class="btn btn-success  rounded-pill">Success</a>
                                                 </div>-->
-                                    <!-- <a href="#" class="btn btn-light rounded-pill">Light</a> -->
-                                    <!-- <a href="#" class="btn btn-dark rounded-pill">Dark</a> -->
+                                        <!-- <a href="#" class="btn btn-light rounded-pill">Light</a> -->
+                                        <!-- <a href="#" class="btn btn-dark rounded-pill">Dark</a> -->
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+                        <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 </body>
 
 </html>

@@ -2901,3 +2901,14 @@
     }
   });
 </script>
+
+<script>
+  // console.log("TEST");
+  $("#edit").click(function() {
+    // console.log("CLICKED");
+    $(".form-control[readonly]").removeAttr("readonly");
+    $("#submit").css("display", "unset");
+    $("#cancel").css("display", "unset");
+    $("#edit").css("display", "none");
+  });
+</script>

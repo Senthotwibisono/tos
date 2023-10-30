@@ -61,6 +61,7 @@
                     <th>No</th>
                     <th>Kategori</th>
                     <th>Alat</th>
+                    <th>Operator</th>
                     <th>Container</th>
                     <th>Activity</th>
                     <th>Waktu</th>
@@ -72,6 +73,7 @@
                         <td>{{$loop->iteration}}</td>
                         <td>{{$alt->category}}</td>
                         <td>{{$alt->nama_alat}}</td>
+                        <td>{{$alt->operator}}</td>
                         <td>{{$alt->container_no}}</td>
                         <td>{{$alt->activity}}</td>
                         <td>{{$alt->created_at}}</td>

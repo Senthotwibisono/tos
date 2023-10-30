@@ -41,7 +41,8 @@
                 <div class="list-group list-group-horizontal-sm mb-1 text-center" role="tablist">
                     <a class="list-group-item list-group-item-action active" id="list-sunday-list" data-bs-toggle="list" href="#import" role="tab">Import</a>
                     <a class="list-group-item list-group-item-action" id="list-monday-list" data-bs-toggle="list" href="#export" role="tab">Export</a>
-                    <a class="list-group-item list-group-item-action" id="list-tuesday-list" data-bs-toggle="list" href="#exstrip" role="tab">SP2 Relokasi</a>
+                    <a class="list-group-item list-group-item-action" id="list-tuesday-list" data-bs-toggle="list" href="#exstrip" role="tab">Relokasi Pelindo</a>
+                    <a class="list-group-item list-group-item-action" id="list-mty-list" data-bs-toggle="list" href="#mty" role="tab">Empty/Ex-stripping</a>
                 </div>
                 <div class="tab-content text-justify" id="load_ini">
                     <div class="tab-pane fade show active" id="import" role="tabpanel" aria-labelledby="list-sunday-list">
@@ -61,7 +62,7 @@
                                     </thead>
                                     <tbody>
                                         <?php $__currentLoopData = $formattedData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $d): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <?php if($d['ctr_intern_status'] === '03' && $d['ctr_intern_status'] != 'sp2icon' ): ?>
+                                        <?php if($d['ctr_intern_status'] === '03' && ($d['order_service'] != 'sp2icon' || $d['order_service'] != 'sp2icon') && $d['ctr_status'] != 'mty' ): ?>
                                         <tr>
                                             <td><?php echo e($d['container_no']); ?></td>
                                             <td><?php echo e($d['ctr_type']); ?></td>
@@ -96,7 +97,7 @@
                                     </thead>
                                     <tbody>
                                         <?php $__currentLoopData = $formattedData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $d): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <?php if($d['ctr_intern_status'] === '51'): ?>
+                                        <?php if($d['ctr_intern_status'] === '51' || $d['ctr_intern_status'] === '53'): ?>
                                         <tr>
                                             <td><?php echo e($d['container_no']); ?></td>
                                             <td><?php echo e($d['ctr_type']); ?></td>
@@ -131,7 +132,7 @@
                                     </thead>
                                     <tbody>
                                         <?php $__currentLoopData = $formattedData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $d): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <?php if($d['ctr_intern_status'] === '03' && $d['order_service'] === 'sp2icon' ): ?>
+                                        <?php if($d['ctr_intern_status'] === '03' && ($d['order_service'] === 'sp2icon' || $d['order_service'] === 'sppsrelokasipelindo') ): ?>
                                         <tr>
                                             <td><?php echo e($d['container_no']); ?></td>
                                             <td><?php echo e($d['ctr_type']); ?></td>
@@ -140,6 +141,42 @@
                                             <td><?php echo e($d['yard_row']); ?></td>
                                             <td><?php echo e($d['yard_tier']); ?></td>
                                             <td><?php echo e($d['update_time']); ?></td>
+                                        </tr>
+                                        <?php endif; ?>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="mty" role="tabpanel" aria-labelledby="list-mty-list">
+                        <div class="col-12 border">
+                            <div class="card-body">
+                                <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table4">
+                                    <thead>
+                                        <tr>
+                                            <th>Container No</th>
+                                            <th>Type</th>
+                                            <th>Blok</th>
+                                            <th>Slot</th>
+                                            <th>Row</th>
+                                            <th>Tier</th>
+                                            <th>Placemented At</th>
+                                            <th>action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php $__currentLoopData = $formattedData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $d): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <?php if($d['ctr_intern_status'] === '04' && $d['ctr_status'] === 'MTY' ): ?>
+                                        <tr>
+                                            <td><?php echo e($d['container_no']); ?></td>
+                                            <td><?php echo e($d['ctr_type']); ?></td>
+                                            <td><?php echo e($d['yard_block']); ?></td>
+                                            <td><?php echo e($d['yard_slot']); ?></td>
+                                            <td><?php echo e($d['yard_row']); ?></td>
+                                            <td><?php echo e($d['yard_tier']); ?></td>
+                                            <td><?php echo e($d['update_time']); ?></td>
+                                            <td><button type="button" class="btn btn-outline-success changed-to-exp-mty" data-bs-toggle="modal" data-id="<?php echo e($d['container_key']); ?>">Change</button></td>
                                         </tr>
                                         <?php endif; ?>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -194,6 +231,12 @@
                             </div>
                             <?php echo e(csrf_field()); ?>
 
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="first-name-vertical">Op Alat</label>
+                                <input type="text" id="operator" class="form-control" required>
+                            </div>
                         </div>
                         <div class="col-12">
                             <div class="row">
@@ -285,6 +328,103 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade text-left" id="changed-mty" role="dialog" aria-labelledby="myModalLabel110" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-success">
+        <h5 class="modal-title white" id="myModalLabel110">Changing Service</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><i data-feather="x"></i></button>
+      </div>
+          <div class="modal-body">
+            <!-- form -->
+                <div class="row">
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="first-name-vertical">Container</label>
+                        <input type="hidden" id="contKey" class="form-control" name="container_key" readonly>
+                        <input type="text" id="contNo" class="form-control" name="container_no" readonly>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-3">
+                        <div class="form-group">
+                            <label for="">Iso Code</label>
+                            <input type="text" class="form-control" id="iso" readonly>
+                        </div>
+                      </div>
+                      <div class="col-3">
+                        <div class="form-group">
+                            <label for="">Size</label>
+                            <input type="text" class="form-control" id="size" readonly>
+                        </div>
+                      </div>
+                      <div class="col-3">
+                        <div class="form-group">
+                            <label for="">Type</label>
+                            <input type="text" class="form-control" id="type" readonly>
+                        </div>
+                      </div>
+                      <div class="col-3">
+                        <div class="form-group">
+                            <label for="">Status</label>
+                            <input type="text" class="form-control" id="status" readonly>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="">Proccess</label>
+                            <select class="form-select choices" id="proccess">
+                                <option value="" disabeled selected values>Wajib Pilih !</option>
+                                <option value="01">MTY-EXPORT</option>
+                                <option value="02">MTY-LOCAL</option>
+                                <option value="03">MTY-Keluar IKS</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <br>
+                <div class="col-12" id="vessel-select" style="display: none;">
+                  <div class="form-group">
+                    <label for="first-name-vertical">Choose Vessel</label>
+                    <select class="choices form-select" id="Vessel" name="ves_id" required>
+                        <option value="">Select Vessel</option>
+                       <?php $__currentLoopData = $vessel; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ves): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                       <option value="<?php echo e($ves->ves_id); ?>"><?php echo e($ves->ves_name); ?></option>
+                       <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </select>
+                  </div>
+                            <div class="col-12">
+                             <div class="form-group">
+                                <label for="first-name-vertical">Vessel Name</label>
+                                <input type="text" id="nama-kapal" class="form-control" readonly>
+                              </div>
+                            </div>
+                            <div class="col-12">
+                              <div class="form-group">
+                                <label for="first-name-vertical">Vessel Code</label>
+                                <input type="text" id="kode-kapal" class="form-control" readonly>
+                              </div>
+                            </div>
+                            <div class="col-12">
+                              <div class="form-group">
+                                <label for="first-name-vertical">Voy No</label>
+                                <input type="text" id="nomor-voyage" class="form-control" name="ctr_type" readonly>
+                              </div>
+                            </div>
+                        
+                </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i><span class="d-none d-sm-block">Close</span></button>
+            <button type="submit" class="btn btn-success ml-1 updateToExpMty"><i class="bx bx-check d-block d-sm-none"></i><span class="d-none d-sm-block">Confirm</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('custom_js'); ?>
 <script src="<?php echo e(asset('vendor/components/jquery/jquery.min.js')); ?>"></script>
@@ -294,6 +434,25 @@
 <script>
     new simpleDatatables.DataTable('#table2');
     new simpleDatatables.DataTable('#table3');
+    new simpleDatatables.DataTable('#table4');
+</script>
+<script>
+    
+    // Ambil elemen "Proccess" dan "Choose Vessel"
+    const proccessSelect = document.getElementById("proccess");
+    const vesselSelect = document.getElementById("vessel-select");
+
+    // Tambahkan event listener untuk perubahan pilihan pada "Proccess"
+    proccessSelect.addEventListener("change", function () {
+        if (proccessSelect.value === "01" || proccessSelect.value === "02") {
+            // Jika dipilih "MTY-EXPORT" atau "MTY-LOCAL", tampilkan "Choose Vessel"
+            vesselSelect.style.display = "block";
+        } else {
+            // Jika dipilih "MTY-Keluar IKS", sembunyikan "Choose Vessel"
+            vesselSelect.style.display = "none";
+        }
+    });
+
 </script>
 <script>
     // In your Javascript (external .js resource or <script> tag)
@@ -323,6 +482,7 @@
         var yard_raw = $('#raw').val();
         var yard_tier = $('#tier').val();
         var alat = $('#alat').val();
+        var operator = $('#operator').val();
         var data = {
             'container_key': $('#key').val(),
             'container_no': $('#container_no').val(),
@@ -332,6 +492,7 @@
             'yard_tier': $('#tier').val(),
             'user_id': $('#user').val(),
             'alat': $('#alat').val(),
+            'operator': $('#operator').val(),
 
         }
         $.ajaxSetup({
@@ -425,6 +586,27 @@
                 });
             });
         });
+        $(document).ready(function() {
+          $('#Vessel').on('change', function() {
+            let id = $(this).val();
+            $.ajax({
+              type: 'POST',
+              url: '/get-vessel-in-stuffing',
+              data: {
+                ves_id: id
+              },
+              success: function(response) {
+
+                $('#nama-kapal').val(response.ves_name);
+                $('#kode-kapal').val(response.ves_code);
+                $('#nomor-voyage').val(response.voy_no);
+              },
+              error: function(data) {
+                console.log('error:', data);
+              },
+            });
+          });
+        });
         // $(function(){
         //         $('#block'). on('change', function(){
         //             let yard_block = $('#block').val();
@@ -446,6 +628,122 @@
         //         })
         //     })
     });
+</script>
+
+<script>
+ $(function() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+   
+
+    $(document).on('click', '.changed-to-exp-mty', function() {
+        let id = $(this).data('id');
+        $.ajax({
+            type: 'GET',
+            url: '/placement/changedToMty-' + id,
+            cache: false,
+            data: {
+                container_key: id
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log(response);
+                $('#changed-mty').modal('show');
+                $("#changed-mty #contNo").val(response.data.container_no);
+                $("#changed-mty #contKey").val(response.data.container_key);
+                $("#changed-mty #iso").val(response.data.iso_code);
+                $("#changed-mty #size").val(response.data.ctr_size);
+                $("#changed-mty #type").val(response.data.ctr_type);
+                $("#changed-mty #status").val(response.data.ctr_status);
+            },
+            error: function(data) {
+                console.log('error:', data);
+            }
+        });
+    });
+
+    $(document).on('click', '.updateToExpMty', function(e) {
+        e.preventDefault();
+        var container_key = $('#contKey').val();
+        var mty_type = $('#proccess').val();
+        var ves_id = $('#Vessel').val();
+        var ves_name = $('#nama-kapal').val();
+        var ves_code = $('#kode-kapal').val();
+        var voy_no = $('#nomor-voyage').val();
+        var data = {
+            'container_key': $('#contKey').val(),
+            'mty_type': $('#proccess').val(),
+            'ves_id': $('#Vessel').val(),
+            'ves_name': $('#nama-kapal').val(),
+            'ves_code': $('#kode-kapal').val(),
+            'voy_no': $('#nomor-voyage').val(),
+        }
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        Swal.fire({
+            title: 'Are you Sure?',
+            text: "Changed to Export MTY?",
+            icon: 'warning',
+            showDenyButton: false,
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'Confirm',
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/placement/changed-status',
+                    data: data,
+                    cache: false,
+                    dataType: 'json',
+                    success: function(response) {
+                        console.log(response);
+                        if (response.success) {
+                            Swal.fire('Saved!', '', 'success')
+                                .then(() => {
+                                    // Memuat ulang halaman setelah berhasil menyimpan data
+                                    window.location.reload();
+                                });
+                        } else {
+                            Swal.fire('Error', response.message, 'error');
+                        }
+                    },
+                    error: function(response) {
+                        var errors = response.responseJSON.errors;
+                        if (errors) {
+                            var errorMessage = '';
+                            $.each(errors, function(key, value) {
+                                errorMessage += value[0] + '<br>';
+                            });
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Validation Error',
+                                html: errorMessage,
+                            });
+                        } else {
+                            console.log('error:', response);
+                        }
+                    },
+                });
+
+            } else if (result.isDenied) {
+                Swal.fire('Changes are not saved', '', 'info')
+            }
+
+
+        })
+
+    });
+
+});
 </script>
 
 <?php $__env->stopSection(); ?>

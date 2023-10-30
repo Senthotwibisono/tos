@@ -116,6 +116,119 @@
     </div>
 
   </div>
+  <section class="row">
+    <div class="col-12">
+
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+
+            <div class="col-6 text-center">
+              <h3 class="bold">DEPO INDO KONTAINER SARANA PONTIANAK</h3>
+            </div>
+            <div class="col-6 text-center">
+              <h5 class="lead">No. Nota : <?= $invoice->proformaId ?></h5>
+              <h5 class="lead">No. Invoice : <?= $invoice->invoiceNumber ?></h5>
+              <h5 class="lead">No. Job : <?= $invoice->jobNumber ?></h5>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 text-center py-5">
+              <h3 class="bold">SURAT PENYERAHAN PETIKEMAS (SP2)</h3>
+            </div>
+            <div class="col-5" style="margin-left: 50px;">
+              <h5 class="lead">No. Petikemas :</h5>
+              <h5 class="lead">Ukuran / Statu :</h5>
+              <h5 class="lead">Ex. Kapal / Voyage :</h5>
+              <h5 class="lead">Agen :</h5>
+              <h5 class="lead">Lokasi dilapangan :</h5>
+              <h5 class="lead">Penerima / Consignee :</h5>
+              <h5 class="lead">Tujuan :</h5>
+              <h5 class="lead">Remark :</h5>
+              <h5 class="lead">No. Kendaraan :</h5>
+            </div>
+            <div class="col-5" style="margin-left: 100px;">
+              <style>
+                .rectangle {
+                  display: inline-block;
+                  width: 30px;
+                  height: 30px;
+                  border: 2px solid #000;
+                  /* Set the border style with a black color */
+                  /* margin-left: 10px; */
+                  background: transparent;
+                  /* Make the background transparent */
+                }
+              </style>
+              <h5 class="lead">Cek <span class="rectangle"></span></h5>
+              <h5 class="lead">O/H. O/W. Temp :</h5>
+              <h5 class="lead">Tgl. Tiba :</h5>
+              <h5 class="lead">No. B/L :</h5>
+              <h5 class="lead">No. D.O :</h5>
+              <h5 class="lead">Pembayaran dari Tgl. :</h5>
+              <h5 class="lead">s/d Tgl. :</h5>
+
+            </div>
+          </div>
+          <div class="row pt-5">
+            <div class="col-5" style="margin-left: 50px;">
+              <h5 class="bold">PETUGAS LAPANGAN</h5>
+              <br>
+              <br>
+              <br>
+              <p><i>(Nama Jelas)</i></p>
+            </div>
+            <div class="col-5" style="margin-left: 100px;">
+              <p>PONTIANAK,</p>
+              <h5 class="bold">PT.INDO KONTAINER SARANA</h5>
+              <br>
+              <br>
+              <br>
+              <p><i>(Nama Jelas)</i></p>
+            </div>
+          </div>
+          <div class="row pt-5">
+            <div class="col-12 text-center">
+              <h3 class="bold">BERILAH TANDA YANG JELAS BILA TERDAPAT KERUSAKAN</h3>
+            </div>
+            <div class="col-12 mt-5">
+              <img src="/images/container.png" class="img" style="width: 100% !important; max-width:100% !important;" alt="">
+            </div>
+          </div>
+          <div class="row mt-4">
+            <div class="col-4">
+              <h5 class="bold">Seal Nomor :</h5>
+              <h4 class="bold">KETERANGAN TAMBAHAN :</h4>
+              <br>
+              <br>
+              <br>
+              <br>
+              <p class="bold">PENERIMA :</p>
+              <br>
+              <br>
+              <br>
+              <p><i>(Nama Jelas)</i></p>
+
+            </div>
+            <div class="col-4 text-center pt-5">
+              <img src="/images/GATE.png" class="img" style="width: 100% !important; max-width:100% !important;" alt="">
+            </div>
+            <div class="col-4" style="padding-top : 150px;">
+
+              <p class="bold">PETUGAS PINTU :</p>
+              <br>
+              <br>
+              <br>
+              <p><i>(Nama Jelas)</i></p>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    </div>
+  </section>
 </body>
 
 </html>

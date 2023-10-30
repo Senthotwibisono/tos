@@ -15,7 +15,13 @@
                         :
                     </div>
                     <div class="col-6">
-                        <input type="text" id="ro" class="form-control">
+                       <select name="" id="roId" class="form-select choices">
+                        <option value="" disabeled selected values>Pilih Satu !</option>
+                        @foreach($ro_Gate as $ro)
+                        <option value="{{$ro->ro_id}}">{{$ro->ro_no}}</option>
+                        @endforeach
+                       </select>
+                       <input type="hidden" class="form-control" id="ro" readonly>
                     </div>
                 </div>
                 <br>
@@ -27,11 +33,7 @@
                         :
                     </div>
                     <div class="col-6">
-                        <select class="form-control" name="" id="service">
-                            <option  disabled selected><span>Pilih Satu</span></option>
-                            <option value="in">Dalam</option>
-                            <option value="out">Luar</option>
-                        </select>
+                        <input type="text" class="form-control" id="service" readonly>
                     </div>
                 </div>
                 <br>
@@ -55,7 +57,7 @@
                         :
                     </div>
                     <div class="col-6">
-                        <input type="number" id="cont" class="form-control">
+                        <input type="number" id="cont" class="form-control"readonly>
                     </div>
                 </div>
         </div>

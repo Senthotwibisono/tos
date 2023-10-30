@@ -21,8 +21,8 @@ class GateRelokasiController extends Controller
     public function index()
     {
         $title = 'Gate Rlokasi';
-        $item = Item::whereIn('order_service', ['sp2iks', 'sp2icon', 'sppsrelokasipelindo'])->whereIn('ctr_intern_status',  ['11', '15'] )->get();
-        $item_confirmed = Item::whereiN('ctr_intern_status',  ['12','13'] )->get();
+        $item = Item::whereIn('order_service', ['sp2iks', 'sp2icon', 'sppsrelokasipelindo'])->whereIn('ctr_intern_status',  ['11', '15'])->get();
+        $item_confirmed = Item::whereiN('ctr_intern_status',  ['12', '13'])->get();
 
         $client = new Client();
         // GET ALL JOB_CONTAINER
@@ -34,6 +34,23 @@ class GateRelokasiController extends Controller
         // dd($containerKeys);
         $data["jobContainers"] = $result_jobContainer->data;
         return view('gate.relokasi.main', compact('item', 'title', 'item_confirmed'), $data);
+    }
+    public function android()
+    {
+        $title = 'Gate Rlokasi';
+        $item = Item::whereIn('order_service', ['sp2iks', 'sp2icon', 'sppsrelokasipelindo'])->whereIn('ctr_intern_status',  ['11', '15'])->get();
+        $item_confirmed = Item::whereiN('ctr_intern_status',  ['12', '13'])->get();
+
+        $client = new Client();
+        // GET ALL JOB_CONTAINER
+        $url_jobContainer = getenv('API_URL') . '/delivery-service/job/osds';
+        $req_jobContainer = $client->get($url_jobContainer);
+        $response_jobContainer = $req_jobContainer->getBody()->getContents();
+        $result_jobContainer = json_decode($response_jobContainer);
+        // dd($result_jobContainer);
+        // dd($containerKeys);
+        $data["jobContainers"] = $result_jobContainer->data;
+        return view('gate.relokasi.android', compact('item', 'title', 'item_confirmed'), $data);
     }
 
     public function data_container(Request $request)
@@ -69,7 +86,7 @@ class GateRelokasiController extends Controller
 
             echo $response;
         } else {
-            return response()->json([ 'service' => 'data tidak ditemukan']);
+            return response()->json(['service' => 'data tidak ditemukan']);
         }
     }
 
@@ -83,16 +100,17 @@ class GateRelokasiController extends Controller
             // SP2 BALIK IKS
             if ($service === 'sp2iks') {
                 $item->update([
-                    'ctr_intern_status' => 12,
+                    'ctr_intern_status' => 14,
                     'ctr_status' => 'MTY',
                     'ctr_active_yn' => 'Y',
                     'truck_no' => $request->truck_no,
                 ]);
                 $client = new Client();
-    
+
                 $fields = [
                     "container_key" => $request->container_key,
-                    "ctr_intern_status" => "12",
+                    "ctr_intern_status" => "14",
+                    'isChoosen' => "0",
                 ];
                 // var_dump($fields);
                 // die();
@@ -109,10 +127,10 @@ class GateRelokasiController extends Controller
                 // die();
                 if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
                     // $item->save();
-        
+
                     return response()->json([
                         'success' => true,
-                        'message' => 'Silahkan Menuju Bagian Stripping',
+                        'message' => 'Silahkan Menuju Bagian Placement',
                         'data'    => $item,
                     ]);
                 } else {
@@ -123,22 +141,24 @@ class GateRelokasiController extends Controller
                 }
 
                 // SPPS RELOKASI
-            }elseif ($service === 'sppsrelokasipelindo') {
+            } elseif ($service === 'sppsrelokasipelindo') {
                 $item->update([
                     'ctr_intern_status' => 12,
-                    'order_service' =>$request->order_service,
+                    'order_service' => $request->order_service,
                     'no_dok' => $request->no_dok,
                     'jenis_dok' => $request->jenis_dok,
                     'truck_no' => $request->truck_no,
+                    'job_no' => $request->job_no,
+                    'invoice_no' => $request->invoice_no,
                 ]);
                 $client = new Client();
-    
+
                 $fields = [
                     "container_key" => $request->container_key,
                     "ctr_intern_status" => "12",
                 ];
                 // dd($fields, $item->getAttributes());
-        
+
                 $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
                 $req = $client->post(
                     $url,
@@ -152,10 +172,10 @@ class GateRelokasiController extends Controller
                 // die();
                 if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
                     // $item->save();
-        
+
                     return response()->json([
                         'success' => true,
-                        'message' => 'Silahkan Menuju Bagian Stripping',
+                        'message' => 'Silahkan Menuju Bagian Placement',
                         'data'    => $item,
                     ]);
                 } else {
@@ -166,23 +186,25 @@ class GateRelokasiController extends Controller
                 }
 
                 // SP2 RELOKASI
-            }elseif ($service === 'sp2icon') {
+            } elseif ($service === 'sp2icon') {
                 $item->update([
                     'ctr_intern_status' => 13,
-                    'order_service' =>$request->order_service,
+                    'order_service' => $request->order_service,
                     'no_dok' => $request->no_dok,
                     'jenis_dok' => $request->jenis_dok,
                     'truck_no' => $request->truck_no,
+                    'job_no' => $request->job_no,
+                    'invoice_no' => $request->invoice_no,
                 ]);
                 $client = new Client();
-    
+
                 $fields = [
                     "container_key" => $request->container_key,
                     "ctr_intern_status" => "13",
                 ];
                 // dd($fields, $item->getAttributes());
                 // var_dump($fields);die();
-        
+
                 $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
                 $req = $client->post(
                     $url,
@@ -196,7 +218,7 @@ class GateRelokasiController extends Controller
                 // die();
                 if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
                     // $item->save();
-        
+
                     return response()->json([
                         'success' => true,
                         'message' => 'Silahkan Menuju Bagian Placement',
@@ -209,7 +231,6 @@ class GateRelokasiController extends Controller
                     ]);
                 }
             }
-           
         }
     }
 }

@@ -248,4 +248,42 @@
 
   });
 </script>
+
+<script>
+   $(function() {
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+  $(document).ready(function() {
+      $('#roId').on('change', function() {
+        let id = $(this).val();
+        $.ajax({
+          type: 'POST',
+          url: '/gati-stuf-data',
+          data: {
+            ro_id: id
+          },
+          success: function(response) {
+
+            $('#ro').val(response.ro);
+            $('#cont').val(response.cont);
+            if (response.service === 'in') {
+                 $('#service').val('Stuffing Dalam');
+            } else {
+                $('#service').val('Stuffing Luar');
+            }
+ 
+
+          },
+          error: function(data) {
+            console.log('error:', data);
+          },
+        });
+
+      });
+    });
+  });
+</script>
 @endsection

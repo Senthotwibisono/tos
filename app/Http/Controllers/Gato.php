@@ -25,6 +25,63 @@ class Gato extends Controller
     public function index()
     {
         $title = 'Gate Out Delivery';
+        $confirmed = Item::where('ctr_intern_status', '=', '09',)->orWhere(function ($subquery){
+                            $subquery->where('ctr_intern_status', ['03','04'])
+                                        ->where(function ($subsubquery) {
+                                            $subsubquery->where('order_service', 'spps')
+                                                ->orWhere('order_service', 'sppsrelokasipelindo')
+                                                ->whereNotNull('truck_out_date');
+                                            });
+                        })->orderBy('update_time', 'desc')->get();
+        $formattedData = [];
+        $data = [];
+
+        foreach ($confirmed as $tem) {
+            $now = Carbon::now();
+            $updatedAt = Carbon::parse($tem->update_time);
+
+            // Perhitungan selisih waktu
+            $diff = $updatedAt->diffForHumans($now);
+
+            // Jika selisih waktu kurang dari 1 hari, maka tampilkan format jam
+            if ($updatedAt->diffInDays($now) < 1) {
+                $diff = $updatedAt->diffForHumans($now, true);
+                $diff = str_replace(['hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
+            } else {
+                // Jika selisih waktu lebih dari 1 hari, maka tampilkan format hari dan jam
+                $diff = $updatedAt->diffForHumans($now, true);
+                $diff = str_replace(['days', 'day', 'hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['hari', 'hari', 'jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
+            }
+
+            $formattedData[] = [
+                'container_no' => $tem->container_no,
+                'truck_no' => $tem->truck_no,
+                'truck_out_date' => $diff . ' yang lalu',
+                'container_key' => $tem->container_key
+            ];
+        }
+        $containerKeys = Item::where('ctr_intern_status', '10')->whereNotNull('truck_no')->orWhere(function ($subquery){
+                                $subquery->where('ctr_intern_status', ['03','04'])
+                                            ->where(function ($subsubquery) {
+                                                $subsubquery->where('order_service', 'spps')
+                                                    ->orWhere('order_service', 'sppsrelokasipelindo')
+                                                    ->whereNotNull('truck_no')->whereNotNull('truck_in_date');
+                                                });
+                            })->pluck('container_no', 'container_key');
+        $users = User::all();
+        $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
+        $yard_slot = Yard::distinct('yard_slot')->pluck('yard_slot');
+        $yard_row = Yard::distinct('yard_row')->pluck('yard_row');
+        $yard_tier = Yard::distinct('yard_tier')->pluck('yard_tier');
+        $currentDateTime = Carbon::now();
+        $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
+        $data["active"] = "delivery";
+        $data["subactive"] = "gateout";
+        return view('gate.delivery.main_out', $data, compact('confirmed', 'title', 'formattedData', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'));
+    }
+    public function android()
+    {
+        $title = 'Gate Out Delivery';
         $confirmed = Item::where('ctr_intern_status', '=', '09',)->orderBy('update_time', 'desc')->get();
         $formattedData = [];
         $data = [];
@@ -65,49 +122,7 @@ class Gato extends Controller
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
         $data["active"] = "delivery";
         $data["subactive"] = "gateout";
-        return view('gate.delivery.main_out', $data, compact('confirmed', 'title', 'formattedData', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'));
-    }
-    public function android()
-    {
-        $title = 'Gate Out Delivery';
-        $confirmed = Item::where('ctr_intern_status', '=', '09',)->orderBy('update_time', 'desc')->get();
-        $formattedData = [];
-
-        foreach ($confirmed as $tem) {
-            $now = Carbon::now();
-            $updatedAt = Carbon::parse($tem->update_time);
-
-            // Perhitungan selisih waktu
-            $diff = $updatedAt->diffForHumans($now);
-
-            // Jika selisih waktu kurang dari 1 hari, maka tampilkan format jam
-            if ($updatedAt->diffInDays($now) < 1) {
-                $diff = $updatedAt->diffForHumans($now, true);
-                $diff = str_replace(['hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
-            } else {
-                // Jika selisih waktu lebih dari 1 hari, maka tampilkan format hari dan jam
-                $diff = $updatedAt->diffForHumans($now, true);
-                $diff = str_replace(['days', 'day', 'hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['hari', 'hari', 'jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
-            }
-
-            $formattedData[] = [
-                'container_no' => $tem->container_no,
-                'truck_no' => $tem->truck_no,
-                'truck_out_date' => $diff . ' yang lalu',
-                'container_key' => $tem->container_key
-            ];
-        }
-        $containerKeys = Item::where('ctr_intern_status', '10')
-            ->whereNotNull('job_no')
-            ->pluck('container_no', 'container_key');
-        $users = User::all();
-        $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
-        $yard_slot = Yard::distinct('yard_slot')->pluck('yard_slot');
-        $yard_row = Yard::distinct('yard_row')->pluck('yard_row');
-        $yard_tier = Yard::distinct('yard_tier')->pluck('yard_tier');
-        $currentDateTime = Carbon::now();
-        $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
-        return view('gate.delivery.android_out', compact('confirmed', 'title', 'formattedData', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'));
+        return view('gate.delivery.android_out', $data, compact('confirmed', 'title', 'formattedData', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'));
     }
 
 
@@ -140,14 +155,14 @@ class Gato extends Controller
         $container_key = $request->container_key;
         $item = Item::where('container_key', $container_key)->first();
         $request->validate([
-            'container_no'=> 'required',
+            'container_no' => 'required',
             'truck_no' => 'required',
         ], [
             'container_no.required' => 'Container Number is required.',
             'truck_no.required' => 'Truck Number is required.',
         ]);
-        
-        
+
+
         if ($item->truck_no === $request->truck_no) {
             if ($item->bc_flag != 'HOLD') {
                 if ($item->order_service === 'sp2iks') {
@@ -155,65 +170,75 @@ class Gato extends Controller
                         'ctr_intern_status' => '11',
                         'truck_no' => $request->truck_no,
                         'truck_out_date' => $request->truck_out_date,
-                        'ctr_active_yn'=>'N',
+                        'ctr_active_yn' => 'N',
                     ]);
                     $client = new Client();
-        
+
                     $fields = [
                         "container_key" => $request->container_key,
                         "ctr_intern_status" => "11",
                     ];
-                } else {
+                } elseif (($item->order_service === 'spps') || $item->order_service === 'sppsrelokasipelindo') {
+                    $item->update([
+                        'truck_no' => $request->truck_no,
+                        'truck_out_date' => $request->truck_out_date,
+                    ]);
+                    $client = new Client();
+
+                    $fields = [
+                        "container_key" => $request->container_key,
+                    ];
+                }
+                 else {
                     $item->update([
                         'ctr_intern_status' => '09',
                         'truck_no' => $request->truck_no,
                         'truck_out_date' => $request->truck_out_date,
-                        'ctr_active_yn'=>'N',
+                        'ctr_active_yn' => 'N',
                     ]);
                     $client = new Client();
-        
+
                     $fields = [
                         "container_key" => $request->container_key,
                         "ctr_intern_status" => "09",
                     ];
                 }
-               
-                    
-                    // dd($fields, $item->getAttributes());
-        
-                    $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
-                    $req = $client->post(
-                        $url,
-                        [
-                            "json" => $fields
-                        ]
-                    );
-                    $response = $req->getBody()->getContents();
-                    $result = json_decode($response);
-                    // var_dump($result);
-                    // die();
-                    if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-                        // $item->save();
-        
-                        return response()->json([
-                            'success' => true,
-                            'message' => 'updated successfully!',
-                            'data'    => $item,
-                        ]);
-                    } else {
-                        return response()->json([
-                            'success' => false,
-                            'message' => 'Nomor Truck Berbeda Pada Saat Gate In !!',
-                        ]);
-                    }
-            }else {
+
+
+                // dd($fields, $item->getAttributes());
+
+                $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
+                $req = $client->post(
+                    $url,
+                    [
+                        "json" => $fields
+                    ]
+                );
+                $response = $req->getBody()->getContents();
+                $result = json_decode($response);
+                // var_dump($result);
+                // die();
+                if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+                    // $item->save();
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'updated successfully!',
+                        'data'    => $item,
+                    ]);
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Nomor Truck Berbeda Pada Saat Gate In !!',
+                    ]);
+                }
+            } else {
                 return response()->json([
                     'success' => false,
                     'message' => 'Status Container HOLD, Silahkan Menghubungi Bea Cukai',
                 ]);
             }
-        
-        }else {
+        } else {
             return response()->json([
                 'success' => false,
                 'message' => 'Nomor Truck Berbeda Pada Saat Gate In !!',
@@ -224,7 +249,7 @@ class Gato extends Controller
     public function index_rec()
     {
         $title = 'Gate Out Reciving';
-        $confirmed = Item::where('ctr_intern_status', '=', ['50', '51', '53'],)-> whereNotNull('truck_out_date')->whereNotNull('truck_no')->orderBy('update_time', 'desc')->get();
+        $confirmed = Item::where('ctr_intern_status', '=', ['50', '51', '53'],)->whereNotNull('truck_out_date')->whereNotNull('truck_no')->orderBy('update_time', 'desc')->get();
         $formattedData = [];
         $data = [];
 
@@ -260,12 +285,12 @@ class Gato extends Controller
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
         $data["active"] = "delivery";
         $data["subactive"] = "gateout";
-        return view('gate.recive.main_out', $data, compact('confirmed', 'title', 'formattedData', 'users', 'currentDateTimeString','containerKeys'));
+        return view('gate.recive.main_out', $data, compact('confirmed', 'title', 'formattedData', 'users', 'currentDateTimeString', 'containerKeys'));
     }
     public function android_rec()
     {
         $title = 'Gate Out Reciving';
-        $confirmed = Item::where('ctr_intern_status', '=', '51',)-> whereNotNull('truck_out_date')->whereNotNull('truck_no')->orderBy('update_time', 'desc')->get();
+        $confirmed = Item::where('ctr_intern_status', '=', ['50', '51', '53'],)->whereNotNull('truck_out_date')->whereNotNull('truck_no')->orderBy('update_time', 'desc')->get();
         $formattedData = [];
         $data = [];
 
@@ -293,7 +318,7 @@ class Gato extends Controller
                 'container_key' => $tem->container_key
             ];
         }
-        $containerKeys = Item::where('ctr_intern_status', ['51', '53', '56'])
+        $containerKeys = Item::where('ctr_intern_status', ['50', '51', '53', '56'])
             ->whereNotNull('truck_in_date')->where('truck_out_date', '=', null)
             ->pluck('container_no', 'container_key');
         $users = User::all();
@@ -301,7 +326,7 @@ class Gato extends Controller
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
         $data["active"] = "delivery";
         $data["subactive"] = "gateout";
-        return view('gate.recive.android_out', $data, compact('confirmed', 'title', 'formattedData', 'users', 'currentDateTimeString','containerKeys'));
+        return view('gate.recive.android_out', $data, compact('confirmed', 'title', 'formattedData', 'users', 'currentDateTimeString', 'containerKeys'));
     }
 
     public function data_container_rec(Request $request)
@@ -322,28 +347,27 @@ class Gato extends Controller
         $container_key = $request->container_key;
         $item = Item::where('container_key', $container_key)->first();
         $request->validate([
-            'container_no'=> 'required',
+            'container_no' => 'required',
             'truck_no' => 'required',
         ], [
             'container_no.required' => 'Container Number is required.',
             'truck_no.required' => 'Truck Number is required.',
         ]);
-        
-        
-        if ($item->truck_no === $request->truck_no) {
-        $item->update([
-            'truck_no' => $request->truck_no,
-            'truck_out_date' => $request->truck_out_date,
-        ]);
-            
 
-                return response()->json([
-                    'success' => true,
-                    'message' => 'updated successfully!',
-                    'data'    => $item,
-                ]);
-           
-        }else {
+
+        if ($item->truck_no === $request->truck_no) {
+            $item->update([
+                'truck_no' => $request->truck_no,
+                'truck_out_date' => $request->truck_out_date,
+            ]);
+
+
+            return response()->json([
+                'success' => true,
+                'message' => 'updated successfully!',
+                'data'    => $item,
+            ]);
+        } else {
             return response()->json([
                 'success' => false,
                 'message' => 'Nomor Truck Berbeda Pada Saat Gate In !!',
@@ -353,12 +377,18 @@ class Gato extends Controller
 
     public function index_stuf_out()
     {
-        $title="Gate-out Stuffing";
+        $title = "Gate-out Stuffing";
         $ro = RO_Gate::whereIn('status', ['2', '5', '8'])->get();
         $ro_table = RO_Gate::where('truck_out_date', '!=', null)->orderBy('update_time', 'desc')->take(3)->get();
         return view('gate.stuffing.gate-out', compact('title'), compact('ro', 'ro_table'));
     }
-
+    public function stuff_android_out()
+    {
+        $title = "Gate-out Stuffing";
+        $ro = RO_Gate::whereIn('status', ['2', '5', '8'])->get();
+        $ro_table = RO_Gate::where('truck_out_date', '!=', null)->orderBy('update_time', 'desc')->take(3)->get();
+        return view('gate.stuffing.gate-out-android', compact('title'), compact('ro', 'ro_table'));
+    }
     public function gato_stuf(Request $request)
     {
         $now = Carbon::now();
@@ -370,50 +400,47 @@ class Gato extends Controller
                 'truck_out_date' => $now,
                 'status' => '3',
             ]);
-           
-    
+
+
             return response()->json([
                 'success' => true,
                 'message' => 'Detail Data Post',
                 'data' => $truck,
-                
+
             ]);
         } elseif ($truck->status === '5') {
             $truck->update([
                 'truck_out_date' => $now,
                 'status' => '6',
             ]);
-           
-    
+
+
             return response()->json([
                 'success' => true,
                 'message' => 'Detail Data Post',
                 'data' => $truck,
-                
+
             ]);
-        }elseif ($truck->status === '8') {
+        } elseif ($truck->status === '8') {
             $truck->update([
                 'truck_out_date' => $now,
                 'status' => '9',
             ]);
-           
-    
+
+
             return response()->json([
                 'success' => true,
                 'message' => 'Detail Data Post',
                 'data' => $truck,
-                
+
             ]);
-        }
-         else {
+        } else {
             return response()->json([
                 'success' => false,
                 'message' => 'Detail Data Post',
-                
-                
+
+
             ]);
         }
-        
     }
-
 }
