@@ -5,16 +5,16 @@
 
 <div class="page-heading">
   <h3><?= $title ?></h3>
-  <p>Management Data Billing Delivery</p>
+  <p>Management Data Billing Extend Delivery</p>
 
 </div>
 <div class="page-content">
 
   <section class="row">
     <div class="col-12 mb-3">
-      <a href="/delivery/form" type="button" class="btn btn-primary">
+      <a href="/delivery/form/extend" type="button" class="btn btn-primary">
         <i class="fa fa-folder"></i>
-        Delivery Form
+        Extend Delivery Form
       </a>
     </div>
   </section>
@@ -95,59 +95,63 @@
                   <tbody>
                     <?php foreach ($invoices as $value) { ?>
                       <?php if ($value->orderService == $orderServiceArr[$k]) { ?>
-                        <tr>
-                          <td><?= $value->proformaId ?></td>
-                          <!-- <td>Vessel Name</td> -->
-                          <td><?= $value->deliveryForm->customer->customer_name ?></td>
-                          <td><?= $value->containerDetail->{'Container Number'} ?></td>
-                          <td><?= $value->orderService ?></td>
-                          <td><?= $value->billingName ?></td>
-                          <!-- <td>Service Name</td> -->
-                          <td><?= DateTimeFormat($value->createdAt) ?></td>
-                          <td>
-                            <?php if ($value->isPaid == 0) { ?>
-                              <span class="badge bg-danger text-white">Not Paid</span>
-                            <?php } else { ?>
-                              <span class="badge bg-success text-white">Paid</span>
-                            <?php } ?>
-                          </td>
-                          <td>
-                            <?php if ($value->isPiutang == 0) { ?>
-                              <span class="badge bg-danger text-white">Not Piutang</span>
-                            <?php } else { ?>
-                              <span class="badge bg-warning text-white">Piutang</span>
-                            <?php } ?>
-                          </td>
-                          <td>
-                            <a type="button" href="/delivery/billing/pranota?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
-                          </td>
-                          <td>
-                            <?php if ($value->isPiutang == 1 && $value->isPaid == 1) { ?>
-                              <a type="button" href="/delivery/billing/invoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                            <?php } else if ($value->isPiutang == 1 && $value->isPaid == 0) { ?>
-                              <a type="button" href="/delivery/billing/invoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                            <?php } else if ($value->isPiutang == 0 && $value->isPaid == 1) { ?>
-                              <a type="button" href="/delivery/billing/invoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                            <?php } else if ($value->isPiutang == 0 && $value->isPaid == 0) { ?>
-                              <a type="button" class="btn btn-sm btn-primary text-white disabled"><i class="fa fa-dollar"></i></a>
-                            <?php } ?>
-                          </td>
+                        <?php if ($value->isExtended == "1") { ?>
 
-                          <td>
-                            <?php if ($value->isPiutang == 1 && $value->isPaid == 1) { ?>
-                              <a type="button" href="/delivery/billing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
-                            <?php } else if ($value->isPiutang == 1 && $value->isPaid == 0) { ?>
-                              <a type="button" href="/delivery/billing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
-                            <?php } else if ($value->isPiutang == 0 && $value->isPaid == 1) { ?>
-                              <a type="button" href="/delivery/billing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
-                            <?php } else if ($value->isPiutang == 0 && $value->isPaid == 0) { ?>
-                              <a type="button" class="btn btn-sm btn-info text-white disabled"><i class="fa fa-ship"></i></a>
-                            <?php } ?>
+                          <tr>
+                            <td><?= $value->proformaId ?></td>
+                            <!-- <td>Vessel Name</td> -->
+                            <td><?= $value->deliveryForm->customer->customer_name ?></td>
+                            <td><?= $value->containerDetail->{'Container Number'} ?></td>
+                            <td><?= $value->orderService ?></td>
+                            <td><?= $value->billingName ?></td>
+                            <!-- <td>Service Name</td> -->
+                            <td><?= DateTimeFormat($value->createdAt) ?></td>
+                            <td>
+                              <?php if ($value->isPaid == 0) { ?>
+                                <span class="badge bg-danger text-white">Not Paid</span>
+                              <?php } else { ?>
+                                <span class="badge bg-success text-white">Paid</span>
+                              <?php } ?>
+                            </td>
+                            <td>
+                              <?php if ($value->isPiutang == 0) { ?>
+                                <span class="badge bg-danger text-white">Not Piutang</span>
+                              <?php } else { ?>
+                                <span class="badge bg-warning text-white">Piutang</span>
+                              <?php } ?>
+                            </td>
+                            <td>
+                              <a type="button" href="/delivery/billing/pranota?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
+                            </td>
+                            <td>
+                              <?php if ($value->isPiutang == 1 && $value->isPaid == 1) { ?>
+                                <a type="button" href="/delivery/billing/invoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
+                              <?php } else if ($value->isPiutang == 1 && $value->isPaid == 0) { ?>
+                                <a type="button" href="/delivery/billing/invoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
+                              <?php } else if ($value->isPiutang == 0 && $value->isPaid == 1) { ?>
+                                <a type="button" href="/delivery/billing/invoice?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
+                              <?php } else if ($value->isPiutang == 0 && $value->isPaid == 0) { ?>
+                                <a type="button" class="btn btn-sm btn-primary text-white disabled"><i class="fa fa-dollar"></i></a>
+                              <?php } ?>
+                            </td>
 
-                          </td>
-                          <td><a type="button" onclick="paidConfigv2(`<?= $value->id ?>`)" class="btn btn-sm btn-success"><i class="fa fa-cogs"></i></a></td>
+                            <td>
+                              <?php if ($value->isPiutang == 1 && $value->isPaid == 1) { ?>
+                                <a type="button" href="/delivery/billing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
+                              <?php } else if ($value->isPiutang == 1 && $value->isPaid == 0) { ?>
+                                <a type="button" href="/delivery/billing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
+                              <?php } else if ($value->isPiutang == 0 && $value->isPaid == 1) { ?>
+                                <a type="button" href="/delivery/billing/job?id=<?= $value->id ?>" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
+                              <?php } else if ($value->isPiutang == 0 && $value->isPaid == 0) { ?>
+                                <a type="button" class="btn btn-sm btn-info text-white disabled"><i class="fa fa-ship"></i></a>
+                              <?php } ?>
 
-                        </tr>
+                            </td>
+                            <td><a type="button" onclick="paidConfigv2(`<?= $value->id ?>`)" class="btn btn-sm btn-success"><i class="fa fa-cogs"></i></a></td>
+
+                          </tr>
+                        <?php } ?>
+
                       <?php } ?>
 
                     <?php } ?>

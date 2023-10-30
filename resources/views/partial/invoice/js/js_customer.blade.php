@@ -2122,62 +2122,70 @@
                 // $("#arrival").val(formattedDate(containers[0].arrival_date)).attr("readonly", "true");
                 // $("#departure").val(formattedDate(containers[0].departure_date)).attr("readonly", "true");
                 let csrfToken = $('meta[name="csrf-token"]').attr('content');
+                $("#orderService").on('change', function() {
+                  var orderService = $(this).val();
+                  if (orderService == "jpbluar") {
+                    console.log("this is jpbluar!");
+                  } else {
+                    let formData = new FormData();
+                    formData.append("ves_id", containers[0].ves_id);
+                    $.ajax({
+                      headers: {
+                        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+                      },
+                      type: "POST",
+                      url: `/coparn/findSingleVessel`,
+                      cache: false,
+                      contentType: false,
+                      processData: false,
+                      data: formData,
+                      xhr: function() {
+                        var xhr = $.ajaxSettings.xhr();
+                        xhr.upload.onprogress = function(e) {
+                          Swal.fire({
+                            html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
+                            showConfirmButton: false,
 
-                let formData = new FormData();
-                formData.append("ves_id", containers[0].ves_id);
-                $.ajax({
-                  headers: {
-                    'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
-                  },
-                  type: "POST",
-                  url: `/coparn/findSingleVessel`,
-                  cache: false,
-                  contentType: false,
-                  processData: false,
-                  data: formData,
-                  xhr: function() {
-                    var xhr = $.ajaxSettings.xhr();
-                    xhr.upload.onprogress = function(e) {
-                      Swal.fire({
-                        html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
-                        showConfirmButton: false,
-
-                      });
-                    }
-                    return xhr;
-                  },
-                  success: function(response) {
-                    Swal.close();
-
-                    let res = JSON.parse(response);
-                    console.log(res);
-                    data = res[0];
-                    // console.log(res.arrival_date);
-                    $("#vesselBN").val(data.ves_name).attr("readonly", "true");
-                    $("#voyage").val(data.voy_out).attr("readonly", "true");
-                    $("#vesselcode").val(data.ves_code).attr("readonly", "true");
-                    $("#closing").val(formattedDate(data.clossing_date)).attr("readonly", "true");
-                    $("#arrival").val(formattedDate(data.arrival_date)).attr("readonly", "true");
-                    $("#departure").val(formattedDate(data.deparature_date)).attr("readonly", "true");
-                  },
-                  error: function(error) {
-                    setTimeout(function() {
-                      let res = JSON.parse(response);
-                      // console.log(res);
-                      Swal.fire({
-                        icon: 'error',
-                        title: 'Oops !',
-                        text: 'Something occured Happened, Please try again later',
-                      }).then((result) => {
-                        if (result.isConfirmed) {
-                          location.reload();
-                        } else {
-                          location.reload();
+                          });
                         }
-                      })
-                    }, 700);
+                        return xhr;
+                      },
+                      success: function(response) {
+                        Swal.close();
+
+                        let res = JSON.parse(response);
+                        console.log(res);
+                        data = res[0];
+                        // console.log(res.arrival_date);
+                        $("#vesselBN").val(data.ves_name).attr("readonly", "true");
+                        $("#voyage").val(data.voy_out).attr("readonly", "true");
+                        $("#vesselcode").val(data.ves_code).attr("readonly", "true");
+                        $("#closing").val(formattedDate(data.clossing_date)).attr("readonly", "true");
+                        $("#arrival").val(formattedDate(data.arrival_date)).attr("readonly", "true");
+                        $("#departure").val(formattedDate(data.deparature_date)).attr("readonly", "true");
+                      },
+                      error: function(error) {
+                        setTimeout(function() {
+                          let res = JSON.parse(response);
+                          // console.log(res);
+                          Swal.fire({
+                            icon: 'error',
+                            title: 'Oops !',
+                            text: 'Something occured Happened, Please try again later',
+                          }).then((result) => {
+                            if (result.isConfirmed) {
+                              location.reload();
+                            } else {
+                              location.reload();
+                            }
+                          })
+                        }, 700);
+                      }
+                    })
                   }
                 })
+
+
               }
             });
 
@@ -2910,5 +2918,98 @@
     $("#submit").css("display", "unset");
     $("#cancel").css("display", "unset");
     $("#edit").css("display", "none");
+  });
+</script>
+
+<script>
+  function fetchInvoiceSingle(selectedProformaNo) {
+    console.log(selectedProformaNo);
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+    let formData = new FormData();
+    formData.append("id", selectedProformaNo);
+    $.ajax({
+      headers: {
+        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+      },
+      type: "POST",
+      url: `/delivery/ajx/singleInvoice`,
+      cache: false,
+      contentType: false,
+      processData: false,
+      data: formData,
+      xhr: function() {
+        var xhr = $.ajaxSettings.xhr();
+        xhr.upload.onprogress = function(e) {
+          let timerInterval
+          Swal.fire({
+            title: 'Processing',
+            // html: 'I will close in <b></b> milliseconds.',
+            timer: 10000,
+            timerProgressBar: true,
+            didOpen: () => {
+              Swal.showLoading()
+              const b = Swal.getHtmlContainer().querySelector('b')
+              timerInterval = setInterval(() => {
+                b.textContent = Swal.getTimerLeft()
+              }, 100)
+            },
+            willClose: () => {
+              clearInterval(timerInterval)
+            }
+          }).then((result) => {
+            /* Read more about handling dismissals below */
+            if (result.dismiss === Swal.DismissReason.timer) {
+              console.log('I was closed by the timer')
+            }
+          })
+        }
+        return xhr;
+      },
+      success: function(response) {
+        Swal.close();
+        // console.log(response);
+        let res = JSON.parse(response);
+        // $("#proformaNumber")[0].selectedIndex = -1;
+        // $("#proformaNumber").val([]).trigger('change');
+        $("#proforma").val(res.data.proformaId);
+        $("#customer_name").val(res.data.deliveryForm.customer.customer_name);
+        $("#customer_npwp").val(res.data.deliveryForm.customer.npwp);
+        $("#orderService").val(res.data.deliveryForm.orderService);
+        $("#active_to").val(res.data.deliveryForm.exp_date);
+
+        $("#containerNo").val(res.data.containerDetail["Container Number"])
+        $("#containerSize").val(res.data.containerDetail["Container Size"])
+        $("#containerStatus").val(res.data.containerDetail["Container Status"])
+        $("#containerType").val(res.data.containerDetail["Container Type"])
+      },
+      error: function(error) {
+        setTimeout(function() {
+          let res = JSON.parse(response);
+          // console.log(res);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops !',
+            text: 'Something occured Happened, Please try again later',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              location.reload();
+            } else {
+              location.reload();
+            }
+          })
+        }, 700);
+      }
+    })
+  }
+  $("#proformaNumber").on('change', function() {
+    const selectedProforma = this.value;
+    const selectedProformaNo = this.options[this.selectedIndex].getAttribute('data-id');
+
+    if (selectedProforma !== "") {
+      fetchInvoiceSingle(selectedProformaNo);
+    } else {
+      containerSelect.innerHTML = ''; // Clear options when no "do_no" is selected
+
+    }
   });
 </script>

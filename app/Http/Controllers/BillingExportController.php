@@ -138,7 +138,7 @@ class BillingExportController extends Controller
       $fields["roNumber"] = $rono;
     }
 
-    // dd($fields);
+    dd($fields);
 
     $url = getenv('API_URL') . '/delivery-service/form/create';
     $req = $client->post(
