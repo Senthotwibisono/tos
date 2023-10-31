@@ -57,7 +57,16 @@ class LoadController extends Controller
         'bay_tier' => $tem->bay_tier,
       ];
     }
-    $items = Item::where('ctr_intern_status', '=', [51, 53])->get();
+    $items = Item::where(function ($query) {
+          $query->where('ctr_intern_status', '=', 51)
+              ->orWhere('ctr_intern_status', '=', 53);
+        })->where(function ($query) {
+            $query->where('ctr_intern_status', '=', '08')
+                  ->where(function ($query) {
+                      $query->where('mty_type', '=', '01')
+                            ->orWhere('mty_type', '=', '02');
+                  });
+        })->get();
     $users = User::all();
     $data["active"] = "discharge";
     $data["subactive"] = "confirm";
