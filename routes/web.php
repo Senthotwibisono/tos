@@ -440,7 +440,8 @@ Route::get('/yard/placement', [PlacementController::class, 'index']);
 Route::post('/placement', [PlacementController::class, 'place']);
 Route::post('/dapet-tipe', [PlacementController::class, 'get_tipe']);
 Route::post('/container-tipe', [PlacementController::class, 'tipe_container']);
-
+Route::get('/placement/changedToMty-{container_key}', [PlacementController::class, 'change']);
+Route::post('/placement/changed-status', [PlacementController::class, 'place_mty']);
 
 //Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -694,6 +695,7 @@ Route::post('profile-kapal/stores', [ProfileKapal::class, 'stores']);
 Route::get('/stuffing/gate-in', [Gati::class, 'index_stuf']);
 Route::post('/stuf-gate-in', [Gati::class, 'gati_stuf']);
 Route::post('/stuf-gate-in-full', [Gati::class, 'gati_stuf_full']);
+Route::post('/gati-stuf-data', [Gati::class, 'gati_stuffing_data']);
 
 
 Route::get('/stuffing/gate-out', [Gato::class, 'index_stuf_out']);
@@ -710,9 +712,10 @@ Route::post('/get-stuffing', [Stuffing::class, 'get_stuffing']);
 Route::post('/get-vessel-in-stuffing', [Stuffing::class, 'get_vessel']);
 Route::post('/stuffing-place', [Stuffing::class, 'stuffing_place']);
 Route::post('/stuffing-confirm-out', [Stuffing::class, 'confirm_out']);
-Route::get('/stuffing/stuffingDalam/modal-{ro_id_gati}', [Stuffing::class, 'choose_container']);
+Route::get('/stuffing/stuffingDalam/modal-{ro_no}', [Stuffing::class, 'choose_container']);
 Route::get('/stuffing/stuffingLuar/modal-{ro_id_gati}', [Stuffing::class, 'choose_container_luar']);
-Route::get('/stuffing/detailCont-{ro_id_gati}', [Stuffing::class, 'detail_cont']);
+Route::get('/stuffing/detailCont-{ro_no}', [Stuffing::class, 'detail_cont']);
+Route::get('/stuffing/detailContLuar-{ro_id_gati}', [Stuffing::class, 'detail_cont_luar']);
 Route::get('/stuffing/luar/placeCont-{ro_id_gati}', [Stuffing::class, 'place_cont_luar']);
 Route::get('/stuffing/viewCont-{container_key}', [Stuffing::class, 'view_cont']);
 
@@ -745,7 +748,10 @@ Route::get('/edi/detail-container-{ves_id}', [EdiController::class, 'get_cont'])
 // ro
 Route::get('/docs/dokumen/ro', [DocsController::class, 'index_ro']);
 Route::get('/docs/dokumen/ro/detail-{ro_no}', [DocsController::class, 'container_ro']);
-
+Route::post('/docs/ro-pdf', [DocsController::class, 'pdf_ro'])->name('pdf.ro');
+Route::post('/docs/update-ro', [DocsController::class, 'update_ro']);
+Route::get('/show-document-ro/{file}', [DocsController::class, 'showDocument'])->name('show-document-ro');
+Route::get('/docs/ro/editBy-{ro_id}', [DocsController::class, 'edit_ro']);
 // Inven
 Route::get('docs/inventory/items', [DocsController::class, 'index_items'])->name('inventory.items');
 
@@ -786,3 +792,10 @@ Route::post('/trucking', [TruckingController::class, 'trucking']);
 
 // detail-cont Yard Row
 Route::get('/yard/viewCont-{container_key}', [YardrotController::class, 'view_cont']);
+
+
+// report Export
+Route::get('/reports/export', [ReportController::class, 'index_xp']);
+Route::get('/reports/detailCont-{ves_id}', [ReportController::class, 'detail_cont']);
+Route::post('/get-data-kapal', [ReportController::class, 'get_data_kapal']);
+Route::get('/laporan-kapal', [ReportController::class, 'laporan_kapal'])->name('laporan-kapal');

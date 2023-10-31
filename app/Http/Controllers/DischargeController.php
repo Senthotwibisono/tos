@@ -200,6 +200,7 @@ class DischargeController extends Controller
         'id_alat' =>  $request->cc_tt_no,
         'category' => 'Bay',
         'nama_alat' => $alat->name,
+        'operator' => $request->cc_tt_oper,
         'container_key' => $request->container_key,
         'container_no' => $request->container_no,
         'activity' => 'DISCH',

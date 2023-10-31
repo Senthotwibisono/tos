@@ -16,5 +16,14 @@ class RO extends Model
         'ro_no',
         'stuffing_service',
         'jmlh_cont',
+        'shipper',
+        'ves_id',
+        'ves_name',
+        'ves_code',
+        'voy_no',
+        'pod',
+        'ctr_20',
+        'ctr_40',
+        'file'
     ];
 }

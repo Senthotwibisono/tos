@@ -72,7 +72,7 @@
                   <option disabled selected value="">Select Container</option>
                   <?php
                   foreach ($jobContainers->containers as $value) { ?>
-                    <?php if (($value->jobContainer->ctr_intern_status == "03") &&($value->jobContainer->billingName == "DS")) { ?>
+                    <?php if ((($value->jobContainer->ctr_intern_status == "03") &&($value->jobContainer->billingName == "DS") && ($value->jobContainer->orderService != "sppsrelokasipelindo") || ($value->jobContainer->ctr_intern_status == "03")  && ($value->jobContainer->orderService == "sppsrelokasipelindo" || $value->jobContainer->orderService == "spps"))) { ?>
                       <option value="<?= $value->jobContainer->container_key ?>"><?= $value->jobContainer->container_no ?></option>
                     <?php } ?>
                   <?php } ?>
