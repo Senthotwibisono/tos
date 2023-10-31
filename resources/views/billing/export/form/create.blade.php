@@ -100,71 +100,75 @@
                   </div>
                 </div>
                 <div class="col-2">
-                  <div class="form-group">
+                  <div class="form-group" id="ctrInput">
                     <label for="">Ctr Count</label>
-                    <input name="ctr" type="text" id="ctr" class="form-control" required placeholder="Ctr Count">
+                    <input readonly placeholder="Pilih Order Service Dahulu!" name="ctr" type="text" id="ctr" class="form-control" required placeholder="Ctr Count">
                   </div>
                 </div>
                 <div class="col-2">
-                  <div class="form-group">
+                  <div class="form-group" id="podInput">
                     <label for="">Pod</label>
-                    <input name="pod" type="text" id="pod" class="form-control" required placeholder="pod">
+                    <input readonly placeholder="Pilih Order Service Dahulu!" name="pod" type="text" id="pod" class="form-control" required placeholder="pod">
                   </div>
                 </div>
                 <div class="col-2">
-                  <div class="form-group">
+                  <div class="form-group" id="fpodInput">
                     <label for="">Fpod</label>
-                    <input name="fpod" type="text" id="fpod" class="form-control" required placeholder="fpod">
+                    <input readonly placeholder="Pilih Order Service Dahulu!" name="fpod" type="text" id="fpod" class="form-control" required placeholder="fpod">
                   </div>
                 </div>
               </div>
             </div>
-            <div class="col-2 mt-2">
-              <div class="form-group">
+            <div class="col-12 mt-2">
+              <div class="form-group" id="vesselSelect" style="display: none !important;">
                 <label for="">Vessel</label>
-                <!-- <select required name="vessel" id="vessel" class="js-example-basic-multiple form-control" style="height: 150%;">
-                    <option value="" disabled selected>Pilih Salah Satu</option>
-                    <?php foreach ($vessel as $data) { ?>
-                      <option value="<?= $data->ves_name ?>" data-id="<?= $data->id ?>"><?= $data->ves_name ?></option>
-                    <?php } ?>
-                  </select> -->
-                <input type="text" id="vesselBN" name="vessel" class="form-control" placeholder="Vessel" required>
+                <select required name="vessel" id="vessel" class="js-example-basic-multiple form-control" style="height: 150%;">
+                  <option value="" disabled selected>Pilih Salah Satu</option>
+                  <?php foreach ($vessel as $data) { ?>
+                    <option value="<?= $data->ves_name ?>" data-id="<?= $data->ves_id ?>"><?= $data->ves_name ?></option>
+                  <?php } ?>
+                </select>
               </div>
+            </div>
+            <div class="col-2" id="vesselBN">
+              <label for="">Vessel</label>
+              <input readonly placeholder="Pilih Order Service Dahulu!" type="text" name="vessel" id="vesselBNInput" class="form-control" placeholder="Vessel" required>
+
             </div>
             <div class="col-2">
               <div class="form-group">
                 <label>Voyage</label>
-                <input required type="text" id="voyage" name="voyage" class="form-control" placeholder="Voyage..">
+                <input readonly placeholder="Pilih Order Service Dahulu!" required type="text" id="voyage" name="voyage" class="form-control" placeholder="Voyage..">
               </div>
             </div>
 
             <div class="col-2">
               <div class="form-group">
                 <label>Vessel Code</label>
-                <input required type="text" id="vesselcode" name="vesselcode" class="form-control" placeholder="Vessel Code..">
+                <input readonly placeholder="Pilih Order Service Dahulu!" required type="text" id="vesselcode" name="vesselcode" class="form-control" placeholder="Vessel Code..">
               </div>
             </div>
 
             <div class="col-2">
               <div class="form-group">
                 <label>Closing Time</label>
-                <input required name="closingtime" id="closing" type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023" id="closingtime">
+                <input readonly placeholder="Pilih Order Service Dahulu!" required name="closingtime" id="closing" type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023" id="closingtime">
               </div>
             </div>
 
-            <input type="hidden" name="exp_time" value="12:00">
+            <input readonly placeholder="Pilih Order Service Dahulu!" type="hidden" name="exp_time" value="12:00">
 
             <div class="col-2">
               <div class="form-group">
                 <label>Arrival Date</label>
-                <input required name="arrival" id="arrival" type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023" id="arrival">
+                <input readonly placeholder="Pilih Order Service Dahulu!" required name="arrival" id="arrival" type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023" id="arrival">
               </div>
             </div>
 
             <div class="col-2">
               <div class="form-group">
                 <label>Departure Date</label>
-                <input required name="departure" type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023" id="departure">
+                <input readonly placeholder="Pilih Order Service Dahulu!" required name="departure" type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023" id="departure">
               </div>
             </div>
           </div>
