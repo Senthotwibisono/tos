@@ -14,25 +14,25 @@
             .card-header,
             .card-body {
                 padding: 0.5rem !important;
-                font-size: 0.5rem !important;
+                font-size: 10px !important;
             }
 
             /* Reduce modal size */
             .modal.fade.text-left .modal-dialog {
-                max-width: 80% !important;
-                font-size: 0.5rem !important;
+                max-width: 100% !important;
+                font-size: 10px !important;
             }
 
             /* If you want to further adjust modal content size, you can do so by targeting modal content elements here. */
             .modal.fade.text-left .modal-body {
-                max-width: 80% !important;
-                font-size: 0.5rem !important;
+                max-width: 100% !important;
+                font-size: 12px !important;
                 /* Your styles for modal content here */
             }
 
             .modal-content {
-                max-width: 80% !important;
-                font-size: 0.5rem !important;
+                max-width: 100% !important;
+                font-size: 10px !important;
                 /* Your styles for modal content here */
             }
         }

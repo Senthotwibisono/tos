@@ -55,7 +55,7 @@
 
 <!-- Modal Update Status -->
 <div class="modal fade text-left" id="success" role="dialog" aria-labelledby="myModalLabel110" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-md" role="document">
         <div class="modal-content">
             <div class="modal-header bg-success">
                 <h5 class="modal-title white" id="myModalLabel110">Confirm Disch</h5>
@@ -161,8 +161,18 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i><span class="d-none d-sm-block">Close</span></button>
-                <button type="submit" class="btn btn-success ml-1 update_status"><i class="bx bx-check d-block d-sm-none"></i><span class="d-none d-sm-block">Confirm</span></button>
+                <button type="button" class="btn btn-light-secondary btn-lg d-sm-none" data-bs-dismiss="modal" style="font-size: 14px;">
+                    Close
+                </button>
+                <button type="button" class="btn btn-light-secondary btn-lg d-none d-sm-block" data-bs-dismiss="modal" style="font-size: 14px;">
+                    <i class="bx bx-x"></i> Close
+                </button>
+                <button type="submit" class="btn btn-success btn-lg d-sm-none ml-1" style="font-size: 14px;">
+                    Confirm
+                </button>
+                <button type="submit" class="btn btn-success btn-lg d-none d-sm-block ml-1" style="font-size: 14px;">
+                    <i class="bx bx-check"></i> Confirm
+                </button>
             </div>
         </div>
     </div>
