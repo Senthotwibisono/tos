@@ -72,12 +72,13 @@
                   <option disabled selected value="">Select Container</option>
                   <?php
                   foreach ($jobContainers->containers as $value) { ?>
-                    <?php if ((($value->jobContainer->ctr_intern_status == "03") &&($value->jobContainer->billingName == "DS") && ($value->jobContainer->orderService != "sppsrelokasipelindo") || ($value->jobContainer->ctr_intern_status == "03")  && ($value->jobContainer->orderService == "sppsrelokasipelindo" || $value->jobContainer->orderService == "spps"))) { ?>
-                      <option value="<?= $value->jobContainer->container_key ?>"><?= $value->jobContainer->container_no ?></option>
+                    <?php if ((($value->jobContainer->ctr_intern_status == "03") &&($value->jobContainer->billingName == "DS") && ($value->jobContainer->orderService != "sppsrelokasipelindo") || ($value->jobContainer->ctr_intern_status == "03")  && ($value->jobContainer->orderService == "sppsrelokasipelindo" || $value->jobContainer->orderService == "spps" || $value->jobContainer->orderService == "mtiks") || ($value->jobContainer->ctr_intern_status == "08") &&($value->jobContainer->billingName == "DS") && ($value->jobContainer->mty_type == "03"))) { ?>
+                      <option value="<?= $value->jobContainer->id ?>"><?= $value->jobContainer->container_no ?> -- <?= $value->jobContainer->jobNumber ?></option>
                     <?php } ?>
                   <?php } ?>
                 </select>
                 <input type="hidden" id="container_no" class="form-control" name="container_no">
+                <input type="hidden" id="contKey" class="form-control" name="container_key">
               </div>
               {{ csrf_field()}}
             </div>
@@ -194,7 +195,7 @@
   });
   $(document).on('click', '.update_status', function(e) {
     e.preventDefault();
-    var container_key = $('#key').val();
+    var container_key = $('#contKey').val();
     var container_no = $('#container_no').val();
     var invoice_no = $('#invoice').val();
     var job_no = $('#job').val();
@@ -202,7 +203,7 @@
     var truck_in_date = $('#datein').val();
     var order_service = $('#orderserviceCode').val();
     var data = {
-      'container_key': $('#key').val(),
+      'container_key': $('#contKey').val(),
       'container_no': $('#container_no').val(),
       'truck_no': $('#tayo').val(),
       'truck_in_date': $('#datein').val(),
@@ -297,7 +298,8 @@
             let res = JSON.parse(response);
             let job = res.data.containers[0].findContainer;
             let delivery = res.data.containers[0].deliveryForm;
-            // console.log(res);
+            console.log(res);
+            $('#contKey').val(job.container_key);
             $('#container_no').val(job.container_no);
             $('#job').val(job.jobNumber);
             $('#invoice').val(job.invoiceNumber);
@@ -316,6 +318,8 @@
                 $('#orderservice').val("SPPS (Relokasi Pelindo - ICON)");
               } else if (job.orderService === "sp2icon") {
                 $('#orderservice').val("SP2 (Relokasi Pelindo - Icon)");
+              }else if (job.orderService === "mtiks") {
+                $('#orderservice').val("MT Keluar IKS");
               }
             $('#dok').val(delivery.documentNumber);
             $('#jenisDok').val(delivery.documentType);

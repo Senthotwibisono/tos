@@ -170,12 +170,12 @@ class Gati extends Controller
         ];
         // dd($fields, $item->getAttributes());
 
-        $url = getenv('API_URL') . '/delivery-service/job/containerbykey';
-        $req = $client->post(
-            $url,
-            [
-                "json" => $fields
-            ]
+        $url = getenv('API_URL') . '/delivery-service/job/single/'. $request->container_key;
+        $req = $client->get(
+            $url
+            
+            
+            
         );
         $response = $req->getBody()->getContents();
         $result = json_decode($response);
