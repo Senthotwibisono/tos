@@ -16,6 +16,7 @@ class ActAlat extends Model
        'id_alat',
        'category',
        'nama_alat',
+       'operator',
        'container_key',
        'container_no',
        'activity',

@@ -40,6 +40,10 @@
             <li class="submenu-item <?php if(Request::is('planning/ship_planning')): ?> active <?php endif; ?>">
                 <a href="/planning/ship_planning">Ship Planning</a>
             </li>
+            </li>
+            <li class="submenu-item <?php if(Request::is('planning/profile-kapal')): ?> active <?php endif; ?>">
+                <a href="/planning/profile-kapal">Ship Profile</a>
+            </li>
             <hr>
             <li class="submenu-item <?php if(Request::is('planning/report')): ?> active <?php endif; ?>">
                 <a href="/planning/report">Discharge List</a>
@@ -443,66 +447,10 @@
             <li class="submenu-item <?php if(Request::is('reports/gato-del')): ?> active <?php endif; ?>">
                 <a href="/reports/gato-del">Gato-Del Reports</a>
             </li>
-            <!-- <li class="submenu-item ">
-                        <a href="layout-vertical-1-column.html">History Container Equal</a>
-                    </li>
-                    <li class="submenu-item">
-                        <a href="layout-vertical-navbar.html">Yard Display</a>
-                    </li>
-                    <li class="submenu-item ">
-                        <a href="layout-rtl.html">Vessel Activity Monitoring</a>
-                    </li>
-
-                    <hr>
-
-                    <li class="submenu-item ">
-                        <a href="layout-horizontal.html">Laporan Dwelling</a>
-                    </li>
-                    <li class="submenu-item ">
-                        <a href="layout-default.html">Container per Vessel Imp/Exp</a>
-                    </li>
-                    <li class="submenu-item ">
-                        <a href="layout-vertical-1-column.html">Container Activity di Lapangan</a>
-                    </li>
-                    <li class="submenu-item">
-                        <a href="layout-vertical-navbar.html">Import List</a>
-                    </li>
-                    <li class="submenu-item ">
-                        <a href="layout-rtl.html">Container All Status Per Vessel</a>
-                    </li>
-                    <li class="submenu-item ">
-                        <a href="layout-horizontal.html">Container per Status per Vessel</a>
-                    </li>
-                    <li class="submenu-item ">
-                        <a href="layout-default.html">Entry Bayplan Perfomance</a>
-                    </li>
-                    <li class="submenu-item ">
-                        <a href="layout-vertical-1-column.html">Yard Occupantion Ratio</a>
-                    </li>
-                    <li class="submenu-item">
-                        <a href="layout-vertical-navbar.html">Perfomance Gate</a>
-                    </li>
-
-                    <hr>
-
-                    <li class="submenu-item ">
-                        <a href="layout-vertical-1-column.html">Equipment Production</a>
-                    </li>
-                    <li class="submenu-item">
-                        <a href="layout-vertical-navbar.html">Operator Production</a>
-                    </li>
-
-                    <hr>
-
-                    <li class="submenu-item ">
-                        <a href="layout-vertical-1-column.html">All Container per B/L</a>
-                    </li>
-                    <li class="submenu-item">
-                        <a href="layout-vertical-navbar.html">All Container per Kapal per B/L</a>
-                    </li>
-                    <li class="submenu-item">
-                        <a href="layout-vertical-navbar.html">SP2 Active</a>
-                    </li> -->
+            <hr>
+            <li class="submenu-item <?php if(Request::is('reports/export')): ?> active <?php endif; ?>">
+                <a href="/reports/export">Realisasi Export</a>
+            </li>
         </ul>
     </li>
 

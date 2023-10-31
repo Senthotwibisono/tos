@@ -100,7 +100,7 @@ class GateRelokasiController extends Controller
             // SP2 BALIK IKS
             if ($service === 'sp2iks') {
                 $item->update([
-                    'ctr_intern_status' => 12,
+                    'ctr_intern_status' => 14,
                     'ctr_status' => 'MTY',
                     'ctr_active_yn' => 'Y',
                     'truck_no' => $request->truck_no,
@@ -109,7 +109,8 @@ class GateRelokasiController extends Controller
 
                 $fields = [
                     "container_key" => $request->container_key,
-                    "ctr_intern_status" => "12",
+                    "ctr_intern_status" => "14",
+                    'isChoosen' => "0",
                 ];
                 // var_dump($fields);
                 // die();
@@ -129,7 +130,7 @@ class GateRelokasiController extends Controller
 
                     return response()->json([
                         'success' => true,
-                        'message' => 'Silahkan Menuju Bagian Stripping',
+                        'message' => 'Silahkan Menuju Bagian Placement',
                         'data'    => $item,
                     ]);
                 } else {
@@ -147,6 +148,8 @@ class GateRelokasiController extends Controller
                     'no_dok' => $request->no_dok,
                     'jenis_dok' => $request->jenis_dok,
                     'truck_no' => $request->truck_no,
+                    'job_no' => $request->job_no,
+                    'invoice_no' => $request->invoice_no,
                 ]);
                 $client = new Client();
 
@@ -172,7 +175,7 @@ class GateRelokasiController extends Controller
 
                     return response()->json([
                         'success' => true,
-                        'message' => 'Silahkan Menuju Bagian Stripping',
+                        'message' => 'Silahkan Menuju Bagian Placement',
                         'data'    => $item,
                     ]);
                 } else {
@@ -190,6 +193,8 @@ class GateRelokasiController extends Controller
                     'no_dok' => $request->no_dok,
                     'jenis_dok' => $request->jenis_dok,
                     'truck_no' => $request->truck_no,
+                    'job_no' => $request->job_no,
+                    'invoice_no' => $request->invoice_no,
                 ]);
                 $client = new Client();
 

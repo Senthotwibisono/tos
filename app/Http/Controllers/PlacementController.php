@@ -6,6 +6,7 @@ use App\Models\Item;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Yard;
+use App\Models\VVoyage;
 use Auth;
 use App\Models\MasterAlat;
 use App\Models\ActAlat;
@@ -46,8 +47,10 @@ class PlacementController extends Controller
             }
 
             $formattedData[] = [
+                'container_key' => $tem->container_key,
                 'container_no' => $tem->container_no,
                 'ctr_type' => $tem->ctr_type,
+                'ctr_status' => $tem->ctr_status,
                 'yard_block' => $tem->yard_block,
                 'yard_slot' => $tem->yard_slot,
                 'yard_row' => $tem->yard_row,
@@ -59,7 +62,7 @@ class PlacementController extends Controller
 
             ];
         }
-        $items = Item::whereIn('ctr_intern_status', [02, 03, 04, 50, 51, 13])->get();
+        $items = Item::whereIn('ctr_intern_status', [02, 03, 04, 12, 50, 51, 13, 14])->get();
         $users = User::all();
         $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
         $yard_slot = Yard::distinct('yard_slot')->pluck('yard_slot');
@@ -70,7 +73,8 @@ class PlacementController extends Controller
         $data["active"] = "yard";
         $data["subactive"] = "placement";
         $alat = MasterAlat::where('category', '=', 'Yard')->get();
-        return view('yard.place.main', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'alat'), $data);
+        $vessel = VVoyage::whereDate('etd_date', '>=', now())->get();
+        return view('yard.place.main', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'alat', 'vessel'), $data);
     }
 
     public function android()
@@ -176,38 +180,199 @@ class PlacementController extends Controller
         if (is_null($yard_rowtier->container_key)) {
             $id_alat = $request->alat;
             $alat = MasterAlat::where('id', $id_alat)->first();
-            $item->update([
-                'yard_block' => $request->yard_block,
-                'yard_slot' => $request->yard_slot,
-                'yard_row' => $request->yard_row,
-                'yard_tier' => $request->yard_tier,
-                'ctr_intern_status' => ($item->ctr_intern_status === '02' || $item->ctr_intern_status === '03' || $item->ctr_intern_status === '13') ? '03' : (($item->ctr_intern_status === '50') ? '51' : $item->ctr_intern_status),
-                'wharf_yard_oa' => $request->wharf_yard_oa,
+
+            if ($item->ctr_intern_status === '13' || $item->ctr_intern_status === '12' || $item->ctr_intern_status === '14') {
+                $item->update([
+                    'yard_block' => $request->yard_block,
+                    'yard_slot' => $request->yard_slot,
+                    'yard_row' => $request->yard_row,
+                    'yard_tier' => $request->yard_tier,
+                    'ctr_intern_status' => ($item->ctr_intern_status === '12' || $item->ctr_intern_status === '13') ? '03' : (($item->ctr_intern_status === '14') ? '04' :  $item->ctr_intern_status),
+                    'wharf_yard_oa' => $request->wharf_yard_oa,
+                ]);
+    
+                $act_alat = ActAlat::create([
+                    'id_alat' =>  $request->alat,
+                    'category' => $alat->category,
+                    'nama_alat' => $alat->name,
+                    'operator' => $request->operator,
+                    'container_key' => $request->container_key,
+                    'container_no' => $request->container_no,
+                    'activity' => 'PLC',
+                ]);
+    
+    
+                $client = new Client();
+    
+                $fields = [
+                    "container_key" => $request->container_key,
+                    "ctr_intern_status" => ($item->ctr_intern_status === '12' || $item->ctr_intern_status === '13') ? '03' : (($item->ctr_intern_status === '14') ? '04' :  $item->ctr_intern_status),
+                    'yard_block' => $request->yard_block,
+                    'yard_slot' => $request->yard_slot,
+                    'yard_row' => $request->yard_row,
+                    'yard_tier' => $request->yard_tier,
+                ];
+                // dd($fields, $item->getAttributes());
+    
+                $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
+                $req = $client->post(
+                    $url,
+                    [
+                        "json" => $fields
+                    ]
+                );
+                $response = $req->getBody()->getContents();
+                $result = json_decode($response);
+    
+                // dd($result);
+                if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+                    $item->save();
+    
+                    return response()->json([
+                        'success' => 400,
+                        'message' => 'updated successfully!',
+                        'data'    => $item,
+                    ]);
+                } else {
+                    return back();
+                }
+            } else {
+                $item->update([
+                    'yard_block' => $request->yard_block,
+                    'yard_slot' => $request->yard_slot,
+                    'yard_row' => $request->yard_row,
+                    'yard_tier' => $request->yard_tier,
+                    'ctr_intern_status' => ($item->ctr_intern_status === '02' || $item->ctr_intern_status === '03') ? '03' : (($item->ctr_intern_status === '50') ? '51' : $item->ctr_intern_status),
+                    'wharf_yard_oa' => $request->wharf_yard_oa,
+                ]);
+    
+                $act_alat = ActAlat::create([
+                    'id_alat' =>  $request->alat,
+                    'category' => $alat->category,
+                    'nama_alat' => $alat->name,
+                    'operator' => $request->operator,
+                    'container_key' => $request->container_key,
+                    'container_no' => $request->container_no,
+                    'activity' => 'PLC',
+                ]);
+    
+    
+                $client = new Client();
+    
+                $fields = [
+                    "container_key" => $request->container_key,
+                    "ctr_intern_status" => ($item->ctr_intern_status === '02' || $item->ctr_intern_status === '03') ? '03' : (($item->ctr_intern_status === '50') ? '51' : $item->ctr_intern_status),
+                    'yard_block' => $request->yard_block,
+                    'yard_slot' => $request->yard_slot,
+                    'yard_row' => $request->yard_row,
+                    'yard_tier' => $request->yard_tier,
+                ];
+                // dd($fields, $item->getAttributes());
+    
+                $url = getenv('API_URL') . '/delivery-service/container/confirmPlacement';
+                $req = $client->post(
+                    $url,
+                    [
+                        "json" => $fields
+                    ]
+                );
+                $response = $req->getBody()->getContents();
+                $result = json_decode($response);
+    
+                // dd($result);
+                if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+                    $item->save();
+    
+                    return response()->json([
+                        'success' => 400,
+                        'message' => 'updated successfully!',
+                        'data'    => $item,
+                    ]);
+                } else {
+                    return back();
+                }
+            }
+           
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Yard sudah terisi!',
             ]);
+        }
+    }
 
-            $act_alat = ActAlat::create([
-                'id_alat' =>  $request->alat,
-                'category' => $alat->category,
-                'nama_alat' => $alat->name,
-                'container_key' => $request->container_key,
-                'container_no' => $request->container_no,
-                'activity' => 'PLC',
-            ]);
+    public function change(Request $request)
+    {
+        $id = $request->container_key;
+        $item = Item::where('container_key', '=', $id)->first();
 
+        return response()->json([
+            'success' => true,
+            'message' => 'Updated successfully!',
+            'data' => $item,
+        ]);
+    }
 
-            $client = new Client();
+    public function place_mty(Request $request)
+    {
+        $key = $request->container_key;
+        $item = Item::where('container_key', $key);
 
-            $fields = [
-                "container_key" => $request->container_key,
-                "ctr_intern_status" => ($item->ctr_intern_status === '02' || $item->ctr_intern_status === '03') ? '03' : (($item->ctr_intern_status === '50') ? '51' : $item->ctr_intern_status),
-                'yard_block' => $request->yard_block,
-                'yard_slot' => $request->yard_slot,
-                'yard_row' => $request->yard_row,
-                'yard_tier' => $request->yard_tier,
-            ];
+        if ($item) {
+
+            $mty = $request->mty_type;
+            if ($mty === '03') {
+                $item->update([
+                    'ctr_intern_status' => '08',
+                    'mty_type' => $request->mty_type,
+                    'ves_id' => null,
+                    'ves_name' => null,
+                    'ves_code' => null,
+                    'voy_no' => null,
+                ]);
+                $client = new Client();
+        
+                $fields = [
+                    "container_key" => $request->container_key,
+                    "ctr_intern_status" => "08",
+                    "mty_type" => $request->mty_type,
+                    "ves_id" => null,
+                    "ves_name" => null,
+                    "ves_code" => null,
+                    "voy_no" => null,
+                ];
+            }else {
+                $item->update([
+                    'ctr_intern_status' => '08',
+                    'mty_type' => $request->mty_type,
+                    'ves_id' => $request->ves_id,
+                    'ves_name' => $request->ves_name,
+                    'ves_code' => $request->ves_code,
+                    'voy_no' => $request->voy_no,
+                ]);
+
+                $ves_id = $request->ves_id;
+                $kapal = VVoyage::where('ves_id', $ves_id)->first();
+
+                $client = new Client();
+        
+                $fields = [
+                    "container_key" => $request->container_key,
+                    "ctr_intern_status" => "08",
+                    "mty_type" => $request->mty_type,
+                    "ves_id" => $request->ves_id,
+                    "ves_name" => $request->ves_name,
+                    "ves_code" => $request->ves_code,
+                    "voy_no" => $request->voy_no,
+                    "departure_date" => $kapal->deparature_date,
+                    "closing_date" => $kapal->clossing_date,
+                    "arrival_date" => $kapal->arrival_date,
+                ];
+            }
+           
             // dd($fields, $item->getAttributes());
 
-            $url = getenv('API_URL') . '/delivery-service/container/confirmPlacement';
+            $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
             $req = $client->post(
                 $url,
                 [
@@ -219,7 +384,7 @@ class PlacementController extends Controller
 
             // dd($result);
             if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-                $item->save();
+                
 
                 return response()->json([
                     'success' => 400,
@@ -229,11 +394,6 @@ class PlacementController extends Controller
             } else {
                 return back();
             }
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Yard sudah terisi!',
-            ]);
         }
     }
 }

@@ -89,7 +89,9 @@ class Stuffing extends Controller
             ->pluck('container_count', 'truck_id');
         $vessel = VVoyage::where('deparature_date', '>=', $now)->get();
         $alat = MasterAlat::where('category', '=', 'Yard')->get();
-        return view('stuffing.main', $data, compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys', 'ro_gate_dalam', 'ro_stuffing_dalam', 'vessel', 'container_truck', 'ro_gate_luar', 'ro_stuffing_luar', 'container_truck_luar', 'alat'), $data);
+
+        $roDalam = RO::where('stuffing_service', 'in')->orderBy('created_at', 'desc')->get();
+        return view('stuffing.main', $data, compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys', 'ro_gate_dalam', 'ro_stuffing_dalam', 'vessel', 'container_truck', 'ro_gate_luar', 'ro_stuffing_luar', 'container_truck_luar', 'alat', 'roDalam'), $data);
     }
 
     public function android()
@@ -167,7 +169,7 @@ class Stuffing extends Controller
         $container_key = $request->container_key;
         $name = Item::where('container_key', $container_key)->first();
         if ($name) {
-            return response()->json(['container_key' => $name->container_key, 'container_no' => $name->container_no, 'tipe' => $name->ctr_type, 'oldblock' => $name->yard_block, 'oldslot' => $name->yard_slot, 'oldrow' => $name->yard_row, 'oldtier' => $name->yard_tier]);
+            return response()->json(['container_key' => $name->container_key, 'container_no' => $name->container_no, 'tipe' => $name->ctr_type, 'oldblock' => $name->yard_block, 'oldslot' => $name->yard_slot, 'oldrow' => $name->yard_row, 'oldtier' => $name->yard_tier, 'status' => $name->ctr_status]);
         }
         return response()->json(['container_no' => 'data tidak ditemukan', 'tipe' => 'data tidak ditemukan', 'coname' => 'data tidak ditemukan', 'oldblock' => 'data tidak ditemukan', 'oldslot' => 'data tidak ditemukan', 'oldrow' => 'data tidak ditemukan', 'oldtier' => 'data tidak ditemukan']);
     }
@@ -207,16 +209,15 @@ class Stuffing extends Controller
                 'yard_slot'  => 'required',
                 'yard_row'  => 'required',
                 'yard_tier' => 'required',
-                'truck_no' => 'required',
-                'id_alat' => 'required',
-
+                'ro_id_gati' => 'required',
+                 'alat' => 'required',
             ], [
                 'container_no.required' => 'Container Number is required.',
                 'yard_block.required' => 'Block is required.',
                 'yard_slot.required' => 'Slot Alat Number is required.',
                 'yard_row.required' => 'Row Alat Number is required.',
                 'yard_tier.required' => 'Tier Alat Number is required.',
-                'trucK_no.required' => 'Nomor Truck is required.',
+                'ro_id_gati.required' => 'Nomor Truck is required.',
             ]);
 
 
@@ -250,7 +251,7 @@ class Stuffing extends Controller
                         'ro_no' => $request->ro_no,
                         'container_key' => $container_key,
                         'container_no' => $request->container_no,
-                        'truck_no' => $request->truck_no,
+                        'truck_no' => $ro_gate->truck_no,
                         'truck_id' => $truck,
                     ]);
 
@@ -267,7 +268,7 @@ class Stuffing extends Controller
                         'ctr_intern_status' => '53',
                         'wharf_yard_oa' => $request->wharf_yard_oa,
                         'stuffing_date' => $now,
-                        'truck_no' => $request->truck_no,
+                        'truck_no' => $ro_gate->truck_no,
                         'truck_in_date' => $ro_gate->truck_in_date,
                         'stuffing_procces' => $ro->stuffing_service,
                     ]);
@@ -279,6 +280,9 @@ class Stuffing extends Controller
                         'container_no' => $request->container_no,
                         'activity' => 'STFG-IN',
                     ]);
+
+                    $ves_id = $request->ves_id;
+                    $kapal = VVoyage::where('ves_id', $ves_id)->first();
 
                     $client = new Client();
 
@@ -294,6 +298,9 @@ class Stuffing extends Controller
                         'ves_name' => $request->ves_name,
                         'ves_code' => $request->ves_code,
                         'voy_no' => $request->voy_no,
+                        "departure_date" => $kapal->deparature_date,
+                        "closing_date" => $kapal->clossing_date,
+                        "arrival_date" => $kapal->arrival_date,
                     ];
                     // dd($fields, $item->getAttributes());
 
@@ -446,13 +453,16 @@ class Stuffing extends Controller
 
     public function choose_container(Request $request)
     {
-        $id = $request->ro_id_gati;
-        $truck = RO_Gate::where('ro_id_gati', '=', $id)->first();
+        $ro_no = $request->ro_no;
+
+        $roData = RO::where('ro_no', $ro_no)->first();
+        $roGateData = RO_Gate::where('ro_no', $ro_no)->get();
 
         return response()->json([
             'success' => true,
             'message' => 'Updated successfully!',
-            'data' => $truck,
+            'roData' => $roData,
+            'roGateData' => $roGateData,
         ]);
     }
 
@@ -469,6 +479,25 @@ class Stuffing extends Controller
     }
 
     public function detail_cont(Request $request)
+    {
+        $id = $request->ro_no;
+        $detail_cont = RO_Realisasi::where('ro_no', $id)->get();
+
+        if ($detail_cont) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Updated successfully!',
+                'data' => $detail_cont,
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something Wrong!!',
+            ]);
+        }
+    }
+
+    public function detail_cont_luar(Request $request)
     {
         $id = $request->ro_id_gati;
         $detail_cont = RO_Realisasi::where('truck_id', $id)->get();
@@ -625,6 +654,9 @@ class Stuffing extends Controller
                 'activity' => 'STFG-OUT-FULL',
             ]);
 
+            $ves_id = $request->ves_id;
+            $kapal = VVoyage::where('ves_id', $ves_id)->first();
+
             $client = new Client();
 
             $fields = [
@@ -639,6 +671,9 @@ class Stuffing extends Controller
                 'ves_name' => $request->ves_name,
                 'ves_code' => $request->ves_code,
                 'voy_no' => $request->voy_no,
+                "departure_date" => $kapal->deparature_date,
+                "closing_date" => $kapal->clossing_date,
+                "arrival_date" => $kapal->arrival_date,
             ];
             // dd($fields, $item->getAttributes());
 

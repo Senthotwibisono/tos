@@ -67,7 +67,7 @@
       $(document).on('click', '.update_status', function(e) {
         e.preventDefault();
         var ro_no = $('#nomor_ro').val();
-        var ves_id = $('#Vessel').val();
+        var ves_id = $('#VesselDalam').val();
         var ves_name = $('#nama-kapal').val();
         var ves_code = $('#kode-kapal').val();
         var voy_no = $('#nomor-voyage').val();
@@ -82,7 +82,7 @@
         var alat = $('#alat').val();
         var data = {
           'ro_no' : $('#nomor_ro').val(),
-          'ves_id' : $('#Vessel').val(),
+          'ves_id' : $('#VesselDalam').val(),
           'ves_name' : $('#nama-kapal').val(),
           'ves_code' : $('#kode-kapal').val(),
           'voy_no' : $('#nomor-voyage').val(),
@@ -93,8 +93,7 @@
           'yard_row': $('#row').val(),
           'yard_tier': $('#tier').val(),
           'user_id': $('#user').val(),
-          'truck_no' : $('#truck').val(),
-          'ro_id_gati' : $('#id_truck').val(),
+          'ro_id_gati' : $('#truck').val(),
           'alat' : $('#alat').val(),
 
         }
@@ -181,6 +180,7 @@
                 $('#container_key').val(response.container_key);
                 $('#container_no').val(response.container_no);
                 $('#tipe').val(response.tipe);
+                $('#status').val(response.status);
                 $('#invoice').val(response.invoice);
                 $('#oldblock').val(response.oldblock);
                 $('#oldslot').val(response.oldslot);
@@ -195,7 +195,7 @@
         });
 
         $(document).ready(function() {
-          $('#Vessel').on('change', function() {
+          $('#VesselDalam').on('change', function() {
             let id = $(this).val();
             $.ajax({
               type: 'POST',
@@ -379,13 +379,18 @@
 
 
     <script>
-  $(function() {
+    $(function() {
+
+      function destroyChoices(selectElement) {
+        if (selectElement.data('choices')) {
+            selectElement.data('choices').destroy();
+        }
+    }
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-   
 
     $(document).on('click', '.stuffingDalam', function() {
         let id = $(this).data('id');
@@ -394,17 +399,32 @@
             url: '/stuffing/stuffingDalam/modal-' + id,
             cache: false,
             data: {
-                ro_id_gati: id
+                ro_no: id
             },
             dataType: 'json',
             success: function(response) {
                 console.log(response);
-                $('#stuffingDalamModal').modal('show');
-                $("#stuffingDalamModal #nomor_ro").val(response.data.ro_no);
-                $("#stuffingDalamModal #truck").val(response.data.truck_no);
-                $("#stuffingDalamModal #id_truck").val(response.data.ro_id_gati);
-                
-                
+            $('#stuffingDalamModal').modal('show');
+            $("#stuffingDalamModal #nomor_ro").val(response.roData.ro_no);
+            $("#stuffingDalamModal #nama-kapal").val(response.roData.ves_name);
+            $("#stuffingDalamModal #kode-kapal").val(response.roData.ves_code);
+            $("#stuffingDalamModal #nomor-voyage").val(response.roData.voy_no);
+            $("#stuffingDalamModal #VesselDalam").val(response.roData.ves_id);
+
+            var selectTruck = $("#truck");
+            selectTruck.empty(); // Hapus semua opsi yang ada sebelumnya
+
+            // Ambil daftar truck dari respons
+            var truckList = response.roGateData;
+
+            for (var i = 0; i < truckList.length; i++) {
+                var truck = truckList[i].truck_no;
+                var truckId = truckList[i].ro_id_gati;
+                selectTruck.append($('<option>', {
+                    value: truckId,
+                    text: truck,
+                }));
+            }
             },
             error: function(data) {
                 console.log('error:', data);
@@ -464,7 +484,7 @@
             url: '/stuffing/detailCont-' + id,
             cache: false,
             data: {
-                ro_id_gati: id
+                ro_no: id
             },
             dataType: 'json',
             success: function(response) {
@@ -570,7 +590,7 @@
         let id = $(this).data('id');
         $.ajax({
             type: 'GET',
-            url: '/stuffing/detailCont-' + id,
+            url: '/stuffing/detailContLuar-' + id,
             cache: false,
             data: {
                 ro_id_gati: id

@@ -202,7 +202,7 @@
                     success: function(response) {
                         console.log(response);
                         if (response.success) {
-                            Swal.fire('Saved!', 'Silahkan Menuju Bagian Stripping', 'success')
+                            Swal.fire('Saved!', 'Silahkan Menuju Bagian Placement', 'success')
                             .then(() => {
                             // Memuat ulang halaman setelah berhasil menyimpan data
                             window.location.reload();

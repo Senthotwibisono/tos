@@ -13,20 +13,20 @@
               <div class="form-group">
                 <label for="first-name-vertical">Choose R.O Number</label>
                 <input type="text" id="nomor_ro" class="form-control" name="ro_no" readonly>
-                <input type="text" id="id_truck" class="form-control" name="ro_id_gate" readonly>
               </div>
             </div>
             <div class="col-12">
               <div class="form-group">
                 <label for="first-name-vertical">Truck No</label>
-                <input type="text" id="truck" class="form-control" name="truck_no" readonly>
+                <select name="" id="truck" class="form-select">
+                </select>
               </div>
             </div>
             <div class="col-12">
               <div class="form-group">
                 <label for="first-name-vertical">Choose Vessel</label>
-                <select class="choices form-select" id="Vessel" name="ves_id" required>
-                    <option value="">Select Container</option>
+                <select class="form-select select-single" id="VesselDalam" name="ves_id" required>
+                    <option value="" disabeled selected values>Select Vessel</option>
                    @foreach($vessel as $ves)
                    <option value="{{$ves->ves_id}}">{{$ves->ves_name}}</option>
                    @endforeach
@@ -70,7 +70,7 @@
                             <div class="form-group">
                                 <label for="first-name-vertical">Alat</label>
                                 <select class="choices form-select" id="alat" required>
-                                    <option value="">Pilih Alata</option>
+                                    <option value="">Pilih Alat</option>
                                     @foreach($alat as $alt)
                                     <option value="{{$alt->id}}">{{$alt->name}}</option>
                                     @endforeach
@@ -84,7 +84,12 @@
               <div class="form-group">
                 <label for="first-name-vertical">Type</label>
                 <input type="text" id="tipe" class="form-control" name="ctr_type" disabled>
-                <input type="text" id="id" class="form-control" name="id" disabled>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label for="first-name-vertical">Status</label>
+                <input type="text" id="status" class="form-control" name="ctr_status" disabled>
               </div>
             </div>
             <div class="col-12">

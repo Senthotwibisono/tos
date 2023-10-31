@@ -25,7 +25,14 @@ class Gato extends Controller
     public function index()
     {
         $title = 'Gate Out Delivery';
-        $confirmed = Item::where('ctr_intern_status', '=', '09',)->orderBy('update_time', 'desc')->get();
+        $confirmed = Item::where('ctr_intern_status', '=', '09',)->orWhere(function ($subquery){
+                            $subquery->where('ctr_intern_status', ['03','04'])
+                                        ->where(function ($subsubquery) {
+                                            $subsubquery->where('order_service', 'spps')
+                                                ->orWhere('order_service', 'sppsrelokasipelindo')
+                                                ->whereNotNull('truck_out_date');
+                                            });
+                        })->orderBy('update_time', 'desc')->get();
         $formattedData = [];
         $data = [];
 
@@ -53,9 +60,14 @@ class Gato extends Controller
                 'container_key' => $tem->container_key
             ];
         }
-        $containerKeys = Item::where('ctr_intern_status', '10')
-            ->whereNotNull('truck_no')
-            ->pluck('container_no', 'container_key');
+        $containerKeys = Item::where('ctr_intern_status', '10')->whereNotNull('truck_no')->orWhere(function ($subquery){
+                                $subquery->where('ctr_intern_status', ['03','04'])
+                                            ->where(function ($subsubquery) {
+                                                $subsubquery->where('order_service', 'spps')
+                                                    ->orWhere('order_service', 'sppsrelokasipelindo')
+                                                    ->whereNotNull('truck_no')->whereNotNull('truck_in_date');
+                                                });
+                            })->pluck('container_no', 'container_key');
         $users = User::all();
         $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
         $yard_slot = Yard::distinct('yard_slot')->pluck('yard_slot');
@@ -166,7 +178,18 @@ class Gato extends Controller
                         "container_key" => $request->container_key,
                         "ctr_intern_status" => "11",
                     ];
-                } else {
+                } elseif (($item->order_service === 'spps') || $item->order_service === 'sppsrelokasipelindo') {
+                    $item->update([
+                        'truck_no' => $request->truck_no,
+                        'truck_out_date' => $request->truck_out_date,
+                    ]);
+                    $client = new Client();
+
+                    $fields = [
+                        "container_key" => $request->container_key,
+                    ];
+                }
+                 else {
                     $item->update([
                         'ctr_intern_status' => '09',
                         'truck_no' => $request->truck_no,

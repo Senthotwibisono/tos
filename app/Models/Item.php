@@ -113,6 +113,7 @@ class item extends Model
         'user_id',
         'ro_no',
         'stuffing_procces',
+        'mty_type',
     ];
 
     public function job()
