@@ -196,6 +196,8 @@ class BillingImportController extends Controller
       $data["orderService"] = "SPPS (Relokasi Pelindo - ICON)";
     } else if ($result->data->deliveryForm->orderService == "sp2icon") {
       $data["orderService"] = "SP2 (Relokasi Pelindo - ICON)";
+    } else if ($result->data->deliveryForm->orderService == "mtiks") {
+      $data["orderService"] = "MT Keluar IKS";
     }
 
 
@@ -238,6 +240,8 @@ class BillingImportController extends Controller
       $orderServiceName = "SPPS (Relokasi Pelindo - ICON)";
     } else if ($orderService == "sp2icon") {
       $orderServiceName = "SP2 (Relokasi Pelindo - ICON)";
+    } else if ($result->data->deliveryForm->orderService == "mtiks") {
+      $orderServiceName = "MT Keluar IKS";
     }
 
     $delivery = $result->data;
@@ -376,7 +380,7 @@ class BillingImportController extends Controller
 
     $id_invoice = $request->id;
 
-    // GET SINGLE FORM
+    // GET SINGLE INVOICE
     $url_single_invoice = getenv('API_URL') . '/delivery-service/invoice/v2/single/' . $id_invoice;
     $req_single_invoice = $client->get($url_single_invoice);
     $response_single_invoice = $req_single_invoice->getBody()->getContents();
@@ -808,6 +812,8 @@ class BillingImportController extends Controller
       $data["orderService"] = "SPPS (Relokasi Pelindo - ICON)";
     } else if ($result->data->deliveryForm->orderService == "sp2icon") {
       $data["orderService"] = "SP2 (Relokasi Pelindo - ICON)";
+    } else if ($result->data->deliveryForm->orderService == "mtiks") {
+      $data["orderService"] = "MT Keluar IKS";
     }
 
 
@@ -824,7 +830,7 @@ class BillingImportController extends Controller
       "id" => $id,
     ];
     // dd($fields);
-    $url = getenv('API_URL') . '/delivery-service/form/delivery/calculate';
+    $url = getenv('API_URL') . '/delivery-service/form/delivery/extend/calculate';
 
     $req = $client->post(
       $url,
@@ -849,6 +855,8 @@ class BillingImportController extends Controller
       $orderServiceName = "SPPS (Relokasi Pelindo - ICON)";
     } else if ($orderService == "sp2icon") {
       $orderServiceName = "SP2 (Relokasi Pelindo - ICON)";
+    } else if ($result->data->deliveryForm->orderService == "mtiks") {
+      $orderServiceName = "MT Keluar IKS";
     }
 
     $delivery = $result->data;
@@ -977,5 +985,20 @@ class BillingImportController extends Controller
     } else {
       return redirect('/delivery/billing/extend')->with('success', 'Data gagal disimpan! kode error : #st2del');
     }
+  }
+
+  public function allContainer(Request $request)
+  {
+    $client = new Client();
+
+    $url = getenv('API_URL') . '/delivery-service/container/all';
+    $req = $client->get(
+      $url
+    );
+    $response = $req->getBody()->getContents();
+    // var_dump($response);
+    // die();
+
+    echo $response;
   }
 }

@@ -311,6 +311,7 @@ Route::prefix('delivery')->group(function () {
     Route::post('/verifyPayment ', [BillingImportController::class, 'verifyPayment']);
     Route::post('/verifyPiutang', [BillingImportController::class, 'verifyPiutang']);
     Route::post('/singleInvoice', [BillingImportController::class, 'singleInvoice']);
+    Route::post('/allContainer', [BillingImportController::class, 'allContainer']);
   });
 });
 
@@ -339,6 +340,7 @@ Route::prefix('receiving')->group(function () {
     Route::post('/singleInvoice', [BillingExportController::class, 'singleInvoice']);
     Route::post('/verifyPayment ', [BillingExportController::class, 'verifyPayment']);
     Route::post('/verifyPiutang', [BillingExportController::class, 'verifyPiutang']);
+    Route::post('/groupcontainerbyvesid', [BillingExportController::class, 'groupContainerByVesId']);
   });
 });
 

@@ -1619,10 +1619,10 @@
             timerProgressBar: true,
             didOpen: () => {
               Swal.showLoading()
-              const b = Swal.getHtmlContainer().querySelector('b')
-              timerInterval = setInterval(() => {
-                b.textContent = Swal.getTimerLeft()
-              }, 100)
+              // const b = Swal.getHtmlContainer().querySelector('b')
+              // timerInterval = setInterval(() => {
+              //   b.textContent = Swal.getTimerLeft()
+              // }, 100)
             },
             willClose: () => {
               clearInterval(timerInterval)
@@ -1697,9 +1697,9 @@
                   didOpen: () => {
                     Swal.showLoading()
                     const b = Swal.getHtmlContainer().querySelector('b')
-                    timerInterval = setInterval(() => {
-                      b.textContent = Swal.getTimerLeft()
-                    }, 100)
+                    // timerInterval = setInterval(() => {
+                    // b.textContent = Swal.getTimerLeft()
+                    // }, 100)
                   },
                   willClose: () => {
                     clearInterval(timerInterval)
@@ -1720,7 +1720,7 @@
               console.log(res);
               data = res[0];
               // console.log(res.arrival_date);
-              $("#vesselBN").val(data.ves_name).attr("readonly", "true");
+              $("#vesselBNInput").val(data.ves_name).attr("readonly", "true");
               $("#voyage").val(data.voy_out).attr("readonly", "true");
               $("#vesselcode").val(data.ves_code).attr("readonly", "true");
               $("#closing").val(formattedDate(data.clossing_date)).attr("readonly", "true");
@@ -2001,6 +2001,9 @@
 </script>
 
 <script>
+  // var orderService = $("#orderService").val();
+  // console.log(orderService);
+
   function fetchContainersRo(selectedDoNoId) {
     var sweet_loader = '<div class="spinner-border text-info" role="status"><span class="sr-only">Loading...</span></div>';
     var cont = [];
@@ -2122,68 +2125,78 @@
                 // $("#arrival").val(formattedDate(containers[0].arrival_date)).attr("readonly", "true");
                 // $("#departure").val(formattedDate(containers[0].departure_date)).attr("readonly", "true");
                 let csrfToken = $('meta[name="csrf-token"]').attr('content');
-                $("#orderService").on('change', function() {
-                  var orderService = $(this).val();
-                  if (orderService == "jpbluar") {
-                    console.log("this is jpbluar!");
-                  } else {
-                    let formData = new FormData();
-                    formData.append("ves_id", containers[0].ves_id);
-                    $.ajax({
-                      headers: {
-                        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
-                      },
-                      type: "POST",
-                      url: `/coparn/findSingleVessel`,
-                      cache: false,
-                      contentType: false,
-                      processData: false,
-                      data: formData,
-                      xhr: function() {
-                        var xhr = $.ajaxSettings.xhr();
-                        xhr.upload.onprogress = function(e) {
-                          Swal.fire({
-                            html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
-                            showConfirmButton: false,
+                // $("#orderService").on('change', function() {
+                // console.log("CHANGED HERE!");
+                let selectedOrderService = $("#orderService").val();
+                console.log("ORDER SERVICE SELECTED =", selectedOrderService);
+                // console.log("CHANGED HERE AFTER SELECTED!");
 
-                          });
-                        }
-                        return xhr;
-                      },
-                      success: function(response) {
-                        Swal.close();
+                if (selectedOrderService == "jpbluar") {
+                  console.log("this is JPB LUAR SELECTED");
+                  $("#vesselBNInput").val(null).attr("readonly", false).attr("placeholder", "Lengkapi Data!");
+                  $("#voyage").val(null).attr("readonly", false).attr("placeholder", "Lengkapi Data!");
+                  $("#vesselcode").val(null).attr("readonly", false).attr("placeholder", "Lengkapi Data!");
+                  $("#closing").val(null).attr("readonly", false).attr("placeholder", "Lengkapi Data!");
+                  $("#arrival").val(null).attr("readonly", false).attr("placeholder", "Lengkapi Data!");
+                  $("#departure").val(null).attr("readonly", false).attr("placeholder", "Lengkapi Data!");
 
-                        let res = JSON.parse(response);
-                        console.log(res);
-                        data = res[0];
-                        // console.log(res.arrival_date);
-                        $("#vesselBN").val(data.ves_name).attr("readonly", "true");
-                        $("#voyage").val(data.voy_out).attr("readonly", "true");
-                        $("#vesselcode").val(data.ves_code).attr("readonly", "true");
-                        $("#closing").val(formattedDate(data.clossing_date)).attr("readonly", "true");
-                        $("#arrival").val(formattedDate(data.arrival_date)).attr("readonly", "true");
-                        $("#departure").val(formattedDate(data.deparature_date)).attr("readonly", "true");
-                      },
-                      error: function(error) {
-                        setTimeout(function() {
-                          let res = JSON.parse(response);
-                          // console.log(res);
-                          Swal.fire({
-                            icon: 'error',
-                            title: 'Oops !',
-                            text: 'Something occured Happened, Please try again later',
-                          }).then((result) => {
-                            if (result.isConfirmed) {
-                              location.reload();
-                            } else {
-                              location.reload();
-                            }
-                          })
-                        }, 700);
+                } else {
+                  let formData = new FormData();
+                  formData.append("ves_id", containers[0].ves_id);
+                  $.ajax({
+                    headers: {
+                      'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+                    },
+                    type: "POST",
+                    url: `/coparn/findSingleVessel`,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    data: formData,
+                    xhr: function() {
+                      var xhr = $.ajaxSettings.xhr();
+                      xhr.upload.onprogress = function(e) {
+                        Swal.fire({
+                          html: '<div><h4>Processing...</h4>' + sweet_loader + '</div>',
+                          showConfirmButton: false,
+
+                        });
                       }
-                    })
-                  }
-                })
+                      return xhr;
+                    },
+                    success: function(response) {
+                      Swal.close();
+
+                      let res = JSON.parse(response);
+                      console.log(res);
+                      data = res[0];
+                      // console.log(res.arrival_date);
+                      $("#vesselBNInput").val(data.ves_name).attr("readonly", "true");
+                      $("#voyage").val(data.voy_out).attr("readonly", "true");
+                      $("#vesselcode").val(data.ves_code).attr("readonly", "true");
+                      $("#closing").val(formattedDate(data.clossing_date)).attr("readonly", "true");
+                      $("#arrival").val(formattedDate(data.arrival_date)).attr("readonly", "true");
+                      $("#departure").val(formattedDate(data.deparature_date)).attr("readonly", "true");
+                    },
+                    error: function(error) {
+                      setTimeout(function() {
+                        let res = JSON.parse(response);
+                        // console.log(res);
+                        Swal.fire({
+                          icon: 'error',
+                          title: 'Oops !',
+                          text: 'Something occured Happened, Please try again later',
+                        }).then((result) => {
+                          if (result.isConfirmed) {
+                            location.reload();
+                          } else {
+                            location.reload();
+                          }
+                        })
+                      }, 700);
+                    }
+                  })
+                }
 
 
               }
@@ -2377,6 +2390,75 @@
         $("#closing").val(formattedDate(data.clossing_date)).attr("readonly", "true");
         $("#arrival").val(formattedDate(data.arrival_date)).attr("readonly", "true");
         $("#departure").val(formattedDate(data.deparature_date)).attr("readonly", "true");
+        let fd = new FormData();
+        // let ves_id = data.ves_id;
+        // console.log("VES id = ", ves_id);
+        fd.append("ves_id", data.ves_id);
+        $.ajax({
+          headers: {
+            'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+          },
+          type: "POST",
+          url: `/receiving/ajx/groupcontainerbyvesid`,
+          cache: false,
+          contentType: false,
+          processData: false,
+          data: fd,
+          xhr: function() {
+            var xhr = $.ajaxSettings.xhr();
+            xhr.upload.onprogress = function(e) {
+              let timerInterval
+              Swal.fire({
+                title: 'Processing',
+                // html: 'I will close in <b></b> milliseconds.',
+                timer: 10000,
+                timerProgressBar: true,
+                didOpen: () => {
+                  Swal.showLoading()
+                  const b = Swal.getHtmlContainer().querySelector('b')
+                  timerInterval = setInterval(() => {
+                    b.textContent = Swal.getTimerLeft()
+                  }, 100)
+                },
+                willClose: () => {
+                  clearInterval(timerInterval)
+                }
+              }).then((result) => {
+                /* Read more about handling dismissals below */
+                if (result.dismiss === Swal.DismissReason.timer) {
+                  console.log('I was closed by the timer')
+                }
+              })
+            }
+            return xhr;
+          },
+          success: function(response) {
+            let res = JSON.parse(response);
+            const containers = res.data;
+            // console.log(containers);
+            $("#containerSelectorView")[0].selectedIndex = -1;
+            $("#containerSelectorView")[0].innerHTML = "";
+            $("#containerSelectorView").val([]).trigger('change');
+            $("#containerSelector")[0].selectedIndex = -1;
+            $("#containerSelector")[0].innerHTML = "";
+            $("#containerSelector").val([]).trigger('change');
+
+            containers.forEach((container) => {
+              let mty_type = container.mty_type;
+              let intern_status = container.ctr_intern_status;
+              let isChoosen = container.isChoosen;
+              if ((mty_type == "01" || mty_type == "02") && (intern_status == "08") && (isChoosen != "1")) {
+                $("#containerSelector").append(`<option value="${container.id}">${container.container_no}</option>`)
+                $("#containerSelectorView").append(`<option value="${container.id}">${container.container_no}</option>`)
+              }
+
+            });
+
+            $("#selector").css("display", "grid");
+            $("#selectorView").css("display", "none");
+            Swal.close();
+          }
+        })
       },
       error: function(error) {
         setTimeout(function() {
@@ -2813,14 +2895,27 @@
     let check = $("#beacukaiChecking").val();
     let doCheck = $("#do_exp_date").val();
     let expDate = $("#exp_date").val();
-    let orderService = $("#basicSelect").val();
+    let orderService = $("#orderService").val();
     let bolnCheck = $("#boln").val();
+    let vesselBNIInput = $("#vesselBNInput").val();
+    let voyage = $("#voyage").val();
+    let vesselcode = $("#vesselcode").val();
+
 
 
     if (check == "true") {
-      if (!doCheck || !expDate || !bolnCheck || !orderService) {
+      if (orderService == "mtiks") {
+        bolnCheck = "-";
+        doCheck = expDate;
+      } else {
+        vesselBNIInput = "-";
+        voyage = "-";
+        vesselcode = "-";
+      }
+      if (!doCheck || !expDate || !bolnCheck || !orderService || !voyage || !vesselBNIInput || !vesselcode) {
         event.preventDefault(); // Prevent form submission
         // alert("Please enter a date."); // Display an alert or use another method to notify the user
+        console.log(check, doCheck, expDate, orderService, bolnCheck, vesselBNIInput, voyage, vesselcode);
         Swal.fire({
           icon: 'warning',
           title: 'Kamu Belum Melengkapi Form!',
@@ -2849,6 +2944,10 @@
 
 
     if (check == "true") {
+      // console.log("ORDER SERVICE ON SUBMIT= ", orderService);
+      if (orderService == "lolomt") {
+        ctr = "-";
+      }
       if (!ctr || !expDate || !orderService) {
         event.preventDefault(); // Prevent form submission
         // alert("Please enter a date."); // Display an alert or use another method to notify the user
@@ -2892,20 +2991,194 @@
 </script>
 
 <script>
+  let csrfToken = $('meta[name="csrf-token"]').attr('content');
+
   $('#orderService').on('change', function() {
     var orderService = $(this).val();
+    console.log("GLOBAL ORDER SERVICE SELECTED =", orderService);
+    $("#vesselBNInput").val(null).attr("readonly", true).attr("placeholder", "Pilih Booking / RO Number Dahulu!");
+    $("#voyage").val(null).attr("readonly", true).attr("placeholder", "Pilih Booking / RO Number Dahulu!");
+    $("#vesselcode").val(null).attr("readonly", true).attr("placeholder", "Pilih Booking / RO Number Dahulu!");
+    $("#closing").val(null).attr("readonly", true).attr("placeholder", "Pilih Booking / RO Number Dahulu!");
+    $("#arrival").val(null).attr("readonly", true).attr("placeholder", "Pilih Booking / RO Number Dahulu!");
+    $("#departure").val(null).attr("readonly", true).attr("placeholder", "Pilih Booking / RO Number Dahulu!");
+    $("#ctr").val(null).attr("readonly", true).attr("placeholder", "Pilih Booking / RO Number Dahulu!");
+    $("#fpod").val(null).attr("readonly", true).attr("placeholder", "Pilih Booking / RO Number Dahulu!");
+    $("#pod").val(null).attr("readonly", true).attr("placeholder", "Pilih Booking / RO Number Dahulu!");
+    $("#containerSelectorView")[0].selectedIndex = -1;
+    $("#containerSelectorView").val([]).trigger('change');
+    $("#containerSelector")[0].selectedIndex = -1;
+    $("#containerSelector").val([]).trigger('change');
 
+    $("#selector").css("display", "grid");
+    $("#selectorView").css("display", "none");
     if (orderService == "ernahandling2inv" || orderService == "ernahandlingluar" || orderService == "sppsdry" || orderService == "jpbicon" || orderService == "jpbluar") {
       $("#RoInput").css('display', 'block');
       $("#bookingInput").css('display', 'none');
       $("#roNumber").select2("destroy");
       $("#roNumber").select2();
+      $("#vesselBN").css('display', 'block');
+      $("#vesselSelect").css('display', 'none');
+      $("#ctrInput").css('display', 'block');
+      $("#podInput").css('display', 'block');
+      $("#fpodInput").css('display', 'block');
+      $("#do_fill").css('display', 'flex');
+      $("#mt_fill").css('display', 'none');
+    } else if (orderService == "lolomt") {
+      $("#RoInput").css('display', 'none');
+      $("#vesselBN").css('display', 'none');
+      $("#vesselSelect").css('display', 'block');
+      $("#bookingInput").css('display', 'none');
+      $("#vessel").select2("destroy");
+      $("#vessel").select2();
+      $("#ctrInput").css('display', 'none');
+      $("#podInput").css('display', 'none');
+      $("#fpodInput").css('display', 'none');
+    } else if (orderService == "mtiks") {
+      $("#do_fill").css('display', 'none');
+      $("#mt_fill").css('display', 'flex');
+      $("#vesselBNInput").val(null).attr("readonly", false).attr("placeholder", "Lengkapi Data!");
+      $("#voyage").val(null).attr("readonly", false).attr("placeholder", "Lengkapi Data!");
+      $("#vesselcode").val(null).attr("readonly", false).attr("placeholder", "Lengkapi Data!");
+      $.ajax({
+        headers: {
+          'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+        },
+        type: "POST",
+        url: `/delivery/ajx/allContainer`,
+        cache: false,
+        contentType: false,
+        processData: false,
+        xhr: function() {
+          var xhr = $.ajaxSettings.xhr();
+          xhr.upload.onprogress = function(e) {
+            let timerInterval
+            Swal.fire({
+              title: 'Processing',
+              // html: 'I will close in <b></b> milliseconds.',
+              timer: 10000,
+              timerProgressBar: true,
+              didOpen: () => {
+                Swal.showLoading()
+                const b = Swal.getHtmlContainer().querySelector('b')
+                timerInterval = setInterval(() => {
+                  b.textContent = Swal.getTimerLeft()
+                }, 100)
+              },
+              willClose: () => {
+                clearInterval(timerInterval)
+              }
+            }).then((result) => {
+              /* Read more about handling dismissals below */
+              if (result.dismiss === Swal.DismissReason.timer) {
+                console.log('I was closed by the timer')
+              }
+            })
+          }
+          return xhr;
+        },
+        success: function(response) {
+          let res = JSON.parse(response);
+          const containers = res.data;
+          console.log(res);
+          $("#containerSelectorView")[0].selectedIndex = -1;
+          $("#containerSelectorView")[0].innerHTML = "";
+          $("#containerSelectorView").val([]).trigger('change');
+          $("#containerSelector")[0].selectedIndex = -1;
+          $("#containerSelector")[0].innerHTML = "";
+          $("#containerSelector").val([]).trigger('change');
+
+          containers.forEach((container) => {
+            let mty_type = container.mty_type;
+            let intern_status = container.ctr_intern_status;
+            let isChoosen = container.isChoosen;
+            if ((mty_type == "03") && (intern_status == "08") && (isChoosen != "1")) {
+              $("#containerSelector").append(`<option value="${container.id}">${container.container_no}</option>`)
+            }
+
+          });
+
+          $("#selector").css("display", "grid");
+          Swal.close();
+        }
+      })
+    } else if (orderService == "sp2iks" || orderService == "sp2mkb" || orderService == "sp2pelindo" || orderService == "spps" || orderService == "sp2relokasipelindo" || orderService == "sp2icon") {
+      $("#do_fill").css('display', 'flex');
+      $("#mt_fill").css('display', 'none');
+      $.ajax({
+        headers: {
+          'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+        },
+        type: "POST",
+        url: `/delivery/ajx/allContainer`,
+        cache: false,
+        contentType: false,
+        processData: false,
+        xhr: function() {
+          var xhr = $.ajaxSettings.xhr();
+          xhr.upload.onprogress = function(e) {
+            let timerInterval
+            Swal.fire({
+              title: 'Processing',
+              // html: 'I will close in <b></b> milliseconds.',
+              timer: 10000,
+              timerProgressBar: true,
+              didOpen: () => {
+                Swal.showLoading()
+                const b = Swal.getHtmlContainer().querySelector('b')
+                timerInterval = setInterval(() => {
+                  b.textContent = Swal.getTimerLeft()
+                }, 100)
+              },
+              willClose: () => {
+                clearInterval(timerInterval)
+              }
+            }).then((result) => {
+              /* Read more about handling dismissals below */
+              if (result.dismiss === Swal.DismissReason.timer) {
+                console.log('I was closed by the timer')
+              }
+            })
+          }
+          return xhr;
+        },
+        success: function(response) {
+          let res = JSON.parse(response);
+          const containers = res.data;
+          console.log(res);
+          $("#containerSelectorView")[0].selectedIndex = -1;
+          $("#containerSelectorView")[0].innerHTML = "";
+          $("#containerSelectorView").val([]).trigger('change');
+          $("#containerSelector")[0].selectedIndex = -1;
+          $("#containerSelector")[0].innerHTML = "";
+          $("#containerSelector").val([]).trigger('change');
+
+          containers.forEach((container) => {
+            let mty_type = container.mty_type;
+            let intern_status = container.ctr_intern_status;
+            let isChoosen = container.isChoosen;
+            if ((intern_status == "03") && (isChoosen != "1")) {
+              $("#containerSelector").append(`<option value="${container.id}">${container.container_no}</option>`)
+            }
+
+          });
+
+          $("#selector").css("display", "grid");
+          Swal.close();
+        }
+      })
     } else {
+      $("#ctrInput").css('display', 'block');
+      $("#podInput").css('display', 'block');
+      $("#fpodInput").css('display', 'block');
+      $("#vesselBN").css('display', 'block');
+      $("#vesselSelect").css('display', 'none');
       $("#RoInput").css('display', 'none');
       $("#bookingInput").css('display', 'block');
       $("#booking").select2("destroy");
       $("#booking").select2();
-
+      $("#do_fill").css('display', 'flex');
+      $("#mt_fill").css('display', 'none');
     }
   });
 </script>
