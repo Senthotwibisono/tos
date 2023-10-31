@@ -77,7 +77,7 @@ class BillingExportController extends Controller
 
     // GET ALL VOYAGE BY DEPARATURE DATE
     $vessel_voyage = VVoyage::whereDate('deparature_date', '>=', now())->orderBy('deparature_date', 'desc')->get();
-    // dd($result_vessel);
+    // dd($vessel_voyage);
 
     // GET ALL BOOKING
     $url_booking = getenv('API_URL') . '/delivery-service/container/booking/all';
@@ -621,5 +621,28 @@ class BillingExportController extends Controller
     } else {
       return redirect('/receiving/mastertarif')->with('success', 'Data gagal disimpan! kode error : #st2del');
     }
+  }
+
+  public function groupContainerByVesId(Request $request)
+  {
+    $client = new Client();
+
+    $ves_id = $request->ves_id;
+    // var_dump($id);
+    // die();
+    // $fields =
+    //   [
+    //     "id" => $id,
+    //     "isPaid" => 1,
+    //   ];
+    $url = getenv('API_URL') . '/delivery-service/container/groupbyves/' . $ves_id;
+    $req = $client->get(
+      $url
+    );
+    $response = $req->getBody()->getContents();
+    // var_dump($response);
+    // die();
+
+    echo $response;
   }
 }

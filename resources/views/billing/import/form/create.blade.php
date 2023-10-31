@@ -51,7 +51,7 @@
             <div class="col-12">
               <div class="form-group">
                 <label>Order Service</label>
-                <select name="order_service" class="form-select" required id="basicSelect">
+                <select name="order_service" class="form-select" required id="orderService">
                   <option value="" default selected disabled>Pilih Salah Satu..</option>
                   <option value="sp2iks">SP2 Kapal Sandar icon (MT Balik IKS)</option>
                   <option value="sp2mkb">SP2 Kapal Sandar icon (MKB)</option>
@@ -59,11 +59,12 @@
                   <option value="spps">SPPS</option>
                   <option value="sppsrelokasipelindo">SPPS (Relokasi Pelindo - ICON)</option>
                   <option value="sp2icon">SP2 (Relokasi Pelindo - ICON)</option>
+                  <option value="mtiks">MT Keluar IKS</option>
                 </select>
               </div>
             </div>
           </div>
-          <div class="row mt-5">
+          <div class="row mt-5" id="do_fill">
             <div class="col-12">
               <h5>Information Shipping Agent</h5>
               <p>Masukan Data Shipping dan Pilih Metode Do Checking</p>
@@ -134,6 +135,30 @@
               </div>
             </div>
 
+          </div>
+          <div class="row mt-5" id="mt_fill" style="display: none !important;">
+            <div class="col-12">
+              <h5>Information Shipping Agent</h5>
+              <p>Masukan Data Shipping dan Pilih Metode Do Checking</p>
+            </div>
+            <div class="col-4" id="vesselBN">
+              <div class="form-group">
+                <label for="">Vessel</label>
+                <input type="text" id="vesselBNInput" name="vessel" class="form-control" placeholder="Vessel" required>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label>Voyage</label>
+                <input required type="text" id="voyage" name="voyage" class="form-control" placeholder="Voyage..">
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label>Vessel Code</label>
+                <input required type="text" id="vesselcode" name="vesselcode" class="form-control" placeholder="Vessel Code..">
+              </div>
+            </div>
           </div>
           <div class="row mt-5">
             <div class="col-12">

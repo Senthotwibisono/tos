@@ -17,6 +17,7 @@
     "SPPS",
     "SPPS (Relokasi Pelindo - ICON)",
     "SP2 (Relokasi Pelindo - ICON)",
+    "MT Keluar IKS"
   ];
   $orderServiceArr = [
     "sp2iks",
@@ -25,6 +26,7 @@
     "spps",
     "sppsrelokasipelindo",
     "sp2icon",
+    "mtiks",
   ];
 
   ?>
