@@ -279,6 +279,10 @@ Route::prefix('delivery')->group(function () {
     Route::get('/pranota', [BillingImportController::class, 'pranotaIndex']);
     Route::get('/invoice', [BillingImportController::class, 'invoiceIndex']);
     Route::get('/job', [BillingImportController::class, 'jobIndex']);
+    Route::prefix('extend')->group(function () {
+      Route::get('/', [BillingImportController::class, 'billingExtendIndex']);
+      // Route::get('/')
+    });
   });
   Route::prefix('form')->group(function () {
     Route::get('/', [BillingImportController::class, 'formIndex']);
@@ -286,6 +290,13 @@ Route::prefix('delivery')->group(function () {
     Route::get('/review', [BillingImportController::class, 'reviewIndex']);
     Route::post('/storeForm', [BillingImportController::class, 'storeForm']);
     Route::post('/storeBilling', [BillingImportController::class, 'storeBilling']);
+    Route::prefix('extend')->group(function () {
+      Route::get('/', [BillingImportController::class, 'formExtendIndex']);
+      Route::get('/create', [BillingImportController::class, 'createExtendIndex']);
+      Route::get('/review', [BillingImportController::class, 'reviewExtendIndex']);
+      Route::post('/storeForm', [BillingImportController::class, 'storeFormExtend']);
+      Route::post('/storeBilling', [BillingImportController::class, 'storeBillingExtend']);
+    });
   });
   Route::prefix('mastertarif')->group(function () {
     Route::get('/', [BillingImportController::class, 'masterTarifIndex']);
@@ -298,6 +309,8 @@ Route::prefix('delivery')->group(function () {
     Route::post('/singleInvoice', [BillingImportController::class, 'singleInvoice']);
     Route::post('/verifyPayment ', [BillingImportController::class, 'verifyPayment']);
     Route::post('/verifyPiutang', [BillingImportController::class, 'verifyPiutang']);
+    Route::post('/singleInvoice', [BillingImportController::class, 'singleInvoice']);
+    Route::post('/allContainer', [BillingImportController::class, 'allContainer']);
   });
 });
 
@@ -326,6 +339,7 @@ Route::prefix('receiving')->group(function () {
     Route::post('/singleInvoice', [BillingExportController::class, 'singleInvoice']);
     Route::post('/verifyPayment ', [BillingExportController::class, 'verifyPayment']);
     Route::post('/verifyPiutang', [BillingExportController::class, 'verifyPiutang']);
+    Route::post('/groupcontainerbyvesid', [BillingExportController::class, 'groupContainerByVesId']);
   });
 });
 

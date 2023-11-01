@@ -75,7 +75,7 @@
               <a href="/delivery/form" class="submenu-link">Delivery Form</a>
             </li>
             <li class="submenu-item">
-              <a href="/delivery/extend" class="submenu-link">Delivery Form Extend</a>
+              <a href="/delivery/billing/extend" class="submenu-link">Delivery Form Extend</a>
             </li>
             <li class="submenu-item">
               <a href="/delivery/mastertarif" class="submenu-link">Master Tarif</a>

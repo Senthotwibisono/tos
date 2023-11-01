@@ -395,21 +395,24 @@ public function generateREPT_gato_del(Request $request)
 
     public function laporan_kapal(Request $request)
     {
-        $title = 'Laporan Produktivitas Alat';
-      
-        $ves_id = $request->id;
-
         
-
+        $ves_id = $request->id;
+        
+        
+        
         $kapal = VVoyage::where('ves_id', $ves_id)->first();
         $name = $kapal->ves_name;
+
+        $arrival = $kapal->arrival_date;
+        $departure = $kapal->deparature_date;
         $voy = $kapal->voy_out;
+        $title = 'Laporan Export ' . $name .' '. $voy  ;
         $port = $kapal->last_port;
         $flag = $kapal->reg_flag;
         $cont = Item::where('ves_id', $ves_id)->where('ctr_intern_status', '56')->get();
     
         $total = $cont->count();
 
-        return view('reports.report.exp.pdf', compact('title', 'kapal', 'cont', 'name', 'voy', 'total', 'port', 'flag'));
+        return view('reports.report.exp.pdf', compact('title', 'kapal', 'cont', 'name', 'voy', 'total', 'port', 'flag', 'arrival', 'departure'));
     }
 }
