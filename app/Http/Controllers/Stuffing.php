@@ -599,7 +599,7 @@ class Stuffing extends Controller
             'yard_row'  => 'required',
             'yard_tier' => 'required',
             'truck_no' => 'required',
-            'id_alat' => 'required',
+            'alat' => 'required',
 
         ], [
             'container_key.required' => 'Container Number is required.',
