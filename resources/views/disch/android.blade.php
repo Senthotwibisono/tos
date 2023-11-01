@@ -167,10 +167,10 @@
                 <button type="button" class="btn btn-light-secondary btn-lg d-none d-sm-block" data-bs-dismiss="modal" style="font-size: 14px;">
                     <i class="bx bx-x"></i> Close
                 </button>
-                <button type="submit" class="btn btn-success btn-lg d-sm-none ml-1" style="font-size: 14px;">
+                <button type="submit" class="btn btn-success ml-1 update_status btn-lg d-sm-none ml-1" style="font-size: 14px;">
                     Confirm
                 </button>
-                <button type="submit" class="btn btn-success btn-lg d-none d-sm-block ml-1" style="font-size: 14px;">
+                <button type="submit" class="btn btn-success ml-1 update_status btn-lg d-none d-sm-block ml-1" style="font-size: 14px;">
                     <i class="bx bx-check"></i> Confirm
                 </button>
             </div>

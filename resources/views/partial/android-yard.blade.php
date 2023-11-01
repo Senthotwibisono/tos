@@ -2,17 +2,50 @@
 <html lang="en">
 
 <head>
-
     @include('partial.head')
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @media (max-width: 480px) {
+
+            .button {
+                font-size: 1rem !important;
+            }
+
+            .card-header,
+            .card-body {
+                padding: 0.5rem !important;
+                font-size: 10px !important;
+            }
+
+            /* Reduce modal size */
+            .modal.fade.text-left .modal-dialog {
+                max-width: 100% !important;
+                font-size: 10px !important;
+            }
+
+            /* If you want to further adjust modal content size, you can do so by targeting modal content elements here. */
+            .modal.fade.text-left .modal-body {
+                max-width: 100% !important;
+                font-size: 12px !important;
+                /* Your styles for modal content here */
+            }
+
+            .modal-content {
+                max-width: 100% !important;
+                font-size: 10px !important;
+                /* Your styles for modal content here */
+            }
+        }
+    </style>
 </head>
 
 <body class="theme-dark" style="overflow-y: auto;">
 
-<div class="container-fluid">
-    <button onclick="goBack()" style="background: none; border: none;">
-        <i class="bi bi-arrow-left" style="font-size: 50px; color:lightskyblue;"></i>
-    </button>
-</div>
+    <div class="container-fluid">
+        <button onclick="goBack()" style="background: none; border: none;">
+            <i class="bi bi-arrow-left" style="font-size: 50px; color:lightskyblue;"></i>
+        </button>
+    </div>
     </div>
     <div class="page-heading">
         @yield('content')

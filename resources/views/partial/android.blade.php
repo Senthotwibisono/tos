@@ -64,7 +64,11 @@
     <script src="{{asset('dist/assets/js/pages/sweetalert2.js')}}"></script>
     <script src="{{ asset('vendor/components/jquery/jquery.min.js') }}"></script>
     @yield('custom_js')
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
 </body>
-@include('partial.invoice.js.js_customer')
 
 </html>

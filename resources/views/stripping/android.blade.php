@@ -7,13 +7,13 @@
         <h3>Stripping</h3>
       </div>
 
-      <div class="col-12 col-md-6 order-md-2 order-first">
+      <!-- <div class="col-12 col-md-6 order-md-2 order-first">
         <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
           <ol class="breadcrumb">
             <li class="breadcrumb-item active" aria-current="page">Stripping</li>
           </ol>
         </nav>
-      </div>
+      </div> -->
     </div>
   </div>
   <section class="section">
@@ -75,340 +75,308 @@
                 <select class="choices form-select" id="key" name="container_key" required>
                   <option value="">Select Container</option>
                   <?php
-                  foreach ($jobContainers->container as $value) { ?>
-                    <?php if ($value->ctr_intern_status == "03" || $value->ctr_intern_status == "04") { ?>
-                      <option value="<?= $value->container_key ?>"><?= $value->container_no ?></option>
+                  foreach ($jobContainers->containers as $value) { ?>
+                    <?php if (($value->jobContainer->ctr_intern_status == "03"  || $value->jobContainer->ctr_intern_status == "04") && ($value->jobContainer->orderService == "spps" || $value->jobContainer->orderService == "sppsrelokasipelindo")) { ?>
+                      <option value="<?= $value->jobContainer->container_key ?>"><?= $value->jobContainer->container_no ?></option>
                     <?php } ?>
                   <?php } ?>
                 </select>
                 <input type="hidden" id="container_no" class="form-control" name="container_no">
+                <input type="hidden" id="container_key" class="form-control" name="container_key" readonly>
               </div>
               {{ csrf_field()}}
             </div>
             <div class="col-12">
               <div class="form-group">
-                <label for="first-name-vertical">Type</label>
-                <input type="text" id="tipe" class="form-control" name="ctr_type" disabled>
+                <label for="first-name-vertical">Alat</label>
+                <select class="choices form-select" id="alat" required>
+                  <option value="" disabeled selected values>Pilih Alat</option>
+                  @foreach($alat as $alt)
+                  <option value="{{$alt->id}}">{{$alt->name}}</option>
+                  @endforeach
+                </select>
               </div>
-            </div>
-            <div class="col-12">
-              <div class="form-group">
-                <label for="first-name-vertical">Invoice</label>
-                <input type="text" id="invoice" class="form-control" name="invoice_no" disabled>
-              </div>
-            </div>
-
-            <h4>Current Yard</h4>
-            <div class="col-12" style="border:1px solid blue;">
-              <div class="row">
-
-                <div class="col-3">
+              {{ csrf_field()}}
+              <div>
+                <div class="col-12">
                   <div class="form-group">
-                    <label for="first-name-vertical">Blok</label>
-                    <input type="text" id="oldblock" class="form-control" name="yard_block" disabled>
+                    <label for="first-name-vertical">Type</label>
+                    <input type="text" id="tipe" class="form-control" name="ctr_type" disabled>
                   </div>
                 </div>
-                <div class="col-3">
+                <div class="col-12">
                   <div class="form-group">
-                    <label for="first-name-vertical">Slot</label>
-                    <input type="text" id="oldslot" class="form-control" name="yard_slot" disabled>
-                  </div>
-                </div>
-                <div class="col-3">
-                  <div class="form-group">
-                    <label for="first-name-vertical">Row</label>
-                    <input type="text" id="oldrow" class="form-control" name="yard_row" disabled>
-                  </div>
-                </div>
-                <div class="col-3">
-                  <div class="form-group">
-                    <label for="first-name-vertical">Tier</label>
-                    <input type="text" id="oldtier" class="form-control" name="yard_tier" disabled>
+                    <label for="first-name-vertical">Invoice</label>
+                    <input type="text" id="invoice" class="form-control" name="invoice_no" disabled>
                   </div>
                 </div>
 
-              </div>
-            </div>
-            <h4>Stripping Yard</h4>
-            <div class="col-12" style="border:1px solid blue;">
-              <div class="row">
+                <h4>Current Yard</h4>
+                <div class="col-12" style="border:1px solid blue;">
+                  <div class="row">
 
-                <div class="col-3">
-                  <div class="form-group">
-                    <label for="first-name-vertical">Blok</label>
-                    <select class="choices form-select" id="block" name="yard_block" required>
-                      <option value="">-</option>
-                      @foreach($yard_block as $block)
-                      <option value="{{$block}}">{{$block}}</option>
-                      @endforeach
-                    </select>
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label for="first-name-vertical">Blok</label>
+                        <input type="text" id="oldblock" class="form-control" name="yard_block" disabled>
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label for="first-name-vertical">Slot</label>
+                        <input type="text" id="oldslot" class="form-control" name="yard_slot" disabled>
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label for="first-name-vertical">Row</label>
+                        <input type="text" id="oldrow" class="form-control" name="yard_row" disabled>
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label for="first-name-vertical">Tier</label>
+                        <input type="text" id="oldtier" class="form-control" name="yard_tier" disabled>
+                      </div>
+                    </div>
+
                   </div>
                 </div>
-                <div class="col-3">
-                  <div class="form-group">
-                    <label for="first-name-vertical">Slot</label>
-                    <select class="choices form-select" id="slot" name="yard_slot" required>
-                      <option value="">-</option>
-                      @foreach($yard_slot as $slot)
-                      <option value="{{$slot}}">{{$slot}}</option>
-                      @endforeach
-                    </select>
-                  </div>
-                </div>
-                <div class="col-3">
-                  <div class="form-group">
-                    <label for="first-name-vertical">Row</label>
-                    <select class="choices form-select" id="row" name="yard_row" required>
-                      <option value="">-</option>
-                      @foreach($yard_row as $row)
-                      <option value="{{$row}}">{{$row}}</option>
-                      @endforeach
-                    </select>
-                  </div>
-                </div>
-                <div class="col-3">
-                  <div class="form-group">
-                    <label for="first-name-vertical">Tier</label>
-                    <select class="choices form-select" id="tier" name="yard_tier" required>
-                      <option value="">-</option>
-                      @foreach($yard_tier as $tier)
-                      <option value="{{$tier}}">{{$tier}}</option>
-                      @endforeach
-                    </select>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="form-group">
-                    <label for="first-name-vertical">Planner Place</label>
-                    <input type="text" id="user" class="form-control" value="{{ Auth::user()->name }}" name="user_id" readonly>
+                <h4>Stripping Yard</h4>
+                <div class="col-12" style="border:1px solid blue;">
+                  <div class="row">
+
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label for="first-name-vertical">Blok</label>
+                        <select class="choices form-select" id="block" name="yard_block" required>
+                          <option value="">-</option>
+                          @foreach($yard_block as $block)
+                          <option value="{{$block}}">{{$block}}</option>
+                          @endforeach
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label for="first-name-vertical">Slot</label>
+                        <select class="choices form-select" id="slot" name="yard_slot" required>
+                          <option value="">-</option>
+                          @foreach($yard_slot as $slot)
+                          <option value="{{$slot}}">{{$slot}}</option>
+                          @endforeach
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label for="first-name-vertical">Row</label>
+                        <select class="choices form-select" id="row" name="yard_row" required>
+                          <option value="">-</option>
+                          @foreach($yard_row as $row)
+                          <option value="{{$row}}">{{$row}}</option>
+                          @endforeach
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-3">
+                      <div class="form-group">
+                        <label for="first-name-vertical">Tier</label>
+                        <select class="choices form-select" id="tier" name="yard_tier" required>
+                          <option value="">-</option>
+                          @foreach($yard_tier as $tier)
+                          <option value="{{$tier}}">{{$tier}}</option>
+                          @endforeach
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-group">
+                        <label for="first-name-vertical">Planner Place</label>
+                        <input type="text" id="user" class="form-control" value="{{ Auth::user()->name }}" name="user_id" readonly>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-light-secondary btn-lg d-sm-none" data-bs-dismiss="modal" style="font-size: 14px;">
+                  Close
+                </button>
+                <button type="button" class="btn btn-light-secondary btn-lg d-none d-sm-block" data-bs-dismiss="modal" style="font-size: 14px;">
+                  <i class="bx bx-x"></i> Close
+                </button>
+                <button type="submit" class="btn btn-success ml-1 update_status btn-lg d-sm-none ml-1" style="font-size: 14px;">
+                  Confirm
+                </button>
+                <button type="submit" class="btn btn-success ml-1 update_status btn-lg d-none d-sm-block ml-1" style="font-size: 14px;">
+                  <i class="bx bx-check"></i> Confirm
+                </button>
+              </div>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i><span class="d-none d-sm-block">Close</span></button>
-            <button type="submit" class="btn btn-success ml-1 update_status"><i class="bx bx-check d-block d-sm-none"></i><span class="d-none d-sm-block">Confirm</span></button>
           </div>
         </div>
-      </div>
-    </div>
-    @endsection
-    @section('custom_js')
-    <script src="{{ asset('vendor/components/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('select2/dist/js/select2.full.min.js') }}"></script>
-    <script src="{{asset('dist/assets/extensions/sweetalert2/sweetalert2.min.js')}}"></script>
-    <script src="{{asset('dist/assets/js/pages/sweetalert2.js')}}"></script>
+        @endsection
+        @section('custom_js')
+        <script src="{{ asset('vendor/components/jquery/jquery.min.js') }}"></script>
+        <script src="{{ asset('select2/dist/js/select2.full.min.js') }}"></script>
+        <script src="{{asset('dist/assets/extensions/sweetalert2/sweetalert2.min.js')}}"></script>
+        <script src="{{asset('dist/assets/js/pages/sweetalert2.js')}}"></script>
 
-    <script>
-      // In your Javascript (external .js resource or <script> tag)
-      $(document).ready(function() {
-        $('.container').select2({
-          dropdownParent: '#success',
-        });
-        $('.block').select2({
-          dropdownParent: '#success',
-        });
-        $('.slot').select2({
-          dropdownParent: '#success',
-        });
-        $('.yard_row').select2({
-          dropdownParent: '#success',
-        });
-        $('.tier').select2({
-          dropdownParent: '#success',
-        });
-      });
-      $(document).on('click', '.update_status', function(e) {
-        e.preventDefault();
-        var container_key = $('#key').val();
-        var container_no = $('#container_no').val();
-        var yard_block = $('#block').val();
-        var yard_slot = $('#slot').val();
-        var yard_raw = $('#raw').val();
-        var yard_tier = $('#tier').val();
-        var data = {
-          'container_key': $('#key').val(),
-          'container_no': $('#container_no').val(),
-          'yard_block': $('#block').val(),
-          'yard_slot': $('#slot').val(),
-          'yard_row': $('#row').val(),
-          'yard_tier': $('#tier').val(),
-          'user_id': $('#user').val(),
-
-        }
-        $.ajaxSetup({
-          headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-          }
-        });
-        Swal.fire({
-          title: 'Are you Sure?',
-          text: "Container " + container_no + " will be placed at Block " + yard_block + " Slot " + yard_slot + " Raw " + yard_raw + " and Tier " + yard_tier,
-          icon: 'warning',
-          showDenyButton: false,
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          confirmButtonText: 'Confirm',
-        }).then((result) => {
-          /* Read more about isConfirmed, isDenied below */
-          if (result.isConfirmed) {
-
-            $.ajax({
-              type: 'POST',
-              url: '/stripping-place',
-              data: data,
-              cache: false,
-              dataType: 'json',
-              success: function(response) {
-                console.log(response);
-                if (response.success) {
-                  Swal.fire('Saved!', '', 'success')
-                  $('#place_cont').load(window.location.href + ' #place_cont', function() {
-                    $(document).ready(function() {
-                      let choices = document.querySelectorAll('.choices');
-                      let initChoice;
-                      for (let i = 0; i < choices.length; i++) {
-                        if (choices[i].classList.contains("multiple-remove")) {
-                          initChoice = new Choices(choices[i], {
-                            delimiter: ',',
-                            editItems: true,
-                            maxItemCount: -1,
-                            removeItemButton: true,
-                          });
-                        } else {
-                          initChoice = new Choices(choices[i]);
-                        }
-                      }
-
-                      $('.container').select2({
-                        dropdownParent: '#success',
-                      });
-                      $('.block').select2({
-                        dropdownParent: '#success',
-                      });
-                      $('.slot').select2({
-                        dropdownParent: '#success',
-                      });
-                      $('.yard_row').select2({
-                        dropdownParent: '#success',
-                      });
-                      $('.tier').select2({
-                        dropdownParent: '#success',
-                      });
-                      $(document).ready(function() {
-                        $('#key').on('change', function() {
-                          let id = $(this).val();
-                          $.ajax({
-                            type: 'POST',
-                            url: '/get-stripping',
-                            data: {
-                              container_key: id
-                            },
-                            success: function(response) {
-
-                              $('#container_no').val(response.container_no);
-                              $('#tipe').val(response.tipe);
-                              $('#invoice').val(response.invoice);
-                              $('#oldblock').val(response.oldblock);
-                              $('#oldslot').val(response.oldslot);
-                              $('#oldrow').val(response.oldrow);
-                              $('#oldtier').val(response.oldtier);
-                            },
-                            error: function(data) {
-                              console.log('error:', data);
-                            },
-                          });
-                        });
-                      });
-                    });
-
-                    $('#table1').load(window.location.href + ' #table1');
-                  });
-                } else {
-                  Swal.fire('Error', response.message, 'error');
-                }
-              },
-              error: function(response) {
-                var errors = response.responseJSON.errors;
-                if (errors) {
-                  var errorMessage = '';
-                  $.each(errors, function(key, value) {
-                    errorMessage += value[0] + '<br>';
-                  });
-                  Swal.fire({
-                    icon: 'error',
-                    title: 'Validation Error',
-                    html: errorMessage,
-                  });
-                } else {
-                  console.log('error:', response);
-                }
-              },
+        <script>
+          // In your Javascript (external .js resource or <script> tag)
+          $(document).ready(function() {
+            $('.container').select2({
+              dropdownParent: '#success',
             });
-
-          } else if (result.isDenied) {
-            Swal.fire('Changes are not saved', '', 'info')
-          }
-
-
-        })
-
-      });
-
-
-      $(function() {
-        $.ajaxSetup({
-          headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-          }
-        });
-        $(document).ready(function() {
-          $('#key').on('change', function() {
-            let id = $(this).val();
-            $.ajax({
-              type: 'POST',
-              url: '/get-stripping',
-              data: {
-                container_key: id
-              },
-              success: function(response) {
-
-                $('#container_no').val(response.container_no);
-                $('#tipe').val(response.tipe);
-                $('#invoice').val(response.invoice);
-                $('#oldblock').val(response.oldblock);
-                $('#oldslot').val(response.oldslot);
-                $('#oldrow').val(response.oldrow);
-                $('#oldtier').val(response.oldtier);
-              },
-              error: function(data) {
-                console.log('error:', data);
-              },
+            $('.block').select2({
+              dropdownParent: '#success',
+            });
+            $('.slot').select2({
+              dropdownParent: '#success',
+            });
+            $('.yard_row').select2({
+              dropdownParent: '#success',
+            });
+            $('.tier').select2({
+              dropdownParent: '#success',
             });
           });
-        });
-        // $(function(){
-        //         $('#block'). on('change', function(){
-        //             let yard_block = $('#block').val();
+          $(document).on('click', '.update_status', function(e) {
+            e.preventDefault();
+            var container_key = $('#key').val();
+            var container_no = $('#container_no').val();
+            var yard_block = $('#block').val();
+            var yard_slot = $('#slot').val();
+            var yard_raw = $('#raw').val();
+            var yard_tier = $('#tier').val();
+            var id_alat = $('#alat').val();
+            var data = {
+              'container_key': $('#container_key').val(),
+              'container_no': $('#container_no').val(),
+              'yard_block': $('#block').val(),
+              'yard_slot': $('#slot').val(),
+              'yard_row': $('#row').val(),
+              'yard_tier': $('#tier').val(),
+              'user_id': $('#user').val(),
+              'id_alat': $('#alat').val(),
+            }
+            $.ajaxSetup({
+              headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+              }
+            });
+            Swal.fire({
+              title: 'Are you Sure?',
+              text: "Container " + container_no + " will be placed at Block " + yard_block + " Slot " + yard_slot + " Raw " + yard_raw + " and Tier " + yard_tier,
+              icon: 'warning',
+              showDenyButton: false,
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              confirmButtonText: 'Confirm',
+            }).then((result) => {
+              /* Read more about isConfirmed, isDenied below */
+              if (result.isConfirmed) {
 
-        //             $.ajax({
-        //                 type: 'POST',
-        //             url: '/get-slot',
-        //                 data : {yard_block : yard_block},
-        //                 cache: false,
+                $.ajax({
+                  type: 'POST',
+                  url: '/stripping-place',
+                  data: data,
+                  cache: false,
+                  dataType: 'json',
+                  success: function(response) {
+                    console.log(response);
+                    if (response.success) {
+                      Swal.fire('Saved!', '', 'success')
+                        .then(() => {
+                          // Memuat ulang halaman setelah berhasil menyimpan data
+                          window.location.reload();
+                        });
+                    } else {
+                      Swal.fire('Error', response.message, 'error');
+                    }
+                  },
+                  error: function(response) {
+                    var errors = response.responseJSON.errors;
+                    if (errors) {
+                      var errorMessage = '';
+                      $.each(errors, function(key, value) {
+                        errorMessage += value[0] + '<br>';
+                      });
+                      Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        html: errorMessage,
+                      });
+                    } else {
+                      console.log('error:', response);
+                    }
+                  },
+                });
 
-        //                 success: function(msg){
-        //                     $('#slot').html(msg);
+              } else if (result.isDenied) {
+                Swal.fire('Changes are not saved', '', 'info')
+              }
 
-        //                 },
-        //                 error: function(data){
-        //                     console.log('error:',data)
-        //                 },
-        //             })               
-        //         })
-        //     })
-      });
-    </script>
 
-    @endsection
+            })
+
+          });
+
+
+          $(function() {
+            $.ajaxSetup({
+              headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+              }
+            });
+            $(document).ready(function() {
+              $('#key').on('change', function() {
+                let id = $(this).val();
+                $.ajax({
+                  type: 'POST',
+                  url: '/get-stripping',
+                  data: {
+                    container_key: id
+                  },
+                  success: function(response) {
+
+                    $('#container_key').val(response.container_key);
+                    $('#container_no').val(response.container_no);
+                    $('#tipe').val(response.tipe);
+                    $('#invoice').val(response.invoice);
+                    $('#oldblock').val(response.oldblock);
+                    $('#oldslot').val(response.oldslot);
+                    $('#oldrow').val(response.oldrow);
+                    $('#oldtier').val(response.oldtier);
+                  },
+                  error: function(data) {
+                    console.log('error:', data);
+                  },
+                });
+              });
+            });
+            // $(function(){
+            //         $('#block'). on('change', function(){
+            //             let yard_block = $('#block').val();
+
+            //             $.ajax({
+            //                 type: 'POST',
+            //             url: '/get-slot',
+            //                 data : {yard_block : yard_block},
+            //                 cache: false,
+
+            //                 success: function(msg){
+            //                     $('#slot').html(msg);
+
+            //                 },
+            //                 error: function(data){
+            //                     console.log('error:',data)
+            //                 },
+            //             })               
+            //         })
+            //     })
+          });
+        </script>
+
+        @endsection

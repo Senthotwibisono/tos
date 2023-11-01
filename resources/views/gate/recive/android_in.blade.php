@@ -1,19 +1,29 @@
 @extends('partial.android')
 @section('custom_styles')
-
+<style>
+  /* Add this to your CSS */
+  .custom-input {
+    font-size: 10px !important;
+    /* Adjust the font size as needed */
+    padding: 15px !important;
+    /* Adjust the padding as needed */
+    width: 100% !important;
+    /* Make the input field full width on mobile */
+  }
+</style>
 @endsection
 @section('content')
 <div class="page-heading">
   <div class="page-title">
     <div class="row">
       <div class="col-12 col-md-6 order-md-1 order-last">
-        <h3>Reciving Gate In</h3>
+        <h3>Receiving Gate In</h3>
       </div>
 
       <div class="col-12 col-md-6 order-md-2 order-first">
         <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item active" aria-current="page">Reciving Gate In</li>
+            <li class="breadcrumb-item active" aria-current="page">Receiving Gate In</li>
           </ol>
         </nav>
       </div>
@@ -70,9 +80,9 @@
                 <select class="choices form-select" id="key" name="container_key" required>
                   <option disabled selected value="">Select Container</option>
                   <?php
-                  foreach ($jobContainers as $value) { ?>
-                    <?php if ($value->ctr_intern_status == "49") { ?>
-                      <option data-id="<?= $value->id ?>" value="<?= $value->id ?>"><?= $value->container_no ?></option>
+                  foreach ($jobContainers->containers as $value) { ?>
+                    <?php if ($value->jobContainer->billingName == "OS") { ?>
+                      <option data-id="<?= $value->jobContainer->containerID ?>" value="<?= $value->jobContainer->containerID ?>"><?= $value->jobContainer->container_no ?></option>
                     <?php } ?>
                   <?php } ?>
                 </select>
@@ -81,210 +91,190 @@
               </div>
               {{ csrf_field()}}
             </div>
-        <div class="col-12">
-          <div class="row">
-            <div class="col-6">
-              <div class="form-group">
-                <label for="first-name-vertical">Gross</label>
-                <input type="text" id="gross" class="form-control" name="gross" readonly>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-group">
-                <label for="first-name-vertical">Iso Code</label>
-                <select class="form-select" id="iso_code" name="iso_code">
-                                <option value="-">-</option>
-                                @foreach($isocode as $iso)
-                                <option value="{{$iso->iso_code}}">{{$iso->iso_code}}</option>
-                                @endforeach
-                              </select>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-group">
-                <label for="first-name-vertical">Seal No</label>
-                <input type="text" id="seal_no" class="form-control" name="seal_no" required>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-group">
-                <label for="first-name-vertical">B/L No</label>
-                <input type="text"  id="bl_no" name="bl_no" class="form-control" readonly>
-              </div>
-            </div>
-            <hr>
-              <div class="col-6">
-              <div class="form-group">
-                <label for="first-name-vertical">Size</label>
-                <input type="text" id="size" class="form-control" name="ctr_size" readonly>
-              
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-group">
-                <label for="first-name-vertical">Type</label>
-                <input type="text" id="type" class="form-control" name="ctr_type" required>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-group">
-                <label for="first-name-vertical">Status</label>
-                <select class="form-select" id="stat " name="ctr_status">
-                  <option value="FCL">FCL</option>
-                  <option value="MTY">MTY</option>
-                </select>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-group">
-                <label for="first-name-vertical">Truck Number</label>
-                <input type="text" id="tayo" class="form-control" name="truck_no" required>
-              </div>
-            </div>
-            
-          <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Lihat Data Transaksi</button>
-               <div class="collapse" id="collapseExample">
-                  <br>
-                   <div class="col-12">
-                    <div class="row">
-                        <div class="col-6">
-                          <fieldset>                        
-                              <div class="input-group">
-                                      <div class="col-4">
-                                      <label class="input-group-text">Size</label >
-                                      </div>
-                                      <div class="col-4">
-                                      <label class="input-group-text">Type</label>
-                                      </div>
-                                      <div class="col-4">
-                                      <label class="input-group-text">Status</label>
-                                      </div>
-                              </div>
-                              <div class="input-group">
-                                  
-                                  <input type="text" id="sz" class="form-control" readonly>
-                                  <input type="text" id="tp" class="form-control" readonly>
-                                  <input type="text" id="st" class="form-control" readonly>
-                              </div>
-                          </fieldset>
-                        </div>
-                        <div class="col-6">
-                          <fieldset>                        
-                              <div class="input-group">
-                                      <div class="col-6">
-                                      <label class="input-group-text">Vessel</label>
-                                      </div>
-                                      <div class="col-6">
-                                      <label class="input-group-text">Voy</label>
-                                      </div>
-                              </div>
-                              <div class="input-group">
-                                  
-                                  <input type="text" id="vessel" name="ves_name" class="form-control" readonly>
-                                  <input type="text" id="voy" name="voy_no"class="form-control" readonly>
-                                  <input type="hidden" id="ves_id" name="ves_id"class="form-control" readonly>
-                                  <input type="hidden" id="code" name="ves_id"class="form-control" readonly>
-                                  
-                              </div>
-                          </fieldset>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                          <fieldset>                        
-                              <div class="input-group">
-                                      <div class="col-4">
-                                      <label class="input-group-text">IMO</label>
-                                      </div>
-                                      <div class="col-4">
-                                      <label class="input-group-text">Gross</label>
-                                      </div>
-                                      <div class="col-4">
-                                      <label class="input-group-text">Class</label>
-                                      </div>
-                              </div>
-                              <div class="input-group">
-                                  
-                                  <input type="text" id="imo" class="form-control" readonly>
-                                  <input type="text" id="jmlh" class="form-control" readonly>
-                                  <input type="text" id="class" class="form-control" readonly>
-                              </div>
-                          </fieldset>
-                        </div>
-                        <div class="col-6">
-                          <fieldset>                        
-                              <div class="input-group">
-                                      <div class="col-6">
-                                      <label class="input-group-text">POD</label>
-                                      </div>
-                                      <div class="col-6">
-                                      <label class="input-group-text">Seal</label>
-                                      </div>
-                              </div>
-                              <div class="input-group">
-                                  
-                                  <input type="text" id="pod"  class="form-control" readonly>
-                                  <input type="text" id="seal"  class="form-control" readonly>
-                              </div>
-                          </fieldset>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                          <fieldset>                        
-                              <div class="input-group">
-                                      <div class="col-4">
-                                      <label class="input-group-text">O.H</label>
-                                      </div>
-                                      <div class="col-4">
-                                      <label class="input-group-text">O.L</label>
-                                      </div>
-                                      <div class="col-4">
-                                      <label class="input-group-text">O.W</label>
-                                      </div>
-                              </div>
-                              <div class="input-group">
-                                  
-                                  <input type="text" id="oh" class="form-control" readonly>
-                                  <input type="text" id="ol" class="form-control" readonly>
-                                  <input type="text" id="ow" class="form-control" readonly>
-                              </div>
-                          </fieldset>
-                        </div>
-                        <div class="col-6">
-                          <fieldset>                        
-                              <div class="input-group">
-                                      <div class="col-12">
-                                      <label for="first-name-vertical">Date In</label>
-                                       <input type="hidden" id="user" class="form-control" value="{{ Auth::user()->name }}" name="user_id" placeholder="" required>
-                                      </div>
-                              </div>
-                              <div class="input-group">    
-                                  <input type="datetime-local" value="{{ $currentDateTimeString }}" id="datein" name="truck_in_date" class="form-control" readonly>
-                                  <input type="hidden"  id="id" name="id" class="form-control" readonly>
-                              </div>
-                          </fieldset>
-                        </div>
-                    </div>
-                   </div>
+            <div class="col-12">
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="first-name-vertical">Gross</label>
+                    <input type="text" id="gross" class="form-control" name="gross" readonly>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="first-name-vertical">Iso Code</label>
+                    <select class="form-select" id="iso_code" name="iso_code">
+                      <option value="-">-</option>
+                      @foreach($isocode as $iso)
+                      <option value="{{$iso->iso_code}}">{{$iso->iso_code}}</option>
+                      @endforeach
+                    </select>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="first-name-vertical">Seal No</label>
+                    <input type="text" id="seal_no" class="form-control" name="seal_no" required>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="first-name-vertical">B/L No</label>
+                    <input type="text" id="bl_no" name="bl_no" class="form-control" readonly>
+                  </div>
+                </div>
+                <hr>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="first-name-vertical">Size</label>
+                    <input type="text" id="size" class="form-control" name="ctr_size" readonly>
 
-               </div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="first-name-vertical">Type</label>
+                    <input type="text" id="type" class="form-control" name="ctr_type" required>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="first-name-vertical">Status</label>
+                    <select class="form-select" id="stat " name="ctr_status">
+                      <option value="FCL">FCL</option>
+                      <option value="MTY">MTY</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="first-name-vertical">Truck Number</label>
+                    <input type="text" id="tayo" class="form-control" name="truck_no" required>
+                    <input type="text" id="service" class="form-control" name="truck_no" readonly>
+                  </div>
+                </div>
+
+                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Lihat Data Transaksi</button>
+                <div class="collapse" id="collapseExample">
+                  <br>
+                  <div class="col-12">
+                    <div class="row">
+                      <div class="col-6">
+                        <fieldset>
+                          <div class="input-group">
+                            <label class="input-group-text">Size</label>
+                            <input type="text" id="sz" class="form-control" readonly>
+                          </div>
+                          <div class="input-group">
+                            <label class="input-group-text">Type</label>
+                            <input type="text" id="tp" class="form-control" readonly>
+                          </div>
+                          <div class="input-group">
+                            <label class="input-group-text">Status</label>
+                            <input type="text" id="st" class="form-control" readonly>
+                          </div>
+                        </fieldset>
+                      </div>
+                      <div class="col-6">
+                        <fieldset>
+                          <div class="input-group">
+                            <label class="input-group-text">Vessel</label>
+                            <input type="text" id="vessel" name="ves_name" class="form-control custom-input" readonly>
+                          </div>
+                          <div class="input-group">
+                            <label class="input-group-text">Voy</label>
+                            <input type="text" id="voy" name="voy_no" class="form-control custom-input" readonly>
+                          </div>
+                        </fieldset>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-6">
+                        <fieldset>
+                          <div class="input-group">
+                            <label class="input-group-text">IMO</label>
+                            <input type="text" id="imo" class="form-control" readonly>
+                          </div>
+                          <div class="input-group">
+                            <label class="input-group-text">Gross</label>
+                            <input type="text" id="jmlh" class="form-control" readonly>
+                          </div>
+                          <div class="input-group">
+                            <label class="input-group-text">Class</label>
+                            <input type="text" id="class" class="form-control" readonly>
+                          </div>
+                        </fieldset>
+                      </div>
+                      <div class="col-6">
+                        <fieldset>
+                          <div class="input-group">
+                            <label class="input-group-text">POD</label>
+                            <input type="text" id="pod" class="form-control custom-input" readonly>
+                          </div>
+                          <div class="input-group">
+                            <label class="input-group-text">Seal</label>
+                            <input type="text" id="seal" class="form-control custom-input" readonly>
+                          </div>
+                        </fieldset>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-6">
+                        <fieldset>
+                          <div class="input-group">
+                            <label class="input-group-text">O.H</label>
+                            <input type="text" id="oh" class="form-control" readonly>
+                          </div>
+                          <div class="input-group">
+                            <label class="input-group-text">O.L</label>
+                            <input type="text" id="ol" class="form-control" readonly>
+                          </div>
+                          <div class="input-group">
+                            <label class="input-group-text">O.W</label>
+                            <input type="text" id="ow" class="form-control" readonly>
+                          </div>
+                        </fieldset>
+                      </div>
+                      <div class="col-6">
+                        <fieldset>
+                          <div class="input-group">
+                            <label class="input-group-text" for="datein">Date In</label>
+                            <input type="datetime-local" id="datein" name="truck_in_date" class="form-control custom-input" value="{{ $currentDateTimeString }}" readonly>
+                          </div>
+                        </fieldset>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
           </div>
-         </div>
-       </div>
-       </div>
-       
-     </div>
-                              
-   
-       
-            
-    
-          
+        </div>
+
+      </div>
+
+
+
+
+
+
       <div class="modal-footer">
-     
-        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i><span class="d-none d-sm-block">Close</span></button>
-        <button type="submit" class="btn btn-success ml-1 update_status"><i class="bx bx-check d-block d-sm-none"></i><span class="d-none d-sm-block">Confirm</span></button>
+
+        <button type="button" class="btn btn-light-secondary d-block d-sm-none" data-bs-dismiss="modal">
+          <i class="bx bx-x"></i>
+          Close
+        </button>
+        <button type="submit" class="btn btn-success ml-1 update_status d-block d-sm-none">
+          <i class="bx bx-check"></i>
+          Confirm
+        </button>
+        <button type="button" class="btn btn-light-secondary d-none d-sm-block" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button type="submit" class="btn btn-success ml-1 update_status d-none d-sm-block">
+          Confirm
+        </button>
       </div>
     </div>
   </div>
@@ -315,36 +305,37 @@
     var container_no = $('#container_no').val();
     var truck_no = $('#tayo').val();
     var truck_in_date = $('#datein').val();
-    var gross =$('#gross').val();
-    var iso_code =$('#iso_code').val();
-    var bl_no =$('#bl_no').val();
-    var seal_no =$('#seal_no').val();
-    var ctr_type =$('#type').val();
-    var ctr_size =$('#size').val();
-    var ctr_status =$('#stat').val();
-    var ves_id=$('#ves_id').val();
-    var ves_code=$('#ves_code').val();
-    var ves_name=$('#vessel').val();
-    var voy_no=$('#voy').val();
-    var user_id=$('#user').val();
-    var id=$('#id').val();
+    var gross = $('#gross').val();
+    var iso_code = $('#iso_code').val();
+    var bl_no = $('#bl_no').val();
+    var seal_no = $('#seal_no').val();
+    var ctr_type = $('#type').val();
+    var ctr_size = $('#size').val();
+    var ctr_status = $('#stat').val();
+    var ves_id = $('#ves_id').val();
+    var ves_code = $('#ves_code').val();
+    var ves_name = $('#vessel').val();
+    var voy_no = $('#voy').val();
+    var user_id = $('#user').val();
+    var id = $('#id').val();
     var data = {
       'id': $('#key').val(),
       'container_no': $('#container_no').val(),
       'truck_no': $('#tayo').val(),
       'truck_in_date': $('#datein').val(),
-      'gross' : $('#gross').val(),
-      'iso_code' : $('#iso_code').val(),
-      'bl_no' : $('#bl_no').val(),
-      'seal_no' : $('#seal_no').val(),
-      'ctr_type' : $('#type').val(),
-      'ctr_size' : $('#size').val(),
-      'ctr_status' : $('#stat').val(),
-      'ves_id':$('#ves_id').val(),
-      'ves_code':$('#ves_code').val(),
-      'ves_name':$('#vessel').val(),
-      'voy_no':$('#voy').val(),
-      'user_id':$('#user').val(),
+      'gross': $('#gross').val(),
+      'iso_code': $('#iso_code').val(),
+      'bl_no': $('#bl_no').val(),
+      'seal_no': $('#seal_no').val(),
+      'ctr_type': $('#type').val(),
+      'ctr_size': $('#size').val(),
+      'ctr_status': $('#stat').val(),
+      'ves_id': $('#ves_id').val(),
+      'ves_code': $('#ves_code').val(),
+      'ves_name': $('#vessel').val(),
+      'voy_no': $('#voy').val(),
+      'user_id': $('#user').val(),
+      'order_service': $('#service').val(),
 
 
     }
@@ -376,11 +367,11 @@
             console.log(response);
             if (response.success) {
               Swal.fire('Saved!', '', 'success')
-               .then(() => {
-                            // Memuat ulang halaman setelah berhasil menyimpan data
-                            window.location.reload();
-                        });
-              
+                .then(() => {
+                  // Memuat ulang halaman setelah berhasil menyimpan data
+                  window.location.reload();
+                });
+
             } else {
               Swal.fire({
                 icon: 'error',
@@ -435,7 +426,7 @@
     //       success: function(response) {         
     //         let res = JSON.parse(response); 
     //         console.log(res);
-            
+
     //         $('#container_no').val(res.data.container_no);
     //         $('#gross').val(res.data.gross);
     //         $('#iso_code').val(res.data.iso_code);
@@ -457,7 +448,7 @@
     //         $('#oh').val(res.data.over_height);
     //         $('#ow').val(res.data.over_weight);
     //         $('#ol').val(res.data.over_length);
-            
+
     //       },
     //       error: function(data) {
     //         console.log('error:', data);
@@ -465,55 +456,56 @@
     //     });
     //   });
     // });
-      $("#key").on('change', function() {
-    console.log("CHANGED!");
-    const selectedDoNo = this.value;
-    const selectedDoNoId = this.options[this.selectedIndex].getAttribute('value');
-    console.log(selectedDoNoId);
-    let csrfToken = $('meta[name="csrf-token"]').attr('content');
-    let formData = new FormData();
-    formData.append("id", selectedDoNoId);
-    $.ajax({
-      headers: {
-        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
-      },
-      type: "POST",
-      url: `/gati-data_container-rec`,
-      cache: false,
-      contentType: false,
-      processData: false,
-      data: formData,
-      success: function(response) {
-        let res = JSON.parse(response); 
-            console.log(res);
-            
-            $('#container_no').val(res.data.container_no);
-            $('#gross').val(res.data.gross);
-            $('#iso_code').val(res.data.iso_code);
-            $('#bl_no').val(res.data.bl_no);
-            $('#seal_no').val(res.data.seal_no);
-            $('#type').val(res.data.ctr_type);
-            $('#size').val(res.data.ctr_size);
-            $('#stat').val(res.data.ctr_status);
-            $('#tp').val(res.data.ctr_type);
-            $('#sz').val(res.data.ctr_size);
-            $('#st').val(res.data.ctr_status);
-            $('#vessel').val(res.data.vessel_name);
-            $('#voy').val(res.data.voy_no);
-            $('#ves_id').val(res.data.ves_id);
-            $('#code').val(res.data.ves_code);
-            $('#imo').val(res.data.imo_code);
-            $('#jmlh').val(res.data.gross);
-            $('#class').val(res.data.gross_class);
-            $('#pod').val(res.data.pod);
-            $('#seal').val(res.data.seal_no);
-            $('#oh').val(res.data.over_height);
-            $('#ow').val(res.data.over_widht);
-            $('#ol').val(res.data.over_length);
-            $('#id').val(res.data.id);
-      }
+    $("#key").on('change', function() {
+      console.log("CHANGED!");
+      const selectedDoNo = this.value;
+      const selectedDoNoId = this.options[this.selectedIndex].getAttribute('value');
+      console.log(selectedDoNoId);
+      let csrfToken = $('meta[name="csrf-token"]').attr('content');
+      let formData = new FormData();
+      formData.append("id", selectedDoNoId);
+      $.ajax({
+        headers: {
+          'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+        },
+        type: "POST",
+        url: `/gati-data_container-rec`,
+        cache: false,
+        contentType: false,
+        processData: false,
+        data: formData,
+        success: function(response) {
+          let res = JSON.parse(response);
+          console.log(res);
+
+          $('#container_no').val(res.data.container_no);
+          $('#gross').val(res.data.gross);
+          $('#iso_code').val(res.data.iso_code);
+          $('#bl_no').val(res.data.bl_no);
+          $('#seal_no').val(res.data.seal_no);
+          $('#type').val(res.data.ctr_type);
+          $('#size').val(res.data.ctr_size);
+          $('#stat').val(res.data.ctr_status);
+          $('#tp').val(res.data.ctr_type);
+          $('#sz').val(res.data.ctr_size);
+          $('#st').val(res.data.ctr_status);
+          $('#vessel').val(res.data.vessel_name);
+          $('#voy').val(res.data.voy_no);
+          $('#ves_id').val(res.data.ves_id);
+          $('#code').val(res.data.ves_code);
+          $('#imo').val(res.data.imo_code);
+          $('#jmlh').val(res.data.gross);
+          $('#class').val(res.data.gross_class);
+          $('#pod').val(res.data.pod);
+          $('#seal').val(res.data.seal_no);
+          $('#oh').val(res.data.over_height);
+          $('#ow').val(res.data.over_widht);
+          $('#ol').val(res.data.over_length);
+          $('#id').val(res.data.id);
+          $('#service').val(res.data.orderService);
+        }
+      })
     })
-  })
 
     $(document).ready(function() {
       $('#iso_code').on('change', function() {
@@ -528,7 +520,7 @@
 
             $('#type').val(response.type);
             $('#size').val(response.size);
- 
+
 
           },
           error: function(data) {
