@@ -11,9 +11,13 @@
                 font-size: 1rem !important;
             }
 
-            .card-header,
+            .btn-smaller {
+                padding: 0.15rem 0.15rem !important;
+            }
+
+            s .card-header,
             .card-body {
-                padding: 0.5rem !important;
+                padding: 0.2rem !important;
                 font-size: 10px !important;
             }
 
@@ -34,6 +38,16 @@
                 max-width: 100% !important;
                 font-size: 10px !important;
                 /* Your styles for modal content here */
+            }
+
+            #container-list {
+                /* Add your custom styles here to make it smaller */
+                max-width: 100% !important;
+                /* Adjust the width to your desired size */
+                margin: 0 auto !important;
+                /* Center the div horizontally */
+                padding: 5px !important;
+                /* Add padding for spacing inside the div */
             }
         }
     </style>

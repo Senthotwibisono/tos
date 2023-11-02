@@ -26,60 +26,60 @@
               <div class="form-group">
                 <label for="first-name-vertical">Choose Vessel</label>
                 <select class="form-select select-single" id="VesselDalam" name="ves_id" required>
-                    <option value="" disabeled selected values>Select Vessel</option>
-                   @foreach($vessel as $ves)
-                   <option value="{{$ves->ves_id}}">{{$ves->ves_name}}</option>
-                   @endforeach
+                  <option value="" disabeled selected values>Select Vessel</option>
+                  @foreach($vessel as $ves)
+                  <option value="{{$ves->ves_id}}">{{$ves->ves_name}}</option>
+                  @endforeach
                 </select>
               </div>
             </div>
             <div class="row">
-            <div class="col-4">
-              <div class="form-group">
-                <label for="first-name-vertical">Vessel Name</label>
-                <input type="text" id="nama-kapal" class="form-control" readonly>
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="first-name-vertical">Vessel Name</label>
+                  <input type="text" id="nama-kapal" class="form-control" readonly>
+                </div>
               </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
-                <label for="first-name-vertical">Vessel Code</label>
-                <input type="text" id="kode-kapal" class="form-control" readonly>
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="first-name-vertical">Vessel Code</label>
+                  <input type="text" id="kode-kapal" class="form-control" readonly>
+                </div>
               </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
-                <label for="first-name-vertical">Voy No</label>
-                <input type="text" id="nomor-voyage" class="form-control" name="ctr_type" readonly>
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="first-name-vertical">Voy No</label>
+                  <input type="text" id="nomor-voyage" class="form-control" name="ctr_type" readonly>
+                </div>
               </div>
-            </div>
             </div>
             <div class="col-12">
               <div class="form-group">
                 <label for="first-name-vertical">Choose Container Number</label>
                 <select class="choices form-select" id="key" name="container_key" required>
-                    <option value="" disabled selected>Select Container</option>
-                   @foreach($items as $item)
-                   <option value="{{$item->container_key}}">{{$item->container_no}}</option>
-                   @endforeach
+                  <option value="" disabled selected>Select Container</option>
+                  @foreach($items as $item)
+                  <option value="{{$item->container_key}}">{{$item->container_no}}</option>
+                  @endforeach
                 </select>
                 <input type="hidden" id="container_no" class="form-control" name="container_no">
               </div>
               {{ csrf_field()}}
             </div>
             <div class="col-12">
-                            <div class="form-group">
-                                <label for="first-name-vertical">Alat</label>
-                                <select class="choices form-select" id="alat" required>
-                                    <option value="">Pilih Alat</option>
-                                    @foreach($alat as $alt)
-                                    <option value="{{$alt->id}}">{{$alt->name}}</option>
-                                    @endforeach
-                                </select>
-                                <input type="hidden" id="container_no" class="form-control" name="container_no">
-                                <input type="hidden" id="container_key" class="form-control" name="container_key">
-                            </div>
-                            {{ csrf_field()}}
-                        </div>
+              <div class="form-group">
+                <label for="first-name-vertical">Alat</label>
+                <select class="choices form-select" id="alat" required>
+                  <option value="">Pilih Alat</option>
+                  @foreach($alat as $alt)
+                  <option value="{{$alt->id}}">{{$alt->name}}</option>
+                  @endforeach
+                </select>
+                <input type="hidden" id="container_no" class="form-control" name="container_no">
+                <input type="hidden" id="container_key" class="form-control" name="container_key">
+              </div>
+              {{ csrf_field()}}
+            </div>
             <div class="col-12">
               <div class="form-group">
                 <label for="first-name-vertical">Type</label>
@@ -188,8 +188,14 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i><span class="d-none d-sm-block">Close</span></button>
-            <button type="submit" class="btn btn-success ml-1 update_status"><i class="bx bx-check d-block d-sm-none"></i><span class="d-none d-sm-block">Confirm</span></button>
+            <button type="button" class="btn btn-sm btn-light-secondary" data-bs-dismiss="modal">
+              <i class="bx bx-x d-none d-sm-inline"></i>
+              <span class="d-inline d-sm-none">Close</span>
+            </button>
+            <button type="submit" class="btn btn-sm btn-success ml-1 update_status">
+              <i class="bx bx-check d-none d-sm-inline"></i>
+              <span class="d-inline d-sm-none">Confirm</span>
+            </button>
           </div>
         </div>
       </div>

@@ -212,7 +212,7 @@ class Stuffing extends Controller
                 'yard_row'  => 'required',
                 'yard_tier' => 'required',
                 'ro_id_gati' => 'required',
-                 'alat' => 'required',
+                'alat' => 'required',
             ], [
                 'container_no.required' => 'Container Number is required.',
                 'yard_block.required' => 'Block is required.',
