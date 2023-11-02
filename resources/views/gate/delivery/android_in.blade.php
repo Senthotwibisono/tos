@@ -178,7 +178,7 @@
         <!-- end content -->
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-light-secondary d-block d-sm-none">
+        <button type="button" class="btn btn-light-secondary d-block d-sm-none" data-bs-dismiss="modal">
           <i class="bx bx-x"></i>
           Close
         </button>

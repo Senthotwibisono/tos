@@ -20,7 +20,7 @@
         <div class="card" id="load_ini">
             <div class="card-header">
                 <button class="btn icon icon-left btn-outline-info text-danger" data-bs-toggle="modal" data-bs-target="#success">
-                <i class="fa fa-truck" aria-hidden="true"></i>Gate Out
+                    <i class="fa fa-truck" aria-hidden="true"></i>Gate Out
             </div>
             <div class="card-body">
                 <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
@@ -102,8 +102,11 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i><span class="d-none d-sm-block">Close</span></button>
-                <button type="submit" class="btn btn-success ml-1 update_status"><i class="bx bx-check d-block d-sm-none"></i><span class="d-none d-sm-block">Confirm</span></button>
+                <button type="button" class="btn btn-light-secondary d-block d-sm-none" data-bs-dismiss="modal"> <i class="bx bx-x"></i>Close</button>
+                <button type="submit" class="btn btn-success ml-1 d-block d-sm-none update_status"><i class="bx bx-check"></i>Confirm</button>
+
+                <button type="button" class="btn btn-light-secondary d-none d-sm-block" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i>Close</button>
+                <button type="submit" class="btn btn-success ml-1 d-none d-sm-block update_status"><i class="bx bx-check d-block d-sm-none"></i>Confirm</button>
             </div>
         </div>
     </div>
@@ -152,7 +155,7 @@
         }).then((result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
-                
+
                 $.ajax({
                     type: 'POST',
                     url: '/gato-del',
@@ -167,20 +170,19 @@
                             $('#place_cont').load(window.location.href + ' #place_cont', function() {
                                 $(document).ready(function() {
                                     let choices = document.querySelectorAll('.choices');
-                                        let initChoice;
-                                        for(let i=0; i<choices.length;i++) {
-                                          if (choices[i].classList.contains("multiple-remove")) {
-                                            initChoice = new Choices(choices[i],
-                                              {
+                                    let initChoice;
+                                    for (let i = 0; i < choices.length; i++) {
+                                        if (choices[i].classList.contains("multiple-remove")) {
+                                            initChoice = new Choices(choices[i], {
                                                 delimiter: ',',
                                                 editItems: true,
                                                 maxItemCount: -1,
                                                 removeItemButton: true,
-                                              });
-                                          }else{
+                                            });
+                                        } else {
                                             initChoice = new Choices(choices[i]);
-                                          }
                                         }
+                                    }
                                     $('.container').select2({
                                         dropdownParent: '#success',
                                     });
@@ -215,21 +217,21 @@
                         }
                     },
                     error: function(response) {
-                    var errors = response.responseJSON.errors;
-                    if (errors) {
-                        var errorMessage = '';
-                        $.each(errors, function(key, value) {
-                            errorMessage += value[0] + '<br>';
-                        });
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Validation Error',
-                            html: errorMessage,
-                        });
-                    } else {
-                        console.log('error:', response);
-                    }
-                },
+                        var errors = response.responseJSON.errors;
+                        if (errors) {
+                            var errorMessage = '';
+                            $.each(errors, function(key, value) {
+                                errorMessage += value[0] + '<br>';
+                            });
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Validation Error',
+                                html: errorMessage,
+                            });
+                        } else {
+                            console.log('error:', response);
+                        }
+                    },
                 });
 
             } else if (result.isDenied) {
