@@ -12,23 +12,23 @@
                     <div class="row" style="border-right: 2px solid blue;">
                         <h5>Container Fill</h5>
                         <div id="container-list">
-                        <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="tableDetail">
-                    <thead>
-                        <tr>
-                            <th>R.O No</th>
-                            <th>Container No</th>
-                            <th>Deail</th>                            
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+                            <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="tableDetail">
+                                <thead>
+                                    <tr>
+                                        <th>R.O No</th>
+                                        <th>Container No</th>
+                                        <th>Detail</th>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
-                    <i class="bx bx-x d-block d-sm-none"></i>
+                    <span class="d-block d-sm-none">Close</span>
                     <span class="d-none d-sm-block">Close</span>
                 </button>
             </div>
@@ -53,31 +53,29 @@
                     <div class="row" style="border-right: 2px solid blue;">
                         <h5>Container Fill</h5>
                         <div id="container-list">
-                        <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="tableView">
-                    <thead>
-                        <tr>
-                            <th>Container No</th>
-                            <th>Iso Code</th>
-                            <th>Vessel</th>
-                            <th>Voy</th>                            
-                            <th>Size</th>                            
-                            <th>Type</th>                            
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+                            <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="tableView">
+                                <thead>
+                                    <tr>
+                                        <th>Container No</th>
+                                        <th>Iso Code</th>
+                                        <th>Vessel</th>
+                                        <th>Voy</th>
+                                        <th>Size</th>
+                                        <th>Type</th>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
-                    <i class="bx bx-x d-block d-sm-none"></i>
+                    <span class="d-block d-sm-none">Close</span>
                     <span class="d-none d-sm-block">Close</span>
                 </button>
             </div>
         </div>
     </div>
 </div>
-
-

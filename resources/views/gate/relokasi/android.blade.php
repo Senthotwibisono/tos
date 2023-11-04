@@ -61,7 +61,7 @@
                     </div>
                     <div class="col-6">
                         <select class="choices form-control" name="container_key" id="container">
-                            <option value="" disabled values selected>Selecet Container</option>
+                            <option value="" disabled values selected>Select Container</option>
                             @foreach($item as $itm)
                             <option value="{{$itm->container_key}}">{{$itm->container_no}}</option>
                             @endforeach
@@ -74,8 +74,8 @@
             </div>
             <div class="card-footer">
                 <div class="d-flex justify-content-end">
-                    <button type="button" class="btn btn-outline-primary ml-1 permit"><i class="bx bx-check d-block d-sm-none"></i><span class="d-none d-sm-block">Permit</span>
-                    </button>
+                    <button type="button" class="btn btn-outline-primary ml-1 d-block d-sm-none permit"><i class="bx bx-check"></i>Permit</button>
+                    <button type="button" class="btn btn-outline-primary ml-1 d-none d-sm-block permit"><i class="bx bx-check d-block d-sm-none"></i>Permit</button>
                 </div>
             </div>
         </div>
