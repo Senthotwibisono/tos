@@ -11,6 +11,9 @@ use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\DataExport;
+use App\Models\Item;
+
+
 
 class BillingImportController extends Controller
 {
@@ -199,7 +202,6 @@ class BillingImportController extends Controller
     } else if ($result->data->deliveryForm->orderService == "mtiks") {
       $data["orderService"] = "MT Keluar IKS";
     }
-
 
     $data["title"] = "Review Form & Calculation Pranota | Delivery Billing System";
     return view('billing.import.form.review', $data);
@@ -512,12 +514,25 @@ class BillingImportController extends Controller
     $response_single_job = $req_single_job->getBody()->getContents();
     $result_single_job = json_decode($response_single_job);
     // dd($result_single_job);
-
     $jobData = $result_single_job->data;
+
+    // GET SINGLE CONTAINER 
+    $url_single_container = getenv('API_URL') . '/delivery-service/container/single/' . $jobData->containers[0]->findContainer->containerID;
+    $req_single_container = $client->get($url_single_container);
+    $response_single_container = $req_single_container->getBody()->getContents();
+    $result_single_container = json_decode($response_single_container);
+    // dd($result_single_container);
+
     // dd($jobData);
-    $qrcodes = QrCode::size(100)->generate($jobData->containers[0]->jobContainer->container_no);
+    $container = Item::where('container_key', '=', $jobData->containers[0]->findContainer->container_key,)->get();
+    $data["containerItem"] = $container[0];
+    // dd($container[0]->ves_name);
+    // dd($jobData);
+    $qrcodes = QrCode::size(100)->generate($jobData->containers[0]->findContainer->container_no);
     // dd($qrcodes);
-    $data["job"] = $jobData->containers[0]->jobContainer;
+    $data["job"] = $jobData->containers[0]->findContainer;
+    $data["container"] = $result_single_container->data;
+
     $data["invoice"] = $result_single_invoice->data;
     $data["delivery"] = $result_single_invoice->data->deliveryForm;
     $data["title"] = "Job Page | Icon Sarana";
