@@ -35,10 +35,6 @@
               <td>{{$vmaster->liner}}</td>
               <td>{{$vmaster->user_id}}</td>
               <td>
-                <!-- Add an action button here -->
-                <!-- <button type="button" class="btn btn-primary select-kapal-btn" data-bs-toggle="modal" data-bs-target="#exampleModalCenter" data-ves-name="{{$vmaster->ves_name}}" data-ves-code="{{$vmaster->ves_code}}">
-                  Select
-                </button> -->
                 <!-- <input type="hidden" id="vesCodeInput" name="ves_code" value=""> -->
                 <a href="/planning/grid?ves_code=<?= $vmaster->ves_code ?>&ves_name=<?= $vmaster->ves_name ?>" class="btn btn-primary"><i class="fa fa-eye"></i></a>
               </td>

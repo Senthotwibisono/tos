@@ -27,14 +27,14 @@ class Gati extends Controller
     public function index()
     {
         $title = 'Gate In Delivery';
-        $confirmed = Item::where('ctr_intern_status', '=', '10',)->orWhere(function ($subquery){
-                        $subquery->where('ctr_intern_status', '03')
-                        ->where(function ($subsubquery) {
-                            $subsubquery->where('order_service', 'spps')
-                                ->orWhere('order_service', 'sppsrelokasipelindo')
-                                ->whereNotNull('truck_no');
-                            });
-                    })->orderBy('truck_in_date', 'desc')->get();
+        $confirmed = Item::where('ctr_intern_status', '=', '10',)->orWhere(function ($subquery) {
+            $subquery->where('ctr_intern_status', '03')
+                ->where(function ($subsubquery) {
+                    $subsubquery->where('order_service', 'spps')
+                        ->orWhere('order_service', 'sppsrelokasipelindo')
+                        ->whereNotNull('truck_no');
+                });
+        })->orderBy('truck_in_date', 'desc')->get();
         $formattedData = [];
         $data = [];
 
@@ -90,7 +90,14 @@ class Gati extends Controller
     public function android()
     {
         $title = 'Gate In Delivery';
-        $confirmed = Item::where('ctr_intern_status', '=', 10,)->orderBy('truck_in_date', 'desc')->get();
+        $confirmed = Item::where('ctr_intern_status', '=', '10',)->orWhere(function ($subquery) {
+            $subquery->where('ctr_intern_status', '03')
+                ->where(function ($subsubquery) {
+                    $subsubquery->where('order_service', 'spps')
+                        ->orWhere('order_service', 'sppsrelokasipelindo')
+                        ->whereNotNull('truck_no');
+                });
+        })->orderBy('truck_in_date', 'desc')->get();
         $formattedData = [];
         $data = [];
 
@@ -131,7 +138,7 @@ class Gati extends Controller
 
         $client = new Client();
         // GET ALL JOB_CONTAINER
-        $url_jobContainer = getenv('API_URL') . '/delivery-service/job/all';
+        $url_jobContainer = getenv('API_URL') . '/delivery-service/job/osds';
         $req_jobContainer = $client->get($url_jobContainer);
         $response_jobContainer = $req_jobContainer->getBody()->getContents();
         $result_jobContainer = json_decode($response_jobContainer);
@@ -218,8 +225,8 @@ class Gati extends Controller
 
         $order_service = $request->order_service;
 
-        if (($order_service === 'sppsrelokasipelindo') ||($order_service === 'spps') ) {
-            
+        if (($order_service === 'sppsrelokasipelindo') || ($order_service === 'spps')) {
+
             $item->update([
                 'truck_no' => $request->truck_no,
                 'truck_in_date' => $request->truck_in_date,
@@ -229,7 +236,7 @@ class Gati extends Controller
                 'message' => 'updated successfully!',
                 'data'    => $item,
             ]);
-        }else {
+        } else {
             $item->update([
                 'ctr_intern_status' => 10,
                 'truck_no' => $request->truck_no,
@@ -243,13 +250,13 @@ class Gati extends Controller
             // var_dump($item);
             // die();
             $client = new Client();
-    
+
             $fields = [
                 "container_key" => $request->container_key,
                 "ctr_intern_status" => "10",
             ];
             // dd($fields, $item->getAttributes());
-    
+
             $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
             $req = $client->post(
                 $url,
@@ -263,7 +270,7 @@ class Gati extends Controller
             // die();
             if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
                 // $item->save();
-    
+
                 return response()->json([
                     'success' => true,
                     'message' => 'updated successfully!',
@@ -276,7 +283,7 @@ class Gati extends Controller
                 ]);
             }
         }
-     
+
 
         // return response()->json([
         //     'success' => true,
@@ -342,7 +349,7 @@ class Gati extends Controller
 
     public function android_rec()
     {
-        $title = 'Gate In Recivng';
+        $title = 'Gate In Receivng';
         $confirmed = Item::where('ctr_intern_status', '=', 50,)->orderBy('truck_in_date', 'desc')->get();
         $formattedData = [];
         $data = [];
@@ -384,7 +391,7 @@ class Gati extends Controller
 
         $client = new Client();
         // GET ALL JOB_CONTAINER
-        $url_jobContainer = getenv('API_URL') . '/delivery-service/container/export/all';
+        $url_jobContainer = getenv('API_URL') . '/delivery-service/job/export/all';
         $req_jobContainer = $client->get($url_jobContainer);
         $response_jobContainer = $req_jobContainer->getBody()->getContents();
         $result_jobContainer = json_decode($response_jobContainer);
@@ -523,9 +530,9 @@ class Gati extends Controller
             'ves_name' => $request->ves_name,
             'voy_no' => $request->voy_no,
             'user_id' => $request->user_id,
-            'ctr_active_yn'=>'Y',
-            'ctr_i_e_t'=>'E',
-            'order_service'=>$request->order_service,
+            'ctr_active_yn' => 'Y',
+            'ctr_i_e_t' => 'E',
+            'order_service' => $request->order_service,
         ]);
         // var_dump($item);
         // die();
@@ -579,32 +586,48 @@ class Gati extends Controller
     public function index_stuf()
     {
         $title = "Gate-In Stuffing";
-    $ro = RO_Gate::whereIn('status', ['1', '2', '4', '5', '7'])->get();
-    $full = RO_Gate::where('status', '=', '6')->get();
-    $ros = RO::all();
-    $realisasis = RO_Realisasi::all();
+        $ro = RO_Gate::whereIn('status', ['1', '2', '4', '5', '7'])->get();
+        $full = RO_Gate::where('status', '=', '6')->get();
+        $ros = RO::all();
+        $realisasis = RO_Realisasi::all();
 
-    $rg = collect();
+        $rg = collect();
 
-    foreach ($ros as $roItem) {
-        $jmlhContInRoDok = $roItem->jmlh_cont;
+        foreach ($ros as $roItem) {
+            $jmlhContInRoDok = $roItem->jmlh_cont;
 
-        $realizationCount = $realisasis->where('ro_no', $roItem->ro_no)->count();
+            $realizationCount = $realisasis->where('ro_no', $roItem->ro_no)->count();
 
-        if ($realizationCount < $jmlhContInRoDok) {
-            $rg->push($roItem->ro_id);
+            if ($realizationCount < $jmlhContInRoDok) {
+                $rg->push($roItem->ro_id);
+            }
+
+            $ro_Gate = RO::whereIn('ro_id', $rg)->get();
         }
-
-        $ro_Gate = RO::whereIn('ro_id', $rg)->get();
-    }
-    return view('gate.stuffing.gate-in', compact('title', 'ro', 'full', 'rg', 'ro_Gate'));
+        return view('gate.stuffing.gate-in', compact('title', 'ro', 'full', 'rg', 'ro_Gate'));
     }
     public function stuf_android()
     {
         $title = "Gate-In Stuffing";
         $ro = RO_Gate::whereIn('status', ['1', '2', '4', '5', '7'])->get();
         $full = RO_Gate::where('status', '=', '6')->get();
-        return view('gate.stuffing.gate-in-android', compact('title'), compact('ro', 'full'));
+        $ros = RO::all();
+        $realisasis = RO_Realisasi::all();
+
+        $rg = collect();
+
+        foreach ($ros as $roItem) {
+            $jmlhContInRoDok = $roItem->jmlh_cont;
+
+            $realizationCount = $realisasis->where('ro_no', $roItem->ro_no)->count();
+
+            if ($realizationCount < $jmlhContInRoDok) {
+                $rg->push($roItem->ro_id);
+            }
+
+            $ro_Gate = RO::whereIn('ro_id', $rg)->get();
+        }
+        return view('gate.stuffing.gate-in-android', compact('title', 'ro', 'full', 'rg', 'ro_Gate'));
     }
 
     public function gati_stuf(Request $request)
@@ -663,7 +686,7 @@ class Gati extends Controller
         $data = RO::where('ro_id', $id)->first();
 
         if ($data) {
-            return response()->json(['cont' => $data->jmlh_cont, 'service' => $data->stuffing_service, 'ro' =>$data->ro_no]);
+            return response()->json(['cont' => $data->jmlh_cont, 'service' => $data->stuffing_service, 'ro' => $data->ro_no]);
         }
         return response()->json(['service' => 'data tidak ditemukan', 'cont' => 'data tidak ditemukan']);
     }

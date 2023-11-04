@@ -32,6 +32,7 @@
               <th>Container No</th>
               <th>Truck No</th>
               <th>Truck In</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -40,6 +41,9 @@
               <td>{{$d['container_no']}}</td>
               <td>{{$d['truck_no']}}</td>
               <td>{{$d['truck_in_date']}}</td>
+              <td>
+                <button type="button" class="btn icon icon-left btn-outline-info edit" data-bs-toggle="modal" data-id="{{$d['container_key']}}">edit</button>
+              </td>
             </tr>
             @endforeach
           </tbody>
@@ -67,27 +71,49 @@
                 <select class="choices form-select" id="key" name="container_key" required>
                   <option disabled selected value="">Select Container</option>
                   <?php
-                  foreach ($jobContainers->container as $value) { ?>
-                    <?php if ($value->ctr_intern_status == "03") { ?>
-                      <option value="<?= $value->container_key ?>"><?= $value->container_no ?></option>
+                  foreach ($jobContainers->containers as $value) { ?>
+                    <?php if ((($value->jobContainer->ctr_intern_status == "03") && ($value->jobContainer->billingName == "DS") && ($value->jobContainer->orderService != "sppsrelokasipelindo") || ($value->jobContainer->ctr_intern_status == "03")  && ($value->jobContainer->orderService == "sppsrelokasipelindo" || $value->jobContainer->orderService == "spps"))) { ?>
+                      <option value="<?= $value->jobContainer->container_key ?>"><?= $value->jobContainer->container_no ?></option>
                     <?php } ?>
-                  <?php
-                  } ?>
+                  <?php } ?>
                 </select>
                 <input type="hidden" id="container_no" class="form-control" name="container_no">
               </div>
               {{ csrf_field()}}
             </div>
             <div class="col-12">
-              <div class="form-group">
-                <label for="first-name-vertical">Job Number</label>
-                <input type="text" id="job" class="form-control" name="job_no" disabled>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="first-name-vertical">Job Number</label>
+                    <input type="text" id="job" class="form-control" name="job_no" readonly>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="first-name-vertical">Order Service</label>
+                    <input type="text" id="orderservice" class="form-control" readonly>
+                    <input type="text" id="orderserviceCode" class="form-control" readonly>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="first-name-vertical">Dok</label>
+                    <input type="text" id="dok" class="form-control" readonly>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="first-name-vertical">Jenis Dok</label>
+                    <input type="text" id="jenisDok" class="form-control" readonly>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="col-12">
               <div class="form-group">
                 <label for="first-name-vertical">Invoice Number</label>
-                <input type="text" id="invoice" class="form-control" name="invoice_no" disabled>
+                <input type="text" id="invoice" class="form-control" name="invoice_no" readonly>
                 <input type="hidden" value="{{ $currentDateTimeString }}" name="truck_in_date" class="form-control" readonly>
               </div>
             </div>
@@ -109,11 +135,63 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i><span class="d-none d-sm-block">Close</span></button>
-        <button type="submit" class="btn btn-success ml-1 update_status"><i class="bx bx-check d-block d-sm-none"></i><span class="d-none d-sm-block">Confirm</span></button>
+        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+          <i class="bx bx-x d-none d-sm-block"></i>
+          <span class="d-sm-none">Close</span>
+        </button>
+        <button type="submit" class="btn btn-success ml-1 update_status">
+          <i class="bx bx-check d-none d-sm-block"></i>
+          <span class="d-sm-none">Confirm</span>
+        </button>
       </div>
     </div>
   </div>
+</div>
+
+
+<!-- edit truck -->
+<div class="modal fade text-left" id="edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel130" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-info">
+        <h5 class="modal-title white" id="myModalLabel130">Info Modal</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <i data-feather="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- content -->
+        <div class="col-12">
+          <div class="form-group">
+            <label for="">Container</label>
+            <input type="text" class="form-control" id="cont" disabled>
+            <input type="hidden" class="form-control" id="contKey">
+          </div>
+        </div>
+        <br>
+        <div class="col-12">
+          <div class="form-group">
+            <label for="">Truck</label>
+            <input type="text" id="nomor_truck" class="form-control">
+          </div>
+        </div>
+        <!-- end content -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light-secondary d-block d-sm-none" data-bs-dismiss="modal">
+          <i class="bx bx-x"></i>
+          Close
+        </button>
+        <button type="button" class="btn btn-info ml-1 edit-truck d-block d-sm-none">
+          <i class="bx bx-check"></i>
+          Accept
+        </button>
+
+
+      </div>
+    </div>
+  </div>
+</div>
 </div>
 @endsection
 @section('custom_js')
@@ -123,7 +201,6 @@
 <script src="{{asset('dist/assets/js/pages/sweetalert2.js')}}"></script>
 
 <script>
-  // In your Javascript (external .js resource or <script> tag)
   $(document).ready(function() {
     $('.container').select2({
       dropdownParent: '#success',
@@ -133,13 +210,21 @@
     e.preventDefault();
     var container_key = $('#key').val();
     var container_no = $('#container_no').val();
+    var invoice_no = $('#invoice').val();
+    var job_no = $('#job').val();
     var truck_no = $('#tayo').val();
     var truck_in_date = $('#datein').val();
+    var order_service = $('#orderserviceCode').val();
     var data = {
       'container_key': $('#key').val(),
       'container_no': $('#container_no').val(),
       'truck_no': $('#tayo').val(),
       'truck_in_date': $('#datein').val(),
+      'order_service': $('#orderserviceCode').val(),
+      'invoice_no': $('#invoice').val(),
+      'job_no': $('#job').val(),
+      'jno_dok': $('#dok').val(),
+      'jenis_dok': $('#jenisDok').val(),
 
 
     }
@@ -160,6 +245,7 @@
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
 
+
         $.ajax({
           type: 'POST',
           url: '/gati-del',
@@ -167,56 +253,13 @@
           cache: false,
           dataType: 'json',
           success: function(response) {
-            Swal.fire('Saved!', '', 'success')
             console.log(response);
             if (response.success) {
-              $('#load_ini').load(window.location.href + ' #load_ini');
-              $('#place_cont').load(window.location.href + ' #place_cont', function() {
-                $(document).ready(function() {
-                  let choices = document.querySelectorAll('.choices');
-                  let initChoice;
-                  for (let i = 0; i < choices.length; i++) {
-                    if (choices[i].classList.contains("multiple-remove")) {
-                      initChoice = new Choices(choices[i], {
-                        delimiter: ',',
-                        editItems: true,
-                        maxItemCount: -1,
-                        removeItemButton: true,
-                      });
-                    } else {
-                      initChoice = new Choices(choices[i]);
-                    }
-                  }
-                  $('.container').select2({
-                    dropdownParent: '#success',
-                  });
-                  $(document).ready(function() {
-                    $('#key').on('change', function() {
-                      let id = $(this).val();
-                      $.ajax({
-                        type: 'POST',
-                        url: '/gati-data_container',
-                        data: {
-                          container_key: id
-                        },
-                        success: function(response) {
-                          let res = JSON.parse(response);
-                          // console.log(res);
-                          $('#container_no').val(res.data.jobData.container_no);
-                          $('#job').val(res.data.jobData.jobNumber);
-                          $('#invoice').val(res.data.jobData.invoiceNumber);
-                        },
-                        error: function(data) {
-                          console.log('error:', data);
-                        },
-                      });
-                    });
-                  });
-                  // $
+              Swal.fire('Saved!', '', 'success')
+                .then(() => {
+                  // Memuat ulang halaman setelah berhasil menyimpan data
+                  window.location.reload();
                 });
-
-                $('#load_ini').load(window.location.href + ' #load_ini');
-              });
             } else {
               Swal.fire('Error', response.message, 'error');
             }
@@ -266,10 +309,30 @@
           },
           success: function(response) {
             let res = JSON.parse(response);
+            let job = res.data.containers[0].findContainer;
+            let delivery = res.data.containers[0].deliveryForm;
             // console.log(res);
-            $('#container_no').val(res.data.jobData.container_no);
-            $('#job').val(res.data.jobData.jobNumber);
-            $('#invoice').val(res.data.jobData.invoiceNumber);
+            $('#container_no').val(job.container_no);
+            $('#job').val(job.jobNumber);
+            $('#invoice').val(job.invoiceNumber);
+            $('#orderserviceCode').val(job.orderService);
+            $('#orderservice').val(job.orderService);
+
+            if (job.orderService === "sp2iks") {
+              $('#orderservice').val("SP2 Kapal Sandar Icon (MT Balik IKS)");
+            } else if (job.orderService === "sp2mkb") {
+              $('#orderservice').val("SP2 Kapal Sandar icon (MKB)");
+            } else if (job.orderService === "sp2pelindo") {
+              $('#orderservice').val("SP2 Kapal Sandar Icon (MT Balik Pelindo)");
+            } else if (job.orderService === "spps") {
+              $('#orderservice').val("SPPS");
+            } else if (job.orderService === "sppsrelokasipelindo") {
+              $('#orderservice').val("SPPS (Relokasi Pelindo - ICON)");
+            } else if (job.orderService === "sp2icon") {
+              $('#orderservice').val("SP2 (Relokasi Pelindo - Icon)");
+            }
+            $('#dok').val(delivery.documentNumber);
+            $('#jenisDok').val(delivery.documentType);
           },
           error: function(data) {
             console.log('error:', data);
@@ -297,6 +360,115 @@
     //             })               
     //         })
     //     })
+  });
+</script>
+<script>
+  $(function() {
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+
+    $(document).on('click', '.edit', function() {
+      let id = $(this).data('id');
+      $.ajax({
+        type: 'GET',
+        url: '/gati-del/edit-' + id,
+        cache: false,
+        data: {
+          container_key: id
+        },
+        dataType: 'json',
+        success: function(response) {
+          console.log(response);
+          $('#edit').modal('show');
+          $('#edit #cont').val(response.data.container_no);
+          $('#edit #contKey').val(response.data.container_key);
+
+
+        },
+        error: function(data) {
+          console.log('error:', data);
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  $(document).on('click', '.edit-truck', function(e) {
+    e.preventDefault();
+    var container_key = $('#contKey').val();
+    var truck = $('#nomor_truck').val();
+    var data = {
+      'container_key': $('#contKey').val(),
+      'truck': $('#nomor_truck').val(),
+
+
+
+    }
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+    Swal.fire({
+      title: 'Are you Sure?',
+      text: "Ganti Nomor Truck ? ",
+      icon: 'warning',
+      showDenyButton: false,
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      confirmButtonText: 'Confirm',
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+
+
+        $.ajax({
+          type: 'POST',
+          url: '/gati-del/update-truck',
+          data: data,
+          cache: false,
+          dataType: 'json',
+          success: function(response) {
+            console.log(response);
+            if (response.success) {
+              Swal.fire('Saved!', '', 'success')
+                .then(() => {
+                  // Memuat ulang halaman setelah berhasil menyimpan data
+                  window.location.reload();
+                });
+            } else {
+              console.log('error:', response);
+            }
+          },
+          error: function(response) {
+            var errors = response.responseJSON.errors;
+            if (errors) {
+              var errorMessage = '';
+              $.each(errors, function(key, value) {
+                errorMessage += value[0] + '<br>';
+              });
+              Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                html: errorMessage,
+              });
+            } else {
+              console.log('error:', response);
+            }
+          },
+        });
+
+      } else if (result.isDenied) {
+        Swal.fire('Changes are not saved', '', 'info')
+      }
+
+
+    })
+
   });
 </script>
 

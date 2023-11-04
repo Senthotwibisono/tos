@@ -125,7 +125,7 @@
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="first-name-vertical">Row</label>
-                                        <input type="text" id="row" class="form-control" name="bay_row" >
+                                        <input type="text" id="row" class="form-control" name="bay_row">
                                     </div>
                                 </div>
                                 <div class="col-6">
@@ -149,9 +149,16 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i><span class="d-none d-sm-block">Close</span></button>
-                <button type="submit" class="btn btn-success ml-1 update_status"><i class="bx bx-check d-block d-sm-none"></i><span class="d-none d-sm-block">Confirm</span></button>
+                <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                    <i class="bx bx-x d-none d-sm-block"></i> <!-- Hide on small screens -->
+                    <span class="d-block d-sm-none">Close</span> <!-- Show on small screens -->
+                </button>
+                <button type="submit" class="btn btn-success ml-1 update_status">
+                    <i class="bx bx-check d-none d-sm-block"></i> <!-- Hide on small screens -->
+                    <span class="d-block d-sm-none">Confirm</span> <!-- Show on small screens -->
+                </button>
             </div>
+
         </div>
     </div>
 </div>
@@ -261,44 +268,44 @@
                                 }
                             });
                             $("#container_key").select2({
-        dropdownParent: '#success',
+                                dropdownParent: '#success',
 
-        // dropdownParent: "#modal-container"
-    });
+                                // dropdownParent: "#modal-container"
+                            });
 
                             $(function() {
-            $("#id_kapal").change(function() {
-                let ves_id = $('#id_kapal').val();
+                                $("#id_kapal").change(function() {
+                                    let ves_id = $('#id_kapal').val();
 
-                $.ajax({
-                    type: 'POST',
-                    url: '/get-con-load',
-                    data: {
-                        ves_id: ves_id
-                    },
-                    cache: false,
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: '/get-con-load',
+                                        data: {
+                                            ves_id: ves_id
+                                        },
+                                        cache: false,
 
-                    success: function(msg) {
-                        let res = msg;
-                        //console.log(res.length);
-                        var len = res.length;
-                        var optionsHtml = ''; // Variable to store the options HTML
-                        for (let i = 0; i < len; i++) {
-                            let id = res[i].value;
-                            let nama = res[i].text;
-                            //console.log(id, nama);
-                            optionsHtml += "<option value='" + id + "'>" + nama + "</option>"; // Append each option HTML
-                        }
-                        $("#container_key").html(optionsHtml); // Set the HTML of the select element
-                        $("#container_key").trigger('change'); // Update Select2 after modifying options
-                    },
-                    error: function(data) {
-                        console.log('error:', data)
-                        //commited
-                    },
-                });
-            });
-        });
+                                        success: function(msg) {
+                                            let res = msg;
+                                            //console.log(res.length);
+                                            var len = res.length;
+                                            var optionsHtml = ''; // Variable to store the options HTML
+                                            for (let i = 0; i < len; i++) {
+                                                let id = res[i].value;
+                                                let nama = res[i].text;
+                                                //console.log(id, nama);
+                                                optionsHtml += "<option value='" + id + "'>" + nama + "</option>"; // Append each option HTML
+                                            }
+                                            $("#container_key").html(optionsHtml); // Set the HTML of the select element
+                                            $("#container_key").trigger('change'); // Update Select2 after modifying options
+                                        },
+                                        error: function(data) {
+                                            console.log('error:', data)
+                                            //commited
+                                        },
+                                    });
+                                });
+                            });
                             $(document).ready(function() {
                                 $('#container_key').on('change', function() {
                                     let id = $(this).val();
