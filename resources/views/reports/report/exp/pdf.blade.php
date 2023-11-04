@@ -1,97 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-
   <title><?= $title ?></title>
-  <link rel="stylesheet" href="{{asset('dist/assets/css/main/app.css')}}">
+ 
+  <style>
 
-</head>
-
-
-<style>
-  body {
-    margin-top: 20px;
-    background: #eee;
-  }
-
-  .invoice {
-    padding: 30px;
-  }
-
-  .invoice h2 {
-    margin-top: 0px;
-    line-height: 0.8em;
-  }
-
-  .invoice .small {
-    font-weight: 300;
-  }
-
-  .invoice hr {
-    margin-top: 10px;
-    border-color: blue;
-  }
-
-  .invoice .table tr.line {
-    border-bottom: 1px solid #ccc;
-  }
-
-  .invoice .table td {
-    border: none;
-  }
-
-  .invoice .identity {
-    margin-top: 10px;
-    font-size: 1.1em;
-    font-weight: 300;
-  }
-
-  .invoice .identity strong {
-    font-weight: 600;
-  }
-
-
-  .grid {
-    position: relative;
-    width: 100%;
-    background: #fff;
-    color: #666666;
-    border-radius: 2px;
-    margin-bottom: 25px;
-    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  .section {
-      padding-top: 5%;
+    .invoice {
+      background: #fff;
+      padding: 20px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     }
-
-    .card {
-      margin-bottom: 20px;
+    .invoice-title {
+      text-align: center;
     }
-
-    .card-body {
-      padding: 15px;
+    .invoice-title img {
+      max-width: 100%;
+      height: auto;
     }
-
-    .row {
-      display: flex;
-      flex-wrap: wrap;
-      margin-right: -15px;
-      margin-left: -15px;
+    .invoice-title h2 {
+      margin: 20px 0;
     }
-
-    .col-6 {
-      flex: 0 0 50%;
-      max-width: 50%;
-      padding-right: 15px;
-      padding-left: 15px;
+    .invoice hr {
+      border: 1px solid #ddd;
     }
-
-    .text-center {
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .table th, .table td {
+      border: 1px solid #ddd;
+      padding: 10px;
       text-align: center;
     }
 
@@ -99,113 +40,68 @@
       width: 100%;
       max-width: 50%;
       height: auto;
-    }
-
-    h5 {
-      margin-top: 10px;
-      margin-bottom: 10px;
-      font-size: 14px;
-      font-weight: bold;
-    }
-
-    h6 {
-      margin-top: 10px;
-      margin-bottom: 10px;
-      font-size: 12px;
-      font-weight: bold;
-    }
-
-</style>
-
-<div class="container">
-  <div class="row">
-    <!-- BEGIN INVOICE -->
-    <div class="col-xs-12">
-      <div class="grid invoice">
-        <div class="grid-body">
-          <div class="invoice-title">
-            <div class="row">
-              <div class="col-xs-12">
-                <!-- <img src="http://vergo-kertas.herokuapp.com/assets/img/logo.png" alt="" height="35"> -->
-              </div>
-            </div>
-            <br>
-            <div class="row">
-            <div class="col-6">
-                <div class="text-center">
-                  <img src="/logo/ICON2.png" class="img" alt="">
-                  <!-- <br> -->
-    
-                  <h2>Realisasi Export</h2>
-
-                </div>
-
-              </div>
-            </div>
-          </div>
-          <hr>
-          <div class="row">
-            <div class="card">
-                <div class="card-header">
-                    <div class="row">
-
-                        <div class="col-8">
-                            <h4>{{$name}} - {{$voy}}</h4>
-                        </div>
-                        <div class="col-3">
-                            <h4>Container : {{$total}}</h4>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-4">
-                            <h6>{{$flag}} / <span>{{$port}}</span></h6>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="invoice">
+      <div class="invoice-title">
+        <img src="/logo/ICON2.png" alt="">
+        <h2>Realisasi Export</h2>
+      </div>
+      <hr>
+      <div class="card">
+        <div class="card-header">
+          <h4>{{$name}} - {{$voy}}</h4>
         </div>
-        <hr>
-        <div class="row">
-            <div class="card">
-                <div class="card-header">
-                    <h4></h4>
-                </div>
-                <div class="card-body">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Container</th>
-                                <th>ISO</th>
-                                <th>Type</th>
-                                <th>Size</th>
-                                <th>Status</th>
-                                <th>Service</th>
-                                <th>Location</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                           @foreach($cont as $item)
-                           <tr>
-                            <td>{{$loop->iteration}}</td>
-                            <td>{{$item->container_no}}</td>
-                            <td>{{$item->iso_code}}</td>
-                            <td>{{$item->ctr_type}}</td>
-                            <td>{{$item->ctr_size}}</td>
-                            <td>{{$item->ctr_status}}</td>
-                            <td>{{$item->order_service}}</td>
-                            <td>{{$item->bay_slot}}|{{$item->bay_row}}|{{$item->bay_tier}}</td>
-                           </tr>
-                           @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div class="card-body">
+          <p>{{$flag}} / <span>{{$port}}</span></p>
+          <p>Arrival: {{$arrival}}</p>
+          <p>Departure: {{$departure}}</p>
+        </div>
+      </div>
+      <hr>
+      <div class="card">
+        <div class="card-header">
+          <h4></h4>
+        </div>
+        <div class="card-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Container</th>
+                <th>ISO</th>
+                <th>Type</th>
+                <th>Size</th>
+                <th>Status</th>
+                <th>Gross</th>
+                <th>G Class</th>
+                <th>Service</th>
+                <th>Location</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach($cont as $item)
+              <tr>
+                <td>{{$loop->iteration}}</td>
+                <td>{{$item->container_no}}</td>
+                <td>{{$item->iso_code}}</td>
+                <td>{{$item->ctr_type}}</td>
+                <td>{{$item->ctr_size}}</td>
+                <td>{{$item->ctr_status}}</td>
+                <td>{{$item->gross}}</td>
+                <td>{{$item->gross_class}}</td>
+                <td>{{$item->order_service}}</td>
+                <td>{{$item->bay_slot}}|{{$item->bay_row}}|{{$item->bay_tier}}</td>
+              </tr>
+              @endforeach
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
-    <!-- END INVOICE -->
   </div>
-</div>
-
+</body>
 </html>

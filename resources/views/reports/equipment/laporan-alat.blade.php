@@ -7,113 +7,45 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <title><?= $title ?></title>
-  <link rel="stylesheet" href="{{asset('dist/assets/css/main/app.css')}}">
+
 
 </head>
 
 
 <style>
-  body {
-    margin-top: 20px;
-    background: #eee;
-  }
-
   .invoice {
-    padding: 30px;
-  }
-
-  .invoice h2 {
-    margin-top: 0px;
-    line-height: 0.8em;
-  }
-
-  .invoice .small {
-    font-weight: 300;
-  }
-
-  .invoice hr {
-    margin-top: 10px;
-    border-color: blue;
-  }
-
-  .invoice .table tr.line {
-    border-bottom: 1px solid #ccc;
-  }
-
-  .invoice .table td {
-    border: none;
-  }
-
-  .invoice .identity {
-    margin-top: 10px;
-    font-size: 1.1em;
-    font-weight: 300;
-  }
-
-  .invoice .identity strong {
-    font-weight: 600;
-  }
-
-
-  .grid {
-    position: relative;
-    width: 100%;
-    background: #fff;
-    color: #666666;
-    border-radius: 2px;
-    margin-bottom: 25px;
-    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  .section {
-      padding-top: 5%;
+      background: #fff;
+      padding: 20px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     }
-
-    .card {
-      margin-bottom: 20px;
+    .invoice-title {
+      text-align: center;
     }
-
-    .card-body {
-      padding: 15px;
+    .invoice-title img {
+      max-width: 100%;
+      height: auto;
     }
-
-    .row {
-      display: flex;
-      flex-wrap: wrap;
-      margin-right: -15px;
-      margin-left: -15px;
+    .invoice-title h2 {
+      margin: 20px 0;
     }
-
-    .col-6 {
-      flex: 0 0 50%;
-      max-width: 50%;
-      padding-right: 15px;
-      padding-left: 15px;
+    .invoice hr {
+      border: 1px solid #ddd;
     }
-
-    .text-center {
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .table th, .table td {
+      border: 1px solid #ddd;
+      padding: 10px;
       text-align: center;
     }
 
     .img {
-      width: 100%;
+      width: 50%;
       max-width: 50%;
       height: auto;
-    }
-
-    h5 {
-      margin-top: 10px;
-      margin-bottom: 10px;
-      font-size: 14px;
-      font-weight: bold;
-    }
-
-    h6 {
-      margin-top: 10px;
-      margin-bottom: 10px;
-      font-size: 12px;
-      font-weight: bold;
-    }
+  }
 
 </style>
 

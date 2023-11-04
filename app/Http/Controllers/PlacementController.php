@@ -102,8 +102,10 @@ class PlacementController extends Controller
             }
 
             $formattedData[] = [
+                'container_key' => $tem->container_key,
                 'container_no' => $tem->container_no,
                 'ctr_type' => $tem->ctr_type,
+                'ctr_status' => $tem->ctr_status,
                 'yard_block' => $tem->yard_block,
                 'yard_slot' => $tem->yard_slot,
                 'yard_row' => $tem->yard_row,
@@ -115,7 +117,7 @@ class PlacementController extends Controller
 
             ];
         }
-        $items = Item::whereIn('ctr_intern_status', [02, 03, 04, 50, 51, 13])->get();
+        $items = Item::whereIn('ctr_intern_status', [02, 03, 04, 12, 50, 51, 13, 14])->get();
         $users = User::all();
         $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
         $yard_slot = Yard::distinct('yard_slot')->pluck('yard_slot');
@@ -126,7 +128,8 @@ class PlacementController extends Controller
         $data["active"] = "yard";
         $data["subactive"] = "placement";
         $alat = MasterAlat::where('category', '=', 'Yard')->get();
-        return view('yard.place.android-yard', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'alat'), $data);
+        $vessel = VVoyage::whereDate('etd_date', '>=', now())->get();
+        return view('yard.place.android-yard', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'alat', 'vessel'), $data);
     }
 
 
@@ -155,6 +158,8 @@ class PlacementController extends Controller
     public function place(Request $request)
     {
         $container_key = $request->container_key;
+        // var_dump($container_key);
+        // die();
         $item = Item::where('container_key', $container_key)->first();
         $request->validate([
             'container_no' => 'required',
@@ -176,7 +181,8 @@ class PlacementController extends Controller
             ->where('yard_row', $request->yard_row)
             ->where('yard_tier', $request->yard_tier)
             ->first();
-
+        // var_dump($yard_rowtier, $request->yard_block, $request->yard_slot, $request->yard_tier, $request->yard_row);
+        // die();
         if (is_null($yard_rowtier->container_key)) {
             $id_alat = $request->alat;
             $alat = MasterAlat::where('id', $id_alat)->first();
@@ -190,7 +196,7 @@ class PlacementController extends Controller
                     'ctr_intern_status' => ($item->ctr_intern_status === '12' || $item->ctr_intern_status === '13') ? '03' : (($item->ctr_intern_status === '14') ? '04' :  $item->ctr_intern_status),
                     'wharf_yard_oa' => $request->wharf_yard_oa,
                 ]);
-    
+
                 $act_alat = ActAlat::create([
                     'id_alat' =>  $request->alat,
                     'category' => $alat->category,
@@ -200,10 +206,9 @@ class PlacementController extends Controller
                     'container_no' => $request->container_no,
                     'activity' => 'PLC',
                 ]);
-    
-    
+
                 $client = new Client();
-    
+
                 $fields = [
                     "container_key" => $request->container_key,
                     "ctr_intern_status" => ($item->ctr_intern_status === '12' || $item->ctr_intern_status === '13') ? '03' : (($item->ctr_intern_status === '14') ? '04' :  $item->ctr_intern_status),
@@ -213,7 +218,7 @@ class PlacementController extends Controller
                     'yard_tier' => $request->yard_tier,
                 ];
                 // dd($fields, $item->getAttributes());
-    
+
                 $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
                 $req = $client->post(
                     $url,
@@ -223,11 +228,11 @@ class PlacementController extends Controller
                 );
                 $response = $req->getBody()->getContents();
                 $result = json_decode($response);
-    
+
                 // dd($result);
                 if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
                     $item->save();
-    
+
                     return response()->json([
                         'success' => 400,
                         'message' => 'updated successfully!',
@@ -245,7 +250,7 @@ class PlacementController extends Controller
                     'ctr_intern_status' => ($item->ctr_intern_status === '02' || $item->ctr_intern_status === '03') ? '03' : (($item->ctr_intern_status === '50') ? '51' : $item->ctr_intern_status),
                     'wharf_yard_oa' => $request->wharf_yard_oa,
                 ]);
-    
+
                 $act_alat = ActAlat::create([
                     'id_alat' =>  $request->alat,
                     'category' => $alat->category,
@@ -255,10 +260,10 @@ class PlacementController extends Controller
                     'container_no' => $request->container_no,
                     'activity' => 'PLC',
                 ]);
-    
-    
+
+
                 $client = new Client();
-    
+
                 $fields = [
                     "container_key" => $request->container_key,
                     "ctr_intern_status" => ($item->ctr_intern_status === '02' || $item->ctr_intern_status === '03') ? '03' : (($item->ctr_intern_status === '50') ? '51' : $item->ctr_intern_status),
@@ -268,7 +273,7 @@ class PlacementController extends Controller
                     'yard_tier' => $request->yard_tier,
                 ];
                 // dd($fields, $item->getAttributes());
-    
+
                 $url = getenv('API_URL') . '/delivery-service/container/confirmPlacement';
                 $req = $client->post(
                     $url,
@@ -278,11 +283,11 @@ class PlacementController extends Controller
                 );
                 $response = $req->getBody()->getContents();
                 $result = json_decode($response);
-    
+
                 // dd($result);
                 if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
                     $item->save();
-    
+
                     return response()->json([
                         'success' => 400,
                         'message' => 'updated successfully!',
@@ -292,7 +297,6 @@ class PlacementController extends Controller
                     return back();
                 }
             }
-           
         } else {
             return response()->json([
                 'success' => false,
@@ -331,7 +335,7 @@ class PlacementController extends Controller
                     'voy_no' => null,
                 ]);
                 $client = new Client();
-        
+
                 $fields = [
                     "container_key" => $request->container_key,
                     "ctr_intern_status" => "08",
@@ -341,7 +345,7 @@ class PlacementController extends Controller
                     "ves_code" => null,
                     "voy_no" => null,
                 ];
-            }else {
+            } else {
                 $item->update([
                     'ctr_intern_status' => '08',
                     'mty_type' => $request->mty_type,
@@ -355,7 +359,7 @@ class PlacementController extends Controller
                 $kapal = VVoyage::where('ves_id', $ves_id)->first();
 
                 $client = new Client();
-        
+
                 $fields = [
                     "container_key" => $request->container_key,
                     "ctr_intern_status" => "08",
@@ -369,7 +373,7 @@ class PlacementController extends Controller
                     "arrival_date" => $kapal->arrival_date,
                 ];
             }
-           
+
             // dd($fields, $item->getAttributes());
 
             $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
@@ -384,7 +388,7 @@ class PlacementController extends Controller
 
             // dd($result);
             if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-                
+
 
                 return response()->json([
                     'success' => 400,

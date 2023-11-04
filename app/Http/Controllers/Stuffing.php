@@ -160,7 +160,9 @@ class Stuffing extends Controller
             ->pluck('container_count', 'truck_id');
         $vessel = VVoyage::where('deparature_date', '>=', $now)->get();
         $alat = MasterAlat::where('category', '=', 'Yard')->get();
-        return view('stuffing.android', $data, compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys', 'ro_gate_dalam', 'ro_stuffing_dalam', 'vessel', 'container_truck', 'ro_gate_luar', 'ro_stuffing_luar', 'container_truck_luar', 'alat'), $data);
+
+        $roDalam = RO::where('stuffing_service', 'in')->orderBy('created_at', 'desc')->get();
+        return view('stuffing.android', $data, compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys', 'ro_gate_dalam', 'ro_stuffing_dalam', 'vessel', 'container_truck', 'ro_gate_luar', 'ro_stuffing_luar', 'container_truck_luar', 'alat', 'roDalam'), $data);
     }
 
     public function get_stuffing(Request $request)
@@ -210,7 +212,7 @@ class Stuffing extends Controller
                 'yard_row'  => 'required',
                 'yard_tier' => 'required',
                 'ro_id_gati' => 'required',
-                 'alat' => 'required',
+                'alat' => 'required',
             ], [
                 'container_no.required' => 'Container Number is required.',
                 'yard_block.required' => 'Block is required.',
@@ -599,7 +601,7 @@ class Stuffing extends Controller
             'yard_row'  => 'required',
             'yard_tier' => 'required',
             'truck_no' => 'required',
-            'id_alat' => 'required',
+            'alat' => 'required',
 
         ], [
             'container_key.required' => 'Container Number is required.',
