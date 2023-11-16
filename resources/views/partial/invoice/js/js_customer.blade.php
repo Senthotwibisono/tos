@@ -1192,11 +1192,25 @@
         // console.log("TRIMMED ALL CONTAINER = ", res.data[0].container_no.trim());
 
         let data = res.data;
+        var orderServiceDoAuto = $("#orderService").val();
+
         // console.log(data.length);
         data.forEach(value => {
-          if (value.ctr_intern_status == "03" || value.ctr_intern_status == "15") {
+          let status = value.ctr_status;
+          let intern = value.ctr_intern_status;
+          let isChoosen = value.isChoosen;
+          if (orderServiceDoAuto == "mtiks" || orderServiceDoAuto == "lolomt") {
+            if (status == "MTY" && (intern == "03" || intern == "04") && isChoosen != "1") {
+              selcont.push(value.container_no.trim());
+              // console.log(value.container_no);
+            }
+          } else {
+            // if (value.ctr_intern_status == "03" || value.ctr_intern_status == "15") {
+            //   selcont.push(value.container_no.trim());
+            //   // console.log(value.container_no);
+            // }
             selcont.push(value.container_no.trim());
-            // console.log(value.container_no);
+
           }
         });
 
@@ -1250,95 +1264,110 @@
                 })
               } else {
 
-                var orderServiceDoAuto = $("#orderService").val();
-                console.log("Order Service on DO NUMBER AUTO = ", orderServiceDoAuto);
-                if (orderServiceDoAuto == "mtiks" || orderServiceDoAuto == "lolomt") {
-                  console.log("its lolo or mtiks");
-                  $("#do_exp_date").val(containers[0].do_expired).attr("readonly", "true");
-                  $("#boln").val(containers[0].bl_no).attr("readonly", "true");
-                  // console.log("order service selected = ", orderServiceDoAuto);
-                  // console.log(containers[0]);
-                } else {
-                  // console.log("im here bro 2");
-                  function checkIfAllInArray(arrayToCheck, referenceArray) {
-                    for (let i = 0; i < arrayToCheck.length; i++) {
-                      const trimmedValue = arrayToCheck[i].trim(); // Trim whitespace from value
-                      if (referenceArray.indexOf(trimmedValue) === -1) {
-                        return false; // Found a value in arrayToCheck that is not in referenceArray
-                      }
+                // console.log("Order Service on DO NUMBER AUTO = ", orderServiceDoAuto);
+                // if (orderServiceDoAuto == "mtiks" || orderServiceDoAuto == "lolomt") {
+                //   console.log("its lolo or mtiks");
+                //   $("#do_exp_date").val(containers[0].do_expired).attr("readonly", "true");
+                //   $("#boln").val(containers[0].bl_no).attr("readonly", "true");
+                //   // console.log("order service selected = ", orderServiceDoAuto);
+                //   // console.log(containers[0]);
+                // } else {
+                // console.log("im here bro 2");
+                function checkIfAllInArray(arrayToCheck, referenceArray) {
+                  for (let i = 0; i < arrayToCheck.length; i++) {
+                    const trimmedValue = arrayToCheck[i].trim(); // Trim whitespace from value
+                    if (referenceArray.indexOf(trimmedValue) === -1) {
+                      return false; // Found a value in arrayToCheck that is not in referenceArray
                     }
-                    return true; // All values in arrayToCheck are present in referenceArray
                   }
+                  return true; // All values in arrayToCheck are present in referenceArray
+                }
 
-                  if (cont.length <= selcont.length && checkIfAllInArray(cont, selcont)) {
-                    // console.log("All values in cont are present in selcont.");
-                    checking = true;
-                    $("#containerSelectorView")[0].selectedIndex = -1;
-                    $("#containerSelectorView").val([]).trigger('change');
-                    let ctr = 0;
+                if (cont.length <= selcont.length && checkIfAllInArray(cont, selcont)) {
+                  // console.log("All values in cont are present in selcont.");
+                  checking = true;
+                  $("#containerSelectorView")[0].selectedIndex = -1;
+                  $("#containerSelectorView").val([]).trigger('change');
+                  let ctr = 0;
 
-                    containers.forEach((container) => {
+                  containers.forEach((container) => {
+                    let status = container.ctr_status;
+                    let intern = container.ctr_intern_status;
+                    let isChoosen = container.isChoosen;
 
-                      ctr++;
-                      $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
-                      $("#containerSelectorView").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+                    // if (orderServiceDoAuto == "mtiks" || orderServiceDoAuto == "lolomt") {
+                    //   if (status == "MTY" && (intern == "03" || intern == "04") && isChoosen != "1") {
+                    //     $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+                    //     $("#containerSelectorView").append(`<option selected value="${container.id}">${container.container_no}</option>`)
 
-                    });
-                    $("#selector").css("display", "none");
-                    $("#selectorView").css("display", "grid");
-                  } else {
-                    // console.log("Not all values in cont are present in selcont.");
-                    checking = false;
-                  }
+                    //   }
+                    // } else {
+                    //   $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+                    //   $("#containerSelectorView").append(`<option selected value="${container.id}">${container.container_no}</option>`)
 
-                  // console.log(checking);
-                  if (checking != true) {
-                    Swal.fire({
-                      icon: 'error',
-                      title: 'Data Container Tidak Cocok!',
-                      text: 'Silahkan cek kembali data dan coba ulangi lagi!'
-                    }).then((result) => {
-                      if (result.isConfirmed) {
-                        location.reload();
-                      } else {
-                        location.reload();
-                      }
-                    });
-                  } else {
-                    Swal.fire({
-                      icon: 'success',
-                      title: 'Container Data Found!',
-                      text: 'You can proceed'
-                    });
-                    let fd = new FormData();
-                    fd.append("container", JSON.stringify(cont));
-                    $.ajax({
-                      headers: {
-                        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
-                      },
-                      type: "POST",
-                      url: `/findContainerArray`,
-                      // cache: false,
-                      contentType: "application/json",
-                      // processData: false,
-                      data: JSON.stringify({
-                        container: cont
-                      }),
-                      success: function(response) {
-                        let res = JSON.parse(response)
-                        // console.log(res.data);
-                        value = res.data;
-                        value.forEach((container) => {
-                          console.log(container);
-                          $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
-                        });
-                      }
-                    });
-                    $("#containerSelector")[0].selectedIndex = -1;
-                    $("#do_exp_date").val(containers[0].do_expired).attr("readonly", "true");
-                    $("#boln").val(containers[0].bl_no).attr("readonly", "true");
+                    // }
+                    $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+                    $("#containerSelectorView").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+                    ctr++;
 
-                  }
+                  });
+                  $("#selector").css("display", "none");
+                  $("#selectorView").css("display", "grid");
+                } else {
+                  // console.log("Not all values in cont are present in selcont.");
+                  checking = false;
+                }
+
+                // console.log(checking);
+                if (checking != true) {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Data Container Tidak Cocok!',
+                    text: 'Silahkan cek kembali data dan coba ulangi lagi!'
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      location.reload();
+                    } else {
+                      location.reload();
+                    }
+                  });
+                } else {
+                  Swal.fire({
+                    icon: 'success',
+                    title: 'Container Data Found!',
+                    text: 'You can proceed'
+                  });
+                  let fd = new FormData();
+                  fd.append("container", JSON.stringify(cont));
+                  $.ajax({
+                    headers: {
+                      'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+                    },
+                    type: "POST",
+                    url: `/findContainerArray`,
+                    // cache: false,
+                    contentType: "application/json",
+                    // processData: false,
+                    data: JSON.stringify({
+                      container: cont
+                    }),
+                    success: function(response) {
+                      let res = JSON.parse(response)
+                      // console.log(res.data);
+                      value = res.data;
+                      value.forEach((container) => {
+                        console.log(container);
+                        $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+                      });
+                    }
+                  });
+                  $("#containerSelector")[0].selectedIndex = -1;
+                  $("#do_exp_date").val(containers[0].do_expired).attr("readonly", "true");
+                  // $("#boln").val("OKKKK").attr("readonly", "true");
+                  $("#boln").val(containers[0].bl_no).attr("readonly", "true");
+                  console.log(containers[0].do_expired, containers[0].bl_no);
+                  console.log("it should be here after filling do");
+
                 }
               }
             } else {
@@ -1409,8 +1438,8 @@
         let data = res.data;
         // console.log(data.length);
         data.forEach(value => {
+          selcont.push(value.container_no.trim());
           if (value.ctr_intern_status == "03") {
-            selcont.push(value.container_no.trim());
             // console.log(value.container_no);
           }
         });

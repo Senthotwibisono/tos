@@ -12,8 +12,8 @@
     <form action="/receiving/form/storeForm" method="POST" id="formSubmit" enctype="multipart/form-data">
       @CSRF
       <input type="hidden" id="exp_date" value="receiving">
-      <input type="hidden" id="do_exp_date" value="receiving">
-      <input type="hidden" id="boln" value="receiving">
+      <!-- <input type="hidden" id="do_exp_date" value="receiving"> -->
+      <!-- <input type="hidden" id="boln" value="receiving"> -->
       <div class="card">
         <div class="card-body">
           <div class="row">
