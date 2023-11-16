@@ -503,7 +503,7 @@ Route::post('/placement/changed-status', [PlacementController::class, 'place_mty
 
 route::resource('yards/rowtier', YardrotController::class);
 route::post('yards/rowtier/get_rowtier', [YardrotController::class, 'get_rowtier'])->name('rowtier.get_rowtier');
-
+Route::post('/getSlot', [YardrotController::class, 'get_slot'])->name('get.slot');
 
 
 

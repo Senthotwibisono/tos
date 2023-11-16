@@ -4,8 +4,9 @@
 		<div class="form-inline gap-2 d-flex align-items-center">
 			<label for="block_no" class="col-auto col-form-label">Block </label>
 			<div class="col-sm-1">
-				<select class="form-control select-single" id="block_no"
-					name="block_no"> @foreach($lt_block as $lw_block)
+				<select class="form-control select-single" id="block_no" name="block_no"> 
+                    <option value="" disabeled selected values>Pilih Satu!</option>
+                    @foreach($lt_block as $lw_block)
 					<option value="{{$lw_block->yard_block}}">{{$lw_block->yard_block}}</option>
 					@endforeach
 				</select> <input type="hidden" id="block_key" name="block_key"
@@ -13,10 +14,8 @@
 			</div>
 			<label for="slot_no" class="col-auto col-form-label">Slot</label>
 			<div class="col-sm-1">
-				<select class="form-control select-single" id="slot_no"
-					name="slot_no"> @foreach($lt_slot as $lw_slot)
-					<option value="{{$lw_slot->yard_slot}}">{{$lw_slot->yard_slot}}</option>
-					@endforeach
+				<select class="form-control" id="slot_no" name="slot_no">
+                    <option value="" disabled selected values>Pilih Satu!</option>
 				</select> <input type="hidden" id="slot_key" name="slot_key"
 					class="form-control">
 			</div>
@@ -130,5 +129,36 @@ $(function() {
         });
     });
 });
+</script>
+
+<script>
+    $(function(){
+        $.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+
+        $(function(){
+            $('#block_no'). on('change', function(){
+                let block_no = $('#block_no').val();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/getSlot',
+                    data : {block_no : block_no},
+                    cache: false,
+                    
+                    success: function(msg){
+                        $('#slot_no').html(msg);
+                   
+                    },
+                    error: function(data){
+                        console.log('error:',data)
+                    },
+                })
+            })
+        })
+    });
 </script>
 @endsection

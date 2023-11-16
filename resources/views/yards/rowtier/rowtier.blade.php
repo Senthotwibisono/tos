@@ -1,9 +1,9 @@
 
 <section class="section">
-	@for ($i = 7; $i >= 0; $i--)
+	@for ($i = $tier - 1; $i >= 0; $i--)
 	<div
 		class="row gx-1 d-flex justify-content-center align-items-center h-100">
-		@for ($j = 0; $j < 8; $j++)
+		@for ($j = 0; $j < $row; $j++)
 		<div class="col-md">
 			<div class="card mb-1" style="color: #4B515D; border-radius: 15px;">
 				<div class="card-body p-2">
