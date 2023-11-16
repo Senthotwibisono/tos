@@ -97,9 +97,9 @@ class BillingImportController extends Controller
     $result_do = json_decode($response_do);
     // dd($result_do);
 
+    $data["do"] = $result_do->data;
     $data["customer"] = $result_customer->data;
     $data["container"] = $result_container->data;
-    $data["do"] = $result_do->data;
     $data["user"] = $user->id;
     $data["title"] = "Delivery Create Form | Delivery Billing System";
     return view('billing.import.form.create', $data);
@@ -134,7 +134,7 @@ class BillingImportController extends Controller
       "documentDate" => $documentDate,
 
     ];
-    // dd($fields);
+    dd($fields);
 
     $url = getenv('API_URL') . '/delivery-service/form/create';
     $req = $client->post(
