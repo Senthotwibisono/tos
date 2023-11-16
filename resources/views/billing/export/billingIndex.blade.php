@@ -64,13 +64,17 @@
                 <div class="col-4">
                   <div class="form-group">
                     <label>Pick Start Date Range</label>
-                    <input name="start" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
+                    <!-- update commit  -->
+                    <!-- <input name="start" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired"> -->
+                    <input type="date" class="form-control" name="start">
                   </div>
                 </div>
                 <div class="col-4">
                   <div class="form-group">
                     <label>Pick End Date Range</label>
-                    <input name="end" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
+                    <input type="date" class="form-control" name="end">
+
+                    <!-- <input name="end" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired"> -->
                   </div>
                 </div>
                 <div class="col-4 mt-4">
