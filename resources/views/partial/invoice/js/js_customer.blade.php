@@ -1141,10 +1141,10 @@
   var selcont = [];
   var newcont = [];
 
-  console.log("selcont before = ", selcont);
+  // console.log("selcont before = ", selcont);
 
   function fetchContainers(selectedDoNoId) {
-    console.log(selectedDoNoId);
+    // console.log(selectedDoNoId);
     let csrfToken = $('meta[name="csrf-token"]').attr('content');
     let formData = new FormData();
     formData.append("do_no", selectedDoNoId);
@@ -1249,83 +1249,96 @@
                   }
                 })
               } else {
-                // console.log("im here bro 2");
-                function checkIfAllInArray(arrayToCheck, referenceArray) {
-                  for (let i = 0; i < arrayToCheck.length; i++) {
-                    const trimmedValue = arrayToCheck[i].trim(); // Trim whitespace from value
-                    if (referenceArray.indexOf(trimmedValue) === -1) {
-                      return false; // Found a value in arrayToCheck that is not in referenceArray
-                    }
-                  }
-                  return true; // All values in arrayToCheck are present in referenceArray
-                }
-                if (cont.length <= selcont.length && checkIfAllInArray(cont, selcont)) {
-                  // console.log("All values in cont are present in selcont.");
-                  checking = true;
-                  $("#containerSelectorView")[0].selectedIndex = -1;
-                  $("#containerSelectorView").val([]).trigger('change');
-                  let ctr = 0;
 
-                  containers.forEach((container) => {
-
-                    ctr++;
-                    $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
-                    $("#containerSelectorView").append(`<option selected value="${container.id}">${container.container_no}</option>`)
-
-                  });
-                  $("#selector").css("display", "none");
-                  $("#selectorView").css("display", "grid");
-                } else {
-                  // console.log("Not all values in cont are present in selcont.");
-                  checking = false;
-                }
-                // console.log(checking);
-                if (checking != true) {
-                  Swal.fire({
-                    icon: 'error',
-                    title: 'Data Container Tidak Cocok!',
-                    text: 'Silahkan cek kembali data dan coba ulangi lagi!'
-                  }).then((result) => {
-                    if (result.isConfirmed) {
-                      location.reload();
-                    } else {
-                      location.reload();
-                    }
-                  });
-                } else {
-                  Swal.fire({
-                    icon: 'success',
-                    title: 'Container Data Found!',
-                    text: 'You can proceed'
-                  });
-                  let fd = new FormData();
-                  fd.append("container", JSON.stringify(cont));
-                  $.ajax({
-                    headers: {
-                      'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
-                    },
-                    type: "POST",
-                    url: `/findContainerArray`,
-                    // cache: false,
-                    contentType: "application/json",
-                    // processData: false,
-                    data: JSON.stringify({
-                      container: cont
-                    }),
-                    success: function(response) {
-                      let res = JSON.parse(response)
-                      // console.log(res.data);
-                      value = res.data;
-                      value.forEach((container) => {
-                        console.log(container);
-                        $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
-                      });
-                    }
-                  });
-                  $("#containerSelector")[0].selectedIndex = -1;
+                var orderServiceDoAuto = $("#orderService").val();
+                console.log("Order Service on DO NUMBER AUTO = ", orderServiceDoAuto);
+                if (orderServiceDoAuto == "mtiks" || orderServiceDoAuto == "lolomt") {
+                  console.log("its lolo or mtiks");
                   $("#do_exp_date").val(containers[0].do_expired).attr("readonly", "true");
                   $("#boln").val(containers[0].bl_no).attr("readonly", "true");
+                  // console.log("order service selected = ", orderServiceDoAuto);
+                  // console.log(containers[0]);
+                } else {
+                  // console.log("im here bro 2");
+                  function checkIfAllInArray(arrayToCheck, referenceArray) {
+                    for (let i = 0; i < arrayToCheck.length; i++) {
+                      const trimmedValue = arrayToCheck[i].trim(); // Trim whitespace from value
+                      if (referenceArray.indexOf(trimmedValue) === -1) {
+                        return false; // Found a value in arrayToCheck that is not in referenceArray
+                      }
+                    }
+                    return true; // All values in arrayToCheck are present in referenceArray
+                  }
 
+                  if (cont.length <= selcont.length && checkIfAllInArray(cont, selcont)) {
+                    // console.log("All values in cont are present in selcont.");
+                    checking = true;
+                    $("#containerSelectorView")[0].selectedIndex = -1;
+                    $("#containerSelectorView").val([]).trigger('change');
+                    let ctr = 0;
+
+                    containers.forEach((container) => {
+
+                      ctr++;
+                      $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+                      $("#containerSelectorView").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+
+                    });
+                    $("#selector").css("display", "none");
+                    $("#selectorView").css("display", "grid");
+                  } else {
+                    // console.log("Not all values in cont are present in selcont.");
+                    checking = false;
+                  }
+
+                  // console.log(checking);
+                  if (checking != true) {
+                    Swal.fire({
+                      icon: 'error',
+                      title: 'Data Container Tidak Cocok!',
+                      text: 'Silahkan cek kembali data dan coba ulangi lagi!'
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        location.reload();
+                      } else {
+                        location.reload();
+                      }
+                    });
+                  } else {
+                    Swal.fire({
+                      icon: 'success',
+                      title: 'Container Data Found!',
+                      text: 'You can proceed'
+                    });
+                    let fd = new FormData();
+                    fd.append("container", JSON.stringify(cont));
+                    $.ajax({
+                      headers: {
+                        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+                      },
+                      type: "POST",
+                      url: `/findContainerArray`,
+                      // cache: false,
+                      contentType: "application/json",
+                      // processData: false,
+                      data: JSON.stringify({
+                        container: cont
+                      }),
+                      success: function(response) {
+                        let res = JSON.parse(response)
+                        // console.log(res.data);
+                        value = res.data;
+                        value.forEach((container) => {
+                          console.log(container);
+                          $("#containerSelector").append(`<option selected value="${container.id}">${container.container_no}</option>`)
+                        });
+                      }
+                    });
+                    $("#containerSelector")[0].selectedIndex = -1;
+                    $("#do_exp_date").val(containers[0].do_expired).attr("readonly", "true");
+                    $("#boln").val(containers[0].bl_no).attr("readonly", "true");
+
+                  }
                 }
               }
             } else {
@@ -2900,19 +2913,25 @@
     let vesselBNIInput = $("#vesselBNInput").val();
     let voyage = $("#voyage").val();
     let vesselcode = $("#vesselcode").val();
-
-
+    let containerSelector = $("#containerSelector").val();
 
     if (check == "true") {
       if (orderService == "mtiks") {
-        bolnCheck = "-";
+        // bolnCheck = "-";
         doCheck = expDate;
       } else {
         vesselBNIInput = "-";
         voyage = "-";
         vesselcode = "-";
+        containerSelector = "-";
       }
-      if (!doCheck || !expDate || !bolnCheck || !orderService || !voyage || !vesselBNIInput || !vesselcode) {
+      // console.log(check, containerSelector, doCheck, expDate, orderService, bolnCheck, vesselBNIInput, voyage, vesselcode);
+      // console.log(containerSelector);
+      // if (!containerSelector) {
+      //   console.log("container is Empty!");
+      // }
+
+      if (!doCheck || (!containerSelector || containerSelector.length <= 0) || !expDate || !bolnCheck || !orderService || !voyage || !vesselBNIInput || !vesselcode) {
         event.preventDefault(); // Prevent form submission
         // alert("Please enter a date."); // Display an alert or use another method to notify the user
         console.log(check, doCheck, expDate, orderService, bolnCheck, vesselBNIInput, voyage, vesselcode);
@@ -2922,7 +2941,8 @@
           text: 'Harap Lengkapi Form Terlebih Dahulu!'
         })
       } else {
-        $("#formSubmit").submit();
+        // $("#formSubmit").submit();
+        console.log("SUBMITED!");
       }
     } else {
       Swal.fire({
@@ -3024,18 +3044,85 @@
       $("#fpodInput").css('display', 'block');
       $("#do_fill").css('display', 'flex');
       $("#mt_fill").css('display', 'none');
+      $("#fill_do_number").css('display', 'none');
     } else if (orderService == "lolomt") {
       $("#RoInput").css('display', 'none');
       $("#vesselBN").css('display', 'none');
       $("#vesselSelect").css('display', 'block');
+      $("#fill_do_number").css('display', 'flex');
+      $("#do_number_auto").select2('destroy');
+      $("#do_number_auto").select2();
       $("#bookingInput").css('display', 'none');
       $("#vessel").select2("destroy");
       $("#vessel").select2();
       $("#ctrInput").css('display', 'none');
       $("#podInput").css('display', 'none');
       $("#fpodInput").css('display', 'none');
+      $.ajax({
+        headers: {
+          'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+        },
+        type: "POST",
+        url: `/delivery/ajx/allContainer`,
+        cache: false,
+        contentType: false,
+        processData: false,
+        xhr: function() {
+          var xhr = $.ajaxSettings.xhr();
+          xhr.upload.onprogress = function(e) {
+            let timerInterval
+            Swal.fire({
+              title: 'Processing',
+              // html: 'I will close in <b></b> milliseconds.',
+              timer: 10000,
+              timerProgressBar: true,
+              didOpen: () => {
+                Swal.showLoading()
+                const b = Swal.getHtmlContainer().querySelector('b')
+                timerInterval = setInterval(() => {
+                  b.textContent = Swal.getTimerLeft()
+                }, 100)
+              },
+              willClose: () => {
+                clearInterval(timerInterval)
+              }
+            }).then((result) => {
+              /* Read more about handling dismissals below */
+              if (result.dismiss === Swal.DismissReason.timer) {
+                console.log('I was closed by the timer')
+              }
+            })
+          }
+          return xhr;
+        },
+        success: function(response) {
+          let res = JSON.parse(response);
+          const containers = res.data;
+          console.log(res);
+          $("#containerSelectorView")[0].selectedIndex = -1;
+          $("#containerSelectorView")[0].innerHTML = "";
+          $("#containerSelectorView").val([]).trigger('change');
+          $("#containerSelector")[0].selectedIndex = -1;
+          $("#containerSelector")[0].innerHTML = "";
+          $("#containerSelector").val([]).trigger('change');
+
+          containers.forEach((container) => {
+            let mty_type = container.mty_type;
+            let intern_status = container.ctr_intern_status;
+            let isChoosen = container.isChoosen;
+            let status = container.ctr_status;
+            if ((status == "MTY") && ((intern_status == "03") || (intern_status == "04")) && (isChoosen != "1")) {
+              $("#containerSelector").append(`<option value="${container.id}">${container.container_no}</option>`)
+            }
+
+          });
+
+          $("#selector").css("display", "grid");
+          Swal.close();
+        }
+      })
     } else if (orderService == "mtiks") {
-      $("#do_fill").css('display', 'none');
+      // $("#do_fill").css('display', 'none');
       $("#mt_fill").css('display', 'flex');
       $("#vesselBNInput").val(null).attr("readonly", false).attr("placeholder", "Lengkapi Data!");
       $("#voyage").val(null).attr("readonly", false).attr("placeholder", "Lengkapi Data!");
@@ -3092,7 +3179,8 @@
             let mty_type = container.mty_type;
             let intern_status = container.ctr_intern_status;
             let isChoosen = container.isChoosen;
-            if ((mty_type == "03") && (intern_status == "08") && (isChoosen != "1")) {
+            let status = container.ctr_status;
+            if ((status == "MTY") && ((intern_status == "03") || (intern_status == "04")) && (isChoosen != "1")) {
               $("#containerSelector").append(`<option value="${container.id}">${container.container_no}</option>`)
             }
 
@@ -3179,6 +3267,8 @@
       $("#booking").select2();
       $("#do_fill").css('display', 'flex');
       $("#mt_fill").css('display', 'none');
+      $("#fill_do_number").css('display', 'none');
+
     }
   });
 </script>

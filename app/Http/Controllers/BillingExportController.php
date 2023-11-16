@@ -95,6 +95,16 @@ class BillingExportController extends Controller
     // dd($result_ro);
     $data["ro"] = $result_ro->data;
 
+
+    // GET ALL DO NUMBER
+    $url_do = getenv('API_URL') . '/delivery-service/do/groupall';
+    $req_do = $client->get($url_do);
+    $response_do = $req_do->getBody()->getContents();
+    $result_do = json_decode($response_do);
+    // dd($result_do);
+
+    $data["do"] = $result_do->data;
+
     $data["booking"] = $result_booking->data;
     $data["vessel"] = $vessel_voyage;
     $data["customer"] = $result_customer->data;

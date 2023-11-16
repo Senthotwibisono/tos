@@ -75,6 +75,56 @@
               <h5>Information Shipping Agent</h5>
               <p>Masukan Informasi Agen Shipping</p>
             </div>
+
+            <div class="row" id="fill_do_number" style="display: none !important;">
+
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-6">
+                    <div class="btn-group mb-3">
+                      <a id="manual" style="opacity: 50% !important;" class="btn btn-primary" type="button">Manual Do Checking</a>
+                    </div>
+                    <div class="btn-group mb-3">
+                      <a id="auto" class="btn btn-info ml-3" type="button">Automatic Do Checking</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-md-4" id="do_manual" style="display: none !important;">
+                <div class="form-group">
+                  <label for="">Do Number</label>
+                  <div class="input-group mb-3">
+                    <input name="do_number" id="do_number_type" type="text" class="form-control" placeholder="DO910934">
+                    <a onclick="checkDoNumber();" class="btn btn-primary" type="button" id="doNumberCheck"><i class="fa fa-magnifying-glass"></i> Check</a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-md-4" id="do_auto">
+                <div class="form-group">
+                  <label for="">Do Number Auto</label>
+                  <select required name="do_number_auto" id="do_number_auto" class="js-example-basic-multiple form-control" style="height: 150%;">
+                    <option value="" disabled selected>Pilih Salah Satu</option>
+                    <?php foreach ($do as $data) { ?>
+                      <option value="<?= $data->do_no ?>" data-id="<?= $data->do_no ?>"><?= $data->do_no ?></option>
+                    <?php } ?>
+                  </select>
+                </div>
+              </div>
+              <div class="col-12 col-md-4">
+                <div class="form-group">
+                  <label for="">Do Expired</label>
+                  <input name="do_exp_date" id="do_exp_date" required readonly type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023">
+                </div>
+              </div>
+              <div class="col-12 col-md-4">
+                <div class="form-group">
+                  <label for="">Bill of Loading Number</label>
+                  <input name="boln" id="boln" required readonly type="text" class="form-control" placeholder="Bill Of Loading Number">
+                </div>
+              </div>
+            </div>
+
+
             <div class="col-12">
               <div class="row">
                 <div class="col-6" id="bookingInput">
