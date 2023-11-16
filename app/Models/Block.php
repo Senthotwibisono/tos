@@ -16,6 +16,7 @@ class Block extends Model
                'yard_slot',
                'yard_row',
                'yard_tier',
+               'CONTAINER_KEY', 
                'user_id' 
     ];          
 }

@@ -517,9 +517,19 @@ public function isocode_edit_store(request $request){
 public function block()
 {
     $title = "Block Master";
-    $block = Block::all();
-    
-    return view('master.yard_block', compact('block', 'title'));
+    $block = Block::pluck('YARD_BLOCK')->unique();
+    $blocks = [];
+    foreach ($block as $yb){
+        $sl = Block::where('YARD_BLOCK', $yb)->first();
+        if ($sl) {
+            $blocks[] = $sl;
+        }
+    }
+    $yslot = Block::whereIn('YARD_BLOCK', $block)->groupBy('YARD_BLOCK')->selectRaw('YARD_BLOCK, count(distinct YARD_SLOT) as jmlh_slot')->pluck('jmlh_slot', 'YARD_BLOCK');    
+    $yrow = Block::whereIn('YARD_BLOCK', $block)->groupBy('YARD_BLOCK')->selectRaw('YARD_BLOCK, count(distinct YARD_ROW) as jmlh_row')->pluck('jmlh_row', 'YARD_BLOCK');    
+    $ytier = Block::whereIn('YARD_BLOCK', $block)->groupBy('YARD_BLOCK')->selectRaw('YARD_BLOCK, count(distinct YARD_TIER) as jmlh_tier')->pluck('jmlh_tier', 'YARD_BLOCK');    
+    $cont = Block::whereIn('YARD_BLOCK', $block)->groupBy('YARD_BLOCK')->selectRaw('YARD_BLOCK, count(distinct CONTAINER_KEY) as jmlh_cont')->pluck('jmlh_cont', 'YARD_BLOCK');    
+    return view('master.yard_block', compact('block','blocks', 'title', 'yslot', 'yrow', 'ytier', 'cont'));
 }
 
 
@@ -581,6 +591,55 @@ public function block_store(request $request){
    }
  
  } 
+
+ public function slot(Request $request)
+    {
+        $block = $request->YARD_BLOCK;
+
+        $yb = Block::where('YARD_BLOCK',$block)->get();
+        $yblock = Block::where('YARD_BLOCK',$block)->pluck('YARD_BLOCK')->unique();
+        return response()->json([
+            'success' => 200,
+            'message' => 'Detail Data Post',
+            'data'    => $yb,
+            'block' => $yblock,
+        ]);
+    }
+
+    public function create_slot(Request $request)
+    {
+        $yb = $request->yard_block;
+        $block = Block::where('YARD_BLOCK', $yb)->get();
+
+        if ($block->isNotEmpty()) {
+            $lastSlot = Block::where('YARD_BLOCK', $yb)
+                ->max('yard_slot');
+    
+            // Jika tidak ada slot sebelumnya, mulai dari 1, jika tidak, tambahkan 1
+            $startSlot = $lastSlot ? $lastSlot + 1 : 1;
+    
+            for ($i = $startSlot; $i < $startSlot + $request->yard_slot; $i++) {
+                for ($r = 1; $r <= $request->yard_row; $r++) {
+                    for ($t = 1; $t <= $request->yard_tier; $t++) {
+                        $NewSlot = Block::create([
+                            'yard_block' => $yb,
+                            'yard_slot'  => $i,
+                            'yard_row'   => $r,
+                            'yard_tier'  => $t,
+                            'user_id'=> $request->user_id,
+                        ]);
+                    }
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Detail Data Post',
+                'data'    => $NewSlot,
+            ]);
+        }
+       
+    }
  
 
 }
