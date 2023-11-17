@@ -371,11 +371,9 @@ class PlacementController extends Controller
 
                 $fields = [
                     "container_key" => $request->container_key,
+                    "jobId" => $request->id,
                     "ctr_intern_status" => "10",
-                    "ves_id" => null,
-                    "ves_name" => null,
-                    "ves_code" => null,
-                    "voy_no" => null,
+                 
                 ];
 
                 $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
@@ -389,8 +387,8 @@ class PlacementController extends Controller
                 $result = json_decode($response);
     
                 // dd($result); 
-                // var_dump($result);
-                // die();
+                var_dump($result);
+                die();
                 if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
     
     
@@ -436,6 +434,7 @@ class PlacementController extends Controller
 
                 $fields = [
                     "container_key" => $request->container_key,
+                    "jobId" => $request->id,
                     "ctr_intern_status" => "51",
                     "ves_id" => $request->ves_id,
                     "ves_name" => $request->ves_name,

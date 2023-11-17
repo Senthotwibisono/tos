@@ -340,6 +340,7 @@
                         <label for="first-name-vertical">Container</label>
                         <input type="text" id="contKey" class="form-control" name="container_key" readonly>
                         <input type="text" id="contNo" class="form-control" name="container_no" readonly>
+                        <input type="text" id="JobId" class="form-control"  readonly>
                       </div>
                     </div>
                     <div class="row">
@@ -397,6 +398,7 @@
                               <div class="form-group">
                                 <label for="first-name-vertical">Voy No</label>
                                 <input type="text" id="nomor-voyage" class="form-control" name="ctr_type" readonly>
+                               
                               </div>
                             </div>
                         
@@ -715,6 +717,7 @@ function toggleYardSelect(displayValue) {
                 $("#changed-mty #type").val(job.ctr_type);
                 $("#changed-mty #status").val(job.ctr_status);
                 $("#changed-mty #service").val(job.orderService);
+                $("#changed-mty #JobId").val(job.id);
                 toggleVesselSelect(job.orderService === "mtiks" ? "none" : "block");
                 toggleYardSelect(job.orderService === "mtiks" ? "none" : "block");
     
@@ -739,6 +742,7 @@ function toggleYardSelect(displayValue) {
         var yard_tier = $('#tierMTY').val();
         var alat = $('#alatMTY').val();
         var operator = $('#operatorMTY').val();
+        var id = $('#JobId').val();
         var data = {
             'container_key': $('#contKey').val(),
             'order_service': $('#service').val(),
@@ -752,6 +756,7 @@ function toggleYardSelect(displayValue) {
             'yard_tier': $('#tieMTYr').val(),
             'alat': $('#alatMTY').val(),
             'operator': $('#operatorMTY').val(),
+            'id': $('#JobId').val(),
         }
         $.ajaxSetup({
             headers: {
