@@ -143,6 +143,9 @@ class BillingExportController extends Controller
       "documentDate" => $documentDate,
 
     ];
+    if ($order_service == "lolomt") {
+      $fields["do_number"] = $request->do_number ?? $request->do_number_auto;
+    }
     if ($bookingno != null) {
       $fields["booking_no"] = $bookingno;
     } else {

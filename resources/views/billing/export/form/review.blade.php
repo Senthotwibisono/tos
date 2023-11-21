@@ -44,12 +44,22 @@
               <input type="text" class="form-control" readonly value="<?= $customer->address ?>">
             </div>
           </div>
-          <div class="col-6">
-            <div class="form-group">
-              <label for="">Booking Number</label>
-              <input type="text" class="form-control" readonly value="<?= $deliveryForm->booking_no ?>">
+          <?php if ($deliveryForm->orderService == "lolomt") { ?>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="">DO Number</label>
+                <input type="text" class="form-control" readonly value="<?= $deliveryForm->do_number ?>">
+              </div>
             </div>
-          </div>
+          <?php } else { ?>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="">Booking Number</label>
+                <input type="text" class="form-control" readonly value="<?= $deliveryForm->booking_no ?>">
+              </div>
+            </div>
+
+          <?php } ?>
           <div class="col-6">
             <div class="form-group">
               <label for="">Order Service</label>

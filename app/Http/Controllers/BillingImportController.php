@@ -134,7 +134,7 @@ class BillingImportController extends Controller
       "documentDate" => $documentDate,
 
     ];
-    dd($fields);
+    // dd($fields);
 
     $url = getenv('API_URL') . '/delivery-service/form/create';
     $req = $client->post(
