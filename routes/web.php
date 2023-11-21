@@ -439,7 +439,7 @@ Route::get('/yard/placement', [PlacementController::class, 'index']);
 Route::post('/placement', [PlacementController::class, 'place']);
 Route::post('/dapet-tipe', [PlacementController::class, 'get_tipe']);
 Route::post('/container-tipe', [PlacementController::class, 'tipe_container']);
-Route::get('/placement/changedToMty-{container_key}', [PlacementController::class, 'change']);
+Route::post('/placement/changedToMty-{container_key}', [PlacementController::class, 'change']);
 Route::post('/placement/changed-status', [PlacementController::class, 'place_mty']);
 
 //Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -594,6 +594,8 @@ Route::get('/master/edit_isocode', [MasterController::class, 'edit_isocode']);
 Route::get('/master/block', [MasterController::class, 'block']);
 Route::post('/master/block_store', [MasterController::class, 'block_store'])->name('/master/block_store');
 Route::get('/master/edit_block', [MasterController::class, 'edit_block']);
+Route::get('/master/block/addSlot-{YARD_BLOCK}', [MasterController::class, 'slot']);
+Route::post('/master/block/createSlot', [MasterController::class, 'create_slot']);
 
 //role EDI Baplie recievr
 Route::get('/edi/receiveedi', [EdiController::class, 'receiveedi']);

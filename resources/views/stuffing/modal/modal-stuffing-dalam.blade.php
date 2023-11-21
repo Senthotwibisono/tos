@@ -188,14 +188,19 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-sm btn-light-secondary" data-bs-dismiss="modal">
+            <!-- <button type="button" class="btn btn-sm btn-light-secondary" data-bs-dismiss="modal">
               <i class="bx bx-x d-none d-sm-inline"></i>
               <span class="d-inline d-sm-none">Close</span>
             </button>
             <button type="submit" class="btn btn-sm btn-success ml-1 update_status">
               <i class="bx bx-check d-none d-sm-inline"></i>
               <span class="d-inline d-sm-none">Confirm</span>
-            </button>
+            </button>  -->
+
+           <button type="button" class="btn btn-light-secondary d-block d-sm-none" data-bs-dismiss="modal">Close</button>
+           <button type="button" class="btn btn-info ml-1 d-block d-sm-none update_status" data-bs-dismiss="modal">Accept</button>
+           <button type="button" class="btn btn-light-secondary d-none d-sm-block"> <i class="bx bx-x"></i> Close</button>
+           <button type="button" class="btn btn-info ml-1 d-none d-sm-block update_status"><i class="bx bx-check"></i> Accept</button>
           </div>
         </div>
       </div>

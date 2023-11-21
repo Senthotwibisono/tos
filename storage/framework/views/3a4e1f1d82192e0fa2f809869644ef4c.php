@@ -161,22 +161,20 @@
                                             <th>Slot</th>
                                             <th>Row</th>
                                             <th>Tier</th>
-                                            <th>Placemented At</th>
                                             <th>action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php $__currentLoopData = $formattedData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $d): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <?php if($d['ctr_intern_status'] === '04' && $d['ctr_status'] === 'MTY' ): ?>
+                                        <?php $__currentLoopData = $jobContainers->containers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <?php if((($value->jobContainer->ctr_intern_status == "03" || $value->jobContainer->ctr_intern_status == "08")) &&($value->jobContainer->billingName == "DS") && ($value->jobContainer->orderService == "mtiks" || $value->jobContainer->orderService == "lolomt")): ?>
                                         <tr>
-                                            <td><?php echo e($d['container_no']); ?></td>
-                                            <td><?php echo e($d['ctr_type']); ?></td>
-                                            <td><?php echo e($d['yard_block']); ?></td>
-                                            <td><?php echo e($d['yard_slot']); ?></td>
-                                            <td><?php echo e($d['yard_row']); ?></td>
-                                            <td><?php echo e($d['yard_tier']); ?></td>
-                                            <td><?php echo e($d['update_time']); ?></td>
-                                            <td><button type="button" class="btn btn-outline-success changed-to-exp-mty" data-bs-toggle="modal" data-id="<?php echo e($d['container_key']); ?>">Change</button></td>
+                                            <td><?php echo e($value->jobContainer->container_no); ?></td>
+                                            <td><?php echo e($value->jobContainer->ctr_type); ?></td>
+                                            <td><?php echo e($value->jobContainer->yard_block); ?></td>
+                                            <td><?php echo e($value->jobContainer->yard_slot); ?></td>
+                                            <td><?php echo e($value->jobContainer->yard_row); ?></td>
+                                            <td><?php echo e($value->jobContainer->yard_tier); ?></td>
+                                            <td><button type="button" class="btn btn-outline-success changed-to-exp-mty" data-bs-toggle="modal" data-id="<?php echo e($value->jobContainer->id); ?>">Change</button></td>
                                         </tr>
                                         <?php endif; ?>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -342,30 +340,25 @@
                     <div class="col-12">
                       <div class="form-group">
                         <label for="first-name-vertical">Container</label>
-                        <input type="hidden" id="contKey" class="form-control" name="container_key" readonly>
+                        <input type="text" id="contKey" class="form-control" name="container_key" readonly>
                         <input type="text" id="contNo" class="form-control" name="container_no" readonly>
+                        <input type="text" id="JobId" class="form-control"  readonly>
                       </div>
                     </div>
                     <div class="row">
-                      <div class="col-3">
-                        <div class="form-group">
-                            <label for="">Iso Code</label>
-                            <input type="text" class="form-control" id="iso" readonly>
-                        </div>
-                      </div>
-                      <div class="col-3">
+                      <div class="col-4">
                         <div class="form-group">
                             <label for="">Size</label>
                             <input type="text" class="form-control" id="size" readonly>
                         </div>
                       </div>
-                      <div class="col-3">
+                      <div class="col-4">
                         <div class="form-group">
                             <label for="">Type</label>
                             <input type="text" class="form-control" id="type" readonly>
                         </div>
                       </div>
-                      <div class="col-3">
+                      <div class="col-4">
                         <div class="form-group">
                             <label for="">Status</label>
                             <input type="text" class="form-control" id="status" readonly>
@@ -375,12 +368,7 @@
                     <div class="col-12">
                         <div class="form-group">
                             <label for="">Proccess</label>
-                            <select class="form-select choices" id="proccess">
-                                <option value="" disabeled selected values>Wajib Pilih !</option>
-                                <option value="01">MTY-EXPORT</option>
-                                <option value="02">MTY-LOCAL</option>
-                                <option value="03">MTY-Keluar IKS</option>
-                            </select>
+                            <input type="text" class="form-control" id="service" readonly>
                         </div>
                     </div>
                 </div>
@@ -412,10 +400,82 @@
                               <div class="form-group">
                                 <label for="first-name-vertical">Voy No</label>
                                 <input type="text" id="nomor-voyage" class="form-control" name="ctr_type" readonly>
+                               
                               </div>
                             </div>
                         
                 </div>
+              
+                        <div class="col-12" style="border:1px solid blue;" id="yard-select" style="display: none;">
+                            <div class="row">
+                                <h4>Yard Planning</h4>
+                                <div class="col-12">
+                            <div class="form-group">
+                                <label for="first-name-vertical">Alat</label>
+                                <select class="choices form-select" id="alatMTY" required>
+                                    <option value="">Pilih Alata</option>
+                                    <?php $__currentLoopData = $alat; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $alt): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($alt->id); ?>"><?php echo e($alt->name); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </select>
+                            </div>
+                            <?php echo e(csrf_field()); ?>
+
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="first-name-vertical">Op Alat</label>
+                                <input type="text" id="operatorMTY" class="form-control" required>
+                            </div>
+                        </div>
+
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="first-name-vertical">Blok</label>
+                                        <select class="choices form-select" id="blockMTY" name="yard_block" required>
+                                            <option value="">-</option>
+                                            <?php $__currentLoopData = $yard_block; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $block): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($block); ?>"><?php echo e($block); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="first-name-vertical">Slot</label>
+                                        <select class="choices form-select" id="slotMTY" name="yard_slot" required>
+                                            <option value="">-</option>
+                                            <?php $__currentLoopData = $yard_slot; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $slot): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($slot); ?>"><?php echo e($slot); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="first-name-vertical">Row</label>
+                                        <select class="choices form-select" id="rowMTY" name="yard_row" required>
+                                            <option value="">-</option>
+                                            <?php $__currentLoopData = $yard_row; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($row); ?>"><?php echo e($row); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="first-name-vertical">Tier</label>
+                                        <select class="choices form-select" id="tierMTY" name="yard_tier" required>
+                                            <option value="">-</option>
+                                            <?php $__currentLoopData = $yard_tier; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tier): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($tier); ?>"><?php echo e($tier); ?></option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i><span class="d-none d-sm-block">Close</span></button>
@@ -439,19 +499,17 @@
 <script>
     
     // Ambil elemen "Proccess" dan "Choose Vessel"
-    const proccessSelect = document.getElementById("proccess");
+    const proccessSelect = document.getElementById("service");
     const vesselSelect = document.getElementById("vessel-select");
+    const yardSelect = document.getElementById("yard-select");
 
-    // Tambahkan event listener untuk perubahan pilihan pada "Proccess"
-    proccessSelect.addEventListener("change", function () {
-        if (proccessSelect.value === "01" || proccessSelect.value === "02") {
-            // Jika dipilih "MTY-EXPORT" atau "MTY-LOCAL", tampilkan "Choose Vessel"
-            vesselSelect.style.display = "block";
-        } else {
-            // Jika dipilih "MTY-Keluar IKS", sembunyikan "Choose Vessel"
-            vesselSelect.style.display = "none";
-        }
-    });
+    function toggleVesselSelect(displayValue) {
+    vesselSelect.style.display = displayValue;
+}
+
+function toggleYardSelect(displayValue) {
+    yardSelect.style.display = displayValue;
+}
 
 </script>
 <script>
@@ -642,22 +700,30 @@
     $(document).on('click', '.changed-to-exp-mty', function() {
         let id = $(this).data('id');
         $.ajax({
-            type: 'GET',
+            type: 'POST',
             url: '/placement/changedToMty-' + id,
-            cache: false,
+        
             data: {
                 container_key: id
             },
-            dataType: 'json',
+          
             success: function(response) {
+                let res = JSON.parse(response);
+                let job = res.data.containers[0].findContainer;
+                let delivery = res.data.containers[0].deliveryForm;
+    
                 console.log(response);
                 $('#changed-mty').modal('show');
-                $("#changed-mty #contNo").val(response.data.container_no);
-                $("#changed-mty #contKey").val(response.data.container_key);
-                $("#changed-mty #iso").val(response.data.iso_code);
-                $("#changed-mty #size").val(response.data.ctr_size);
-                $("#changed-mty #type").val(response.data.ctr_type);
-                $("#changed-mty #status").val(response.data.ctr_status);
+                $("#changed-mty #contNo").val(job.container_no);
+                $("#changed-mty #contKey").val(job.container_key);
+                $("#changed-mty #size").val(job.ctr_size);
+                $("#changed-mty #type").val(job.ctr_type);
+                $("#changed-mty #status").val(job.ctr_status);
+                $("#changed-mty #service").val(job.orderService);
+                $("#changed-mty #JobId").val(job.id);
+                toggleVesselSelect(job.orderService === "mtiks" ? "none" : "block");
+                toggleYardSelect(job.orderService === "mtiks" ? "none" : "block");
+    
             },
             error: function(data) {
                 console.log('error:', data);
@@ -668,18 +734,32 @@
     $(document).on('click', '.updateToExpMty', function(e) {
         e.preventDefault();
         var container_key = $('#contKey').val();
-        var mty_type = $('#proccess').val();
+        var order_service = $('#service').val();
         var ves_id = $('#Vessel').val();
         var ves_name = $('#nama-kapal').val();
         var ves_code = $('#kode-kapal').val();
         var voy_no = $('#nomor-voyage').val();
+        var yard_block = $('#blockMTY').val();
+        var yard_slot = $('#slotMTY').val();
+        var yard_raw = $('#rawMTY').val();
+        var yard_tier = $('#tierMTY').val();
+        var alat = $('#alatMTY').val();
+        var operator = $('#operatorMTY').val();
+        var id = $('#JobId').val();
         var data = {
             'container_key': $('#contKey').val(),
-            'mty_type': $('#proccess').val(),
+            'order_service': $('#service').val(),
             'ves_id': $('#Vessel').val(),
             'ves_name': $('#nama-kapal').val(),
             'ves_code': $('#kode-kapal').val(),
             'voy_no': $('#nomor-voyage').val(),
+            'yard_block': $('#blockMTY').val(),
+            'yard_slot': $('#slotMTY').val(),
+            'yard_row': $('#rowMTY').val(),
+            'yard_tier': $('#tieMTYr').val(),
+            'alat': $('#alatMTY').val(),
+            'operator': $('#operatorMTY').val(),
+            'id': $('#JobId').val(),
         }
         $.ajaxSetup({
             headers: {
