@@ -2393,34 +2393,34 @@
       contentType: false,
       processData: false,
       data: formData,
-      xhr: function() {
-        var xhr = $.ajaxSettings.xhr();
-        xhr.upload.onprogress = function(e) {
-          let timerInterval
-          Swal.fire({
-            title: 'Processing',
-            // html: 'I will close in <b></b> milliseconds.',
-            timer: 10000,
-            timerProgressBar: true,
-            didOpen: () => {
-              Swal.showLoading()
-              const b = Swal.getHtmlContainer().querySelector('b')
-              timerInterval = setInterval(() => {
-                b.textContent = Swal.getTimerLeft()
-              }, 100)
-            },
-            willClose: () => {
-              clearInterval(timerInterval)
-            }
-          }).then((result) => {
-            /* Read more about handling dismissals below */
-            if (result.dismiss === Swal.DismissReason.timer) {
-              console.log('I was closed by the timer')
-            }
-          })
-        }
-        return xhr;
-      },
+      // xhr: function() {
+      // var xhr = $.ajaxSettings.xhr();
+      // xhr.upload.onprogress = function(e) {
+      //   let timerInterval
+      //   Swal.fire({
+      //     title: 'Processing',
+      //     // html: 'I will close in <b></b> milliseconds.',
+      //     timer: 10000,
+      //     timerProgressBar: true,
+      //     didOpen: () => {
+      //       Swal.showLoading()
+      //       const b = Swal.getHtmlContainer().querySelector('b')
+      //       timerInterval = setInterval(() => {
+      //         b.textContent = Swal.getTimerLeft()
+      //       }, 100)
+      //     },
+      //     willClose: () => {
+      //       clearInterval(timerInterval)
+      //     }
+      //   }).then((result) => {
+      //     /* Read more about handling dismissals below */
+      //     if (result.dismiss === Swal.DismissReason.timer) {
+      //       console.log('I was closed by the timer')
+      //     }
+      //   })
+      // }
+      // return xhr;
+      // },
       success: function(response) {
         Swal.close();
         let res = JSON.parse(response);
@@ -2436,71 +2436,74 @@
         // let ves_id = data.ves_id;
         // console.log("VES id = ", ves_id);
         fd.append("ves_id", data.ves_id);
-        $.ajax({
-          headers: {
-            'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
-          },
-          type: "POST",
-          url: `/receiving/ajx/groupcontainerbyvesid`,
-          cache: false,
-          contentType: false,
-          processData: false,
-          data: fd,
-          xhr: function() {
-            var xhr = $.ajaxSettings.xhr();
-            xhr.upload.onprogress = function(e) {
-              let timerInterval
-              Swal.fire({
-                title: 'Processing',
-                // html: 'I will close in <b></b> milliseconds.',
-                timer: 10000,
-                timerProgressBar: true,
-                didOpen: () => {
-                  Swal.showLoading()
-                  const b = Swal.getHtmlContainer().querySelector('b')
-                  timerInterval = setInterval(() => {
-                    b.textContent = Swal.getTimerLeft()
-                  }, 100)
-                },
-                willClose: () => {
-                  clearInterval(timerInterval)
-                }
-              }).then((result) => {
-                /* Read more about handling dismissals below */
-                if (result.dismiss === Swal.DismissReason.timer) {
-                  console.log('I was closed by the timer')
-                }
-              })
-            }
-            return xhr;
-          },
-          success: function(response) {
-            let res = JSON.parse(response);
-            const containers = res.data;
-            // console.log(containers);
-            $("#containerSelectorView")[0].selectedIndex = -1;
-            $("#containerSelectorView")[0].innerHTML = "";
-            $("#containerSelectorView").val([]).trigger('change');
-            $("#containerSelector")[0].selectedIndex = -1;
-            $("#containerSelector")[0].innerHTML = "";
-            $("#containerSelector").val([]).trigger('change');
-
-            containers.forEach((container) => {
-              let mty_type = container.mty_type;
-              let intern_status = container.ctr_intern_status;
-              let isChoosen = container.isChoosen;
-              if ((mty_type == "01" || mty_type == "02") && (intern_status == "08") && (isChoosen != "1")) {
-                $("#containerSelector").append(`<option value="${container.id}">${container.container_no}</option>`)
-                $("#containerSelectorView").append(`<option value="${container.id}">${container.container_no}</option>`)
+        orderServiceVessel = $("#orderService").val();
+        if (orderServiceVessel != "lolomt") {
+          $.ajax({
+            headers: {
+              'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+            },
+            type: "POST",
+            url: `/receiving/ajx/groupcontainerbyvesid`,
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: fd,
+            xhr: function() {
+              var xhr = $.ajaxSettings.xhr();
+              xhr.upload.onprogress = function(e) {
+                let timerInterval
+                Swal.fire({
+                  title: 'Processing',
+                  // html: 'I will close in <b></b> milliseconds.',
+                  timer: 10000,
+                  timerProgressBar: true,
+                  didOpen: () => {
+                    Swal.showLoading()
+                    const b = Swal.getHtmlContainer().querySelector('b')
+                    timerInterval = setInterval(() => {
+                      b.textContent = Swal.getTimerLeft()
+                    }, 100)
+                  },
+                  willClose: () => {
+                    clearInterval(timerInterval)
+                  }
+                }).then((result) => {
+                  /* Read more about handling dismissals below */
+                  if (result.dismiss === Swal.DismissReason.timer) {
+                    console.log('I was closed by the timer')
+                  }
+                })
               }
+              return xhr;
+            },
+            success: function(response) {
+              let res = JSON.parse(response);
+              const containers = res.data;
+              // console.log(containers);
+              $("#containerSelectorView")[0].selectedIndex = -1;
+              $("#containerSelectorView")[0].innerHTML = "";
+              $("#containerSelectorView").val([]).trigger('change');
+              $("#containerSelector")[0].selectedIndex = -1;
+              $("#containerSelector")[0].innerHTML = "";
+              $("#containerSelector").val([]).trigger('change');
 
-            });
+              containers.forEach((container) => {
+                let mty_type = container.mty_type;
+                let intern_status = container.ctr_intern_status;
+                let isChoosen = container.isChoosen;
+                if ((mty_type == "01" || mty_type == "02") && (intern_status == "08") && (isChoosen != "1")) {
+                  $("#containerSelector").append(`<option value="${container.id}">${container.container_no}</option>`)
+                  $("#containerSelectorView").append(`<option value="${container.id}">${container.container_no}</option>`)
+                }
 
-            $("#selector").css("display", "grid");
-            $("#selectorView").css("display", "none");
-            Swal.close();
-          }
-        })
+              });
+
+              $("#selector").css("display", "grid");
+              $("#selectorView").css("display", "none");
+              Swal.close();
+            }
+          })
+        }
       },
       error: function(error) {
         setTimeout(function() {
@@ -2970,8 +2973,8 @@
           text: 'Harap Lengkapi Form Terlebih Dahulu!'
         })
       } else {
-        // $("#formSubmit").submit();
-        console.log("SUBMITED!");
+        $("#formSubmit").submit();
+        // console.log("SUBMITED!");
       }
     } else {
       Swal.fire({
@@ -3007,6 +3010,7 @@
         })
       } else {
         $("#formSubmit").submit();
+        // console.log("SUBMITED");
       }
     } else {
       Swal.fire({

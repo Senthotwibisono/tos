@@ -231,7 +231,7 @@ class CoparnsController extends Controller
         // dd($result_vessel);
         $response_vessel = VVoyage::where('ves_id', '=', $id)->get();
         // $response_vessel = VVoyage::where('ves_id', '=', '17')->get();
-        // var_dump($response_vessel);
+        // var_dump($id, $response_vessel);
         // die();
 
         echo $response_vessel;

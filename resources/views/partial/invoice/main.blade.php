@@ -41,6 +41,7 @@
       <!-- <footer>
         @include('partial.invoice.footer')
       </footer> -->
+      <!-- adding commmited message  -->
     </div>
   </div>
   <script src="{{asset('dist/assets/js/bootstrap.js')}}"></script>
@@ -58,13 +59,27 @@
   <script src="{{asset('dist/assets/extensions/choices.js/public/assets/scripts/choices.js')}}"></script>
   <script src="{{asset('dist/assets/js/pages/form-element-select.js')}}"></script>
   <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-  <script>new simpleDatatables.DataTable('#table1bc');</script>
-  <script>new simpleDatatables.DataTable('#table1pea');</script>
-  <script>new simpleDatatables.DataTable('#table2');</script>
-  <script>new simpleDatatables.DataTable('#table2Pea');</script>
-  <script>new simpleDatatables.DataTable('#table2pkbe');</script>
-  <script>new simpleDatatables.DataTable('#table3');</script>
-  <script>new simpleDatatables.DataTable('#tableLain');</script>
+  <script>
+    new simpleDatatables.DataTable('#table1bc');
+  </script>
+  <script>
+    new simpleDatatables.DataTable('#table1pea');
+  </script>
+  <script>
+    new simpleDatatables.DataTable('#table2');
+  </script>
+  <script>
+    new simpleDatatables.DataTable('#table2Pea');
+  </script>
+  <script>
+    new simpleDatatables.DataTable('#table2pkbe');
+  </script>
+  <script>
+    new simpleDatatables.DataTable('#table3');
+  </script>
+  <script>
+    new simpleDatatables.DataTable('#tableLain');
+  </script>
 
   <!-- select 2 js  -->
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
