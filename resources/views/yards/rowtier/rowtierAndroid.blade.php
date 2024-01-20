@@ -15,7 +15,9 @@
 					<!-- Container -->
 					<div class="d-flex flex-column text-center mt-2 mb-2">
 					<a href="javascript:void(0)"class="btn icon icon-left btn-outline-info cont" data-id="{{ isset($lt_xy[$i][$j]) ? $lt_xy[$i][$j]->key: '' }}"><h6 class=" mb-0 font-weight-bold" style="color: red;">{{ isset($lt_xy[$i][$j]) ? $lt_xy[$i][$j]->cnt: '' }}</h6></a>	
-					</div>
+					<p style="color: white;">Row: {{ $row}}, Tier: {{$tier}}</p>
+	
+				</div>
 
 					<div class="d-flex align-items-center" >
 						<div class="flex-grow-1" style="font-size: 1rem;">
@@ -33,9 +35,6 @@
 								<i class="fas fa-clipboard-list fa-fw" style="color: #868B94;"></i> <span
 									class="ms-1"><strong>{{ isset($lt_xy[$i][$j]) ? $lt_xy[$i][$j]->iso: '' }}</strong></span>
 							</div>
-                            <div>
-            <span class="ms-1">Row: {{ $j + 1 }}, Tier: {{ $i + 1 }}</span>
-        </div>
 						</div>
 					</div>
 

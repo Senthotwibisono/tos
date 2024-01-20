@@ -21,15 +21,13 @@
                     @foreach($lt_block as $lw_block)
 					<option value="{{$lw_block->yard_block}}">{{$lw_block->yard_block}}</option>
 					@endforeach
-				</select> <input type="hidden" id="block_key" name="block_key"
-					class="form-control">
+				</select> 
 			</div>
 			<label for="slot_no" class="col-auto col-form-label">Slot</label>
 			<div class="col-sm-1">
 				<select class="form-control" id="slot_no" name="slot_no">
                     <option value="" disabled selected values>Pilih Satu!</option>
-				</select> <input type="hidden" id="slot_key" name="slot_key"
-					class="form-control">
+				</select>
 			</div>
 			<div class="col-sm-2"></div>
 			<div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -56,6 +54,7 @@ $(document).ready(function() {
 	$(".select-single").select2();
 });
 
+
 $(function() {
     $.ajaxSetup({
         headers: {
@@ -68,7 +67,7 @@ $(function() {
             let slot_no  = $('#slot_no').val();
             $.ajax({
                 type: 'POST',
-                url: '{{ route('rowtier.get_rowtier') }}',
+                url: '{{ route('rowtier.get_rowtierAndroid') }}',
                 data: { 
                    	block_no : block_no,
                    	slot_no  : slot_no 
@@ -89,7 +88,7 @@ $(function() {
             let slot_no  = $(this).val();
             $.ajax({
                 type: 'POST',
-                url: '{{ route('rowtier.get_rowtier') }}',
+                url: '{{ route('rowtier.get_rowtierAndroid') }}',
                 data: { 
                    	block_no : block_no,
                    	slot_no  : slot_no 
