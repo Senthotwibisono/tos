@@ -15,7 +15,7 @@
 					<!-- Container -->
 					<div class="d-flex flex-column text-center mt-2 mb-2">
 					<a href="javascript:void(0)"class="btn icon icon-left btn-outline-info cont" data-id="{{ isset($lt_xy[$i][$j]) ? $lt_xy[$i][$j]->key: '' }}"><h6 class=" mb-0 font-weight-bold" style="color: red;">{{ isset($lt_xy[$i][$j]) ? $lt_xy[$i][$j]->cnt: '' }}</h6></a>	
-					<p style="color: white;">Row: {{ $row}}, Tier: {{$tier}}</p>
+					<p style="color: white;">Row: {{ $j + 1 }}, Tier: {{ $i + 1 }}</p>
 	
 				</div>
 
