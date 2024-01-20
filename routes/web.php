@@ -442,6 +442,9 @@ Route::post('/container-tipe', [PlacementController::class, 'tipe_container']);
 Route::post('/placement/changedToMty-{container_key}', [PlacementController::class, 'change']);
 Route::post('/placement/changed-status', [PlacementController::class, 'place_mty']);
 
+
+Route::get('/yard/yard-view/android', [YardrotController::class, 'Android']);
+
 //Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 // Route::post('/get-slot', [PlacementController::class, 'get_slot']);
@@ -503,6 +506,7 @@ Route::post('/placement/changed-status', [PlacementController::class, 'place_mty
 
 route::resource('yards/rowtier', YardrotController::class);
 route::post('yards/rowtier/get_rowtier', [YardrotController::class, 'get_rowtier'])->name('rowtier.get_rowtier');
+route::post('yards/rowtier/get_rowtier_android', [YardrotController::class, 'get_rowtierAndroid'])->name('rowtier.get_rowtierAndroid');
 Route::post('/getSlot', [YardrotController::class, 'get_slot'])->name('get.slot');
 
 

@@ -72,12 +72,12 @@
                                             <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_oqt1izjh.json" background="#FFFFFF" speed="1" width="100" height="100" loop autoplay></lottie-player>
                                             <a href="/yard/trucking-android" class="btn btn-success rounded-pill">Trucking</a>
                                         </div>
-                                        <!--</div>
+                                        </div>
                                             <div style="width: 300px;">
                                                 <div style="float: left; margin-right: 20px;">
-                                                    <lottie-player src="https://assets9.lottiefiles.com/packages/lf20_fi0ty9ak.json" background="#FFFFFF" speed="1" width="100" height="100" loop autoplay></lottie-player>
-                                                    <a href="#" class="btn btn-success  rounded-pill">Success</a>
-                                                </div>-->
+                                                    <lottie-player src="https://lottie.host/de29ff57-163b-4d22-9bea-e3ed861aafbc/QsTOsNhByF.json" background="#FFFFFF" speed="1" width="100" height="100" loop autoplay></lottie-player>
+                                                    <a href="/yard/yard-view/android" class="btn btn-danger  rounded-pill">Yard View</a>
+                                                </div>
                                         <!-- <a href="#" class="btn btn-light rounded-pill">Light</a> -->
                                         <!-- <a href="#" class="btn btn-dark rounded-pill">Dark</a> -->
                                     </div>
