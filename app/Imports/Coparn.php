@@ -60,27 +60,7 @@ class Coparn implements ToCollection, WithHeadingRow
 
             $containerNo = trim($row['container_no']);
             $isoContainer = $iso_code;
-            $item = Item::where('container_no', $containerNo)->where('iso_code', $isoContainer)->first();
-            if ($item) {
-                $item->update([
-                    'ves_id' => $this->ves_code,
-                    'ves_code' => $this->voy_no,
-                    'ves_name' => $this->ves_id,
-                    'voy_no' => $this->ves_name,
-                    'disch_port' => trim($row['pod']),
-                    'load_port' => trim($row['spod']),
-                    'gross' => trim($row['gross']),
-                    'ctr_intern_status' => '49',
-                    'ctr_i_e_t' => 'E',
-                    'disc_load_trans_shift' => 'LOAD',
-                    'user_id' => Auth::user()->name,
-                    'ctr_active_yn' => 'Y',
-                    'selected_do'=>'N',
-                    'booking_no'=>trim($row['booking_no']),
-                    'invoice_mo'=>null,
-                    'job_no'=>null,
-                ]);
-            }else {
+            
                 $item = [
                     'ves_id' => $this->ves_code,
                     'ves_code' => $this->voy_no,
@@ -107,7 +87,7 @@ class Coparn implements ToCollection, WithHeadingRow
                 ];
     
                 Item::create($item);
-            }
+            
         }
     }
 }

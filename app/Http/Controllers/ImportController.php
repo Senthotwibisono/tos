@@ -9,10 +9,11 @@ use App\Models\OrderService as OS;
 use App\Models\MasterTarif as MT;
 use App\Models\Customer;
 use App\Models\DOonline;
-use App\Models\item;
+use App\Models\Item;
 use App\Models\KodeDok;
-use App\Models\invoiceImport;
+use App\Models\InvoiceImport;
 use App\Models\JobImport;
+use App\Models\VVoyage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 
@@ -70,6 +71,7 @@ class ImportController extends Controller
         $data['customer'] = Customer::get();
         $data['orderService'] = OS::where('ie', '=', 'I')->get();
         $data['do_online'] = DOonline::where('active', 'Y')->get();
+        $data['ves'] = VVoyage::where('arrival_date', '<=', Carbon::now())->get();
 
         return view('billingSystem.import.form.create', $data);
     }
@@ -105,6 +107,14 @@ class ImportController extends Controller
                 'message' => 'Nomor Do Expired !!',
             ]);
         }
+
+        $ves = $request->ves;
+        if (empty($ves)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pilih Vessel Service Dahulu !!',
+            ]);
+        }
         $os = $request->os;
         if (empty($os)) {
             return response()->json([
@@ -116,9 +126,9 @@ class ImportController extends Controller
             $doCont = json_decode($do->container_no);
     
             if ($os != 4 && $os != 5) {
-                $cont = Item::whereIn('container_no', $doCont)->where('ctr_intern_status', '=',  '03')->where('selected_do','=', 'N')->get();            
+                $cont = Item::whereIn('container_no', $doCont)->where('ctr_intern_status', '=',  '03')->where('selected_do','=', 'N')->where('ves_id', $ves)->get();            
             }else {
-                $cont = Item::whereIn('container_no', $doCont)->where('ctr_intern_status', '=',  '15')->where('selected_do','=', 'N')->get();            
+                $cont = Item::whereIn('container_no', $doCont)->where('ctr_intern_status', '=',  '15')->where('selected_do','=', 'N')->where('ves_id', $ves)->get();            
             }
            
             if (!$cont->isEmpty()) {
@@ -438,7 +448,7 @@ class ImportController extends Controller
         
     }
 
-    public function invoiceImport(Request $request)
+    public function InvoiceImport(Request $request)
     {
         $os = $request->os_id;
         $cont = $request->container_key;
@@ -452,7 +462,7 @@ class ImportController extends Controller
                 $invoiceNo = $this->getNextInvoiceDSK();
               
 
-                $dsk = invoiceImport::create([
+                $dsk = InvoiceImport::create([
                     'inv_type'=>'DSK',
                     'inv_no' =>$invoiceNo,
                     'proforma_no'=>$nextProformaNumber,
@@ -499,7 +509,7 @@ class ImportController extends Controller
                 }     
                 $invoiceNo = $this->getNextInvoiceDS();
          
-                $ds = invoiceImport::create([
+                $ds = InvoiceImport::create([
                     'inv_type'=>'DS',
                     'inv_no'=>$invoiceNo,
                     'proforma_no'=>$proformaDS,
@@ -966,7 +976,7 @@ private function getNextJob($lastJobNo)
     public function JobInvoice($id)
     {
         $data['title'] = 'Job Number';
-        $data['inv'] = invoiceImport::where('id', $id)->first();
+        $data['inv'] = InvoiceImport::where('id', $id)->first();
         $data['job'] = JobImport::where('inv_id', $id)->get();
         $data['cont'] = Item::get();
         foreach ($data['job'] as $jb) {

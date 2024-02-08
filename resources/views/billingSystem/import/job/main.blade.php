@@ -84,7 +84,7 @@
                 {{$qrcodes[$jb->id]}}
                 <br>
                 <br>
-                <p><strong>Container</strong></p>
+                <h4><strong>{{$ct->order_service}} Card Container</strong></h4>
                 <p>{{$ct->container_no}}</p>
                 <p>{{$ct->ctr_size}} / {{$ct->ctr_type}} / {{$ct->ctr_status}}</p>
                 <P><strong>Location in Yard</strong></P>

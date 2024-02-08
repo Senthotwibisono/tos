@@ -307,7 +307,7 @@ class Gato extends Controller
         ]);
 
 
-        if ($item->truck_no === $request->truck_no) {
+        if ($item) {
             $item->update([
                 'truck_no' => $request->truck_no,
                 'truck_out_date' => $request->truck_out_date,

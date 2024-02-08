@@ -204,7 +204,7 @@ class MasterTarifController extends Controller
     public function doUpload(Request $request)
     {
         $path = $request->file('storedo');
-        Excel::import(new uploadDO, $path->getRealPath());
+        Excel::import(new uploadDO, $path->getRealPath(), null, 'Xls');
 
         return redirect('/billing/dock-DO')->with('success', 'Data berhasil diimpor.');
     }

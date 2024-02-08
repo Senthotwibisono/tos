@@ -348,7 +348,7 @@ public function generateREPT_gato_del(Request $request)
         $containerKeyCounts = [];
 
         foreach ($kapal as $kpl) {
-            $count = Item::where('ctr_intern_status', '56')
+            $count = Item::whereIn('ctr_intern_status', ['49','50','51', '56'])
                 ->where('ves_id', $kpl->ves_id)
                 ->count();
     
@@ -361,7 +361,7 @@ public function generateREPT_gato_del(Request $request)
     public function detail_cont(Request $request)
     {
         $id = $request->ves_id;
-        $cont = Item::where('ves_id', $id)->where('ctr_intern_status', '56')->get();
+        $cont = Item::where('ves_id', $id)->whereIn('ctr_intern_status', ['49','50','51', '56'])->get();
 
         if ($cont) {
             return response()->json([
@@ -409,7 +409,7 @@ public function generateREPT_gato_del(Request $request)
         $title = 'Laporan Export ' . $name .' '. $voy  ;
         $port = $kapal->last_port;
         $flag = $kapal->reg_flag;
-        $cont = Item::where('ves_id', $ves_id)->where('ctr_intern_status', '56')->get();
+        $cont = Item::where('ves_id', $ves_id)->whereIn('ctr_intern_status', ['49','50','51', '56'])->get();
     
         $total = $cont->count();
 

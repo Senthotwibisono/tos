@@ -73,7 +73,7 @@ class CoparnController extends Controller
         );
     
     
-            Excel::import($import, $path->getRealPath());
+            Excel::import($import, $path->getRealPath(),  null, 'Xls');
 
         return redirect('/billing/coparn')->with('success', 'Data berhasil diimpor.');
     }

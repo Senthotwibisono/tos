@@ -170,7 +170,7 @@
               <span id="isPiutang" class="badge text-white"></span>
             </p>
           </div>
-          <input type="hidde" id="idInvoice">
+          <input type="hidden" id="idInvoice">
 
         </div>
         <div class="modal-footer">
@@ -178,6 +178,7 @@
             <i class="bx bx-x d-block d-sm-none"></i>
             <span class="d-none d-sm-block">Cancel</span>
           </button>
+        
           <button id="payFull" type="button" class="btn btn-primary ml-1 payFull">
             Verify This Payment
           </button>
@@ -215,6 +216,20 @@
         $('#editModal').modal('show');
         $("#editModal #idInvoice").val(response.data.id);
 
+        if (response.data.lunas === 'Y') {
+        // Jika lunas, nonaktifkan tombol "Verify This Payment"
+            $('#payFull').prop('disabled', true);
+            $('#piutang').prop('disabled', true);
+
+        }else if(response.data.lunas === 'P') {
+            // Jika belum lunas, aktifkan tombol "Verify This Payment"
+            $('#payFull').prop('disabled', false);
+            $('#piutang').prop('disabled', true);
+
+        }else{
+          $('#payFull').prop('disabled', false);
+            $('#piutang').prop('disabled', false);
+        }
       
 
       },

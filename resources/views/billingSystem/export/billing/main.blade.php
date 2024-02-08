@@ -5,7 +5,7 @@
 
 <div class="page-heading">
   <h3><?= $title ?></h3>
-  <p>Management Data Billing Delivery</p>
+  <p>Management Data Billing Reciving</p>
 
 </div>
 <div class="page-content">
@@ -14,7 +14,7 @@
     <div class="col-12 mb-3">
       <a href="{{ route('deliveryMenuExport')}}" type="button" class="btn btn-primary">
         <i class="fa fa-folder"></i>
-        Delivery Form
+        Reciving Form
       </a>
     </div>
   </section>
@@ -23,7 +23,7 @@
       <div class="col-12">
         <div class="card">
           <div class="card-header">
-            <h4 class="card-title">Tabel Data Billing Delivery {{$os->name}}</h4>
+            <h4 class="card-title">Tabel Data Billing Reciving {{$os->name}}</h4>
             <p>Rekap Data Billing</p>
           </div>
           <div class="card-body">
@@ -167,7 +167,7 @@
               <span id="isPiutang" class="badge text-white"></span>
             </p>
           </div>
-          <input type="hidde" id="idInvoice">
+          <input type="hidden" id="idInvoice">
 
         </div>
         <div class="modal-footer">
@@ -211,7 +211,20 @@
         console.log(response);
         $('#editModal').modal('show');
         $("#editModal #idInvoice").val(response.data.id);
+        if (response.data.lunas === 'Y') {
+        // Jika lunas, nonaktifkan tombol "Verify This Payment"
+            $('#payFull').prop('disabled', true);
+            $('#piutang').prop('disabled', true);
 
+        }else if(response.data.lunas === 'P') {
+            // Jika belum lunas, aktifkan tombol "Verify This Payment"
+            $('#payFull').prop('disabled', false);
+            $('#piutang').prop('disabled', true);
+
+        }else{
+          $('#payFull').prop('disabled', false);
+            $('#piutang').prop('disabled', false);
+        }
       
 
       },

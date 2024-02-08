@@ -11,7 +11,7 @@
            <h6>Buat Data</h6>
         </div>
         <hr>
-        <form action="{{ route('updateMT') }}" method="POST">
+        <form action="/billing/import/master-tarif/update-MT" method="POST">
             @csrf
             <div class="card-body">
                         <label>Ukuran Container </label>

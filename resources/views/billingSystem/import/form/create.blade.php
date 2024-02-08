@@ -48,13 +48,25 @@
                 <!-- <textarea class="form-control" id="address" name="address" cols="10" rows="4"></textarea> -->
               </div>
             </div>
-            <div class="col-12">
+            <div class="col-6">
               <div class="form-group">
                 <label>Order Service</label>
                 <select name="order_service" class="form-select" required id="orderService">
                   <option value="" default selected disabled>Pilih Salah Satu..</option>
                  @foreach($orderService as $os)
                  <option value="{{$os->id}}">{{$os->name}}</option>
+                 @endforeach
+                </select>
+              </div>
+            </div>
+
+            <div class="col-6">
+              <div class="form-group">
+                <label>Vessel Service</label>
+                <select name="ves_id" class="js-example-basic-multiple form-select" required id="vessel">
+                  <option value="" default selected disabled>Pilih Salah Satu..</option>
+                 @foreach($ves as $os)
+                 <option value="{{$os->ves_id}}">{{$os->ves_name}}--{{$os->voy_out}}</option>
                  @endforeach
                 </select>
               </div>
@@ -240,12 +252,14 @@ $(function(){
         $('#do_number_auto'). on('change', function(){
                 let id = $('#do_number_auto').val();
                 let os = $('#orderService').val();
+                let ves = $('#vessel').val();
 
                 $.ajax({
                     type: 'get',
                     url: "{{ route('getDOdata')}}",
                     data : {id : id,
-                            os:os
+                            os:os,
+                            ves:ves,
                             },
                     cache: false,
                     

@@ -376,15 +376,41 @@ class Gati extends Controller
         // die();
         $item = Item::where('container_key', $container_key)->first();
         if ($item) {
+            if ($request->iso_code != null) {
+                $iso_code = $request->iso_code;
+            }else {
+                $iso_code = $item->iso_code;
+
+            }
+
+            if ($request->ctr_type != null) {
+                $ctr_type = $request->ctr_type;
+            }else {
+                $ctr_type = $item->ctr_type;
+            }
+
+            if ($request->ctr_size != null) {
+                $ctr_size = $request->ctr_size;
+            }else {
+                $ctr_size = $item->ctr_size;
+            }
+
+            if ($request->ctr_status != null) {
+                $ctr_status = $request->ctr_status;
+            }else {
+                $ctr_status = $item->ctr_status;
+
+            }
+
             $item->update([
                 'ctr_intern_status' => 50,
                 'truck_no' => $request->truck_no,
                 'truck_in_date' => $request->truck_in_date,
                 'gross' => $request->gross,
-                'iso_code' => $request->iso_code,
-                'ctr_type' => $request->ctr_type,
-                'ctr_size' => $request->ctr_size,
-                'ctr_status' => $request->ctr_status,
+                'iso_code' => $iso_code,
+                'ctr_type' => $ctr_type,
+                'ctr_size' => $ctr_size,
+                'ctr_status' => $ctr_status,
                 'user_id' => $request->user_id,
                 'ctr_active_yn' => 'Y',
                 'ctr_i_e_t' => 'E',

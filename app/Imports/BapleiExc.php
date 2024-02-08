@@ -68,7 +68,7 @@ class BapleiExc implements ToCollection, WithHeadingRow
 
             $containerNo = trim($row['container_no']);
             $isoContainer = $iso_code;
-            $item = Item::where('container_no', $containerNo)->where('iso_code', $isoContainer)->first();
+            $item = Item::where('container_no', $containerNo)->where('iso_code', $isoContainer)->where('ves_id',  $this->ves_id)->first();
 
             if ($item) {
                 $item->update([

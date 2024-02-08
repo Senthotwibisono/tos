@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\OrderService as OS;
 use App\Models\MasterTarif as MT;
 use App\Models\Customer;
-use App\Models\item;
+use App\Models\Item;
 use App\Models\KodeDok;
 use App\Models\RO;
 use App\Models\VVoyage;
@@ -26,7 +26,7 @@ class InvoiceExportController extends Controller
 
     public function billingMain()
     {
-        $data['title'] = "Delivery Billing System";
+        $data['title'] = "Reciving Billing System";
         $data['invoice'] = InvoiceExport::orderBy('order_at', 'asc')->orderBy('lunas', 'asc')->get();
 
         $data['service'] = OS::where('ie', '=' , 'E')->orderBy('id', 'asc')->get();
@@ -36,7 +36,7 @@ class InvoiceExportController extends Controller
 
     public function deliveryMenuExport()
     {
-        $data['title'] = "Delivery Menu";
+        $data['title'] = "Reciving Menu";
 
         return view('billingSystem.export.form.main', $data);
     }
@@ -44,7 +44,7 @@ class InvoiceExportController extends Controller
     public function deliveryFormExport()
     {
         $user = Auth::user();
-        $data['title'] = "Delivery Form";
+        $data['title'] = "Reciving Form";
         $data["user"] = $user->id;
 
         $data['customer'] = Customer::get();
