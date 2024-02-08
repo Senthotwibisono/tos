@@ -235,43 +235,9 @@ class DischargeController extends Controller
 
 
 
-      $client = new Client();
+      
 
-      $fields = [
-        "container_key" => $request->container_key,
-        "ctr_intern_status" => "02",
-        "disc_date" => $request->disc_date,
-        "ves_id" => $request->ves_id,
-        "voy_no" => $request->voy_no,
-        "vessel_name" => $request->ves_name,
-        "container_no" => $request->container_no,
-        "ctr_status" => $request->ctr_status,
-        "ctr_type" => $request->ctr_type,
-        "ctr_size" => $request->ctr_size,
-        "ctr_opr" => $request->ctr_opr,
-        "disc_load_trans_shift" => $request->disc_load_trans_shift,
-        "load_port" => $request->load_port,
-        "disch_port" => $request->disch_port,
-        "fdisch_port" => "",
-        "bay_slot" => $request->bay_slot,
-        "bay_row" => $request->bay_row,
-        "bay_tier" => $request->bay_tier,
-        "gross" => $request->gross,
-        "iso_code" => $request->iso_code,
-      ];
-      // dd($fields, $item->getAttributes());
-
-      $url = getenv('API_URL') . '/delivery-service/container/create';
-      $req = $client->post(
-        $url,
-        [
-          "json" => $fields
-        ]
-      );
-      $response = $req->getBody()->getContents();
-      $result = json_decode($response);
-      // dd($result);
-      if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+    
 
 
         return response()->json([
@@ -279,12 +245,12 @@ class DischargeController extends Controller
           'message' => 'updated successfully!',
           'data'    => $item,
         ]);
-      } else {
-        return response()->json([
-          'success' => false,
-          'message' => 'Something Wrong!',
-        ]);
-      };
+     
+    }else {
+      return response()->json([
+        'success' => false,
+        'message' => 'Something Wrong!',
+      ]);
     }
   }
 }

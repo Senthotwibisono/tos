@@ -72,16 +72,6 @@ class PlacementController extends Controller
         $currentDateTime = Carbon::now();
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
 
-        $client = new Client();
-        // GET ALL JOB_CONTAINER
-        $url_jobContainer = getenv('API_URL') . '/delivery-service/job/osds';
-        $req_jobContainer = $client->get($url_jobContainer);
-        $response_jobContainer = $req_jobContainer->getBody()->getContents();
-        $result_jobContainer = json_decode($response_jobContainer);
-        
-        $data["jobContainers"] = $result_jobContainer->data;
-        $data["active"] = "yard";
-        $data["subactive"] = "placement";
         $alat = MasterAlat::where('category', '=', 'Yard')->get();
         $vessel = VVoyage::whereDate('etd_date', '>=', now())->get();
         return view('yard.place.main', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'alat', 'vessel'), $data);
@@ -193,7 +183,7 @@ class PlacementController extends Controller
             ->first();
         // var_dump($yard_rowtier, $request->yard_block, $request->yard_slot, $request->yard_tier, $request->yard_row);
         // die();
-        if (is_null($yard_rowtier->container_key)) {
+        if (empty($yard_rowtier->container_key)) {
             $id_alat = $request->alat;
             $alat = MasterAlat::where('id', $id_alat)->first();
 
@@ -217,40 +207,15 @@ class PlacementController extends Controller
                     'activity' => 'PLC',
                 ]);
 
-                $client = new Client();
-
-                $fields = [
-                    "container_key" => $request->container_key,
-                    "ctr_intern_status" => ($item->ctr_intern_status === '12' || $item->ctr_intern_status === '13') ? '03' : (($item->ctr_intern_status === '14') ? '04' :  $item->ctr_intern_status),
-                    'yard_block' => $request->yard_block,
-                    'yard_slot' => $request->yard_slot,
-                    'yard_row' => $request->yard_row,
-                    'yard_tier' => $request->yard_tier,
-                ];
-                // dd($fields, $item->getAttributes());
-
-                $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
-                $req = $client->post(
-                    $url,
-                    [
-                        "json" => $fields
-                    ]
-                );
-                $response = $req->getBody()->getContents();
-                $result = json_decode($response);
-
-                // dd($result);
-                if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-                    $item->save();
+               
+            
 
                     return response()->json([
-                        'success' => 400,
+                        'success' => true,
                         'message' => 'updated successfully!',
                         'data'    => $item,
                     ]);
-                } else {
-                    return back();
-                }
+               
             } else {
                 $item->update([
                     'yard_block' => $request->yard_block,
@@ -272,40 +237,14 @@ class PlacementController extends Controller
                 ]);
 
 
-                $client = new Client();
-
-                $fields = [
-                    "container_key" => $request->container_key,
-                    "ctr_intern_status" => ($item->ctr_intern_status === '02' || $item->ctr_intern_status === '03') ? '03' : (($item->ctr_intern_status === '50') ? '51' : $item->ctr_intern_status),
-                    'yard_block' => $request->yard_block,
-                    'yard_slot' => $request->yard_slot,
-                    'yard_row' => $request->yard_row,
-                    'yard_tier' => $request->yard_tier,
-                ];
-                // dd($fields, $item->getAttributes());
-
-                $url = getenv('API_URL') . '/delivery-service/container/confirmPlacement';
-                $req = $client->post(
-                    $url,
-                    [
-                        "json" => $fields
-                    ]
-                );
-                $response = $req->getBody()->getContents();
-                $result = json_decode($response);
-
-                // dd($result);
-                if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-                    $item->save();
+               
 
                     return response()->json([
                         'success' => 400,
                         'message' => 'updated successfully!',
                         'data'    => $item,
                     ]);
-                } else {
-                    return back();
-                }
+             
             }
         } else {
             return response()->json([

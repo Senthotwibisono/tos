@@ -44,6 +44,9 @@ use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\GateRelokasiController;
 use App\Http\Controllers\TruckingController;
 use App\Http\Controllers\BCGatterController;
+use App\Http\Controllers\MasterTarifController;
+use App\Http\Controllers\ImportController;
+use App\Http\Controllers\InvoiceExportController;
 
 
 
@@ -661,7 +664,6 @@ Route::get('/review-get-container-gato-del', [ReportController::class, 'get_cont
 Route::get('/generate-report-gato-del', [ReportController::class, 'generateREPT_gato_del'])->name('report.generate-report-gato-del');
 //Export
 
-Route::get('/edi/coparn', [CoparnController::class, 'index']);
 
 
 //Export
@@ -669,7 +671,7 @@ Route::get('/edi/coparn', [CoparnController::class, 'index']);
 //gate
 Route::get('/reciving/gate-in', [Gati::class, 'index_rec']);
 Route::get('/reciving/gate-in-android', [Gati::class, 'android_rec']);
-Route::post('/gati-data_container-rec', [Gati::class, 'get_data_reciving']);
+Route::get('/gati-data_container-rec', [Gati::class, 'get_data_reciving']);
 Route::post('/gati-rec', [Gati::class, 'gati_rec']);
 Route::post('/gati-iso-rec', [Gati::class, 'gati_iso_rec']);
 
@@ -800,3 +802,99 @@ Route::get('/reports/export', [ReportController::class, 'index_xp']);
 Route::get('/reports/detailCont-{ves_id}', [ReportController::class, 'detail_cont']);
 Route::post('/get-data-kapal', [ReportController::class, 'get_data_kapal']);
 Route::get('/laporan-kapal', [ReportController::class, 'laporan_kapal'])->name('laporan-kapal');
+
+
+
+// New Invoice
+
+
+// Import
+
+// Master Tarif
+Route::get('/billing/import/master-tarif', [MasterTarifController::class, 'import'])->name('mtImport');
+Route::post('/billing/import/master-tarif/store-OS', [MasterTarifController::class, 'orderService'])->name('orderService');
+Route::get('/billing/import/master-tarif-{os?}', [MasterTarifController::class, 'tarif']);
+Route::post('/billing/import/master-tarif/store-MT', [MasterTarifController::class, 'storeMT'])->name('storeMT');
+Route::get('/billing/import/master-tarif/edit-{id?}', [MasterTarifController::class, 'EditImport']);
+Route::post('/billing/import/master-tarif/update-MT', [MasterTarifController::class, 'updateMT'])->name('updateMT');
+// Customer ikut di Master Tarif
+Route::get('/billing/customer', [MasterTarifController::class, 'customer'])->name('Customer');
+Route::get('/billing/customer/add', [MasterTarifController::class, 'addCust'])->name('addCust');
+Route::post('/billing/customer/store', [MasterTarifController::class, 'storeCust'])->name('storeCust');
+Route::get('/billing/customer/edit-{id?}', [MasterTarifController::class, 'editCust']);
+Route::post('/billing/customer/update', [MasterTarifController::class, 'updateCust'])->name('updateCust');
+
+// DO ikut di Master Tarif
+
+Route::get('/billing/dock-DO', [MasterTarifController::class, 'doMain'])->name('doMain');
+Route::post('/billing/dock-DO/upload', [MasterTarifController::class, 'doUpload'])->name('doUpload');
+
+// invoiceImport
+Route::get('/billing/import/delivey-system', [ImportController::class, 'billingMain'])->name('billinImportgMain');
+Route::get('/billing/import/delivery-dashboard', [ImportController::class, 'deliveryMenu'])->name('deliveryMenu');
+Route::get('/billing/import/delivery-form', [ImportController::class, 'deliveryForm'])->name('deliveryForm');
+Route::get('/get-customer-data', [ImportController::class, 'getCust'])->name('getCust');
+Route::get('/get-doOnline-data', [ImportController::class, 'getDOdata'])->name('getDOdata');
+Route::get('/get-dokumenImport-data', [ImportController::class, 'getDokImport'])->name('getDokImport');
+
+Route::get('/billing/import/delivey-system/beforeCreate', [ImportController::class, 'beforeCreate'])->name('beforeCreate');
+Route::post('/billing/import/delivey-system/store-import-invoice', [ImportController::class, 'invoiceImport'])->name('invoiceImport');
+
+// Pranota
+Route::get('/pranota/import-DSK{id?}', [ImportController::class, 'PranotaImportDSK'])->name('PranotaImportDSK');
+Route::get('/pranota/import-DS{id?}', [ImportController::class, 'PranotaImportDS'])->name('PranotaImportDS');
+// Invoice
+Route::get('/invoice/import-DSK{id?}', [ImportController::class, 'InvoiceImportDSK'])->name('InvoiceImportDSK');
+Route::get('/invoice/import-DS{id?}', [ImportController::class, 'InvoiceImportDS'])->name('InvoiceImportDS');
+// JOB
+Route::get('/invoice/job/import-{id?}', [ImportController::class, 'JobInvoice'])->name('JobInvoice');
+Route::get('/import/pay-button{id?}', [ImportController::class, 'payImport'])->name('payImport');
+Route::post('/invoice/import-payFull', [ImportController::class, 'payFullImport'])->name('payFullImport');
+Route::post('/invoice/import-piutang', [ImportController::class, 'piutangImport'])->name('piutangImport');
+
+
+
+// Export
+Route::get('/billing/export/master-tarif', [MasterTarifController::class, 'export'])->name('mtExport');
+Route::get('/billing/export/master-tarif-{os?}', [MasterTarifController::class, 'tarifExport']);
+Route::post('/billing/export/master-tarif/store-MT', [MasterTarifController::class, 'storeMTexport'])->name('storeMTexport');
+Route::get('/billing/export/master-tarif/edit-{id?}', [MasterTarifController::class, 'EditExport']);
+Route::post('/billing/import/master-tarif/update-MT', [MasterTarifController::class, 'updateMTexport'])->name('updateMTexport');
+
+// coparn
+Route::get('/billing/coparn', [CoparnController::class, 'index'])->name('coparnMain');
+Route::get('/billing/coparn/upload-file', [CoparnController::class, 'uploadView'])->name('uploadView');
+Route::get('/billing/coparn/get-vessel', [CoparnController::class, 'getVesselData'])->name('getVesselData');
+Route::post('/billing/coparn/postFile', [CoparnController::class, 'storeData'])->name('storeData');
+
+// invoice Export
+Route::get('/billing/export/delivey-system', [InvoiceExportController::class, 'billingMain'])->name('billingExportMain');
+Route::get('/billing/export/delivery-dashboard', [InvoiceExportController::class, 'deliveryMenuExport'])->name('deliveryMenuExport');
+Route::get('/billing/export/delivery-form', [InvoiceExportController::class, 'deliveryFormExport'])->name('deliveryFormExport');
+
+Route::get('/get-BookingNo-data', [InvoiceExportController::class, 'getDOdataExport'])->name('getDOdataExport');
+Route::get('/get-RoNumber-data', [InvoiceExportController::class, 'getROdataExport'])->name('getROdataExport');
+
+Route::get('/billing/export/delivey-system/beforeCreate', [InvoiceExportController::class, 'beforeCreate'])->name('beforeCreateExport');
+Route::post('/billing/export/delivey-system/store-export-invoice', [InvoiceExportController::class, 'invoiceExport'])->name('invoiceExport');
+
+Route::get('/pranota/export-OSK{id?}', [InvoiceExportController::class, 'PranotaExportOSK'])->name('PranotaExportOSK');
+Route::get('/pranota/export-OS{id?}', [InvoiceExportController::class, 'PranotaExportOS'])->name('PranotaExportOS');
+
+
+Route::get('/export/pay-button{id?}', [InvoiceExportController::class, 'payExport'])->name('payExport');
+Route::post('/invoice/export-payFull', [InvoiceExportController::class, 'payFullExport'])->name('payFullExport');
+Route::post('/invoice/export-piutang', [InvoiceExportController::class, 'piutangExport'])->name('piutangExport');
+
+
+Route::get('/invoice/export-OSK{id?}', [InvoiceExportController::class, 'InvoiceExportOSK'])->name('InvoiceExportOSK');
+Route::get('/invoice/export-OS{id?}', [InvoiceExportController::class, 'InvoiceExportOS'])->name('InvoiceExportOS');
+// JOB
+Route::get('/invoice/job/export-{id?}', [InvoiceExportController::class, 'JobInvoice'])->name('JobInvoice');
+
+
+
+
+
+
+

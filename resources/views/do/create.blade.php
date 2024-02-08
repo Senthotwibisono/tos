@@ -11,7 +11,7 @@
 <div class="page-content">
 
   <section class="row">
-    <form action="/do/store" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('doUpload')}}" method="POST" enctype="multipart/form-data">
       @CSRF
       <div class="col-12">
         <div class="card">

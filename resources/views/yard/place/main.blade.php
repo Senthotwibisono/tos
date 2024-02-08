@@ -165,16 +165,17 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($jobContainers->containers as $value)
-                                        @if((($value->jobContainer->ctr_intern_status == "03" || $value->jobContainer->ctr_intern_status == "08")) &&($value->jobContainer->billingName == "DS") && ($value->jobContainer->orderService == "mtiks" || $value->jobContainer->orderService == "lolomt"))
+                                    @foreach($formattedData as $d)
+                                        @if($d['ctr_intern_status'] === '04' && $d['ctr_status'] === 'MTY' )
                                         <tr>
-                                            <td>{{$value->jobContainer->container_no}}</td>
-                                            <td>{{$value->jobContainer->ctr_type}}</td>
-                                            <td>{{$value->jobContainer->yard_block}}</td>
-                                            <td>{{$value->jobContainer->yard_slot}}</td>
-                                            <td>{{$value->jobContainer->yard_row}}</td>
-                                            <td>{{$value->jobContainer->yard_tier}}</td>
-                                            <td><button type="button" class="btn btn-outline-success changed-to-exp-mty" data-bs-toggle="modal" data-id="{{$value->jobContainer->id}}">Change</button></td>
+                                            <td>{{$d['container_no']}}</td>
+                                            <td>{{$d['ctr_type']}}</td>
+                                            <td>{{$d['yard_block']}}</td>
+                                            <td>{{$d['yard_slot']}}</td>
+                                            <td>{{$d['yard_row']}}</td>
+                                            <td>{{$d['yard_tier']}}</td>
+                                            <td>{{$d['update_time']}}</td>
+                                            <td><button type="button" class="btn btn-outline-success changed-to-exp-mty" data-bs-toggle="modal" data-id="{{$d['container_key']}}">Change</button></td>
                                         </tr>
                                         @endif
                                         @endforeach

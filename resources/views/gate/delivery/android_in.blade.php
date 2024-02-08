@@ -70,12 +70,9 @@
                 <label for="first-name-vertical">Choose Container Number</label>
                 <select class="choices form-select" id="key" name="container_key" required>
                   <option disabled selected value="">Select Container</option>
-                  <?php
-                  foreach ($jobContainers->containers as $value) { ?>
-                    <?php if ((($value->jobContainer->ctr_intern_status == "03") && ($value->jobContainer->billingName == "DS") && ($value->jobContainer->orderService != "sppsrelokasipelindo") || ($value->jobContainer->ctr_intern_status == "03")  && ($value->jobContainer->orderService == "sppsrelokasipelindo" || $value->jobContainer->orderService == "spps"))) { ?>
-                      <option value="<?= $value->jobContainer->container_key ?>"><?= $value->jobContainer->container_no ?></option>
-                    <?php } ?>
-                  <?php } ?>
+                  @foreach($contGati as $gati)
+                  <option value="{{$gati->container_key}}">{{$gati->container_no}}</option>
+                  @endforeach
                 </select>
                 <input type="hidden" id="container_no" class="form-control" name="container_no">
               </div>
@@ -93,7 +90,6 @@
                   <div class="form-group">
                     <label for="first-name-vertical">Order Service</label>
                     <input type="text" id="orderservice" class="form-control" readonly>
-                    <input type="text" id="orderserviceCode" class="form-control" readonly>
                   </div>
                 </div>
                 <div class="col-6">
@@ -308,31 +304,12 @@
             container_key: id
           },
           success: function(response) {
-            let res = JSON.parse(response);
-            let job = res.data.containers[0].findContainer;
-            let delivery = res.data.containers[0].deliveryForm;
-            // console.log(res);
-            $('#container_no').val(job.container_no);
-            $('#job').val(job.jobNumber);
-            $('#invoice').val(job.invoiceNumber);
-            $('#orderserviceCode').val(job.orderService);
-            $('#orderservice').val(job.orderService);
-
-            if (job.orderService === "sp2iks") {
-              $('#orderservice').val("SP2 Kapal Sandar Icon (MT Balik IKS)");
-            } else if (job.orderService === "sp2mkb") {
-              $('#orderservice').val("SP2 Kapal Sandar icon (MKB)");
-            } else if (job.orderService === "sp2pelindo") {
-              $('#orderservice').val("SP2 Kapal Sandar Icon (MT Balik Pelindo)");
-            } else if (job.orderService === "spps") {
-              $('#orderservice').val("SPPS");
-            } else if (job.orderService === "sppsrelokasipelindo") {
-              $('#orderservice').val("SPPS (Relokasi Pelindo - ICON)");
-            } else if (job.orderService === "sp2icon") {
-              $('#orderservice').val("SP2 (Relokasi Pelindo - Icon)");
-            }
-            $('#dok').val(delivery.documentNumber);
-            $('#jenisDok').val(delivery.documentType);
+            console.log(response);
+            $('#contKey').val(response.data.container_key);
+            $('#container_no').val(response.data.container_no);
+            $('#job').val(response.data.job_no);
+            $('#invoice').val(response.data.invoice_no);
+            $('#orderservice').val(response.data.order_service);
           },
           error: function(data) {
             console.log('error:', data);

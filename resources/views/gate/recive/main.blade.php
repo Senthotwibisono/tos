@@ -67,14 +67,11 @@
             <div class="col-12">
               <div class="form-group">
                 <label for="first-name-vertical">Choose Container Number</label>
-                <select class="choices form-select" id="key" name="container_key" required>
+                <select class="choices form-select" id="Contkey" name="container_key" required>
                   <option disabled selected value="">Select Container</option>
-                  <?php
-                  foreach ($jobContainers->containers as $value) { ?>
-                    <?php if ($value->jobContainer->billingName == "OS") { ?>
-                      <option data-id="<?= $value->jobContainer->containerID ?>" value="<?= $value->jobContainer->containerID ?>"><?= $value->jobContainer->container_no ?></option>
-                    <?php } ?>
-                  <?php } ?>
+                 @foreach($containerKeys as $cont)
+                  <option value="{{$cont->container_key}}">{{$cont->container_no}}</option>
+                 @endforeach
                 </select>
                 <input type="hidden" id="container_no" class="form-control" name="container_no">
                 <input type="hidden" value="{{ $currentDateTimeString }}" name="truck_in_date" class="form-control" readonly>
@@ -312,7 +309,7 @@
   });
   $(document).on('click', '.update_status', function(e) {
     e.preventDefault();
-    var container_key = $('#key').val();
+    var container_key = $('#Contkey').val();
     var container_no = $('#container_no').val();
     var truck_no = $('#tayo').val();
     var truck_in_date = $('#datein').val();
@@ -330,7 +327,7 @@
     var user_id=$('#user').val();
     var id=$('#id').val();
     var data = {
-      'id': $('#key').val(),
+      'container_key': $('#Contkey').val(),
       'container_no': $('#container_no').val(),
       'truck_no': $('#tayo').val(),
       'truck_in_date': $('#datein').val(),
@@ -467,56 +464,45 @@
     //     });
     //   });
     // });
-      $("#key").on('change', function() {
-    console.log("CHANGED!");
-    const selectedDoNo = this.value;
-    const selectedDoNoId = this.options[this.selectedIndex].getAttribute('value');
-    console.log(selectedDoNoId);
-    let csrfToken = $('meta[name="csrf-token"]').attr('content');
-    let formData = new FormData();
-    formData.append("id", selectedDoNoId);
+    
+    $(document).ready(function() {
+    $('#Contkey').on('change', function() {
+      let id = $('#Contkey').val();
     $.ajax({
-      headers: {
-        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
-      },
-      type: "POST",
-      url: `/gati-data_container-rec`,
-      cache: false,
-      contentType: false,
-      processData: false,
-      data: formData,
+      type: 'get',
+       url: '/gati-data_container-rec',
+       data : {id : id},
+       cache: false,
       success: function(response) {
-        let res = JSON.parse(response); 
-            console.log(res);
-            
-            $('#container_no').val(res.data.container_no);
-            $('#gross').val(res.data.gross);
-            $('#iso_code').val(res.data.iso_code);
-            $('#bl_no').val(res.data.bl_no);
-            $('#seal_no').val(res.data.seal_no);
-            $('#type').val(res.data.ctr_type);
-            $('#size').val(res.data.ctr_size);
-            $('#stat').val(res.data.ctr_status);
-            $('#tp').val(res.data.ctr_type);
-            $('#sz').val(res.data.ctr_size);
-            $('#st').val(res.data.ctr_status);
-            $('#vessel').val(res.data.vessel_name);
-            $('#voy').val(res.data.voy_no);
-            $('#ves_id').val(res.data.ves_id);
-            $('#code').val(res.data.ves_code);
-            $('#imo').val(res.data.imo_code);
-            $('#jmlh').val(res.data.gross);
-            $('#class').val(res.data.gross_class);
-            $('#pod').val(res.data.pod);
-            $('#seal').val(res.data.seal_no);
-            $('#oh').val(res.data.over_height);
-            $('#ow').val(res.data.over_widht);
-            $('#ol').val(res.data.over_length);
-            $('#id').val(res.data.id);
-            $('#service').val(res.data.orderService);
+            $('#container_no').val(response.data.container_key);
+            $('#gross').val(response.data.gross);
+            $('#iso_code').val(response.data.iso_code);
+            $('#bl_no').val(response.data.bl_no);
+            $('#seal_no').val(response.data.seal_no);
+            $('#type').val(response.data.ctr_type);
+            $('#size').val(response.data.ctr_size);
+            $('#stat').val(response.data.ctr_status);
+            $('#tp').val(response.data.ctr_type);
+            $('#sz').val(response.data.ctr_size);
+            $('#st').val(response.data.ctr_status);
+            $('#vessel').val(response.data.ves_name);
+            $('#voy').val(response.data.voy_no);
+            $('#ves_id').val(response.data.ves_id);
+            $('#code').val(response.data.ves_code);
+            $('#imo').val(response.data.imo_code);
+            $('#jmlh').val(response.data.gross);
+            $('#class').val(response.data.gross_class);
+            $('#pod').val(response.data.pod);
+            $('#seal').val(response.data.seal_no);
+            $('#oh').val(response.data.over_height);
+            $('#ow').val(response.data.over_widht);
+            $('#ol').val(response.data.over_length);
+            $('#id').val(response.data.id);
+            $('#service').val(response.data.order_service);
       }
     })
   })
+});
 
     $(document).ready(function() {
       $('#iso_code').on('change', function() {
