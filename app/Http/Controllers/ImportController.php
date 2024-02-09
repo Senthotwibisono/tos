@@ -1013,6 +1013,7 @@ private function getNextJob($lastJobNo)
         $container_key_string = $contArray[0];
         $container_keys = explode(",", $container_key_string);
         $items = Item::whereIn('container_key', $container_keys)->get();
+      
         $service = $invoice->os_id;
         if ($service == 1 || $service == 2 || $service == 5) {
             if ($service == 5) {
@@ -1032,6 +1033,7 @@ private function getNextJob($lastJobNo)
 
         if ($invoice) {
             foreach ($items as $item) {
+              
                 $job = JobImport::where('container_key', $item->container_key)->first();
                 $item->update([
                     'invoice_no'=>$invoice->inv_no,

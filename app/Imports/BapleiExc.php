@@ -71,6 +71,7 @@ class BapleiExc implements ToCollection, WithHeadingRow
             $item = Item::where('container_no', $containerNo)->where('iso_code', $isoContainer)->where('ves_id',  $this->ves_id)->first();
 
             if ($item) {
+               if ($item->ctr_intern_status =='01') {
                 $item->update([
                     'ves_id' => $this->ves_id,
                     'ves_code' => $this->ves_code,
@@ -89,6 +90,9 @@ class BapleiExc implements ToCollection, WithHeadingRow
                     'ctr_active_yn' => 'Y',
                     'selected_do'=>'N',
                 ]);
+               }else {
+                
+               }
             }else {
                 $item = [
                     'ves_id' => $this->ves_id,

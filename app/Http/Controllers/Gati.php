@@ -453,7 +453,7 @@ class Gati extends Controller
 
             $ro_Gate = RO::whereIn('ro_id', $rg)->get();
         }
-        return view('gate.stuffing.gate-in', compact('title', 'ro', 'full', 'rg', 'ro_Gate'));
+        return view('gate.stuffing.gate-in', compact('title', 'ro', 'full', 'rg'));
     }
     public function stuf_android()
     {
@@ -476,7 +476,7 @@ class Gati extends Controller
 
             $ro_Gate = RO::whereIn('ro_id', $rg)->get();
         }
-        return view('gate.stuffing.gate-in-android', compact('title', 'ro', 'full', 'rg', 'ro_Gate'));
+        return view('gate.stuffing.gate-in-android', compact('title', 'ro', 'full', 'rg'));
     }
 
     public function gati_stuf(Request $request)

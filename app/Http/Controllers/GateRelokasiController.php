@@ -21,11 +21,11 @@ class GateRelokasiController extends Controller
     public function index()
     {
         $title = 'Gate Rlokasi';
-        $item = Item::whereIn('order_service', ['SP2IKS', 'SP2RELOKASI', 'SPPSRELOKASI'])->whereIn('ctr_intern_status',  ['11', '15'])->get();
-        $item_confirmed = Item::whereiN('ctr_intern_status',  ['12', '13'])->get();
+        $item = Item::whereIn('order_service', ['SP2IKS', 'SP2RELOKASI', 'SPPSRELOKASI'])->whereIn('ctr_intern_status',  ['09', '11', '15'])->get();
+        $item_confirmed = Item::whereiN('ctr_intern_status',  ['12', '13', '14'])->get();
 
       
-        return view('gate.relokasi.main', compact('item', 'title', 'item_confirmed'), $data);
+        return view('gate.relokasi.main', compact('item', 'title', 'item_confirmed'));
     }
     public function android()
     {
@@ -45,32 +45,20 @@ class GateRelokasiController extends Controller
         //     return response()->json(['container_no' => $name->container_no, 'job' => $name->job_no, 'invoice' => $name->invoice_no]);
         // }
         // return response()->json(['container_no' => 'data tidak ditemukan', 'job' => 'data tidak ditemukan', 'invoice' => 'data tidak ditemukan']);
-        $client = new Client();
-
-        $fields = [
-            "container_key" => $request->container_key,
-        ];
-        // dd($fields, $item->getAttributes());
-
-        $url = getenv('API_URL') . '/delivery-service/job/containerbykey';
-        $req = $client->post(
-            $url,
-            [
-                "json" => $fields
-            ]
-        );
-        $response = $req->getBody()->getContents();
-        $result = json_decode($response);
-        // var_dump($response);
-        // die();
-        // dd($result);
-        if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-            // $item->save();
-
-            echo $response;
-        } else {
-            return response()->json(['service' => 'data tidak ditemukan']);
-        }
+       $key = $request->container_key;
+       $item = Item::where('container_key', $key)->first();
+       if ($item) {
+        return response()->json([
+            'success' => true,
+            'message' => 'Silahkan Menuju Bagian Placement',
+            'data'    => $item,
+        ]);
+       }else {
+        return response()->json([
+            'success' => false,
+            'message' => 'Silahkan Menuju Bagian Placement',
+        ]);
+       }
     }
 
     public function permit(Request $request)
@@ -79,7 +67,7 @@ class GateRelokasiController extends Controller
         $item = Item::where('container_key', $container_key)->first();
 
         if ($item) {
-            $service = $request->order_service;
+            $service = $item->order_service;
             // SP2 BALIK IKS
             if ($service === 'SP2IKS') {
                 $item->update([
@@ -135,6 +123,11 @@ class GateRelokasiController extends Controller
                     ]);
               
             }
+        }else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal, Terjadi Kesalahan',
+            ]);
         }
     }
 }
