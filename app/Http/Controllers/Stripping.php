@@ -183,6 +183,13 @@ class Stripping extends Controller
             'yard_tier.required' => 'Tier Alat Number is required.',
         ]);
 
+        if ($request->id_alat == null) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda belum memilih alat !!',
+            ]);
+        }
+
 
         $yard_rowtier = Yard::where('yard_block', $request->yard_block)
             ->where('yard_slot', $request->yard_slot)
@@ -190,7 +197,7 @@ class Stripping extends Controller
             ->where('yard_tier', $request->yard_tier)
             ->first();
 
-        if (empty($yard_rowtier->container_key)) {
+            if ($yard_rowtier->container_key == null || $yard_rowtier->container_key == ' ') { 
             $id_alat = $request->id_alat;
             $alat = MasterAlat::where('id', $id_alat)->first();
 
