@@ -198,6 +198,8 @@ class BayplanImportController extends Controller
                 'iso_code' => $request->iso_code,
                 'ctr_opr' => $request->ctr_opr,
                 'user_id' => $request->user_id,
+                'selected_do' => 'N',
+
             ]);
             return redirect('/planning/bayplan_import')->with('success', "Container Berhasil Dibuat");
         } catch (\Exception $e) {
@@ -378,49 +380,11 @@ class BayplanImportController extends Controller
                 'ctr_opr' => $request->ctr_opr,
                 'user_id' => $request->user_id,
                 'disc_date' => $request->disc_date,
+                'selected_do' => 'N',
             ]);
 
-            $client = new Client();
-            $now = Carbon::now();
-            $fields = [
-              "container_key" => $item->container_key,
-              "ctr_intern_status" => "15",
-              "disc_date" => $request->disc_date,
-              'ves_id' => 'PELINDO',
-                'ves_code' => 'PELINDO',
-                'ves_name' => 'PELINDO',
-                'voy_no' => 'PELINDO',
-              "container_no" => $request->container_no,
-              "ctr_status" => $request->ctr_status,
-              "ctr_type" => $request->ctr_type,
-              "ctr_size" => $request->ctr_size,
-              "ctr_opr" => $request->ctr_opr,
-              "disc_load_trans_shift" => $request->disc_load_trans_shift,
-              "load_port" => $request->load_port,
-              "disch_port" => $request->disch_port,
-              "fdisch_port" => "",
-              "bay_slot" => $request->bay_slot,
-              "bay_row" => $request->bay_row,
-              "bay_tier" => $request->bay_tier,
-              "gross" => $request->gross,
-              "iso_code" => $request->iso_code,
-            ];
-            // dd($fields, $item->getAttributes());
-        
-            $url = getenv('API_URL') . '/delivery-service/container/create';
-            $req = $client->post(
-              $url,
-              [
-                "json" => $fields
-              ]
-            );
-            $response = $req->getBody()->getContents();
-            $result = json_decode($response);
-            if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+           
             return redirect('/planning/bayplan_import')->with('success', "Container Berhasil Dibuat");
-        } else {
-            return redirect('/planning/bayplan_import')->with('error', "Terjadi Kesalahan");
-          };
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi Kesalahan')->withInput();
         }

@@ -68,6 +68,7 @@
                  @foreach($ves as $os)
                  <option value="{{$os->ves_id}}">{{$os->ves_name}}--{{$os->voy_out}}</option>
                  @endforeach
+                 <option value="PRLINDO">Relokasi Pelindo</option>
                 </select>
               </div>
             </div>

@@ -124,11 +124,13 @@ class ImportController extends Controller
         }
         if ($do) {
             $doCont = json_decode($do->container_no);
+            // var_dump($doCont);
+            // die;
     
             if ($os != 4 && $os != 5) {
                 $cont = Item::whereIn('container_no', $doCont)->where('ctr_intern_status', '=',  '03')->where('selected_do','=', 'N')->where('ves_id', $ves)->get();            
             }else {
-                $cont = Item::whereIn('container_no', $doCont)->where('ctr_intern_status', '=',  '15')->where('selected_do','=', 'N')->where('ves_id', $ves)->get();            
+                $cont = Item::whereIn('container_no', $doCont)->where('ctr_intern_status', '=',  '15')->where('selected_do','=', 'N')->where('ves_id', 'PELINDO')->get();            
             }
            
             if (!$cont->isEmpty()) {
@@ -494,7 +496,7 @@ class ImportController extends Controller
                 $proformaDS = $dsk->proforma_no;
             }else {
                 $nextProformaNumberDS = $this->getNextProformaNumber();
-                $proformaDS = $dsk->nextProformaNumber;
+                $proformaDS = $nextProformaNumberDS;
             }
 
             if ($os != 2) {
@@ -572,7 +574,7 @@ class ImportController extends Controller
                             'os_id'=>$request->os_id,
                             'os_name'=>$request->os_name,
                             'cust_id'=>$request->cust_id,
-                            'active_to'=>$dsk->expired_date,
+                            'active_to'=>$ds->expired_date,
                             'container_key'=>$item->container_key,
                             'container_no'=>$item->container_no,
                             'ves_id'=>$item->ves_id,
