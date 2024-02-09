@@ -190,7 +190,7 @@ class Stripping extends Controller
             ->where('yard_tier', $request->yard_tier)
             ->first();
 
-        if (empty($yard_rowtier->container_key)) {
+        if ($yard_rowtier->container_key == null || $yard_rowtier->container_key == ' ') {
             $id_alat = $request->id_alat;
             $alat = MasterAlat::where('id', $id_alat)->first();
 
