@@ -441,6 +441,7 @@ class Gati extends Controller
         $realisasis = RO_Realisasi::all();
 
         $rg = collect();
+        $ro_Gate = [];
 
         foreach ($ros as $roItem) {
             $jmlhContInRoDok = $roItem->jmlh_cont;
@@ -453,7 +454,7 @@ class Gati extends Controller
 
             $ro_Gate = RO::whereIn('ro_id', $rg)->get();
         }
-        return view('gate.stuffing.gate-in', compact('title', 'ro', 'full', 'rg'));
+        return view('gate.stuffing.gate-in', compact('title', 'ro', 'full', 'rg', 'ro_Gate'));
     }
     public function stuf_android()
     {
@@ -463,6 +464,7 @@ class Gati extends Controller
         $ros = RO::all();
         $realisasis = RO_Realisasi::all();
 
+        $ro_Gate = [];
         $rg = collect();
 
         foreach ($ros as $roItem) {
@@ -476,7 +478,7 @@ class Gati extends Controller
 
             $ro_Gate = RO::whereIn('ro_id', $rg)->get();
         }
-        return view('gate.stuffing.gate-in-android', compact('title', 'ro', 'full', 'rg'));
+        return view('gate.stuffing.gate-in-android', compact('title', 'ro', 'full', 'rg', 'ro_Gate'));
     }
 
     public function gati_stuf(Request $request)

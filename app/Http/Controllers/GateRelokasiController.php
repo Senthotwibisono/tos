@@ -33,7 +33,7 @@ class GateRelokasiController extends Controller
         $item = Item::whereIn('order_service', ['SP2IKS', 'SP2RELOKASI', 'SPPSRELOKASI'])->whereIn('ctr_intern_status',  ['11', '15'])->get();
         $item_confirmed = Item::whereiN('ctr_intern_status',  ['12', '13'])->get();
 
-        return view('gate.relokasi.android', compact('item', 'title', 'item_confirmed'), $data);
+        return view('gate.relokasi.android', compact('item', 'title', 'item_confirmed'));
     }
 
     public function data_container(Request $request)
