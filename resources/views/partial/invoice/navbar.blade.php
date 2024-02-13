@@ -96,7 +96,7 @@
               <a href="{{ route('billingExportMain')}}" class="submenu-link">Receiving Billing System</a>
             </li>
             <li class="submenu-item">
-              <a href="/receiving/form" class="submenu-link">Receiving Form</a>
+              <a href="{{ route('deliveryMenuExport')}}" class="submenu-link">Receiving Form</a>
             </li>
             <li class="submenu-item">
               <a href="{{ route('mtExport')}}" class="submenu-link">Master Tarif</a>

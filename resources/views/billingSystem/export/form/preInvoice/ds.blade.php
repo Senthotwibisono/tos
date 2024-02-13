@@ -1,6 +1,6 @@
 <div class="col-12">
                 <h4 class="card-title">
-                  Invoice DS 
+                  Invoice OS 
                 </h4>
               </div>
               @foreach($groupedContainers as $ukuran => $containers)
