@@ -246,7 +246,8 @@ class InvoiceExportController extends Controller
         };
 
 
-        $DStot = array_sum($DS);
+        if ($os != 7) {
+            $DStot = array_sum($DS);
         // dd($adminMT);
         $adminDS = $adminMT->admin;
         $ppnDS = (($DStot + $adminDS) * 11) / 100;
@@ -254,6 +255,8 @@ class InvoiceExportController extends Controller
         $data['grandDS'] = $DStot + $ppnDS + $adminDS;
         $data['ppnDS'] = $ppnDS;
         $data['AmountDS'] = $DStot;
+        }
+       
 
         // dd($data['booking']);
         
@@ -316,7 +319,7 @@ class InvoiceExportController extends Controller
                 $proformaDS = $dsk->proforma_no;
             }else {
                 $nextProformaNumberDS = $this->getNextProformaNumber();
-                $proformaDS = $dsk->nextProformaNumber;
+                $proformaDS = $nextProformaNumberDS;
             }
 
             if ($os == '6' || $os == '8' ||  $os == '9' || $os == '10' ||  $os == '11' || $os == '13' || $os == '14' || $os == '15') {
@@ -393,7 +396,7 @@ class InvoiceExportController extends Controller
                             'os_id'=>$request->os_id,
                             'os_name'=>$request->os_name,
                             'cust_id'=>$request->cust_id,
-                            'active_to'=>$dsk->expired_date,
+                            'active_to'=>$request->expired_date,
                             'container_key'=>$item->container_key,
                             'container_no'=>$item->container_no,
                             'ves_id'=>$item->ves_id,
