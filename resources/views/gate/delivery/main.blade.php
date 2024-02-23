@@ -30,6 +30,10 @@
           <thead>
             <tr>
               <th>Container No</th>
+              <th>Size</th>
+              <th>Type</th>
+              <th>Vessel</th>
+              <th>Voy</th>
               <th>Truck No</th>
               <th>Truck In</th>
               <th>Action</th>
@@ -39,6 +43,10 @@
             @foreach($formattedData as $d)
             <tr>
               <td>{{$d['container_no']}}</td>
+              <td>{{$d['ctr_size']}}</td>
+              <td>{{$d['ctr_type']}}</td>
+              <td>{{$d['ves_name']}}</td>
+              <td>{{$d['voy_no']}}</td>
               <td>{{$d['truck_no']}}</td>
               <td>{{$d['truck_in_date']}}</td>
               <td>
@@ -198,6 +206,15 @@
     var truck_no = $('#tayo').val();
     var truck_in_date = $('#datein').val();
     var order_service = $('#orderserviceCode').val();
+    if (!truck_no) {
+        // If any of the required fields are empty, show an error message and return
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Nomor Truck Belum Diisi, cek kembali Ya !!',
+        });
+        return;
+        }
     var data = {
       'container_key': $('#contKey').val(),
       'container_no': $('#container_no').val(),

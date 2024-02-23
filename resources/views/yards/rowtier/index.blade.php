@@ -14,7 +14,7 @@
 			</div>
 			<label for="slot_no" class="col-auto col-form-label">Slot</label>
 			<div class="col-sm-1">
-				<select class="form-control" id="slot_no" name="slot_no">
+				<select class="form-control select-single" id="slot_no" name="slot_no">
                     <option value="" disabled selected values>Pilih Satu!</option>
 				</select> <input type="hidden" id="slot_key" name="slot_key"
 					class="form-control">

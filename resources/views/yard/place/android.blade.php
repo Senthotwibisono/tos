@@ -206,6 +206,24 @@ $(document).on('click', '.update_status', function(e){
     var yard_slot= $('#slot').val();
     var yard_raw= $('#raw').val();
     var yard_tier= $('#tier').val();
+    if (!alat) {
+        // If any of the required fields are empty, show an error message and return
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Nomor Alat Belum Diisi, cek kembali Ya !!',
+        });
+        return;
+        }
+        if (!operator) {
+        // If any of the required fields are empty, show an error message and return
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Operator Belum Diisi, cek kembali Ya !!',
+        });
+        return;
+        }
     var data = {
        'container_key' : $('#key').val(),
        'container_no': $('#container_no').val(),

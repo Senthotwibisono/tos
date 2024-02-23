@@ -16,7 +16,7 @@
 		<div class="form-inline gap-2 d-flex align-items-center">
 			<label for="block_no" class="col-auto col-form-label">Block </label>
 			<div class="col-sm-1">
-				<select class="form-control select-single" id="block_no" name="block_no"> 
+				<select class="form-control select-single" id="block_no" name="block_no" style="width: 150%;"> 
                     <option value="" disabeled selected values>Pilih Satu!</option>
                     @foreach($lt_block as $lw_block)
 					<option value="{{$lw_block->yard_block}}">{{$lw_block->yard_block}}</option>
@@ -25,7 +25,7 @@
 			</div>
 			<label for="slot_no" class="col-auto col-form-label">Slot</label>
 			<div class="col-sm-1">
-				<select class="form-control" id="slot_no" name="slot_no">
+				<select class="form-control select-single" id="slot_no" name="slot_no" style="width: 150%;">
                     <option value="" disabled selected values>Pilih Satu!</option>
 				</select>
 			</div>

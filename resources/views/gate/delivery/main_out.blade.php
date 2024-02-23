@@ -128,6 +128,15 @@
         var container_no = $('#container_no').val();
         var truck_no = $('#tayo').val();
         var truck_out_date = $('#dateout').val();
+        if (!truck_no) {
+        // If any of the required fields are empty, show an error message and return
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Nomor Truck Belum Diisi, cek kembali Ya !!',
+        });
+        return;
+        }
         var data = {
             'container_key': $('#key').val(),
             'container_no': $('#container_no').val(),

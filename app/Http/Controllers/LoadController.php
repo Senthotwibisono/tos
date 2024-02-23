@@ -129,7 +129,7 @@ class LoadController extends Controller
   public function get_cont(Request $request)
   {
     $ves_id = $request->ves_id;
-    $container_key = Item::where('ves_id', $ves_id)->whereIn('ctr_intern_status', ['51', '53'])->get();
+    $container_key = Item::where('ves_id', $ves_id)->whereIn('ctr_intern_status', ['50', '51', '53'])->get();
 
     $option = []; // Inisialisasi variabel $option sebagai array kosong
 

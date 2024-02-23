@@ -113,7 +113,7 @@ class DischargeController extends Controller
   public function get_cont(request $request)
   {
     $ves_id = $request->ves_id;
-    $container_key = Item::where('ves_id', $ves_id)->whereIn('ctr_intern_status', ['01'])->get();
+    $container_key = Item::where('ves_id', $ves_id)->whereNot('container_no', '')->where('ctr_intern_status', '=', '01')->get();
 
     $option = [];
 

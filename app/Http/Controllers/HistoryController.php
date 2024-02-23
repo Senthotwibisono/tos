@@ -27,11 +27,7 @@ class HistoryController extends Controller
         $container_key = $request->id;
         // $lt_cont = Item::where('container_key','=',$container_key);
         $item = Item::findOrFail($container_key);
-        $histcontnrs = HistoryContainer::where('container_key', '=', $container_key)->get([
-            'OPERATION_NAME',
-            'CTR_STATUS',
-            'CTR_INTERN_STATUS'
-        ]);
+        $histcontnrs = HistoryContainer::where('container_key', '=', $container_key)->get();
         $anncectrjobs = Job::where('container_key', '=', $container_key)->get([
             'CTR_STATUS',
             'CTPS_YN',
@@ -52,11 +48,7 @@ class HistoryController extends Controller
     public function get_cont_hist(Request $request)
     {
         $container_key = $request->id;
-        $histcontnrs = HistoryContainer::where('container_key', '=', $container_key)->get([
-            'operation_name',
-            'ctr_status',
-            'ctr_intern_status'
-        ]);
+        $histcontnrs = HistoryContainer::where('container_key', '=', $container_key)->get();
         return response()->json(['data' => $histcontnrs]);
     }
     public function get_cont_job(Request $request)
