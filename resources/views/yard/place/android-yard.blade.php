@@ -488,6 +488,24 @@
             var yard_tier = $('#tier').val();
             var alat = $('#alat').val();
             var operator = $('#operator').val();
+            if (!alat) {
+        // If any of the required fields are empty, show an error message and return
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Nomor Alat Belum Diisi, cek kembali Ya !!',
+        });
+        return;
+        }
+        if (!operator) {
+        // If any of the required fields are empty, show an error message and return
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Operator Belum Diisi, cek kembali Ya !!',
+        });
+        return;
+        }
             var data = {
                 'container_key': $('#key').val(),
                 'container_no': $('#container_no').val(),
@@ -673,18 +691,59 @@
             $(document).on('click', '.updateToExpMty', function(e) {
                 e.preventDefault();
                 var container_key = $('#contKey').val();
-                var mty_type = $('#proccess').val();
+                var order_service = $('#service').val();
                 var ves_id = $('#Vessel').val();
                 var ves_name = $('#nama-kapal').val();
                 var ves_code = $('#kode-kapal').val();
                 var voy_no = $('#nomor-voyage').val();
+                var yard_block = $('#blockMTY').val();
+                var yard_slot = $('#slotMTY').val();
+                var yard_raw = $('#rawMTY').val();
+                var yard_tier = $('#tierMTY').val();
+                var alat = $('#alatMTY').val();
+                var operator = $('#operatorMTY').val();
+                var id = $('#JobId').val();
+                var container_key = $('#container_key').val();
+                if (!alat) {
+                // If any of the required fields are empty, show an error message and return
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Nomor Alat Belum Diisi, cek kembali Ya !!',
+                });
+                return;
+                }
+                if (!operator) {
+                // If any of the required fields are empty, show an error message and return
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Operator Belum Diisi, cek kembali Ya !!',
+                });
+                return;
+                }
                 var data = {
-                    'container_key': $('#contKey').val(),
-                    'mty_type': $('#proccess').val(),
-                    'ves_id': $('#Vessel').val(),
-                    'ves_name': $('#nama-kapal').val(),
-                    'ves_code': $('#kode-kapal').val(),
-                    'voy_no': $('#nomor-voyage').val(),
+                    'container_key': $('#container_key').val(),
+                    'container_no': $('#container_no').val(),
+                    'cc_tt_oper': $('#operator').val(),
+                    'cc_tt_no': $('#no_alat').val(),
+                    'wharf_yard_oa': $('#user').val(),
+                    'disc_date': $('#tanggal').val(),
+                    'ves_name': $('#name').val(),
+                    'bay_slot': $('#slot').val(),
+                    'bay_row': $('#row').val(),
+                    'bay_tier': $('#tier').val(),
+                    'ves_id': $('#ves_id').val(),
+                    'voy_no': $('#voy_no').val(),
+                    'ctr_status': $('#ctr_status').val(),
+                    'ctr_type': $('#ctr_type').val(),
+                    'ctr_opr': $('#ctr_opr').val(),
+                    'ctr_size': $('#ctr_size').val(),
+                    'disc_load_trans_shift': $('#disc_load_trans_shift').val(),
+                    'load_port': $('#load_port').val(),
+                    'disch_port': $('#disch_port').val(),
+                    'gross': $('#gross').val(),
+                    'iso_code': $('#iso_code').val(),
                 }
                 $.ajaxSetup({
                     headers: {

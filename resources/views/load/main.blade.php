@@ -206,6 +206,26 @@
     $(document).on('click', '.update_status', function(e) {
         e.preventDefault();
         var container_key = $('#container_key').val();
+        var alat = $('#no_alat').val();
+        var oper = $('#operator').val();
+        if (!alat) {
+        // If any of the required fields are empty, show an error message and return
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Nomor Alat Belum Diisi, cek kembali Ya !!',
+        });
+        return;
+        }
+        if (!oper) {
+        // If any of the required fields are empty, show an error message and return
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Operator Belum Diisi, cek kembali Ya !!',
+        });
+        return;
+        }
         var data = {
             'container_key': $('#container_key').val(),
             'container_no': $('#container_no').val(),

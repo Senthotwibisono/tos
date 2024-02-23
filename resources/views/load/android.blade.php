@@ -32,6 +32,7 @@
                             <th>NO</th>
                             <th>Vessel</th>
                             <th>Container No</th>
+                            <th>Slot || Row || Tier</th>
                             <th>Crane Code</th>
                             <th>Operator</th>
                             <th>Load</th>
@@ -43,6 +44,7 @@
                             <td>{{$loop->iteration}}</td>
                             <td>{{$d['ves_name']}} || {{$d['voy_no']}}</td>
                             <td>{{$d['container_no']}}</td>
+                            <td>{{$d['bay_slot']}} || {{$d['bay_row']}} || {{$d['bay_tier']}}</td>
                             <td>{{$d['cc_tt_no']}}</td>
                             <td>{{$d['cc_tt_oper']}}</td>
                             <td>{{$d['disc_date']}}</td>
@@ -68,10 +70,16 @@
 
                 <div class="form-body" id="modal-update">
                     <div class="row">
-                        <div class="col-12">
+                    <div class="col-12">
                             <div class="form-group">
                                 <label for="first-name-vertical">No Alat</label>
-                                <input type="text" id="no_alat" class="form-control" name="cc_tt_no" required>
+                                <select class="choices form-control" name="cc_tt_no" id="no_alat">
+                                    <option value="" disabledselected>Pilih Alat</option>
+                                    @foreach($alat as $alt)
+                                        <option value="{{$alt->id}}">{{$alt->name}}</option>
+                                    @endforeach
+                                </select>
+                                <!-- <input type="text" id="no_alat" class="form-control" name="cc_tt_no" required> -->
                             </div>
                         </div>
                         <div class="col-12">
@@ -100,7 +108,7 @@
                                 <!-- <select class="choices form-select" id="container_key" name="container_key" required>
                   <option value="-">-</option>
                 </select> -->
-                                <select id="container_key" class="select2 form-control">
+                                <select id="container_key" class="form-control" style="font-size: 16px; width: 75%;">
                                     <!-- Existing options or a default placeholder option -->
                                     <option value="">Select a container</option>
                                 </select>
@@ -125,7 +133,7 @@
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="first-name-vertical">Row</label>
-                                        <input type="text" id="row" class="form-control" name="bay_row">
+                                        <input type="text" id="row" class="form-control" name="bay_row" >
                                     </div>
                                 </div>
                                 <div class="col-6">
@@ -149,16 +157,9 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
-                    <i class="bx bx-x d-none d-sm-block"></i> <!-- Hide on small screens -->
-                    <span class="d-block d-sm-none">Close</span> <!-- Show on small screens -->
-                </button>
-                <button type="submit" class="btn btn-success ml-1 update_status">
-                    <i class="bx bx-check d-none d-sm-block"></i> <!-- Hide on small screens -->
-                    <span class="d-block d-sm-none">Confirm</span> <!-- Show on small screens -->
-                </button>
+                <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i><span class="d-none d-sm-block">Close</span></button>
+                <button type="submit" class="btn btn-success ml-1 update_status"><i class="bx bx-check d-block d-sm-none"></i><span class="d-none d-sm-block">Confirm</span></button>
             </div>
-
         </div>
     </div>
 </div>
@@ -182,22 +183,21 @@
     // $('.container').select2({
     //   dropdownParent: '#success',
     // });
-    $("#container_key").select2({
-        dropdownParent: '#success',
+    // $("#container_key").select2({
+    //     dropdownParent: '#success',
 
-        // dropdownParent: "#modal-container"
-    });
+    //     // dropdownParent: "#modal-container"
+    // });
+   
     $(document).ready(function() {});
     $(document).on('click', '.update_status', function(e) {
         e.preventDefault(); // membatalkan perilaku default dari tombol submit
         // Menetapkan nilai input field pada saat modal ditampilkan
-        $('#no_alat').val(localStorage.getItem('no_alat'));
+       
         $('#operator').val(localStorage.getItem('operator'));
 
     });
-    $(document).on('keyup', '#no_alat', function() {
-        localStorage.setItem('no_alat', $(this).val());
-    });
+   
     $(document).on('keyup', '#operator', function() {
         localStorage.setItem('operator', $(this).val());
     });
@@ -206,6 +206,26 @@
     $(document).on('click', '.update_status', function(e) {
         e.preventDefault();
         var container_key = $('#container_key').val();
+        var alat = $('#no_alat').val();
+        var oper = $('#operator').val();
+        if (!alat) {
+        // If any of the required fields are empty, show an error message and return
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Nomor Alat Belum Diisi, cek kembali Ya !!',
+        });
+        return;
+        }
+        if (!oper) {
+        // If any of the required fields are empty, show an error message and return
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Operator Belum Diisi, cek kembali Ya !!',
+        });
+        return;
+        }
         var data = {
             'container_key': $('#container_key').val(),
             'container_no': $('#container_no').val(),
@@ -243,113 +263,17 @@
                     cache: false,
                     dataType: 'json',
                     success: function(response) {
-                        Swal.fire('Saved!', '', 'success')
-                        console.log(response);
-
-
-                        $('#modal-update').load(window.location.href + ' #modal-update', function() {
-                            $(document).ready(function() {
-                                $('.container').select2({
-                                    dropdownParent: '#success',
-                                });
-                                let choices = document.querySelectorAll('.choices');
-                                let initChoice;
-                                for (let i = 0; i < choices.length; i++) {
-                                    if (choices[i].classList.contains("multiple-remove")) {
-                                        initChoice = new Choices(choices[i], {
-                                            delimiter: ',',
-                                            editItems: true,
-                                            maxItemCount: -1,
-                                            removeItemButton: true,
-                                        });
-                                    } else {
-                                        initChoice = new Choices(choices[i]);
-                                    }
-                                }
-                            });
-                            $("#container_key").select2({
-                                dropdownParent: '#success',
-
-                                // dropdownParent: "#modal-container"
-                            });
-
-                            $(function() {
-                                $("#id_kapal").change(function() {
-                                    let ves_id = $('#id_kapal').val();
-
-                                    $.ajax({
-                                        type: 'POST',
-                                        url: '/get-con-load',
-                                        data: {
-                                            ves_id: ves_id
-                                        },
-                                        cache: false,
-
-                                        success: function(msg) {
-                                            let res = msg;
-                                            //console.log(res.length);
-                                            var len = res.length;
-                                            var optionsHtml = ''; // Variable to store the options HTML
-                                            for (let i = 0; i < len; i++) {
-                                                let id = res[i].value;
-                                                let nama = res[i].text;
-                                                //console.log(id, nama);
-                                                optionsHtml += "<option value='" + id + "'>" + nama + "</option>"; // Append each option HTML
-                                            }
-                                            $("#container_key").html(optionsHtml); // Set the HTML of the select element
-                                            $("#container_key").trigger('change'); // Update Select2 after modifying options
-                                        },
-                                        error: function(data) {
-                                            console.log('error:', data)
-                                            //commited
-                                        },
-                                    });
-                                });
-                            });
-                            $(document).ready(function() {
-                                $('#container_key').on('change', function() {
-                                    let id = $(this).val();
-                                    $.ajax({
-                                        type: 'POST',
-                                        url: '/get-container-key',
-                                        data: {
-                                            container_key: id
-                                        },
-                                        success: function(response) {
-
-                                            $('#container_no').val(response.container_no);
-                                            $('#name').val(response.name);
-                                            $('#slot').val(response.slot);
-                                            $('#row').val(response.row);
-                                            $('#tier').val(response.tier);
-                                            $('#container_key').val(response.container_key);
-                                            $('#ves_id').val(response.ves_id);
-                                            $('#voy_no').val(response.voy_no);
-                                            $('#ctr_status').val(response.ctr_status);
-                                            $('#ctr_type').val(response.ctr_type);
-                                            $('#ctr_opr').val(response.ctr_opr);
-                                            $('#ctr_size').val(response.ctr_size);
-                                            $('#disc_load_trans_shift').val(response.disc_load_trans_shift);
-                                            $('#load_port').val(response.load_port);
-                                            $('#disch_port').val(response.disch_port);
-                                            $('#gross').val(response.gross);
-                                            $('#iso_code').val(response.iso_code);
-
-                                        },
-                                        error: function(data) {
-                                            console.log('error:', data);
-                                        },
-                                    });
-                                });
-                            });
-                            $('#no_alat').val(localStorage.getItem('no_alat'));
-                            $('#operator').val(localStorage.getItem('operator'));
-
+                console.log(response);
+                if (response.success) {
+                  Swal.fire('Saved!', '', 'success')
+                  .then(() => {
+                            // Memuat ulang halaman setelah berhasil menyimpan data
+                            window.location.reload();
                         });
-
-                        $('#table1').load(window.location.href + ' #table1');
-
-                    },
+                } else {
+                  Swal.fire('Error', response.message, 'error');
+                }
+              },
                     error: function(response) {
                         var errors = response.responseJSON.errors;
                         if (errors) {
@@ -423,47 +347,47 @@
     });
 
     $(function() {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $(function() {
+        const selectContainer = new Choices(document.querySelector('#container_key'), {
+            // Opsi dan pengaturan Choices.js sesuai kebutuhan
         });
 
-        $(function() {
-            $("#id_kapal").change(function() {
-                let ves_id = $('#id_kapal').val();
+        $("#id_kapal").change(function() {
+            let ves_id = $('#id_kapal').val();
 
-                $.ajax({
-                    type: 'POST',
-                    url: '/get-con-load',
-                    data: {
-                        ves_id: ves_id
-                    },
-                    cache: false,
+            $.ajax({
+                type: 'POST',
+                url: '/get-con-load',
+                data: {
+                    ves_id: ves_id
+                },
+                cache: false,
 
-                    success: function(msg) {
-                        let res = msg;
-                        //console.log(res.length);
-                        var len = res.length;
-                        var optionsHtml = ''; // Variable to store the options HTML
-                        for (let i = 0; i < len; i++) {
-                            let id = res[i].value;
-                            let nama = res[i].text;
-                            //console.log(id, nama);
-                            optionsHtml += "<option value='" + id + "'>" + nama + "</option>"; // Append each option HTML
-                        }
-                        $("#container_key").html(optionsHtml); // Set the HTML of the select element
-                        $("#container_key").trigger('change'); // Update Select2 after modifying options
-                    },
-                    error: function(data) {
-                        console.log('error:', data)
-                        //commited
-                    },
-                });
+                success: function(msg) {
+                    let res = msg;
+                    var len = res.length;
+                    var choicesArray = []; // Array untuk menyimpan pilihan-pilihan baru
+                    for (let i = 0; i < len; i++) {
+                        let id = res[i].value;
+                        let nama = res[i].text;
+                        choicesArray.push({ value: id, label: nama }); // Tambahkan pilihan baru ke dalam array
+                    }
+                    selectContainer.clearChoices(); // Hapus pilihan-pilihan saat ini
+                    selectContainer.setChoices(choicesArray, 'value', 'label', false); // Atur pilihan-pilihan baru
+                },
+                error: function(data) {
+                    console.log('error:', data)
+                },
             });
         });
-
     });
+});
 </script>
 
 <script>

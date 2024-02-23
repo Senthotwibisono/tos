@@ -43,6 +43,12 @@
 													<th>Operation</th>
 													<th>Status</th>
 													<th>Internal Stat</th>
+													<th>Yard Block</th>
+													<th>Yard Slot</th>
+													<th>Yard Row</th>
+													<th>Yard Tier</th>
+													<th>User</th>
+													<th>Update</th>
 												</tr>
 											</thead>
 											<tbody>

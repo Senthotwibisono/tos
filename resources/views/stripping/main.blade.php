@@ -238,6 +238,15 @@
         var yard_raw = $('#raw').val();
         var yard_tier = $('#tier').val();
         var id_alat = $('#alat').val();
+        if (!id_alat) {
+        // If any of the required fields are empty, show an error message and return
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Alat Belum Diisi, cek kembali Ya !!',
+        });
+        return;
+        }
         var data = {
           'container_key': $('#container_key').val(),
           'container_no': $('#container_no').val(),

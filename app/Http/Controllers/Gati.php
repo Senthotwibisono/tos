@@ -57,8 +57,12 @@ class Gati extends Controller
 
             $formattedData[] = [
                 'container_no' => $tem->container_no,
+                'ctr_size' => $tem->ctr_size,
+                'ctr_type' => $tem->ctr_type,
+                'ves_name' => $tem->ves_name,
+                'voy_no' => $tem->voy_no,
                 'truck_no' => $tem->truck_no,
-                'truck_in_date' => $diff . ' yang lalu',
+                'truck_in_date' => $tem->truck_in_date,
                 'container_key' => $tem->container_key
             ];
         }
@@ -113,8 +117,12 @@ class Gati extends Controller
 
             $formattedData[] = [
                 'container_no' => $tem->container_no,
+                'ctr_size' => $tem->ctr_size,
+                'ctr_type' => $tem->ctr_type,
+                'ves_name' => $tem->ves_name,
+                'voy_no' => $tem->voy_no,
                 'truck_no' => $tem->truck_no,
-                'truck_in_date' => $diff . ' yang lalu',
+                'truck_in_date' => $tem->truck_in_date,
                 'container_key' => $tem->container_key
             ];
         }
