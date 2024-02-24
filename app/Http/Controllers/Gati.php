@@ -210,7 +210,6 @@ class Gati extends Controller
                 'ctr_intern_status' => 10,
                 'truck_no' => $request->truck_no,
                 'truck_in_date' => $request->truck_in_date,
-                'order_service' => $request->order_service,
                 'no_dok' => $request->no_dok,
                 'jenis_dok' => $request->jenis_dok,
             ]);
