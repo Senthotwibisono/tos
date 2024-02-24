@@ -47,6 +47,7 @@ use App\Http\Controllers\BCGatterController;
 use App\Http\Controllers\MasterTarifController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\InvoiceExportController;
+use App\Http\Controllers\BayplanDesignController;
 
 
 
@@ -893,7 +894,8 @@ Route::get('/invoice/export-OS{id?}', [InvoiceExportController::class, 'InvoiceE
 Route::get('/invoice/job/export-{id?}', [InvoiceExportController::class, 'JobInvoice'])->name('JobInvoice');
 
 
-
+// Bayplan Load
+Route::get('/load/container_loading', [BayplanDesignController::class, 'index'])->name('Baypkan-Load');
 
 
 
