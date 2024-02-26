@@ -535,10 +535,10 @@ public function block()
 
 public function block_store(request $request){
    $request->validate([
-       'yard_block' => 'required|max:5'
+       'yard_block' => 'required|max:50'
      ],
    [
-       'yard_block.max' => 'Kolom Port ID tidak boleh lebih dari 5 karakter.'
+       'yard_block.max' => 'Kolom Port ID tidak boleh lebih dari 50 karakter.'
       
    ]);
 
@@ -559,6 +559,7 @@ public function block_store(request $request){
                 'user_id'=> $request->user_id 
                   
                ]);
+             
             }        
             
         }
@@ -566,7 +567,7 @@ public function block_store(request $request){
     }
    
 
-    return redirect('/master/block');
+    return redirect('/master/block')->with('success', 'Berhasil');
     }
 
     public function edit_block(Request $request)
@@ -617,12 +618,18 @@ public function block_store(request $request){
     
             // Jika tidak ada slot sebelumnya, mulai dari 1, jika tidak, tambahkan 1
             $startSlot = $lastSlot ? $lastSlot + 1 : 1;
-    
+            // var_dump($startSlot, $lastSlot);
+            // die;
+            if ($request->new_blok != null && $request->new_block != $yb) {
+                $blockName = $request->new_blok;
+            }else {
+                $blockName = $yb;
+            }
             for ($i = $startSlot; $i < $startSlot + $request->yard_slot; $i++) {
                 for ($r = 1; $r <= $request->yard_row; $r++) {
                     for ($t = 1; $t <= $request->yard_tier; $t++) {
                         $NewSlot = Block::create([
-                            'yard_block' => $yb,
+                            'yard_block' => $blockName,
                             'yard_slot'  => $i,
                             'yard_row'   => $r,
                             'yard_tier'  => $t,
@@ -632,10 +639,31 @@ public function block_store(request $request){
                 }
             }
 
+            if ($request->new_blok != null && $request->new_block != $yb) {
+                foreach ($block as $blc) {
+                    $blc->update([
+                        'yard_block' => $request->new_blok,
+                    ]);
+                }
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Detail Data Post',
-                'data'    => $NewSlot,
+             
+            ]);
+        }else {
+            if ($request->new_blok != null && $request->new_block != $yb) {
+                foreach ($block as $blc) {
+                    $blc->update([
+                        'yard_block' => $request->new_blok,
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Detail Data Post',
             ]);
         }
        
