@@ -1,4 +1,4 @@
-@extends('partial.android')
+@extends('partial.ANDROID')
 @section('content')
 <div class="page-heading">
     <div class="page-title">
@@ -32,7 +32,7 @@
                             <th>NO</th>
                             <th>Vessel</th>
                             <th>Container No</th>
-                            <th>Slot || Row || Tier</th>
+                            <th>BS || BR || BT</th>
                             <th>Crane Code</th>
                             <th>Operator</th>
                             <th>Load</th>
@@ -85,7 +85,12 @@
                         <div class="col-12">
                             <div class="form-group">
                                 <label for="first-name-vertical">Op Alat</label>
-                                <input type="text" id="operator" class="form-control" name="cc_tt_oper" required>
+                                <select class="choices form-select" id="operator">
+                                    <option disabeled selected value>Pilih Satu!</option>
+                                    @foreach($operator as $opr)
+                                    <option value="{{$opr->id}}">{{$opr->name}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="col-12">
@@ -190,17 +195,6 @@
     // });
    
     $(document).ready(function() {});
-    $(document).on('click', '.update_status', function(e) {
-        e.preventDefault(); // membatalkan perilaku default dari tombol submit
-        // Menetapkan nilai input field pada saat modal ditampilkan
-       
-        $('#operator').val(localStorage.getItem('operator'));
-
-    });
-   
-    $(document).on('keyup', '#operator', function() {
-        localStorage.setItem('operator', $(this).val());
-    });
 
 
     $(document).on('click', '.update_status', function(e) {
@@ -229,7 +223,7 @@
         var data = {
             'container_key': $('#container_key').val(),
             'container_no': $('#container_no').val(),
-            'cc_tt_oper': $('#operator').val(),
+            'operator': $('#operator').val(),
             'cc_tt_no': $('#no_alat').val(),
             'wharf_yard_oa': $('#user').val(),
             'load_date': $('#tanggal').val(),

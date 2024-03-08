@@ -232,7 +232,38 @@
                         <div class="col-12">
                             <div class="form-group">
                                 <label for="first-name-vertical">Op Alat</label>
-                                <input type="text" id="operator" class="form-control" required>
+                                <select class="choices form-select" id="operator">
+                                    <option disabeled selected value>Pilih Satu!</option>
+                                    @foreach($operator as $opr)
+                                    <option value="{{$opr->id}}">{{$opr->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="">Truck</label>
+                                        <select class="choices form-select" id="truckAlat">
+                                            <option disabeled selected value>Pilih Satu!</option>
+                                            @foreach($truck as $trc)
+                                                <option value="{{$trc->id}}">{{$trc->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="">Supir</label>
+                                        <select id="supir" class="choices form-select">
+                                            <option disabeled selected value>Pilih Satu!</option>
+                                            @foreach($supir as $spr)
+                                            <option value="{{$spr->id}}">{{$spr->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-12">
@@ -539,6 +570,8 @@ function toggleYardSelect(displayValue) {
         var yard_tier = $('#tier').val();
         var alat = $('#alat').val();
         var operator = $('#operator').val();
+        var supir = $('#supir').val();
+        var truck = $('#truckAlat').val();
         if (!alat) {
         // If any of the required fields are empty, show an error message and return
         Swal.fire({
@@ -557,6 +590,24 @@ function toggleYardSelect(displayValue) {
         });
         return;
         }
+
+        // if (!supir) {
+        // Swal.fire({
+        //     icon: 'error',
+        //     title: 'Validation Error',
+        //     text: 'Supir Belum Diisi, cek kembali Ya !!',
+        // });
+        // return;
+        // }
+
+        // if (!truck) {
+        // Swal.fire({
+        //     icon: 'error',
+        //     title: 'Validation Error',
+        //     text: 'Truck Belum Diisi, cek kembali Ya !!',
+        // });
+        // return;
+        // }
         var data = {
             'container_key': $('#key').val(),
             'container_no': $('#container_no').val(),
@@ -567,6 +618,8 @@ function toggleYardSelect(displayValue) {
             'user_id': $('#user').val(),
             'alat': $('#alat').val(),
             'operator': $('#operator').val(),
+            'supir': $('#supir').val(),
+            'truck': $('#truckAlat').val(),
 
         }
         $.ajaxSetup({

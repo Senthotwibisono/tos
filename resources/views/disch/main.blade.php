@@ -81,7 +81,12 @@
                         <div class="col-12">
                             <div class="form-group">
                                 <label for="first-name-vertical">Op Alat</label>
-                                <input type="text" id="operator" class="form-control" name="cc_tt_oper" required>
+                                <select class="choices form-select" id="operator">
+                                    <option disabeled selected value>Pilih Satu!</option>
+                                    @foreach($operator as $opr)
+                                    <option value="{{$opr->id}}">{{$opr->name}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="col-12">
@@ -183,20 +188,6 @@
 <script>
    
     $(document).ready(function() {});
-    $(document).on('click', '.update_status', function(e) {
-        e.preventDefault(); // membatalkan perilaku default dari tombol submit
-        // Menetapkan nilai input field pada saat modal ditampilkan
-       
-        $('#operator').val(localStorage.getItem('operator'));
-
-    });
-    // $(document).on('keyup', '#no_alat', function() {
-    //     localStorage.setItem('no_alat', $(this).val());
-    // });
-    $(document).on('keyup', '#operator', function() {
-        localStorage.setItem('operator', $(this).val());
-    });
-
 
     $(document).on('click', '.update_status', function(e) {
         e.preventDefault();
@@ -224,7 +215,7 @@
         var data = {
             'container_key': $('#container_key').val(),
             'container_no': $('#container_no').val(),
-            'cc_tt_oper': $('#operator').val(),
+            'operator': $('#operator').val(),
             'cc_tt_no': $('#no_alat').val(),
             'wharf_yard_oa': $('#user').val(),
             'disc_date': $('#tanggal').val(),
@@ -281,7 +272,7 @@
             window.location.reload();
         }).then(() => {
             // Buka modal "success" setelah halaman dimuat ulang
-            $('#success').modal('show');
+            
         });
                             } else {
                               Swal.fire({

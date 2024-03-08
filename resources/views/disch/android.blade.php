@@ -55,7 +55,7 @@
 
 <!-- Modal Update Status -->
 <div class="modal fade text-left" id="success" role="dialog" aria-labelledby="myModalLabel110" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-md" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header bg-success">
                 <h5 class="modal-title white" id="myModalLabel110">Confirm Disch</h5>
@@ -72,7 +72,7 @@
                                 <select class="choices form-control" name="cc_tt_no" id="no_alat">
                                     <option value="" disabledselected>Pilih Alat</option>
                                     @foreach($alat as $alt)
-                                    <option value="{{$alt->id}}">{{$alt->name}}</option>
+                                        <option value="{{$alt->id}}">{{$alt->name}}</option>
                                     @endforeach
                                 </select>
                                 <!-- <input type="text" id="no_alat" class="form-control" name="cc_tt_no" required> -->
@@ -81,7 +81,12 @@
                         <div class="col-12">
                             <div class="form-group">
                                 <label for="first-name-vertical">Op Alat</label>
-                                <input type="text" id="operator" class="form-control" name="cc_tt_oper" required>
+                                <select class="choices form-select" id="operator">
+                                    <option disabeled selected value>Pilih Satu!</option>
+                                    @foreach($operator as $opr)
+                                    <option value="{{$opr->id}}">{{$opr->name}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="col-12">
@@ -161,18 +166,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-light-secondary btn-lg d-sm-none" data-bs-dismiss="modal" style="font-size: 14px;">
-                    Close
-                </button>
-                <button type="button" class="btn btn-light-secondary btn-lg d-none d-sm-block" data-bs-dismiss="modal" style="font-size: 14px;">
-                    <i class="bx bx-x"></i> Close
-                </button>
-                <button type="submit" class="btn btn-success ml-1 update_status btn-lg d-sm-none ml-1" style="font-size: 14px;">
-                    Confirm
-                </button>
-                <button type="submit" class="btn btn-success ml-1 update_status btn-lg d-none d-sm-block ml-1" style="font-size: 14px;">
-                    <i class="bx bx-check"></i> Confirm
-                </button>
+                <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i><span class="d-none d-sm-block">Close</span></button>
+                <button type="submit" class="btn btn-success ml-1 update_status"><i class="bx bx-check d-block d-sm-none"></i><span class="d-none d-sm-block">Confirm</span></button>
             </div>
         </div>
     </div>
@@ -191,21 +186,8 @@
 
 
 <script>
+   
     $(document).ready(function() {});
-    $(document).on('click', '.update_status', function(e) {
-        e.preventDefault(); // membatalkan perilaku default dari tombol submit
-        // Menetapkan nilai input field pada saat modal ditampilkan
-
-        $('#operator').val(localStorage.getItem('operator'));
-
-    });
-    // $(document).on('keyup', '#no_alat', function() {
-    //     localStorage.setItem('no_alat', $(this).val());
-    // });
-    $(document).on('keyup', '#operator', function() {
-        localStorage.setItem('operator', $(this).val());
-    });
-
 
     $(document).on('click', '.update_status', function(e) {
         e.preventDefault();
@@ -233,7 +215,7 @@
         var data = {
             'container_key': $('#container_key').val(),
             'container_no': $('#container_no').val(),
-            'cc_tt_oper': $('#operator').val(),
+            'operator': $('#operator').val(),
             'cc_tt_no': $('#no_alat').val(),
             'wharf_yard_oa': $('#user').val(),
             'disc_date': $('#tanggal').val(),
@@ -279,26 +261,26 @@
                     dataType: 'json',
                     success: function(response) {
                         console.log(response);
-                        if (response.success) {
-                            Swal.fire({
-                                    icon: 'success',
-                                    title: 'Success',
-                                    text: response.message,
-                                })
-                                .then(() => {
-                                    // Memuat ulang halaman setelah berhasil menyimpan data
-                                    window.location.reload();
-                                }).then(() => {
-                                    // Buka modal "success" setelah halaman dimuat ulang
-                                    $('#success').modal('show');
-                                });
-                        } else {
-                            Swal.fire({
+                            if (response.success) {
+                              Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.message,
+                              })
+                              .then(() => {
+            // Memuat ulang halaman setelah berhasil menyimpan data
+            window.location.reload();
+        }).then(() => {
+            // Buka modal "success" setelah halaman dimuat ulang
+            
+        });
+                            } else {
+                              Swal.fire({
                                 icon: 'error',
                                 title: 'Error',
                                 text: response.message,
-                            });
-                        }
+                              });
+                            }
 
                     },
                     error: function(response) {
@@ -417,4 +399,5 @@
     });
 });
 </script>
+
 @endsection

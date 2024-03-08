@@ -46,6 +46,7 @@
                     <label>Pick End Date Range</label>
                     <!-- <input name="end" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired"> -->
                     <input type="date" name="end" class="form-control">
+                    <input type="hidden" name="os_id" value="{{$os->id}}">
 
                   </div>
                 </div>

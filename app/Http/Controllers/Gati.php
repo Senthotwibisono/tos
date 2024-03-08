@@ -175,14 +175,18 @@ class Gati extends Controller
         // var_dump($request->job_no);
         // die();
         $item = Item::where('container_key', $container_key)->first();
-        $cek_expired = Job::where('container_key', $container_key)->where('active_to', '<=', $request->truck_in_date)->exists();
+        $cek_expired = Job::where('job_no', $item->job_no)->where('active_to', '<=', $request->truck_in_date)->exists();
 
-        if ($cek_expired) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Sudah melewati expired !!',
-            ]);
+        if ($item->ctr_i_e_t == 'I') {
+            if ($cek_expired) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Sudah melewati expired !!',
+                ]);
+            }
         }
+        
+      
 
         $request->validate([
             'container_no' => 'required',

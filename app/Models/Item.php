@@ -116,6 +116,7 @@ class item extends Model
         'mty_type',
         'selected_do',
         'booking_no',
+        'alat_yard',
     ];
 
     public function job()

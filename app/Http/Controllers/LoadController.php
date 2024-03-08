@@ -8,6 +8,8 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\MasterAlat;
 use App\Models\ActAlat;
+use App\Models\Operator;
+use App\Models\ActOper;
 use GuzzleHttp\Client;
 
 use Auth;
@@ -57,7 +59,7 @@ class LoadController extends Controller
         'bay_tier' => $tem->bay_tier,
       ];
     }
-    $items = Item::where(function ($query) {
+    $items = Item::where('ctr_i_e_t', '=', 'E' )->where(function ($query) {
           $query->where('ctr_intern_status', '=', 51)
               ->orWhere('ctr_intern_status', '=', 53);
         })->where(function ($query) {
@@ -74,6 +76,8 @@ class LoadController extends Controller
     $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
     $vessel_voyage = VVoyage::whereDate('deparature_date', '>=', now())->orderBy('deparature_date', 'desc')->get();
     $alat = MasterAlat::where('category', '=', 'Bay')->get();
+    $data['operator'] = Operator::where('role', '=', 'cc')->get();
+
     return view('load.main', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'vessel_voyage', 'alat'), $data);
   }
 
@@ -123,6 +127,8 @@ class LoadController extends Controller
     $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
     $vessel_voyage = VVoyage::whereDate('deparature_date', '>=', now())->orderBy('deparature_date', 'desc')->get();
     $alat = MasterAlat::where('category', '=', 'Bay')->get();
+    $data['operator'] = Operator::where('role', '=', 'cc')->get();
+
     return view('load.android', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'vessel_voyage', 'alat'), $data);
   }
 
@@ -180,10 +186,11 @@ class LoadController extends Controller
     $id_alat = $request->cc_tt_no;
     $alat = MasterAlat::where('id', $id_alat)->first();
     $item = Item::where('container_key', $container_key)->first();
+    $opr = Operator::where('id', $request->operator)->first();
     $request->validate([
       'container_no' => 'required',
       'cc_tt_no' => 'required',
-      'cc_tt_oper' => 'required',
+      'operator' => 'required',
       'bay_slot' => 'required',
       'bay_row' => 'required',
       'bay_tier' => 'required',
@@ -191,23 +198,38 @@ class LoadController extends Controller
     ], [
       'container_no.required' => 'Container Number is required.',
       'cc_tt_no.required' => 'Nomor Alat Number is required.',
-      'cc_tt_oper.required' => 'Operator Alat Number is required.',
+      'operator.required' => 'Operator Alat Number is required.',
     ]);
     $act_alat = ActAlat::create([
       'id_alat' =>  $request->cc_tt_no,
       'category' => 'Bay',
       'nama_alat' => $alat->name,
+      'operator_id'=>$request->operator,
+      'operator' => $opr->name,
       'container_key' => $request->container_key,
       'container_no' => $request->container_no,
       'activity' => 'LOAD',
     ]);
+    $actOper = ActOper::create([
+      'alat_id' => $request->cc_tt_no,
+      'alat_category' =>$alat->category,
+      'alat_name'  =>$alat->name,
+      'operator_id'=>$request->operator,
+      'operator_name'=>$opr->name,
+      'container_key'=>$item->container_key,
+      'container_no'=>$item->container_no,
+      'ves_id'=>$item->ves_id,
+      'ves_name'=>$item->ves_name,
+      'voy_no'=>$item->voy_no,
+      'activity' =>'LOAD',
+  ]);
     Item::where('container_key', $container_key)->update([
       'bay_slot' => $request->bay_slot,
       'bay_row' => $request->bay_row,
       'bay_tier' => $request->bay_tier,
       'load_date' => $request->load_date,
       'cc_tt_no'  => $alat->name,
-      'cc_tt_oper'  => $request->cc_tt_oper,
+      'cc_tt_oper'  => $opr->name,
       'ctr_intern_status' => '56',
       'ctr_active_yn' => 'N',
 

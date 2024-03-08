@@ -10,6 +10,8 @@ use App\Models\VVoyage;
 use Auth;
 use App\Models\MasterAlat;
 use App\Models\ActAlat;
+use App\Models\Operator;
+use App\Models\ActOper;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -73,6 +75,9 @@ class PlacementController extends Controller
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
 
         $alat = MasterAlat::where('category', '=', 'Yard')->get();
+        $data['truck'] = MasterAlat::where('category', '=', 'Truck')->get();
+        $data['operator'] = Operator::where('role', '=', 'yard')->get();
+        $data['supir'] = Operator::where('role', '=', 'truck')->get();
         $vessel = VVoyage::whereDate('etd_date', '>=', now())->get();
         return view('yard.place.main', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'alat', 'vessel'), $data);
     }
@@ -128,6 +133,9 @@ class PlacementController extends Controller
         $data["active"] = "yard";
         $data["subactive"] = "placement";
         $alat = MasterAlat::where('category', '=', 'Yard')->get();
+        $data['truck'] = MasterAlat::where('category', '=', 'Truck')->get();
+        $data['operator'] = Operator::where('role', '=', 'yard')->get();
+        $data['supir'] = Operator::where('role', '=', 'truck')->get();
         $vessel = VVoyage::whereDate('etd_date', '>=', now())->get();
         return view('yard.place.android-yard', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'alat', 'vessel'), $data);
     }
@@ -186,6 +194,11 @@ class PlacementController extends Controller
         if (empty($yard_rowtier->container_key)) {
             $id_alat = $request->alat;
             $alat = MasterAlat::where('id', $id_alat)->first();
+            $opr = Operator::where('id', $request->operator)->first();
+            // var_dump($opr);
+            // die;
+            $truck = MasterAlat::where('id', $request->truck)->first();
+            $supir = Operator::where('id', $request->supir)->first();
 
             if ($item->ctr_intern_status === '13' || $item->ctr_intern_status === '12' || $item->ctr_intern_status === '14') {
                 $item->update([
@@ -194,19 +207,68 @@ class PlacementController extends Controller
                     'yard_row' => $request->yard_row,
                     'yard_tier' => $request->yard_tier,
                     'ctr_intern_status' => ($item->ctr_intern_status === '12' || $item->ctr_intern_status === '13') ? '03' : (($item->ctr_intern_status === '14') ? '04' :  $item->ctr_intern_status),
-                    'wharf_yard_oa' => $request->wharf_yard_oa,
+                    'wharf_yard_oa' =>  $opr->name,
+                    'alat_yard' => $alat->name,
+                    'ht_no' => $truck->name ?? $item->ht_no ?? null,
+                    'ht_driver' => $supir->name ?? $item->ht_driver ?? null,
+
                 ]);
 
                 $act_alat = ActAlat::create([
                     'id_alat' =>  $request->alat,
                     'category' => $alat->category,
                     'nama_alat' => $alat->name,
-                    'operator' => $request->operator,
+                    'operator_id'=>$request->operator,
+                    'operator' => $opr->name,
                     'container_key' => $request->container_key,
                     'container_no' => $request->container_no,
                     'activity' => 'PLC',
                 ]);
 
+                $actOper = ActOper::create([
+                    'alat_id' =>$request->alat,
+                    'alat_category' =>$alat->category,
+                    'alat_name'  =>$alat->name,
+                    'operator_id'=>$request->operator,
+                    'operator_name'=>$opr->name,
+                    'container_key'=>$item->container_key,
+                    'container_no'=>$item->container_no,
+                    'ves_id'=>$item->ves_id,
+                    'ves_name'=>$item->ves_name,
+                    'voy_no'=>$item->voy_no,
+                    'activity' =>'PLC',
+                ]);
+
+                if (!empty($request->truck)) {
+                    $actTruck = ActAlat::create([
+                        'id_alat' =>  $request->truck,
+                        'category' => $truck->category,
+                        'nama_alat' => $truck->name,
+                        'operator_id'=>$request->supir,
+                        'operator' => $supir->name,
+                        'container_key' => $request->container_key,
+                        'container_no' => $request->container_no,
+                        'activity' => 'RELOKASI TO PLC',
+                    ]);
+    
+                   
+    
+                    $actSupir = ActOper::create([
+                        'alat_id' =>$request->truck,
+                        'alat_category' =>$truck->category,
+                        'alat_name'  => $truck->name,
+                        'operator_id'=>$request->supir,
+                        'operator_name'=>$supir->name,
+                        'container_key'=>$item->container_key,
+                        'container_no'=>$item->container_no,
+                        'ves_id'=>$item->ves_id,
+                        'ves_name'=>$item->ves_name,
+                        'voy_no'=>$item->voy_no,
+                        'activity' =>'RELOKASI TO PLC',
+                    ]);
+    
+                }
+               
                
             
 
@@ -223,20 +285,71 @@ class PlacementController extends Controller
                     'yard_row' => $request->yard_row,
                     'yard_tier' => $request->yard_tier,
                     'ctr_intern_status' => ($item->ctr_intern_status === '02' || $item->ctr_intern_status === '03') ? '03' : (($item->ctr_intern_status === '50') ? '51' : $item->ctr_intern_status),
-                    'wharf_yard_oa' => $request->wharf_yard_oa,
+                    'wharf_yard_oa' =>  $opr->name,
+                    'alat_yard' => $alat->name,
+                    'ht_no' => $truck->name ?? $item->ht_no ?? null,
+                    'ht_driver' => $supir->name ?? $item->ht_driver ?? null,
+                    
                 ]);
 
                 $act_alat = ActAlat::create([
                     'id_alat' =>  $request->alat,
                     'category' => $alat->category,
                     'nama_alat' => $alat->name,
-                    'operator' => $request->operator,
+                    'operator_id'=>$request->operator,
+                    'operator' => $opr->name,
                     'container_key' => $request->container_key,
                     'container_no' => $request->container_no,
                     'activity' => 'PLC',
                 ]);
+                if ($item->ctr_intern_status == '03') {
+                   $ket = "DISCH TO PLC";
+                }else {
+                    $ket = "PLC TO LOAD";
+                }
 
+                $actOper = ActOper::create([
+                    'alat_id' =>$request->alat,
+                    'alat_category' =>$alat->category,
+                    'alat_name'  =>$alat->name,
+                    'operator_id'=>$request->operator,
+                    'operator_name'=>$opr->name,
+                    'container_key'=>$item->container_key,
+                    'container_no'=>$item->container_no,
+                    'ves_id'=>$item->ves_id,
+                    'ves_name'=>$item->ves_name,
+                    'voy_no'=>$item->voy_no,
+                    'activity' =>'PLC',
+                ]);
 
+                if (!empty($request->truck)) {
+                    $actTruck = ActAlat::create([
+                        'id_alat' =>  $request->truck,
+                        'category' => $truck->category,
+                        'nama_alat' => $truck->name,
+                        'operator_id'=>$request->supir,
+                        'operator' => $supir->name,
+                        'container_key' => $request->container_key,
+                        'container_no' => $request->container_no,
+                        'activity' => $ket,
+                    ]);
+    
+                   
+    
+                    $actSupir = ActOper::create([
+                        'alat_id' =>$request->truck,
+                        'alat_category' =>$truck->category,
+                        'alat_name'  => $truck->name,
+                        'operator_id'=>$request->supir,
+                        'operator_name'=>$supir->name,
+                        'container_key'=>$item->container_key,
+                        'container_no'=>$item->container_no,
+                        'ves_id'=>$item->ves_id,
+                        'ves_name'=>$item->ves_name,
+                        'voy_no'=>$item->voy_no,
+                        'activity' =>$ket,
+                    ]);
+                }
                
 
                     return response()->json([

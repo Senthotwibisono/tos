@@ -48,6 +48,8 @@ use App\Http\Controllers\MasterTarifController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\InvoiceExportController;
 use App\Http\Controllers\BayplanDesignController;
+use App\Http\Controllers\OperatorController;
+use App\Http\Controllers\BatalMuatController;
 
 
 
@@ -898,5 +900,27 @@ Route::get('/invoice/job/export-{id?}', [InvoiceExportController::class, 'JobInv
 Route::get('/load/container_loading', [BayplanDesignController::class, 'index'])->name('Baypkan-Load');
 
 
+// master operator
+Route::get('/master/operator', [OperatorController::class, 'index'])->name('operator');
+Route::post('/master/operator-post', [OperatorController::class, 'store'])->name('operator-post');
+Route::delete('/master/operator-delete={id}', [OperatorController::class, 'delete']);
+Route::get('/master/operator-edit-{id}', [OperatorController::class, 'edit']);
+Route::post('/master/operator-patch', [OperatorController::class, 'update'])->name('operator-patch');
+
+Route::get('/reports/operator', [OperatorController::class, 'report'])->name('op-rep');
+Route::post('/get-op', [OperatorController::class, 'get_op']);
+Route::post('/get-data-operator', [OperatorController::class, 'get_data_operator']);
+Route::get('/laporan-operator', [OperatorController::class, 'ReportPrint'])->name('laporan-operator');
+
+
+Route::get('/batal-muat', [BatalMuatController::class, 'index'])->name('index-batal-muat');
+Route::post('/batal-muat/store', [BatalMuatController::class, 'store'])->name('post-batal-muat');
+Route::get('/batal-muat-action', [BatalMuatController::class, 'action'])->name('action-batal-muat');
+Route::post('/batal-muat/update', [BatalMuatController::class, 'update'])->name('update-batal-muat');
+
+
+Route::get('/reports/batal-muat', [BatalMuatController::class, 'indexReport'])->name('indexReport-batal-muat');
+Route::post('/get-data-batal-muat', [BatalMuatController::class, 'get_data_batalMuat']);
+Route::get('/laporan-batalMuat', [BatalMuatController::class, 'ReportPrint'])->name('laporan-batalMuat');
 
 
