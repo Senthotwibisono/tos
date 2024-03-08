@@ -6,7 +6,7 @@ use App\Models\Item;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Yard;
-use App\Models\Job;
+use App\Models\JobImport as Job;
 use App\Models\Isocode;
 use App\Models\RO;
 use App\Models\RO_Gate;
@@ -57,8 +57,12 @@ class Gati extends Controller
 
             $formattedData[] = [
                 'container_no' => $tem->container_no,
+                'ctr_size' => $tem->ctr_size,
+                'ctr_type' => $tem->ctr_type,
+                'ves_name' => $tem->ves_name,
+                'voy_no' => $tem->voy_no,
                 'truck_no' => $tem->truck_no,
-                'truck_in_date' => $diff . ' yang lalu',
+                'truck_in_date' => $tem->truck_in_date,
                 'container_key' => $tem->container_key
             ];
         }
@@ -73,18 +77,11 @@ class Gati extends Controller
         $currentDateTime = Carbon::now();
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
 
-        $client = new Client();
-        // GET ALL JOB_CONTAINER
-        $url_jobContainer = getenv('API_URL') . '/delivery-service/job/osds';
-        $req_jobContainer = $client->get($url_jobContainer);
-        $response_jobContainer = $req_jobContainer->getBody()->getContents();
-        $result_jobContainer = json_decode($response_jobContainer);
-        // dd($result_jobContainer);
-        // dd($containerKeys);
+      
+        $data['contGati'] = Item::whereIn('ctr_intern_status', ['03', '04', '11'])->whereNotNull('job_no')->get();
 
         $data["active"] = "delivery";
         $data["subactive"] = "gatein";
-        $data["jobContainers"] = $result_jobContainer->data;
         return view('gate.delivery.main', $data, compact('confirmed', 'formattedData', 'title', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'), $data);
     }
     public function android()
@@ -120,8 +117,12 @@ class Gati extends Controller
 
             $formattedData[] = [
                 'container_no' => $tem->container_no,
+                'ctr_size' => $tem->ctr_size,
+                'ctr_type' => $tem->ctr_type,
+                'ves_name' => $tem->ves_name,
+                'voy_no' => $tem->voy_no,
                 'truck_no' => $tem->truck_no,
-                'truck_in_date' => $diff . ' yang lalu',
+                'truck_in_date' => $tem->truck_in_date,
                 'container_key' => $tem->container_key
             ];
         }
@@ -136,18 +137,11 @@ class Gati extends Controller
         $currentDateTime = Carbon::now();
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
 
-        $client = new Client();
-        // GET ALL JOB_CONTAINER
-        $url_jobContainer = getenv('API_URL') . '/delivery-service/job/osds';
-        $req_jobContainer = $client->get($url_jobContainer);
-        $response_jobContainer = $req_jobContainer->getBody()->getContents();
-        $result_jobContainer = json_decode($response_jobContainer);
-        // dd($result_jobContainer);
-        // dd($containerKeys);
+        $data['contGati'] = Item::whereIn('ctr_intern_status', ['03', '04', '11'])->whereNotNull('job_no')->get();
+
 
         $data["active"] = "delivery";
         $data["subactive"] = "gatein";
-        $data["jobContainers"] = $result_jobContainer->data;
         return view('gate.delivery.android_in', $data, compact('confirmed', 'formattedData', 'title', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'), $data);
     }
     // public function get_tipe(Request $request)
@@ -163,38 +157,13 @@ class Gati extends Controller
 
     public function data_container(Request $request)
     {
-        // $container_key = $request->container_key;
-        // $name = Item::where('container_key', $container_key)->first();
-
-        // if ($name) {
-        //     return response()->json(['container_no' => $name->container_no, 'job' => $name->job_no, 'invoice' => $name->invoice_no]);
-        // }
-        // return response()->json(['container_no' => 'data tidak ditemukan', 'job' => 'data tidak ditemukan', 'invoice' => 'data tidak ditemukan']);
-        $client = new Client();
-
-        $fields = [
-            "container_key" => $request->container_key,
-        ];
-        // dd($fields, $item->getAttributes());
-
-        $url = getenv('API_URL') . '/delivery-service/job/single/'. $request->container_key;
-        $req = $client->get(
-            $url
-            
-            
-            
-        );
-        $response = $req->getBody()->getContents();
-        $result = json_decode($response);
-        // var_dump($response);
-        // die();
-        // dd($result);
-        if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-            // $item->save();
-
-            echo $response;
-        } else {
-            return response()->json(['container_no' => 'data tidak ditemukan', 'job' => 'data tidak ditemukan', 'invoice' => 'data tidak ditemukan']);
+        $item = Item::where('container_key', $request->container_key)->first();
+        if ($item) {
+            return response()->json([
+                'success' => true,
+                'message' => 'updated successfully!',
+                'data'    => $item,
+            ]);
         }
     }
 
@@ -206,14 +175,18 @@ class Gati extends Controller
         // var_dump($request->job_no);
         // die();
         $item = Item::where('container_key', $container_key)->first();
-        $cek_expired = Job::where('container_key', $container_key)->where('ACTIVE_TO', '<=', $request->truck_in_date)->exists();
+        $cek_expired = Job::where('job_no', $item->job_no)->where('active_to', '<=', $request->truck_in_date)->exists();
 
-        if ($cek_expired) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Sudah melewati expired !!',
-            ]);
+        if ($item->ctr_i_e_t == 'I') {
+            if ($cek_expired) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Sudah melewati expired !!',
+                ]);
+            }
         }
+        
+      
 
         $request->validate([
             'container_no' => 'required',
@@ -223,9 +196,9 @@ class Gati extends Controller
             'truck_no.required' => 'Truck Number is required.',
         ]);
 
-        $order_service = $request->order_service;
+        $order_service = $item->order_service;
 
-        if (($order_service === 'sppsrelokasipelindo') || ($order_service === 'spps')) {
+        if (($order_service === 'SPPSRELOKASI') || ($order_service === 'SPPS')) {
 
             $item->update([
                 'truck_no' => $request->truck_no,
@@ -241,47 +214,19 @@ class Gati extends Controller
                 'ctr_intern_status' => 10,
                 'truck_no' => $request->truck_no,
                 'truck_in_date' => $request->truck_in_date,
-                'job_no' => $request->job_no,
-                'invoice_no' => $request->invoice_no,
-                'order_service' => $request->order_service,
                 'no_dok' => $request->no_dok,
                 'jenis_dok' => $request->jenis_dok,
             ]);
             // var_dump($item);
             // die();
-            $client = new Client();
-
-            $fields = [
-                "container_key" => $request->container_key,
-                "ctr_intern_status" => "10",
-            ];
-            // dd($fields, $item->getAttributes());
-
-            $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
-            $req = $client->post(
-                $url,
-                [
-                    "json" => $fields
-                ]
-            );
-            $response = $req->getBody()->getContents();
-            $result = json_decode($response);
-            // var_dump($result);
-            // die();
-            if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-                // $item->save();
+         
 
                 return response()->json([
                     'success' => true,
                     'message' => 'updated successfully!',
                     'data'    => $item,
                 ]);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'updated successfully!',
-                ]);
-            }
+           
         }
 
 
@@ -324,8 +269,7 @@ class Gati extends Controller
                 'container_key' => $tem->container_key
             ];
         }
-        $containerKeys = Item::where('ctr_intern_status', '49')
-            ->pluck('container_no', 'container_key');
+        $containerKeys = Item::where('ctr_intern_status', '49')->whereNotNull('job_no')->get();
         $users = User::all();
         $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
         $yard_slot = Yard::distinct('yard_slot')->pluck('yard_slot');
@@ -335,14 +279,7 @@ class Gati extends Controller
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
         $isocode = Isocode::all();
 
-        $client = new Client();
-        // GET ALL JOB_CONTAINER
-        $url_jobContainer = getenv('API_URL') . '/delivery-service/job/export/all';
-        $req_jobContainer = $client->get($url_jobContainer);
-        $response_jobContainer = $req_jobContainer->getBody()->getContents();
-        $result_jobContainer = json_decode($response_jobContainer);
-
-        $data["jobContainers"] = $result_jobContainer->data;
+       
         return view('gate.recive.main', $data, compact('confirmed', 'formattedData', 'title', 'users', 'isocode', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'), $data);
     }
 
@@ -378,8 +315,7 @@ class Gati extends Controller
                 'container_key' => $tem->container_key
             ];
         }
-        $containerKeys = Item::where('ctr_intern_status', '49')
-            ->pluck('container_no', 'container_key');
+        $containerKeys = Item::where('ctr_intern_status', '49')->whereNotNull('job_no')->get();
         $users = User::all();
         $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
         $yard_slot = Yard::distinct('yard_slot')->pluck('yard_slot');
@@ -389,69 +325,30 @@ class Gati extends Controller
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
         $isocode = Isocode::all();
 
-        $client = new Client();
-        // GET ALL JOB_CONTAINER
-        $url_jobContainer = getenv('API_URL') . '/delivery-service/job/export/all';
-        $req_jobContainer = $client->get($url_jobContainer);
-        $response_jobContainer = $req_jobContainer->getBody()->getContents();
-        $result_jobContainer = json_decode($response_jobContainer);
-
-        $data["jobContainers"] = $result_jobContainer->data;
+     
         return view('gate.recive.android_in', $data, compact('confirmed', 'formattedData', 'title', 'users', 'isocode', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys'), $data);
     }
 
-    public function data_container_rec(Request $request)
-    {
-        // $container_key = $request->container_key;
-        // $name = Item::where('container_key', $container_key)->first();
-
-        // if ($name) {
-        //     return response()->json(['container_no' => $name->container_no, 'gross' => $name->gross, 'iso_code' => $name->iso_code, 'seal_no' => $name->seal_no, 'bl_no' => $name->bl_no, 'size' => $name->ctr_size, 'type' => $name->ctr_type, 'stat' => $name->ctr_status,
-        //     'vessel'=>$name->ves_name,
-        //     'voy'=>$name->voy_no,
-        //     'imo'=>$name->imo_code,
-        //     'gross'=>$name->gross,
-        //     'class'=>$name->gross_class,
-        //     'pod'=>$name->disch_port,
-        //     'seal'=>$name->seal_no,
-        //     'oh'=>$name->over_height,
-        //     'ow'=>$name->over_weight,
-        //     'ol'=>$name->over_length
-        // ]);
-        // }
-        // return response()->json(['container_no' => 'data tidak ditemukan', 'gross' => 'data tidak ditemukan', 'iso_code' => 'data tidak ditemukan', 'bl_no' => 'data tidak ditemukan']);
-        $client = new Client();
-
-        $fields = [
-            "container_key" => $request->container_key,
-        ];
-        // dd($fields, $item->getAttributes());
-
-        $url = getenv('API_URL') . '/delivery-service/container/export/all';
-        $req = $client->get(
-            $url,
-            [
-                "json" => $fields
-            ]
-        );
-        $response = $req->getBody()->getContents();
-        $result = json_decode($response);
-        // var_dump($response);
-        // die();
-        // dd($result);
-        if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-            // $item->save();
-
-            echo $response;
-        } else {
-            return response()->json(['container_no' => 'data tidak ditemukan', 'job' => 'data tidak ditemukan', 'invoice' => 'data tidak ditemukan']);
-        }
-    }
+  
 
     public function get_data_reciving(Request $request)
     {
-        // $container_key = $request->container_key;
-        // $name = Item::where('container_key', $container_key)->first();
+        $container_key = $request->id;
+        // var_dump($container_key);
+        // die();
+        $name = Item::where('container_key', $container_key)->first();
+        if ($name) {
+            return response()->json([
+                'success' => true,
+                'message' => 'updated successfully!',
+                'data'    => $name,
+            ]);
+        }else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data Tidak Ditemukan',
+            ]);
+        }
 
         // if ($name) {
         //     return response()->json(['container_no' => $name->container_no, 'gross' => $name->gross, 'iso_code' => $name->iso_code, 'seal_no' => $name->seal_no, 'bl_no' => $name->bl_no, 'size' => $name->ctr_size, 'type' => $name->ctr_type, 'stat' => $name->ctr_status,
@@ -468,22 +365,7 @@ class Gati extends Controller
         // ]);
         // }
         // return response()->json(['container_no' => 'data tidak ditemukan', 'gross' => 'data tidak ditemukan', 'iso_code' => 'data tidak ditemukan', 'bl_no' => 'data tidak ditemukan']);
-        $client = new Client();
-        $id = $request->id;
-        $url_vessel = getenv('API_URL') . '/delivery-service/container/single/' . $id;
-        $req = $client->get($url_vessel);
-        $response_vessel = $req->getBody()->getContents();
-        $result_vessel = json_decode($response_vessel);
-        // var_dump($response_vessel, $id);
-        // die();
-        // dd($result);
-        if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-            // $item->save();
-
-            echo $response_vessel;
-        } else {
-            return response()->json(['container_no' => 'data tidak ditemukan', 'job' => 'data tidak ditemukan', 'invoice' => 'data tidak ditemukan']);
-        }
+     
     }
 
     public function gati_iso_rec(Request $request)
@@ -500,85 +382,63 @@ class Gati extends Controller
     public function gati_rec(Request $request)
     {
 
-
-        // $container_key = $request->container_key;
-        // var_dump($request->job_no);
+        $container_key = $request->container_no;
+        // var_dump($container_key);
         // die();
+        $item = Item::where('container_key', $container_key)->first();
+        if ($item) {
+            if ($request->iso_code != null) {
+                $iso_code = $request->iso_code;
+            }else {
+                $iso_code = $item->iso_code;
 
+            }
 
-        $request->validate([
-            'container_no' => 'required',
-            'truck_no' => 'required',
-        ], [
-            'container_no.required' => 'Container Number is required.',
-            'truck_no.required' => 'Truck Number is required.',
-        ]);
-        $item = Item::create([
-            'container_no' => $request->container_no,
-            'ctr_intern_status' => 50,
-            'truck_no' => $request->truck_no,
-            'truck_in_date' => $request->truck_in_date,
-            'gross' => $request->gross,
-            'iso_code' => $request->iso_code,
-            'bl_no' => $request->bl_no,
-            'seal_no' => $request->seal_no,
-            'ctr_type' => $request->ctr_type,
-            'ctr_size' => $request->ctr_size,
-            'ctr_status' => $request->ctr_status,
-            'ves_id' => $request->ves_id,
-            'ves_code' => $request->ves_code,
-            'ves_name' => $request->ves_name,
-            'voy_no' => $request->voy_no,
-            'user_id' => $request->user_id,
-            'ctr_active_yn' => 'Y',
-            'ctr_i_e_t' => 'E',
-            'order_service' => $request->order_service,
-        ]);
-        // var_dump($item);
-        // die();
+            if ($request->ctr_type != null) {
+                $ctr_type = $request->ctr_type;
+            }else {
+                $ctr_type = $item->ctr_type;
+            }
 
+            if ($request->ctr_size != null) {
+                $ctr_size = $request->ctr_size;
+            }else {
+                $ctr_size = $item->ctr_size;
+            }
 
-        $client = new Client();
-        $id = $request->id;
-        $fields = [
-            'container_key' => $item->container_key,
-            'ctr_intern_status' => 50,
-            'truck_no' => $request->truck_no,
-            'truck_in_date' => $request->truck_in_date,
-            'gross' => $request->gross,
-            'iso_code' => $request->iso_code,
-            'ctr_type' => $request->ctr_type,
-            'ctr_size' => $request->ctr_size,
-            'ctr_status' => $request->ctr_status,
-            'ves_id' => $request->ves_id,
-            'ves_code' => $request->ves_code,
-            'vessel_name' => $request->ves_name,
-            'voy_no' => $request->voy_no,
-        ];
-        // dd($fields, $item->getAttributes());
+            if ($request->ctr_status != null) {
+                $ctr_status = $request->ctr_status;
+            }else {
+                $ctr_status = $item->ctr_status;
 
-        $url = getenv('API_URL') . '/delivery-service/container/update/' . $id;
-        $req = $client->post(
-            $url,
-            [
-                "json" => $fields
-            ]
-        );
-        $response = $req->getBody()->getContents();
-        $result = json_decode($response);
+            }
 
-        // dd($result);
-        if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-            $item->save();
-
+            $item->update([
+                'ctr_intern_status' => 50,
+                'truck_no' => $request->truck_no,
+                'truck_in_date' => $request->truck_in_date,
+                'gross' => $request->gross,
+                'iso_code' => $iso_code,
+                'ctr_type' => $ctr_type,
+                'ctr_size' => $ctr_size,
+                'ctr_status' => $ctr_status,
+                'user_id' => $request->user_id,
+                'ctr_active_yn' => 'Y',
+                'ctr_i_e_t' => 'E',
+             
+            ]);       
             return response()->json([
-                'success' => 400,
+                'success' => true,
                 'message' => 'updated successfully!',
                 'data'    => $item,
             ]);
-        } else {
-            return back();
+        }else {
+            return response()->json([
+                'success' => false,
+                'message' => 'updated successfully!',
+            ]);
         }
+      
     }
 
 
@@ -592,6 +452,7 @@ class Gati extends Controller
         $realisasis = RO_Realisasi::all();
 
         $rg = collect();
+        $ro_Gate = [];
 
         foreach ($ros as $roItem) {
             $jmlhContInRoDok = $roItem->jmlh_cont;
@@ -614,6 +475,7 @@ class Gati extends Controller
         $ros = RO::all();
         $realisasis = RO_Realisasi::all();
 
+        $ro_Gate = [];
         $rg = collect();
 
         foreach ($ros as $roItem) {

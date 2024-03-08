@@ -63,6 +63,8 @@ class Stripping extends Controller
             })
             ->values()
             ->all();
+
+            $data['containerStr'] = Item::whereIn('ctr_intern_status', ['03', '04'])->where('order_service', 'SPPS')->whereNot('order_service', null)->whereNotNull('job_no')->get();
         $items = Item::where('ctr_intern_status', 03)->get();
         $users = User::all();
         $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
@@ -74,15 +76,7 @@ class Stripping extends Controller
 
         // GET ALL JOB_CONTAINER
 
-        $client = new Client();
-        $url_jobContainer = getenv('API_URL') . '/delivery-service/job/osds';
-        $req_jobContainer = $client->get($url_jobContainer);
-        $response_jobContainer = $req_jobContainer->getBody()->getContents();
-        $result_jobContainer = json_decode($response_jobContainer);
-        // dd($result_jobContainer);
-        // dd($containerKeys);
-
-        $data["jobContainers"] = $result_jobContainer->data;
+      
 
         $alat = MasterAlat::where('category', '=', 'Yard')->get();
         return view('stripping.main', $data, compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys', 'alat'));
@@ -132,6 +126,9 @@ class Stripping extends Controller
             })
             ->values()
             ->all();
+
+            $data['containerStr'] = Item::whereIn('ctr_intern_status', ['03', '04'])->where('order_service', 'SPPS')->whereNot('order_service', null)->whereNotNull('job_no')->get();
+
         $items = Item::where('ctr_intern_status', 03)->get();
         $users = User::all();
         $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
@@ -143,15 +140,8 @@ class Stripping extends Controller
 
         // GET ALL JOB_CONTAINER
 
-        $client = new Client();
-        $url_jobContainer = getenv('API_URL') . '/delivery-service/job/osds';
-        $req_jobContainer = $client->get($url_jobContainer);
-        $response_jobContainer = $req_jobContainer->getBody()->getContents();
-        $result_jobContainer = json_decode($response_jobContainer);
-        // dd($result_jobContainer);
-        // dd($containerKeys);
+      
 
-        $data["jobContainers"] = $result_jobContainer->data;
 
         $alat = MasterAlat::where('category', '=', 'Yard')->get();
         return view('stripping.android', $data, compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys', 'alat'));
@@ -159,32 +149,14 @@ class Stripping extends Controller
 
     public function get_stripping(Request $request)
     {
-        $client = new Client();
         $container_key = $request->container_key;
         $name = Item::where('container_key', $container_key)->first();
 
 
-        $fields = [
-            "container_key" => $request->container_key,
-        ];
-        // dd($fields, $item->getAttributes());
-
-        $url = getenv('API_URL') . '/delivery-service/job/containerbykey';
-        $req = $client->post(
-            $url,
-            [
-                "json" => $fields
-            ]
-        );
-        $response = $req->getBody()->getContents();
-        $result = json_decode($response);
-        $invoice = $result->data->containers[0]->findContainer->invoiceNumber;
-        // var_dump($response);
-        // die();
-        // dd($result);
+      
 
         if ($name) {
-            return response()->json(['container_key' => $name->container_key, 'container_no' => $name->container_no, 'tipe' => $name->ctr_type, 'oldblock' => $name->yard_block, 'oldslot' => $name->yard_slot, 'oldrow' => $name->yard_row, 'oldtier' => $name->yard_tier, 'invoice' => $invoice]);
+            return response()->json(['container_key' => $name->container_key, 'container_no' => $name->container_no, 'tipe' => $name->ctr_type, 'oldblock' => $name->yard_block, 'oldslot' => $name->yard_slot, 'oldrow' => $name->yard_row, 'oldtier' => $name->yard_tier, 'invoice' => $name->invoice_no]);
         }
         return response()->json(['container_no' => 'data tidak ditemukan', 'tipe' => 'data tidak ditemukan', 'coname' => 'data tidak ditemukan', 'oldblock' => 'data tidak ditemukan', 'oldslot' => 'data tidak ditemukan', 'oldrow' => 'data tidak ditemukan', 'oldtier' => 'data tidak ditemukan']);
     }
@@ -211,6 +183,13 @@ class Stripping extends Controller
             'yard_tier.required' => 'Tier Alat Number is required.',
         ]);
 
+        if ($request->id_alat == null) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda belum memilih alat !!',
+            ]);
+        }
+
 
         $yard_rowtier = Yard::where('yard_block', $request->yard_block)
             ->where('yard_slot', $request->yard_slot)
@@ -218,7 +197,7 @@ class Stripping extends Controller
             ->where('yard_tier', $request->yard_tier)
             ->first();
 
-        if (is_null($yard_rowtier->container_key)) {
+            if ($yard_rowtier->container_key == null || $yard_rowtier->container_key == ' ') { 
             $id_alat = $request->id_alat;
             $alat = MasterAlat::where('id', $id_alat)->first();
 
@@ -246,49 +225,14 @@ class Stripping extends Controller
                 'activity' => 'STR',
             ]);
 
-            $client = new Client();
-
-            $fields = [
-                "container_key" => $request->container_key,
-                'yard_block' => $request->yard_block,
-                'yard_slot' => $request->yard_slot,
-                'yard_row' => $request->yard_row,
-                'yard_tier' => $request->yard_tier,
-                "ctr_intern_status" => "04",
-                "ctr_type" => "DRY",
-                "ctr_size" => "20",
-                'gross' => null,
-                'commoditor' => null,
-                'isChoosen' => "0",
-            ];
-            // dd($fields, $item->getAttributes());
-
-            $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
-            $req = $client->post(
-                $url,
-                [
-                    "json" => $fields
-                ]
-            );
-            $response = $req->getBody()->getContents();
-            $result = json_decode($response);
-            // var_dump($result);
-            // die();
-
-            if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-                // $item->save();
-
+         
+           
                 return response()->json([
                     'success' => true,
                     'message' => 'Updated successfully!',
                     'item' => $item,
                 ]);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Something wrong happened while updating with api',
-                ]);
-            }
+          
         } else {
             return response()->json([
                 'success' => false,

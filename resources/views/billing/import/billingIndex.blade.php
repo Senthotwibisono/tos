@@ -59,13 +59,16 @@
                 <div class="col-4">
                   <div class="form-group">
                     <label>Pick Start Date Range</label>
-                    <input name="start" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
+                    <!-- <input name="start" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired"> -->
+                    <input type="date" name="start" class="form-control">
                   </div>
                 </div>
                 <div class="col-4">
                   <div class="form-group">
                     <label>Pick End Date Range</label>
-                    <input name="end" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
+                    <!-- <input name="end" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired"> -->
+                    <input type="date" name="end" class="form-control">
+
                   </div>
                 </div>
                 <div class="col-4 mt-4">

@@ -69,16 +69,16 @@
         <div class="submenu-group-wrapper">
           <ul class="submenu-group">
             <li class="submenu-item">
-              <a href="/delivery/billing" class="submenu-link">Delivery Billing System</a>
+              <a href="{{ route('billinImportgMain')}}" class="submenu-link">Delivery Billing System</a>
             </li>
             <li class="submenu-item">
-              <a href="/delivery/form" class="submenu-link">Delivery Form</a>
+              <a href="{{ route('deliveryMenu')}}" class="submenu-link">Delivery Form</a>
             </li>
             <li class="submenu-item">
               <a href="/delivery/billing/extend" class="submenu-link">Delivery Form Extend</a>
             </li>
             <li class="submenu-item">
-              <a href="/delivery/mastertarif" class="submenu-link">Master Tarif</a>
+              <a href="{{ route('mtImport')}}" class="submenu-link">Master Tarif</a>
             </li>
           </ul>
         </div>
@@ -93,13 +93,13 @@
         <div class="submenu-group-wrapper">
           <ul class="submenu-group">
             <li class="submenu-item">
-              <a href="/receiving/billing" class="submenu-link">Receiving Billing System</a>
+              <a href="{{ route('billingExportMain')}}" class="submenu-link">Receiving Billing System</a>
             </li>
             <li class="submenu-item">
-              <a href="/receiving/form" class="submenu-link">Receiving Form</a>
+              <a href="{{ route('deliveryMenuExport')}}" class="submenu-link">Receiving Form</a>
             </li>
             <li class="submenu-item">
-              <a href="/receiving/mastertarif" class="submenu-link">Master Tarif</a>
+              <a href="{{ route('mtExport')}}" class="submenu-link">Master Tarif</a>
             </li>
             <!-- <li class="submenu-item">
               <a href="" class="submenu-link">Stuffing Dalam</a>
@@ -112,7 +112,7 @@
       </div>
     </li>
     <li class="menu-item">
-      <a href="/invoice/customer" class="menu-link">
+      <a href="{{ route('Customer')}}" class="menu-link">
         <i class="fa-solid fa-user">
         </i>
         Customer
@@ -240,7 +240,7 @@
           <ul class="submenu-group">
 
             <li class="submenu-item  ">
-              <a href="/do" class='submenu-link'>Do Online Check</a>
+              <a href="{{ route('doMain')}}" class='submenu-link'>Do Online Check</a>
 
 
             </li>
@@ -248,7 +248,7 @@
 
 
             <li class="submenu-item  ">
-              <a href="/coparn" class='submenu-link'>Upload Coparn</a>
+              <a href="{{ route('coparnMain')}}" class='submenu-link'>Upload Coparn</a>
 
 
             </li>

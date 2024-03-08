@@ -10,7 +10,10 @@ use App\Models\VVoyage;
 use Auth;
 use App\Models\MasterAlat;
 use App\Models\ActAlat;
+use App\Models\Operator;
+use App\Models\ActOper;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
 
@@ -55,7 +58,7 @@ class PlacementController extends Controller
                 'yard_slot' => $tem->yard_slot,
                 'yard_row' => $tem->yard_row,
                 'yard_tier' => $tem->yard_tier,
-                'update_time' => $diff . ' yang lalu',
+                'update_time' => $tem->update_time,
                 'container_key' => $tem->container_key,
                 'ctr_intern_status' => $tem->ctr_intern_status,
                 'order_service' => $tem->order_service,
@@ -70,9 +73,11 @@ class PlacementController extends Controller
         $yard_tier = Yard::distinct('yard_tier')->pluck('yard_tier');
         $currentDateTime = Carbon::now();
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
-        $data["active"] = "yard";
-        $data["subactive"] = "placement";
+
         $alat = MasterAlat::where('category', '=', 'Yard')->get();
+        $data['truck'] = MasterAlat::where('category', '=', 'Truck')->get();
+        $data['operator'] = Operator::where('role', '=', 'yard')->get();
+        $data['supir'] = Operator::where('role', '=', 'truck')->get();
         $vessel = VVoyage::whereDate('etd_date', '>=', now())->get();
         return view('yard.place.main', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'alat', 'vessel'), $data);
     }
@@ -110,7 +115,7 @@ class PlacementController extends Controller
                 'yard_slot' => $tem->yard_slot,
                 'yard_row' => $tem->yard_row,
                 'yard_tier' => $tem->yard_tier,
-                'update_time' => $diff . ' yang lalu',
+                'update_time' => $tem->update_time,
                 'container_key' => $tem->container_key,
                 'ctr_intern_status' => $tem->ctr_intern_status,
                 'order_service' => $tem->order_service,
@@ -128,6 +133,9 @@ class PlacementController extends Controller
         $data["active"] = "yard";
         $data["subactive"] = "placement";
         $alat = MasterAlat::where('category', '=', 'Yard')->get();
+        $data['truck'] = MasterAlat::where('category', '=', 'Truck')->get();
+        $data['operator'] = Operator::where('role', '=', 'yard')->get();
+        $data['supir'] = Operator::where('role', '=', 'truck')->get();
         $vessel = VVoyage::whereDate('etd_date', '>=', now())->get();
         return view('yard.place.android-yard', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'alat', 'vessel'), $data);
     }
@@ -183,9 +191,14 @@ class PlacementController extends Controller
             ->first();
         // var_dump($yard_rowtier, $request->yard_block, $request->yard_slot, $request->yard_tier, $request->yard_row);
         // die();
-        if (is_null($yard_rowtier->container_key)) {
+        if (empty($yard_rowtier->container_key)) {
             $id_alat = $request->alat;
             $alat = MasterAlat::where('id', $id_alat)->first();
+            $opr = Operator::where('id', $request->operator)->first();
+            // var_dump($opr);
+            // die;
+            $truck = MasterAlat::where('id', $request->truck)->first();
+            $supir = Operator::where('id', $request->supir)->first();
 
             if ($item->ctr_intern_status === '13' || $item->ctr_intern_status === '12' || $item->ctr_intern_status === '14') {
                 $item->update([
@@ -194,53 +207,77 @@ class PlacementController extends Controller
                     'yard_row' => $request->yard_row,
                     'yard_tier' => $request->yard_tier,
                     'ctr_intern_status' => ($item->ctr_intern_status === '12' || $item->ctr_intern_status === '13') ? '03' : (($item->ctr_intern_status === '14') ? '04' :  $item->ctr_intern_status),
-                    'wharf_yard_oa' => $request->wharf_yard_oa,
+                    'wharf_yard_oa' =>  $opr->name,
+                    'alat_yard' => $alat->name,
+                    'ht_no' => $truck->name ?? $item->ht_no ?? null,
+                    'ht_driver' => $supir->name ?? $item->ht_driver ?? null,
+
                 ]);
 
                 $act_alat = ActAlat::create([
                     'id_alat' =>  $request->alat,
                     'category' => $alat->category,
                     'nama_alat' => $alat->name,
-                    'operator' => $request->operator,
+                    'operator_id'=>$request->operator,
+                    'operator' => $opr->name,
                     'container_key' => $request->container_key,
                     'container_no' => $request->container_no,
                     'activity' => 'PLC',
                 ]);
 
-                $client = new Client();
+                $actOper = ActOper::create([
+                    'alat_id' =>$request->alat,
+                    'alat_category' =>$alat->category,
+                    'alat_name'  =>$alat->name,
+                    'operator_id'=>$request->operator,
+                    'operator_name'=>$opr->name,
+                    'container_key'=>$item->container_key,
+                    'container_no'=>$item->container_no,
+                    'ves_id'=>$item->ves_id,
+                    'ves_name'=>$item->ves_name,
+                    'voy_no'=>$item->voy_no,
+                    'activity' =>'PLC',
+                ]);
 
-                $fields = [
-                    "container_key" => $request->container_key,
-                    "ctr_intern_status" => ($item->ctr_intern_status === '12' || $item->ctr_intern_status === '13') ? '03' : (($item->ctr_intern_status === '14') ? '04' :  $item->ctr_intern_status),
-                    'yard_block' => $request->yard_block,
-                    'yard_slot' => $request->yard_slot,
-                    'yard_row' => $request->yard_row,
-                    'yard_tier' => $request->yard_tier,
-                ];
-                // dd($fields, $item->getAttributes());
-
-                $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
-                $req = $client->post(
-                    $url,
-                    [
-                        "json" => $fields
-                    ]
-                );
-                $response = $req->getBody()->getContents();
-                $result = json_decode($response);
-
-                // dd($result);
-                if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-                    $item->save();
+                if (!empty($request->truck)) {
+                    $actTruck = ActAlat::create([
+                        'id_alat' =>  $request->truck,
+                        'category' => $truck->category,
+                        'nama_alat' => $truck->name,
+                        'operator_id'=>$request->supir,
+                        'operator' => $supir->name,
+                        'container_key' => $request->container_key,
+                        'container_no' => $request->container_no,
+                        'activity' => 'RELOKASI TO PLC',
+                    ]);
+    
+                   
+    
+                    $actSupir = ActOper::create([
+                        'alat_id' =>$request->truck,
+                        'alat_category' =>$truck->category,
+                        'alat_name'  => $truck->name,
+                        'operator_id'=>$request->supir,
+                        'operator_name'=>$supir->name,
+                        'container_key'=>$item->container_key,
+                        'container_no'=>$item->container_no,
+                        'ves_id'=>$item->ves_id,
+                        'ves_name'=>$item->ves_name,
+                        'voy_no'=>$item->voy_no,
+                        'activity' =>'RELOKASI TO PLC',
+                    ]);
+    
+                }
+               
+               
+            
 
                     return response()->json([
-                        'success' => 400,
+                        'success' => true,
                         'message' => 'updated successfully!',
                         'data'    => $item,
                     ]);
-                } else {
-                    return back();
-                }
+               
             } else {
                 $item->update([
                     'yard_block' => $request->yard_block,
@@ -248,54 +285,79 @@ class PlacementController extends Controller
                     'yard_row' => $request->yard_row,
                     'yard_tier' => $request->yard_tier,
                     'ctr_intern_status' => ($item->ctr_intern_status === '02' || $item->ctr_intern_status === '03') ? '03' : (($item->ctr_intern_status === '50') ? '51' : $item->ctr_intern_status),
-                    'wharf_yard_oa' => $request->wharf_yard_oa,
+                    'wharf_yard_oa' =>  $opr->name,
+                    'alat_yard' => $alat->name,
+                    'ht_no' => $truck->name ?? $item->ht_no ?? null,
+                    'ht_driver' => $supir->name ?? $item->ht_driver ?? null,
+                    
                 ]);
 
                 $act_alat = ActAlat::create([
                     'id_alat' =>  $request->alat,
                     'category' => $alat->category,
                     'nama_alat' => $alat->name,
-                    'operator' => $request->operator,
+                    'operator_id'=>$request->operator,
+                    'operator' => $opr->name,
                     'container_key' => $request->container_key,
                     'container_no' => $request->container_no,
                     'activity' => 'PLC',
                 ]);
+                if ($item->ctr_intern_status == '03') {
+                   $ket = "DISCH TO PLC";
+                }else {
+                    $ket = "PLC TO LOAD";
+                }
 
+                $actOper = ActOper::create([
+                    'alat_id' =>$request->alat,
+                    'alat_category' =>$alat->category,
+                    'alat_name'  =>$alat->name,
+                    'operator_id'=>$request->operator,
+                    'operator_name'=>$opr->name,
+                    'container_key'=>$item->container_key,
+                    'container_no'=>$item->container_no,
+                    'ves_id'=>$item->ves_id,
+                    'ves_name'=>$item->ves_name,
+                    'voy_no'=>$item->voy_no,
+                    'activity' =>'PLC',
+                ]);
 
-                $client = new Client();
-
-                $fields = [
-                    "container_key" => $request->container_key,
-                    "ctr_intern_status" => ($item->ctr_intern_status === '02' || $item->ctr_intern_status === '03') ? '03' : (($item->ctr_intern_status === '50') ? '51' : $item->ctr_intern_status),
-                    'yard_block' => $request->yard_block,
-                    'yard_slot' => $request->yard_slot,
-                    'yard_row' => $request->yard_row,
-                    'yard_tier' => $request->yard_tier,
-                ];
-                // dd($fields, $item->getAttributes());
-
-                $url = getenv('API_URL') . '/delivery-service/container/confirmPlacement';
-                $req = $client->post(
-                    $url,
-                    [
-                        "json" => $fields
-                    ]
-                );
-                $response = $req->getBody()->getContents();
-                $result = json_decode($response);
-
-                // dd($result);
-                if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-                    $item->save();
+                if (!empty($request->truck)) {
+                    $actTruck = ActAlat::create([
+                        'id_alat' =>  $request->truck,
+                        'category' => $truck->category,
+                        'nama_alat' => $truck->name,
+                        'operator_id'=>$request->supir,
+                        'operator' => $supir->name,
+                        'container_key' => $request->container_key,
+                        'container_no' => $request->container_no,
+                        'activity' => $ket,
+                    ]);
+    
+                   
+    
+                    $actSupir = ActOper::create([
+                        'alat_id' =>$request->truck,
+                        'alat_category' =>$truck->category,
+                        'alat_name'  => $truck->name,
+                        'operator_id'=>$request->supir,
+                        'operator_name'=>$supir->name,
+                        'container_key'=>$item->container_key,
+                        'container_no'=>$item->container_no,
+                        'ves_id'=>$item->ves_id,
+                        'ves_name'=>$item->ves_name,
+                        'voy_no'=>$item->voy_no,
+                        'activity' =>$ket,
+                    ]);
+                }
+               
 
                     return response()->json([
                         'success' => 400,
                         'message' => 'updated successfully!',
                         'data'    => $item,
                     ]);
-                } else {
-                    return back();
-                }
+             
             }
         } else {
             return response()->json([
@@ -307,14 +369,35 @@ class PlacementController extends Controller
 
     public function change(Request $request)
     {
-        $id = $request->container_key;
-        $item = Item::where('container_key', '=', $id)->first();
+         // return response()->json(['container_no' => 'data tidak ditemukan', 'job' => 'data tidak ditemukan', 'invoice' => 'data tidak ditemukan']);
+         $client = new Client();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Updated successfully!',
-            'data' => $item,
-        ]);
+         $fields = [
+             "container_key" => $request->container_key,
+         ];
+         // dd($fields, $item->getAttributes());
+ 
+         $url = getenv('API_URL') . '/delivery-service/job/single/'. $request->container_key;
+         $req = $client->get(
+             $url
+             
+             
+             
+         );
+         $response = $req->getBody()->getContents();
+         $result = json_decode($response);
+         // var_dump($response);
+         // die();
+         // dd($result);
+         if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+             // $item->save();
+ 
+             echo $response;
+         } else {
+             return response()->json(['container_no' => 'data tidak ditemukan', 'job' => 'data tidak ditemukan', 'invoice' => 'data tidak ditemukan']);
+         }
+
+       
     }
 
     public function place_mty(Request $request)
@@ -324,35 +407,76 @@ class PlacementController extends Controller
 
         if ($item) {
 
-            $mty = $request->mty_type;
-            if ($mty === '03') {
+            $mty = $request->order_service;
+            if ($mty === 'mtiks') {
+             
                 $item->update([
-                    'ctr_intern_status' => '08',
-                    'mty_type' => $request->mty_type,
+                    'ctr_intern_status' => '10',
+                    'order_service' => $request->order_service,
                     'ves_id' => null,
                     'ves_name' => null,
                     'ves_code' => null,
                     'voy_no' => null,
                 ]);
+              
                 $client = new Client();
 
                 $fields = [
                     "container_key" => $request->container_key,
-                    "ctr_intern_status" => "08",
-                    "mty_type" => $request->mty_type,
-                    "ves_id" => null,
-                    "ves_name" => null,
-                    "ves_code" => null,
-                    "voy_no" => null,
+                    "jobId" => $request->id,
+                    "ctr_intern_status" => "10",
+                 
                 ];
+
+                $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
+                $req = $client->post(
+                    $url,
+                    [
+                        "json" => $fields
+                    ]
+                );
+                $response = $req->getBody()->getContents();
+                $result = json_decode($response);
+    
+                // dd($result); 
+                var_dump($result);
+                die();
+                if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+    
+    
+                    return response()->json([
+                        'success' => 400,
+                        'message' => 'updated successfully!',
+                        'data'    => $item,
+                    ]);
+                } else {
+                    return back();
+                }
+
             } else {
+                $id_alat = $request->alat;
+                $alat = MasterAlat::where('id', $id_alat)->first();
                 $item->update([
-                    'ctr_intern_status' => '08',
+                    'ctr_intern_status' => '51',
                     'mty_type' => $request->mty_type,
                     'ves_id' => $request->ves_id,
                     'ves_name' => $request->ves_name,
                     'ves_code' => $request->ves_code,
                     'voy_no' => $request->voy_no,
+                    'yard_block' => $request->yard_block,
+                    'yard_slot' => $request->yard_slot,
+                    'yard_row' => $request->yard_row,
+                    'yard_tier' => $request->yard_tier,
+                ]);
+
+                $act_alat = ActAlat::create([
+                    'id_alat' =>  $request->alat,
+                    'category' => $alat->category,
+                    'nama_alat' => $alat->name,
+                    'operator' => $request->operator,
+                    'container_key' => $request->container_key,
+                    'container_no' => $request->container_no,
+                    'activity' => 'PLC',
                 ]);
 
                 $ves_id = $request->ves_id;
@@ -362,8 +486,8 @@ class PlacementController extends Controller
 
                 $fields = [
                     "container_key" => $request->container_key,
-                    "ctr_intern_status" => "08",
-                    "mty_type" => $request->mty_type,
+                    "jobId" => $request->id,
+                    "ctr_intern_status" => "51",
                     "ves_id" => $request->ves_id,
                     "ves_name" => $request->ves_name,
                     "ves_code" => $request->ves_code,
@@ -371,33 +495,39 @@ class PlacementController extends Controller
                     "departure_date" => $kapal->deparature_date,
                     "closing_date" => $kapal->clossing_date,
                     "arrival_date" => $kapal->arrival_date,
+                    'yard_block' => $request->yard_block,
+                    'yard_slot' => $request->yard_slot,
+                    'yard_row' => $request->yard_row,
+                    'yard_tier' => $request->yard_tier,
                 ];
+
+                $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
+                $req = $client->post(
+                    $url,
+                    [
+                        "json" => $fields
+                    ]
+                );
+                $response = $req->getBody()->getContents();
+                $result = json_decode($response);
+    
+                // dd($result);
+                if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
+    
+    
+                    return response()->json([
+                        'success' => 400,
+                        'message' => 'updated successfully!',
+                        'data'    => $item,
+                    ]);
+                } else {
+                    return back();
+                }
             }
 
             // dd($fields, $item->getAttributes());
 
-            $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
-            $req = $client->post(
-                $url,
-                [
-                    "json" => $fields
-                ]
-            );
-            $response = $req->getBody()->getContents();
-            $result = json_decode($response);
-
-            // dd($result);
-            if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-
-
-                return response()->json([
-                    'success' => 400,
-                    'message' => 'updated successfully!',
-                    'data'    => $item,
-                ]);
-            } else {
-                return back();
-            }
+          
         }
     }
 }

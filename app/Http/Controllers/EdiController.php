@@ -310,24 +310,26 @@ class EdiController extends Controller
      public function upload(Request $request)
 {
     
-        $file = $request->file('excel');
+    $path = $request->file('excel');
+    
+    $vesselVoyage = VVoyage::where('ves_id', $request->ves_id)->first();
+    $ves_name = $vesselVoyage->ves_name;
+    $voy_no = $vesselVoyage->voy_out;
+    $ves_code = $vesselVoyage->ves_code;
 
-        $namaFile = $file->getClientOriginalName();
-        $file ->move('BapleiXCL', $namaFile);
+    $import = new BapleiExc(
+        $request->ves_id, 
+        $request->user_id,
+        $ves_name,
+        $voy_no,
+        $ves_code
+    );
 
-        $vesselVoyage = VVoyage::where('ves_id', $request->ves_id)->first();
-        $ves_name = $vesselVoyage->ves_name;
-        $voy_no = $vesselVoyage->voy_out;
-        $ves_code = $vesselVoyage->ves_code;
-        $import = new BapleiExc($request->ves_id, $request->user_id,
-                                $ves_name,
-                                $voy_no,
-                                $ves_code,);
 
-        Excel::import($import, public_path('/BapleiXCL/' . $namaFile));
+        Excel::import($import, $path->getRealPath(),  null, 'Xlsx');
         
  
-         return back();
+         return back()->with('success')->with('success', 'Data berhasil diimpor.');
    
 }
 

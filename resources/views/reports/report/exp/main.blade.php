@@ -83,6 +83,7 @@
                             <th>Size</th>
                             <th>Type</th> 
                             <th>status </th>  
+                            <th>Tanggal Masuk</th>
                             <th>Bay Row Tier</th>
                         </tr>
                     </thead>
@@ -153,6 +154,7 @@
                             newRow.append('<td>' + cont.ctr_size + '</td>');
                             newRow.append('<td>' + cont.ctr_type + '</td>');
                             newRow.append('<td>' + cont.ctr_status + '</td>');
+                            newRow.append('<td>' + cont.truck_in_date + '</td>');
                             newRow.append('<td>' + cont.bay_slot + cont.bay_row + cont.bay_tier + '</td>');
                           
                             tableBody.append(newRow);

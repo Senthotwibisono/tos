@@ -25,14 +25,7 @@ class Gato extends Controller
     public function index()
     {
         $title = 'Gate Out Delivery';
-        $confirmed = Item::where('ctr_intern_status', '=', '09',)->orWhere(function ($subquery){
-                            $subquery->where('ctr_intern_status', ['03','04'])
-                                        ->where(function ($subsubquery) {
-                                            $subsubquery->where('order_service', 'spps')
-                                                ->orWhere('order_service', 'sppsrelokasipelindo')
-                                                ->whereNotNull('truck_out_date');
-                                            });
-                        })->orderBy('update_time', 'desc')->get();
+        $confirmed = Item::where('ctr_intern_status', '=', '09',)->orderBy('update_time', 'desc')->get();
         $formattedData = [];
         $data = [];
 
@@ -60,14 +53,7 @@ class Gato extends Controller
                 'container_key' => $tem->container_key
             ];
         }
-        $containerKeys = Item::where('ctr_intern_status', '10')->whereNotNull('truck_no')->orWhere(function ($subquery){
-                                $subquery->where('ctr_intern_status', ['03','04'])
-                                            ->where(function ($subsubquery) {
-                                                $subsubquery->where('order_service', 'spps')
-                                                    ->orWhere('order_service', 'sppsrelokasipelindo')
-                                                    ->whereNotNull('truck_no')->whereNotNull('truck_in_date');
-                                                });
-                            })->pluck('container_no', 'container_key');
+        $containerKeys = Item::whereIn('ctr_intern_status', ['10', '04'])->whereNotNull('truck_no')->whereNotNull('truck_in_date')->whereNotNull('job_no')->get();
         $users = User::all();
         $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
         $yard_slot = Yard::distinct('yard_slot')->pluck('yard_slot');
@@ -110,9 +96,8 @@ class Gato extends Controller
                 'container_key' => $tem->container_key
             ];
         }
-        $containerKeys = Item::where('ctr_intern_status', '10')
-            ->whereNotNull('truck_no')
-            ->pluck('container_no', 'container_key');
+        $containerKeys = Item::whereIn('ctr_intern_status', ['10', '04'])->whereNotNull('truck_no')->whereNotNull('truck_in_date')->whereNotNull('job_no')->get();
+
         $users = User::all();
         $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
         $yard_slot = Yard::distinct('yard_slot')->pluck('yard_slot');
@@ -165,29 +150,19 @@ class Gato extends Controller
 
         if ($item->truck_no === $request->truck_no) {
             if ($item->bc_flag != 'HOLD') {
-                if ($item->order_service === 'sp2iks') {
+                if ($item->order_service === 'SP2IKS') {
                     $item->update([
                         'ctr_intern_status' => '11',
                         'truck_no' => $request->truck_no,
                         'truck_out_date' => $request->truck_out_date,
                         'ctr_active_yn' => 'N',
                     ]);
-                    $client = new Client();
-
-                    $fields = [
-                        "container_key" => $request->container_key,
-                        "ctr_intern_status" => "11",
-                    ];
-                } elseif (($item->order_service === 'spps') || $item->order_service === 'sppsrelokasipelindo') {
+                   
+                } elseif (($item->order_service === 'SPPS') || $item->order_service === 'SP2RELOKASI') {
                     $item->update([
                         'truck_no' => $request->truck_no,
                         'truck_out_date' => $request->truck_out_date,
                     ]);
-                    $client = new Client();
-
-                    $fields = [
-                        "container_key" => $request->container_key,
-                    ];
                 }
                  else {
                     $item->update([
@@ -196,42 +171,19 @@ class Gato extends Controller
                         'truck_out_date' => $request->truck_out_date,
                         'ctr_active_yn' => 'N',
                     ]);
-                    $client = new Client();
-
-                    $fields = [
-                        "container_key" => $request->container_key,
-                        "ctr_intern_status" => "09",
-                    ];
+                   
                 }
 
 
                 // dd($fields, $item->getAttributes());
 
-                $url = getenv('API_URL') . '/delivery-service/container/confirmGateIn';
-                $req = $client->post(
-                    $url,
-                    [
-                        "json" => $fields
-                    ]
-                );
-                $response = $req->getBody()->getContents();
-                $result = json_decode($response);
-                // var_dump($result);
-                // die();
-                if ($req->getStatusCode() == 200 || $req->getStatusCode() == 201) {
-                    // $item->save();
-
+              
                     return response()->json([
                         'success' => true,
                         'message' => 'updated successfully!',
                         'data'    => $item,
                     ]);
-                } else {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Nomor Truck Berbeda Pada Saat Gate In !!',
-                    ]);
-                }
+              
             } else {
                 return response()->json([
                     'success' => false,
@@ -355,7 +307,7 @@ class Gato extends Controller
         ]);
 
 
-        if ($item->truck_no === $request->truck_no) {
+        if ($item) {
             $item->update([
                 'truck_no' => $request->truck_no,
                 'truck_out_date' => $request->truck_out_date,

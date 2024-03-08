@@ -81,7 +81,12 @@
                         <div class="col-12">
                             <div class="form-group">
                                 <label for="first-name-vertical">Op Alat</label>
-                                <input type="text" id="operator" class="form-control" name="cc_tt_oper" required>
+                                <select class="choices form-select" id="operator">
+                                    <option disabeled selected value>Pilih Satu!</option>
+                                    @foreach($operator as $opr)
+                                    <option value="{{$opr->id}}">{{$opr->name}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="col-12">
@@ -179,75 +184,38 @@
 <script src="{{asset('dist/assets/extensions/sweetalert2/sweetalert2.min.js')}}"></script>
 <script src="{{asset('dist/assets/js/pages/sweetalert2.js')}}"></script>
 
-<script>
-     $(function() {
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
 
-    $(function() {
-        const selectContainer = new Choices(document.querySelector('#container_key'), {
-            // Opsi dan pengaturan Choices.js sesuai kebutuhan
-        });
-
-        $("#id_kapal").change(function() {
-            let ves_id = $('#id_kapal').val();
-
-            $.ajax({
-                type: 'POST',
-                url: '/get-con-disch',
-                data: {
-                    ves_id: ves_id
-                },
-                cache: false,
-
-                success: function(msg) {
-                    let res = msg;
-                    var len = res.length;
-                    var choicesArray = []; // Array untuk menyimpan pilihan-pilihan baru
-                    for (let i = 0; i < len; i++) {
-                        let id = res[i].value;
-                        let nama = res[i].text;
-                        choicesArray.push({ value: id, label: nama }); // Tambahkan pilihan baru ke dalam array
-                    }
-                    selectContainer.clearChoices(); // Hapus pilihan-pilihan saat ini
-                    selectContainer.setChoices(choicesArray, 'value', 'label', false); // Atur pilihan-pilihan baru
-                },
-                error: function(data) {
-                    console.log('error:', data)
-                },
-            });
-        });
-    });
-});
-</script>
 <script>
    
     $(document).ready(function() {});
-    $(document).on('click', '.update_status', function(e) {
-        e.preventDefault(); // membatalkan perilaku default dari tombol submit
-        // Menetapkan nilai input field pada saat modal ditampilkan
-       
-        $('#operator').val(localStorage.getItem('operator'));
-
-    });
-    // $(document).on('keyup', '#no_alat', function() {
-    //     localStorage.setItem('no_alat', $(this).val());
-    // });
-    $(document).on('keyup', '#operator', function() {
-        localStorage.setItem('operator', $(this).val());
-    });
-
 
     $(document).on('click', '.update_status', function(e) {
         e.preventDefault();
         var container_key = $('#container_key').val();
+        var alat = $('#no_alat').val();
+        var oper = $('#operator').val();
+        if (!alat) {
+        // If any of the required fields are empty, show an error message and return
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Nomor Alat Belum Diisi, cek kembali Ya !!',
+        });
+        return;
+        }
+        if (!oper) {
+        // If any of the required fields are empty, show an error message and return
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Operator Belum Diisi, cek kembali Ya !!',
+        });
+        return;
+        }
         var data = {
             'container_key': $('#container_key').val(),
             'container_no': $('#container_no').val(),
-            'cc_tt_oper': $('#operator').val(),
+            'operator': $('#operator').val(),
             'cc_tt_no': $('#no_alat').val(),
             'wharf_yard_oa': $('#user').val(),
             'disc_date': $('#tanggal').val(),
@@ -304,7 +272,7 @@
             window.location.reload();
         }).then(() => {
             // Buka modal "success" setelah halaman dimuat ulang
-            $('#success').modal('show');
+            
         });
                             } else {
                               Swal.fire({
@@ -386,6 +354,50 @@
             });
         });
     });
+</script>
+<script>
+     $(function() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $(function() {
+        const selectContainer = new Choices(document.querySelector('#container_key'), {
+            // Opsi dan pengaturan Choices.js sesuai kebutuhan
+        });
+
+        $("#id_kapal").change(function() {
+            let ves_id = $('#id_kapal').val();
+
+            $.ajax({
+                type: 'POST',
+                url: '/get-con-disch',
+                data: {
+                    ves_id: ves_id
+                },
+                cache: false,
+
+                success: function(msg) {
+                    let res = msg;
+                    var len = res.length;
+                    var choicesArray = []; // Array untuk menyimpan pilihan-pilihan baru
+                    for (let i = 0; i < len; i++) {
+                        let id = res[i].value;
+                        let nama = res[i].text;
+                        choicesArray.push({ value: id, label: nama }); // Tambahkan pilihan baru ke dalam array
+                    }
+                    selectContainer.clearChoices(); // Hapus pilihan-pilihan saat ini
+                    selectContainer.setChoices(choicesArray, 'value', 'label', false); // Atur pilihan-pilihan baru
+                },
+                error: function(data) {
+                    console.log('error:', data)
+                },
+            });
+        });
+    });
+});
 </script>
 
 @endsection

@@ -73,13 +73,10 @@
               <div class="form-group">
                 <label for="first-name-vertical">Choose Container Number</label>
                 <select class="choices form-select" id="key" name="container_key" required>
-                  <option value="">Select Container</option>
-                  <?php
-                  foreach ($jobContainers->containers as $value) { ?>
-                    <?php if (($value->jobContainer->ctr_intern_status == "03"  || $value->jobContainer->ctr_intern_status == "04") &&($value->jobContainer->orderService == "spps" || $value->jobContainer->orderService == "sppsrelokasipelindo")) { ?>
-                      <option value="<?= $value->jobContainer->container_key ?>"><?= $value->jobContainer->container_no ?></option>
-                    <?php } ?>
-                  <?php } ?>
+                  <option disabeled selected value>Select Container</option>
+                 @foreach($containerStr as $cont)
+                 <option value="{{$cont->container_key}}">{{$cont->container_no}}</option>
+                 @endforeach
                 </select>
                 <input type="hidden" id="container_no" class="form-control" name="container_no">
                 <input type="hidden" id="container_key" class="form-control" name="container_key" readonly>
@@ -241,6 +238,15 @@
         var yard_raw = $('#raw').val();
         var yard_tier = $('#tier').val();
         var id_alat = $('#alat').val();
+        if (!id_alat) {
+        // If any of the required fields are empty, show an error message and return
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Alat Belum Diisi, cek kembali Ya !!',
+        });
+        return;
+        }
         var data = {
           'container_key': $('#container_key').val(),
           'container_no': $('#container_no').val(),

@@ -62,13 +62,9 @@
           <div class="col-6">
             <select class="choices form-control" name="container_key" id="container">
               <option value="" disabled values selected>Select Container</option>
-              <?php
-              foreach ($jobContainers->containers as $value) { ?>
-                <?php if (($value->jobContainer->ctr_intern_status == "11") || ($value->jobContainer->ctr_intern_status == "15" && $value->jobContainer->billingName == "DS")) { ?>
-                  <option value="<?= $value->jobContainer->container_key ?>"><?= $value->jobContainer->container_no ?></option>
-                <?php } ?>
-              <?php } ?>
-
+              @foreach($item as $tem)
+              <option value="{{$tem->container_key}}">{{$tem->container_no}}</option>
+              @endforeach
             </select>
 
           </div>
@@ -83,11 +79,11 @@
           </div>
           <div class="col-3">
             <label for="">Invoice No</label>
-            <input type="text" class="form-control" id="invoice">
+            <input type="text" class="form-control" id="invoice" readonly>
           </div>
           <div class="col-3">
             <label for="">Job No</label>
-            <input type="text" class="form-control" id="job">
+            <input type="text" class="form-control" id="job" readonly>
           </div>
         </div>
         <br>
@@ -137,13 +133,13 @@
               <td>{{$loop->iteration}}</td>
               <td>{{$itm->container_no}}</td>
               <td>
-                @if($itm->order_service === 'sp2iks')
+                @if($itm->order_service === 'SP2IKS')
                 SP2 Kapal Sandar Icon (MT Balik IKS / MKB)
                 @endif
-                @if($itm->order_service === 'sp2icon')
+                @if($itm->order_service === 'SP2RELOKASI')
                 SP2 Relokasi Pelindo
                 @endif
-                @if($itm->order_service === 'sppsrelokasipelindo')
+                @if($itm->order_service === 'SPPSRELOKASI')
                 SPPS (Relokasi Pelindo - ICON)
                 @endif
               </td>
@@ -166,12 +162,7 @@
       e.preventDefault();
       var container_key = $('#container').val();
       var data = {
-        'container_key': $('#container').val(),
-        'order_service': $('#orderserviceCode').val(),
-        'job_no': $('#job').val(),
-        'invoice_no': $('#invoice').val(),
-        'jenis_dok': $('#dok').val(),
-        'no_dok': $('#jenisDok').val(),
+        'container_key': $('#container').val(),  
         'truck_no': $('#truck').val(),
 
 
@@ -260,30 +251,11 @@
               container_key: id
             },
             success: function(response) {
-              let res = JSON.parse(response);
-              let job = res.data.containers[0].findContainer;
-              let delivery = res.data.containers[0].deliveryForm;
               // console.log(res);
-              $('#job').val(job.jobNumber);
-              $('#invoice').val(job.invoiceNumber);
-              $('#orderserviceCode').val(job.orderService);
-              $('#orderservice').val(job.orderService);
+              $('#job').val(response.data.job_no);
+              $('#invoice').val(response.data.invoice_no);
+              $('#orderservice').val(response.data.order_service);
 
-              if (job.orderService === "sp2iks") {
-                $('#orderservice').val("SP2 Kapal Sandar Icon (MT Balik IKS)");
-              } else if (job.orderService === "sp2mkb") {
-                $('#orderservice').val("SP2 Kapal Sandar icon (MKB)");
-              } else if (job.orderService === "sp2pelindo") {
-                $('#orderservice').val("SP2 Kapal Sandar Icon (MT Balik Pelindo)");
-              } else if (job.orderService === "spps") {
-                $('#orderservice').val("SPPS");
-              } else if (job.orderService === "sppsrelokasipelindo") {
-                $('#orderservice').val("SPPS (Relokasi Pelindo - ICON)");
-              } else if (job.orderService === "sp2icon") {
-                $('#orderservice').val("SP2 (Relokasi Pelindo - Icon)");
-              }
-              $('#dok').val(delivery.documentNumber);
-              $('#jenisDok').val(delivery.documentType);
             },
             error: function(data) {
               console.log('error:', data);

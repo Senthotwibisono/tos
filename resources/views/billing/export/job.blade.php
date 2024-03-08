@@ -135,15 +135,15 @@
               <h3 class="bold">SURAT PENYERAHAN PETIKEMAS (SP2)</h3>
             </div>
             <div class="col-5" style="margin-left: 50px;">
-              <h5 class="lead">No. Petikemas :</h5>
-              <h5 class="lead">Ukuran / Statu :</h5>
-              <h5 class="lead">Ex. Kapal / Voyage :</h5>
-              <h5 class="lead">Agen :</h5>
-              <h5 class="lead">Lokasi dilapangan :</h5>
-              <h5 class="lead">Penerima / Consignee :</h5>
-              <h5 class="lead">Tujuan :</h5>
-              <h5 class="lead">Remark :</h5>
-              <h5 class="lead">No. Kendaraan :</h5>
+              <h5 class="lead">No. Petikemas : <?= $containerItem->container_no ?? "" ?></h5>
+              <h5 class="lead">Ukuran / Statu : <?= $containerItem->ctr_size ?? "" ?></h5>
+              <h5 class="lead">Ex. Kapal / Voyage : <?= $containerItem->ves_name ?? ""  ?></h5>
+              <h5 class="lead">Agen : <?= $containerItem->agent ?? "" ?></h5>
+              <h5 class="lead">Lokasi dilapangan : <?= $containerItem->yard_block != "" ? $containerItem->yard_block . " /" : "" ?> <?= $containerItem->yard_slot != "" ? $containerItem->yard_slot . " /" : "" ?> <?= $containerItem->yard_row != "" ? $containerItem->yard_row . " /" : "" ?> <?= $containerItem->yard_tier != "" ? $containerItem->yard_tier : "" ?></h5>
+              <h5 class="lead">Penerima / Consignee : <?= $containerItem->consignee ?></h5>
+              <h5 class="lead">Tujuan : </h5>
+              <h5 class="lead">Remark : </h5>
+              <h5 class="lead">No. Kendaraan : <?= $containerItem->truck_no ?? "" ?></h5>
             </div>
             <div class="col-5" style="margin-left: 100px;">
               <style>
@@ -159,12 +159,12 @@
                 }
               </style>
               <h5 class="lead">Cek <span class="rectangle"></span></h5>
-              <h5 class="lead">O/H. O/W. Temp :</h5>
-              <h5 class="lead">Tgl. Tiba :</h5>
-              <h5 class="lead">No. B/L :</h5>
-              <h5 class="lead">No. D.O :</h5>
-              <h5 class="lead">Pembayaran dari Tgl. :</h5>
-              <h5 class="lead">s/d Tgl. :</h5>
+              <h5 class="lead">O/H. O/W. Temp : <?= $containerItem->over_height ?> / <?= $containerItem->over_weight ?></h5>
+              <h5 class="lead">Tgl. Tiba : <?= dateFormat($container->arrival_date) ?></h5>
+              <h5 class="lead">No. B/L : <?= $containerItem->bl_no ?? "" ?></h5>
+              <h5 class="lead">No. B.O : <?= $invoice->deliveryForm->booking_no ?? "" ?></h5>
+              <h5 class="lead">Pembayaran dari Tgl. : <?= dateFormat($invoice->deliveryForm->createdAt) ?></h5>
+              <h5 class="lead">s/d Tgl. : <?= dateFormat($delivery->exp_date) ?></h5>
 
             </div>
           </div>
@@ -195,13 +195,13 @@
           </div>
           <div class="row mt-4">
             <div class="col-4">
-              <h5 class="bold">Seal Nomor :</h5>
-              <h4 class="bold">KETERANGAN TAMBAHAN :</h4>
+              <h5 class="bold">Seal Nomor : <?= $containerItem->seal_no ?? "" ?></h5>
+              <h4 class="bold">KETERANGAN TAMBAHAN : </h4>
               <br>
               <br>
               <br>
               <br>
-              <p class="bold">PENERIMA :</p>
+              <p class="bold">PENERIMA : </p>
               <br>
               <br>
               <br>
@@ -213,7 +213,7 @@
             </div>
             <div class="col-4" style="padding-top : 150px;">
 
-              <p class="bold">PETUGAS PINTU :</p>
+              <p class="bold">PETUGAS PINTU : </p>
               <br>
               <br>
               <br>

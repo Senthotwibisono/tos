@@ -63,8 +63,8 @@
                                 <label for="first-name-vertical">Choose Container Number</label>
                                 <select class="choices form-select" id="key" name="container_key" required>
                                     <option value="">Select Container</option>
-                                    @foreach($containerKeys as $containerKey => $containerNo)
-                                    <option value="{{ $containerKey }}">{{ $containerNo }}</option>
+                                    @foreach($containerKeys as $cont)
+                                    <option value="{{ $cont->container_key }}">{{ $cont->container_no }}</option>
                                     @endforeach
                                 </select>
                                 <input type="hidden" id="container_no" class="form-control" name="container_no">
@@ -128,6 +128,15 @@
         var container_no = $('#container_no').val();
         var truck_no = $('#tayo').val();
         var truck_out_date = $('#dateout').val();
+        if (!truck_no) {
+        // If any of the required fields are empty, show an error message and return
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Nomor Truck Belum Diisi, cek kembali Ya !!',
+        });
+        return;
+        }
         var data = {
             'container_key': $('#key').val(),
             'container_no': $('#container_no').val(),

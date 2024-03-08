@@ -12,6 +12,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\DataExport;
 use App\Models\VVoyage;
+use App\Models\Item;
 
 
 class BillingExportController extends Controller
@@ -94,6 +95,16 @@ class BillingExportController extends Controller
     // dd($result_ro);
     $data["ro"] = $result_ro->data;
 
+
+    // GET ALL DO NUMBER
+    $url_do = getenv('API_URL') . '/delivery-service/do/groupall';
+    $req_do = $client->get($url_do);
+    $response_do = $req_do->getBody()->getContents();
+    $result_do = json_decode($response_do);
+    // dd($result_do);
+
+    $data["do"] = $result_do->data;
+
     $data["booking"] = $result_booking->data;
     $data["vessel"] = $vessel_voyage;
     $data["customer"] = $result_customer->data;
@@ -132,6 +143,9 @@ class BillingExportController extends Controller
       "documentDate" => $documentDate,
 
     ];
+    if ($order_service == "lolomt") {
+      $fields["do_number"] = $request->do_number ?? $request->do_number_auto;
+    }
     if ($bookingno != null) {
       $fields["booking_no"] = $bookingno;
     } else {
@@ -452,14 +466,26 @@ class BillingExportController extends Controller
     $response_single_job = $req_single_job->getBody()->getContents();
     $result_single_job = json_decode($response_single_job);
     // dd($result_single_job);
+    $jobData = $result_single_job->data;
 
+    // GET SINGLE CONTAINER 
+    $url_single_container = getenv('API_URL') . '/delivery-service/container/single/' . $jobData->containers[0]->findContainer->containerID;
+    $req_single_container = $client->get($url_single_container);
+    $response_single_container = $req_single_container->getBody()->getContents();
+    $result_single_container = json_decode($response_single_container);
+    // dd($result_single_container);
 
     $jobData = $result_single_job->data;
     // dd($jobData);
-    $qrcodes = QrCode::size(100)->generate($jobData->containers[0]->jobContainer->container_no);
+    $container = Item::where('container_key', '=', $jobData->containers[0]->findContainer->container_key,)->get();
+    $data["containerItem"] = $container[0];
+    // dd($container[0]->ves_name);
+    // dd($jobData);
+    $qrcodes = QrCode::size(100)->generate($jobData->containers[0]->findContainer->container_no);
     // dd($qrcodes);
-    $data["job"] = $jobData->containers[0]->jobContainer;
+    $data["job"] = $jobData->containers[0]->findContainer;
     $data["invoice"] = $result_single_invoice->data;
+    $data["container"] = $result_single_container->data;
     $data["delivery"] = $result_single_invoice->data->deliveryForm;
     $data["title"] = "Job Page | Icon Sarana";
     return view('billing.export.job', $data, compact('qrcodes'));

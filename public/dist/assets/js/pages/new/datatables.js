@@ -40,6 +40,12 @@ $(function() {
 	            { data: 'operation_name', name: 'operation_name' },
 	            { data: 'ctr_status', name: 'ctr_status' },
 	            { data: 'ctr_intern_status', name: 'ctr_intern_status' },
+	            { data: 'yard_blok', name: 'yard_block' },
+	            { data: 'yard_slot', name: 'yard_slot' },
+	            { data: 'yard_row', name: 'yard_row' },
+	            { data: 'yard_tier', name: 'yard_tier' },
+	            { data: 'oper_name', name: 'oper_name' },
+	            { data: 'update_time', name: 'update_time' },
 	        ],
 //	        order: [[0, 'asc']]
  	    });

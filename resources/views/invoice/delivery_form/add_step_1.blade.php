@@ -62,7 +62,7 @@
               <h5>Information Shipping Agent</h5>
               <p>Masukan Data Shipping dan Pilih Metode Do Checking</p>
             </div>
-
+            <!-- update  -->
             <?php
             if ($user == "2") { ?>
               <div class="col-12 col-md-4" id="do_manual">

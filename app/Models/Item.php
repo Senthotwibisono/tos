@@ -114,6 +114,9 @@ class item extends Model
         'ro_no',
         'stuffing_procces',
         'mty_type',
+        'selected_do',
+        'booking_no',
+        'alat_yard',
     ];
 
     public function job()
