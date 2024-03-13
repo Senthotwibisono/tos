@@ -1,18 +1,22 @@
 @extends('partial.main')
 @section('custom_styles')
 <style>
-    .kotak {
-            width: 110px;
-            height: 40px;
-            background-color: #F5F5F5;
-            margin: 06px;
-            float: left;
-            text-align: center;
-            line-height: 40px;
-            border-radius: 8px; /* Mengatur radius sudut kotak */
-            border: 2px solid #00BFFF; /* Mengatur border dengan warna biru laut */
-            font-size: 12px;
-            
+.tier-container {
+    display: flex;
+    flex-wrap: fixed; /* Mengatur agar kontainer tier bisa terlipat jika ukurannya melebihi lebar kontainer induk */
+    gap: 5px; /* Mengatur jarak antar kotak */
+}
+.kotak {
+        height: 10vh;
+        background-color: #F5F5F5;
+        text-align: center;
+        line-height: 150px;
+        border-radius: 8px; /* Mengatur radius sudut kotak */
+        border: 2px solid #00BFFF; /* Mengatur border dengan warna biru laut */
+        font-size: 10px;
+        flex: 1;
+        margin: 0px;
+       
     }
     .kotak.filled {
             background-color: red;
@@ -50,11 +54,30 @@
         background-color: #fff; /* Warna default */
         border: 1px solid #000; /* Garis pembatas */
     }
+
+    table tr,th, td
+     {
+        border: 1px solid #d2d2d2;
+        border-collapse: collapse;
+        padding: 7px 8px;
+    }
+
+    table tr, th, td {
+        font-size: 15px;
+    }
+
+    table tr td {
+        font-size: 13px;
+    }
+
+    table {
+        border-collapse: collapse;
+    }
 </style>
 @endsection
 
 @section('content')
-<div class="container">
+<div class="">
     <div class="card mt-5">
         <div class="card-header">
           
@@ -64,9 +87,8 @@
                             <span class="input-group-text" id="">Choose Ves Id</span>
                                 <select class="form-select" id="vesid" name="ves_id">
                                     <option value="-">-</option>
-                                    @foreach($item as $itm)
-                                        
-                                    <option value="{{ $itm->ves_id }}">{{ $itm->ves_name }} - {{ $itm->voy_no }}</option>
+                                    @foreach($ves as $kapal)
+                                    <option value="{{ $kapal->ves_id }}" {{ $kapal->ves_id == $vessel ? 'selected' : '' }} >{{ $kapal->ves_name }} - {{ $kapal->voy_out }}</option>
                                     @endforeach
                                 </select>
                         </div>
@@ -74,78 +96,213 @@
                     <div class="col-lg-2 mb-1">
                         <div class="input-group mb-3">
                             <span class="input-group-text">Ves Code</span>
-                            <input type="text" class="form-control" id="code"  name="ves_code" disabled>
+                            <input type="text" class="form-control" id="code" name="ves_code" value="{{ $vessel != null ? $selectedVes->ves_code : '' }}" {{ $vessel != null ? 'disabled' : 'disabled' }}>
                         </div>
                     </div>
                     <div class="col-lg-3 mb-1">
                         <div class="input-group mb-3">
                             <span class="input-group-text">Ves Name</span>
-                            <input type="text" class="form-control" id="name" name="ves_name"  disabled>
+                            <input type="text" class="form-control" id="name" name="ves_name" value="{{ $vessel != null ? $selectedVes->ves_name : '' }}" {{ $vessel != null ? 'disabled' : 'disabled' }}>
                         </div>
                     </div>
+                    @if($vessel != null)
                     <div class="col-lg-2 mb-1">
                          <div class="input-group mb-3">
                              <span class="input-group-text" id="basic-addon2">Choose Bay</span>
                              <select class="form-select" id="bay" name="bay_slot">
-                                    <option value="-">-</option>
-                                </select>
+                                   <option disabeled selected value>Silahkan Pilih Bay</option>
+                                   @foreach($optionBay as $bayVes)
+                                   <option value="{{$bayVes->BAY1}}" {{ $bayVes->BAY1 == $bay ? 'selected' : '' }}>{{$bayVes->BAY1}}</option>
+                                   @endforeach
+                             </select>
                          </div>
                     </div>
+                    @endif
                     <div class="col-lg-1 mb-1">
                         <a href="#" class="btn icon btn-info search"><i class="bi bi-search"></i></i></a>
                     </div>
             </div>
+            @if($vessel != null)
+            <div class="row">
+                <div class="col-2">
+                    <form action="{{ route('dischCetakKapal')}}" method="get" target="_blank">
+                        <input type="hidden" class="form-control"  name="ves_id" value="{{$vessel}}">
+                        <button type="submit" class="btn btn-outline-primary">Cetak Perkapal</button>
+                    </form>
+                </div>
+                @if($bay != null)
+                <div class="col-2">
+                    <form action="{{ route('dischCetakBay')}}" method="get" target="_blank">
+                        <input type="hidden" class="form-control"  name="ves_id" value="{{$vessel}}">
+                        <input type="hidden" class="form-control"  name="bay_slot" value="{{$bay}}">
+                        <button type="submit" class="btn btn-outline-primary">Cetak Per Bay</button>
+                    </form>
+                </div>
+                @endif
+            </div>
+            @endif
            
         </div>
         <hr>
         <div class="card-body">
-        @php
-        $row = 15;
-        $tier = 13;
-        $evenNumbers = [94, 92, 90, 88, 86, 84, 82, 80, 14, 12, 10, 8, 6, 4, 2];
-        $numberIndex = 0;
-    @endphp
-    <table class="table table-hover" id="">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>12</th>
-                                <th>10</th>
-                                <th>08</th>
-                                <th>06</th>
-                                <th>04</th>
-                                <th>02</th>
-                                <th>00</th>
-                                <th>01</th>
-                                <th>03</th>
-                                <th>05</th>
-                                <th>07</th>
-                                <th>09</th>
-                                <th>11</th>
-                            </tr>
-                        </thead>
-                        <tbody>          
-                        @for ($i = $row - 1; $i >= 0; $i--)
-        <div class="row-container">
-            <div class="tier-label left-label">{{$evenNumbers[$numberIndex]}}</div>
+            @if($bay != null && $onDeck != null && $underDeck != null)
+            <div class="card" id="onDeck">
+                <h4><strong>On Deck</strong></h4>
+               <div class="row">
+               @php
+                    $rows = $onDeck->unique('bay_row')->sortByDesc('bay_row');
+                    $tiers = $onDeck->unique('bay_tier')->sortByDesc('bay_tier');
+                @endphp
+                 <table>
+                 <tr>
+                    <th></th>
+                        @foreach($rows as $row)
+                        
+                        <th class="text-center">
+                            @if($row->bay_row % 2 == 0)
+                            <p>{{$row->bay_row }}</p>    
+                            @endif
+                        </th>
+                        @endforeach
+                        @php
+                            $reversedRows =  $onDeck->unique('bay_row')->sortBy('bay_row');
+                        @endphp
+                        @foreach($reversedRows as $row)
+                        <th class="text-center">
+                            @if($row->bay_row % 2 != 0)
+                            <p>{{$row->bay_row}}</p>    
+                            @endif
+                        </th>
+                        @endforeach  
+                    </tr>
+                    @foreach($tiers as $tier)
+                   
+                    
+                    <tr>
+                        <td ><h6>{{ $tier->bay_tier }}</h6></td>
+                        @foreach($rows as $row)
+                        @php
+                            $box = $onDeck->where('bay_row', $row->bay_row)->where('bay_tier', $tier->bay_tier)->first();
+                        @endphp
+                        <td class="text-center">
+                            @if($box && $row->bay_row % 2 == 0)
+                            <div class="kotak{{($box->container_key != null && $box->ctr_i_e_t == 'I') ? ' filled' : ''}}">
+                                @if($box->container_key != null && $box->ctr_i_e_t == "I")
+                                    <p><Strong>{{$box->container_no}}</Strong> <br>
+                                        {{$box->ctr_size}} -- {{$box->ctr_weight}}</p>
+                                @endif
+                                R<strong>{{ $row->bay_row }}</strong> T<strong>{{ $tier->bay_tier }}</strong> 
+                            </div>
+                            @endif
+                        </td>
+                        @endforeach
+                        @php
+                            $reversedRows = $onDeck->unique('bay_row')->sortBy('bay_row');
+                        @endphp
+                        @foreach($reversedRows as $row)
+                        @php
+                            $box = $onDeck->where('bay_row', $row->bay_row)->where('bay_tier', $tier->bay_tier)->first();
+                        @endphp
+                            <td class="text-center">
+                                @if($box && $row->bay_row % 2 != 0)
+                                <div class="kotak{{($box->container_key != null && $box->ctr_i_e_t == 'I') ? ' filled' : ''}}">
+                                @if($box->container_key != null && $box->ctr_i_e_t == "I")
+                                    <p><Strong>{{$box->container_no}}</Strong> <br>
+                                        {{$box->ctr_size}} -- {{$box->ctr_weight}}</p>
+                                @endif
+                                    R<strong>{{ $row->bay_row }}</strong> T<strong>{{ $tier->bay_tier }}</strong> 
+                                </div>
+                                @endif
+                            </td>
+                        @endforeach
+                        <td><h6>{{ $tier->bay_tier}}</h6></td>
+                    </tr>
+          
+                    @endforeach
+                 </table>
+               </div>
+            </div>
 
-            @for ($j = 0; $j < $tier; $j++)
-                <div class="kotak" id=""></div>
-            @endfor
 
-            <div class="tier-label right-label">{{$evenNumbers[$numberIndex]}}</div>
-
-            @php
-                $numberIndex++;
-            @endphp
-        </div>
-    @endfor
-                        </tbody>
-                    </table>
-
-   
-            
-
+            <div class="card" id="underDeck">
+            <h4><strong>Under Deck</strong></h4>
+               <div class="row">
+               @php
+                    $rows = $underDeck->unique('bay_row')->sortByDesc('bay_row');
+                    $tiers = $underDeck->unique('bay_tier')->sortByDesc('bay_tier');
+                @endphp
+                 <table>
+                 <tr>
+                    <th></th>
+                        @foreach($rows as $row)
+                        
+                        <th class="text-center">
+                            @if($row->bay_row % 2 == 0)
+                            <p>{{$row->bay_row }}</p>    
+                            @endif
+                        </th>
+                        @endforeach
+                        @php
+                            $reversedRows =  $underDeck->unique('bay_row')->sortBy('bay_row');
+                        @endphp
+                        @foreach($reversedRows as $row)
+                        <th class="text-center">
+                            @if($row->bay_row % 2 != 0)
+                            <p>{{$row->bay_row}}</p>    
+                            @endif
+                        </th>
+                        @endforeach  
+                    </tr>
+                    @foreach($tiers as $tier)
+                   
+                    
+                    <tr>
+                        <td ><h6>{{ $tier->bay_tier }}</h6></td>
+                        @foreach($rows as $row)
+                        @php
+                            $box = $underDeck->where('bay_row', $row->bay_row)->where('bay_tier', $tier->bay_tier)->first();
+                        @endphp
+                        <td>
+                            @if($box && $row->bay_row % 2 == 0)
+                            <div class="kotak{{($box->container_key != null && $box->ctr_i_e_t == 'I') ? ' filled' : ''}}">
+                                @if($box->container_key != null && $box->ctr_i_e_t == "I")
+                                    <p><Strong>{{$box->container_no}}</Strong> <br>
+                                        {{$box->ctr_size}} -- {{$box->ctr_weight}}</p>
+                                @endif
+                                    R<strong>{{ $row->bay_row }}</strong> T<strong>{{ $tier->bay_tier }}</strong> 
+                                </div>
+                            @endif
+                        </td>
+                        @endforeach
+                        @php
+                            $reversedRows = $underDeck->unique('bay_row')->sortBy('bay_row');
+                        @endphp
+                        @foreach($reversedRows as $row)
+                        @php
+                            $box = $underDeck->where('bay_row', $row->bay_row)->where('bay_tier', $tier->bay_tier)->first();
+                        @endphp
+                            <td>
+                                @if($box && $row->bay_row % 2 != 0)
+                                <div class="kotak{{($box->container_key != null && $box->ctr_i_e_t == 'I') ? ' filled' : ''}}">
+                                    @if($box->container_key != null && $box->ctr_i_e_t == "I")
+                                        <p><Strong>{{$box->container_no}}</Strong> <br>
+                                            {{$box->ctr_size}} -- {{$box->ctr_weight}}</p>
+                                    @endif
+                                    R<strong>{{ $row->bay_row }}</strong> T<strong>{{ $tier->bay_tier }}</strong> 
+                                </div>
+                                @endif
+                            </td>
+                        @endforeach
+                        <td><h6>{{ $tier->bay_tier}}</h6></td>
+                    </tr>
+          
+                    @endforeach
+                 </table>
+               </div>
+            </div>
+            @else
+                <h4><strong>Silahkan Pilih Bay Terlebih Dahulu</strong></h4> 
+            @endif
         </div>
     </div>
 </div>
@@ -157,6 +314,32 @@
 <script src="{{ asset('select2/dist/js/select2.full.min.js') }}"></script>
 <script src="{{asset('dist/assets/extensions/sweetalert2/sweetalert2.min.js')}}"></script>    
 <script src="{{asset('dist/assets/js/pages/sweetalert2.js')}}"></script>
+
+<script>
+    $(document).ready(function () {
+        $('.search').click(function () {
+            var vessel = $('#vesid').val();
+      
+
+            // Now you can use startDate and endDate in your logic or navigation
+            window.location.href = "/disch/view-vessel/"  + vessel;
+        });
+
+    });
+
+</script>
+<script>
+    $(document).ready(function () {
+        $('#bay').change(function () {
+            var vessel = $('#vesid').val();
+            var bay = $('#bay').val();
+      
+            // Redirect to the desired URL with the selected vessel value
+            window.location.href = "/disch/view-vessel/"  + vessel + "/" + bay;
+        });
+    });
+</script>
+
 
 <script>
 // In your Javascript (external .js resource or <script> tag)
@@ -218,137 +401,6 @@ $(function(){
             })
         })
     });
-
-    $(document).on('click', '.search', function(e) {
-        // Memperbarui konten pada card-body ketika form berubah
-        e.preventDefault();
-            var data ={
-                'ves_id': $('#vesid').val(),
-                'bay_slot': $('#bay').val(),
-            }
-            $.ajax({
-                url: "/get-container",
-                type: "GET",
-                data: data,
-                success: function (response) {
-                    updateContainerBoxes(response.item);
-                }
-            });
-        
-
-        // Memperbarui kotak-kotak container
-        function updateContainerBoxes(item) {
-            $('.kotak').removeClass('filled');
-            $('.kotak').text('');
-
-            item.forEach(function (item) {
-                var row = item.bay_tier;
-                var tier = item.bay_row;
-                var containerNo = item.container_no;
-                        switch (tier) {
-                            case '00':
-                                tier = 8;
-                                break;
-                            case '01':
-                                tier = 9;
-                                break;
-                            case '03':
-                                tier = 10;
-                                break;
-                            case '05':
-                                tier = 11;
-                                break;
-                            case '07':
-                                tier = 12;
-                                break;
-                                case '09':
-                                tier = 13;
-                                break;
-                                case '11':
-                                tier = 14;
-                                break;
-                                // genap
-                            case '02':
-                                tier = 7;
-                                break;
-                            case '04':
-                                tier = 6;
-                                break;
-                            case '06':
-                                tier = 5;
-                                break;
-                            case '08':
-                                tier = 4;
-                                break;
-                                case '10':
-                                tier = 3;
-                                break;
-                                case '12':
-                                tier = 2;
-                                break;
-                            default:
-                                
-                            break;
-                    }
-                    switch (row) {
-                            case '02':
-                                row = 15;
-                                break;
-                            case '04':
-                                row = 14;
-                                break;
-                            case '06':
-                                row = 13;
-                                break;
-                            case '08':
-                                row = 12;
-                                break;
-                            case '10':
-                                row = 11;
-                                break;
-                                case '12':
-                                    row = 10;
-                                break;
-                                case '14':
-                                    row = 9;
-                                break;
-                                // 80 ke atas
-                                case '80':
-                                row = 8;
-                                break;
-                            case '82':
-                                row = 7;
-                                break;
-                            case '84':
-                                row = 6;
-                                break;
-                            case '86':
-                                row = 5;
-                                break;
-                            case '88':
-                                row = 4;
-                                break;
-                                case '90':
-                                    row = 3;
-                                break;
-                                case '92':
-                                    row = 2;
-                                break;
-                                case '94':
-                                    row = 1;
-                                break;
-                            default:
-                                
-                            break;
-                    }
-
-                var containerBox = $('.row-container:nth-child(' + row + ') .kotak:nth-child(' + tier + ')');
-                containerBox.text(containerNo);
-                containerBox.addClass('filled');
-            });
-        }
-    });
-
 </script>
 
 @endsection

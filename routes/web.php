@@ -409,10 +409,12 @@ Route::post('/planning/update_bayplanimport', [BayplanImportController::class, '
 Route::delete('/planning/delete_item={container_key}', [BayplanImportController::class, 'delete_item']);
 
 //kotak-kotak
-Route::get('/disch/view-vessel', [DischargeView::class, 'index']);
+Route::get('/disch/view-vessel/{vessel?}/{bay?}', [DischargeView::class, 'index']);
 Route::post('/get-ves', [DischargeView::class, 'get_ves']);
 Route::post('/get-bay', [DischargeView::class, 'get_bay']);
 Route::get('/get-container', [DischargeView::class, 'get_container']);
+Route::get('/cetak-perKapal', [DischargeView::class, 'cetakKapal'])->name('dischCetakKapal');
+Route::get('/cetak-perBay', [DischargeView::class, 'cetakBay'])->name('dischCetakBay');
 
 // Android
 Route::get('/android-dashboard', [AndroidController::class, 'index']);
@@ -621,6 +623,7 @@ route::post('yards/rowtier/get_rowtier', [YardrotController::class, 'get_rowtier
 //Routes Spatie
 Route::middleware('role:admin')->get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 
+// Profil
 Route::get('/profile', [ProfileControllers::class, 'index']);
 Route::post('/update_profile_photo', [ProfileControllers::class, 'profil']);
 
@@ -688,6 +691,10 @@ Route::post('/gato-rec', [Gato::class, 'gato_rec']);
 Route::get('/planning/ship_planning', [ShipPlanController::class, 'index']);
 Route::get('/planning/plan-ves-{ves_id}', [ShipPlanController::class, 'plan']);
 Route::get('/planning/grid', [ProfileKapal::class, 'grid']);
+Route::get('/profile-kapal/get/bay-{ves?}-{bay?}', [ProfileKapal::class, 'bayProfile']);
+Route::post('/profile-tier/update', [ProfileKapal::class, 'updateTier'])->name('updateProfileTier');
+Route::get('/profile-kapal/cetak-{ves?}', [ProfileKapal::class, 'cetakProfile']);
+
 
 // Route for displaying the main profile page
 Route::get('/planning/profile-kapal', [ProfileKapal::class, 'index'])->name('profile-kapal.index');
@@ -898,6 +905,7 @@ Route::get('/invoice/job/export-{id?}', [InvoiceExportController::class, 'JobInv
 
 // Bayplan Load
 Route::get('/load/container_loading', [BayplanDesignController::class, 'index'])->name('Baypkan-Load');
+Route::get('/load/container_loading-{ves?}', [BayplanDesignController::class, 'cetakLoad']);
 
 
 // master operator

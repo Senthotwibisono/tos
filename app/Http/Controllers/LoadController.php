@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\MasterAlat;
 use App\Models\ActAlat;
 use App\Models\Operator;
+use App\Models\Ship;
 use App\Models\ActOper;
 use GuzzleHttp\Client;
 
@@ -234,6 +235,24 @@ class LoadController extends Controller
       'ctr_active_yn' => 'N',
 
     ]);
+
+    $ship = Ship::where('ves_id', $item->ves_id)->where('bay_slot', $request->bay_slot)->where('bay_row', $request->bay_row)->where('bay_tier', $request->bay_tier)->first();
+            if ($ship) {
+             $ship->update([
+                 'container_no'=>$item->container_no,
+                 'container_key'=>$item->container_key,
+                 'ctr_size'=>$item->ctr_size,
+                 'ctr_type'=>$item->ctr_type,
+                 'dangerous_yn'=>$item->dangerous_yn,
+                 'ctr_i_e_t'=> "E",
+             ]);
+            }else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Bay Tidak Ditemukan!',
+                    'data'    => $item,
+                ]);
+            }
     
       return response()->json([
         'success' => true,

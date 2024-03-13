@@ -14,7 +14,8 @@ class VVoyage extends Model
     protected $table = 'vessel_voyage';
 
     public $timestamps = false;
-   
+    protected $primaryKey = 'ves_id';
+
     public function VMaster()
 {
     return $this->belongsTo(VMaster::class, 'vess_code');

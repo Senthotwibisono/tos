@@ -64,7 +64,7 @@ border:solid 3px black;
                      <td>{{$kapal->containersInProgress}}</td>
                      <td>{{$kapal->containersLoaded}}</td>
                      <td>
-                        <a href="" class="btn btn-outline-info">Bay Plan</a>
+                        <a href="/load/container_loading-{{$kapal->ves_id}}" class="btn btn-outline-info" target="_blank">Bay Plan</a>
                      </td>
                   </tr>
                   @endforeach

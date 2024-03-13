@@ -12,6 +12,7 @@ use App\Models\Item;
 use App\Models\Imocode;
 use App\Models\Port;
 use App\Models\User;
+use App\Models\Ship;
 use App\Models\HistoryContainer;
 use Auth;
 
@@ -201,8 +202,22 @@ class BayplanImportController extends Controller
                 'selected_do' => 'N',
 
             ]);
+            $ship = Ship::where('ves_id', $item->ves_id)->where('bay_slot', $item->bay_slot)->where('bay_row', $item->bay_row)->where('bay_tier', $item->bay_tier)->first();
+            if ($ship) {
+             $ship->update([
+                 'container_no'=>$item->container_no,
+                 'container_key'=>$item->container_key,
+                 'ctr_size'=>$item->ctr_size,
+                 'ctr_type'=>$item->ctr_type,
+                 'dangerous_yn'=>$item->dangerous_yn,
+                 'ctr_i_e_t'=> "I",
+             ]);
+            }else {
+                return redirect('/planning/bayplan_import')->with('error', "Bay Row Tier Tidak Ada atau Tidak Sesuai");
+            }
             return redirect('/planning/bayplan_import')->with('success', "Container Berhasil Dibuat");
         } catch (\Exception $e) {
+            $item->delete();
             return redirect()->back()->with('error', 'Terjadi Kesalahan')->withInput();
         }
     }
@@ -304,6 +319,23 @@ class BayplanImportController extends Controller
             'ctr_opr' => $request->ctr_opr,
             'user_id' => $request->user_id,
         ]);
+        $ship = Ship::where('ves_id', $item->ves_id)->where('bay_slot', $item->bay_slot)->where('bay_row', $item->bay_row)->where('bay_tier', $item->bay_tier)->first();
+            if ($ship) {
+             $ship->update([
+                 'container_no'=>$item->container_no,
+                 'container_key'=>$item->container_key,
+                 'ctr_size'=>$item->ctr_size,
+                 'ctr_type'=>$item->ctr_type,
+                 'dangerous_yn'=>$item->dangerous_yn,
+                 'ctr_i_e_t'=> "I",
+             ]);
+            }else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Bay Tidak Ditemukan!',
+                    'data'    => $item,
+                ]);
+            }
 
         return response()->json([
             'success' => 400,

@@ -11,6 +11,7 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 use App\Models\Item;
 use App\Models\Isocode;
 use App\Models\VVoyage;
+use App\Models\Ship;
 use Auth;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
@@ -90,8 +91,17 @@ class BapleiExc implements ToCollection, WithHeadingRow
                     'ctr_active_yn' => 'Y',
                     'selected_do'=>'N',
                 ]);
-               }else {
-                
+               }
+               $ship = Ship::where('ves_id', $this->ves_id)->where('bay_slot', $bay_slot)->where('bay_row', $bay_row)->where('bay_tier', $bay_tier)->first();
+               if ($ship) {
+                $ship->update([
+                    'container_no'=>$item->container_no,
+                    'container_key'=>$item->container_key,
+                    'ctr_size'=>$item->ctr_size,
+                    'ctr_type'=>$item->ctr_type,
+                    'dangerous_yn'=>$item->dangerous_yn,
+                    'ctr_i_e_t'=> "I",
+                ]);
                }
             }else {
                 $item = [
@@ -120,7 +130,19 @@ class BapleiExc implements ToCollection, WithHeadingRow
 
                 ];
     
-                Item::create($item);
+                $item = Item::create($item);
+
+                $ship = Ship::where('ves_id', $this->ves_id)->where('bay_slot', $bay_slot)->where('bay_row', $bay_row)->where('bay_tier', $bay_tier)->first();
+                if ($ship) {
+                 $ship->update([
+                     'container_no'=>$item->container_no,
+                     'container_key'=>$item->container_key,
+                     'ctr_size'=>$item->ctr_size,
+                     'ctr_type'=>$item->ctr_type,
+                     'dangerous_yn'=>$item->dangerous_yn,
+                     'ctr_i_e_t'=> "I",
+                 ]);
+                }
             }
            
         }

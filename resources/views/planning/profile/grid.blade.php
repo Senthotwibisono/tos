@@ -65,7 +65,25 @@
     <h1>Ship Bay Profile</h1>
     <h3>Vessel Code: <?= $_GET["ves_code"] ?></h3>
     <h3>Vessel Name: <?= $_GET["ves_name"] ?></h3>
-    <a class="btn btn-success mb-3" id="create" type="button"><i class="fa fa-plus"></i> Tambah</a>
+    <div class="row">
+        <div class="col-3">
+            <a class="btn btn-success mb-3" id="create" type="button"><i class="fa fa-plus"></i> Tambah</a>
+            <a href="/profile-kapal/cetak-<?= $_GET["ves_code"] ?>" target="_blank" class="btn btn-info mb-3">Cetak Profile Kapal </a>
+        </div>
+    </div>
+    <div class="box-container">
+        @php
+            $uniqueBay1 = $gridBoxData->unique('BAY1');
+        @endphp
+        @foreach ($uniqueBay1 as $bay1Data)
+        <div class="box-card">
+                <div class="card-header">
+                    <input type="hidden" id="vesCode" value="{{$ves_code}}">
+                    <button class="btn btn-outline-info bayProfile" data-id="{{$bay1Data->BAY1}}"><i class="fa fa-eye"></i></button>
+                </div>
+        </div>
+        @endforeach
+    </div>
     <div class="box-container">
         @php
         $uniqueBay1 = $gridBoxData->unique('BAY1');
@@ -73,14 +91,14 @@
 
         @foreach ($uniqueBay1 as $bay1Data)
         <div class="box-card">
-            @for ($i = $bay1Data->START_TIER; $i <= $bay1Data->START_TIER + $bay1Data->TIER; $i++)
-                @if ($i % 2 == 0)
-                <div class="card">
-                    <div class="card-body p-2">
-                        <h3 class="card-text">{{ $i }}</h3>
+                @for ($i = $bay1Data->START_TIER; $i <= $bay1Data->START_TIER + $bay1Data->TIER; $i++)
+                    @if ($i % 2 == 0)
+                    <div class="card">
+                        <div class="card-body p-2">
+                            <h3 class="card-text">{{ $i }}</h3>
+                        </div>
                     </div>
-                </div>
-                @endif
+                    @endif
                 @endfor
                 <div class="bay1-container">
                     <h3 class="bay1">{{ $bay1Data->BAY1 }}</h3>
@@ -97,14 +115,14 @@
 
         @foreach ($uniqueBay1 as $bay1Data)
         <div class="box-card">
-            @for ($i = $bay1Data->START_TIER_UNDER; $i <= $bay1Data->START_TIER_UNDER + $bay1Data->TIER_UNDER; $i++)
-                @if ($i % 2 == 0)
-                <div class="card">
-                    <div class="card-body p-2">
-                        <h3 class="card-text">{{ $i }}</h3>
+                @for ($i = $bay1Data->START_TIER_UNDER; $i <= $bay1Data->START_TIER_UNDER + $bay1Data->TIER_UNDER; $i++)
+                    @if ($i % 2 == 0)
+                    <div class="card">
+                        <div class="card-body p-2">
+                            <h3 class="card-text">{{ $i }}</h3>
+                        </div>
                     </div>
-                </div>
-                @endif
+                    @endif
                 @endfor
                 <div class="bay1-container">
                     <h3 class="bay1">{{ $bay1Data->BAY1 }}</h3>
@@ -365,6 +383,22 @@
             // Submit the form to update the database
             document.getElementById('bayForm').submit();
         }
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('.bayProfile').click(function () {
+            let bay = $(this).data('id');
+            let ves = $('#vesCode').val();
+
+      
+
+            // Now you can use startDate and endDate in your logic or navigation
+            window.open("{{URL::to('/profile-kapal/get/bay-')}}"+ves+'-'+bay,"preview barcode","width=1500,height=1000,menubar=no,status=no,scrollbars=yes"); 
+
+        });
+
     });
 </script>
 @endsection

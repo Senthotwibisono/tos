@@ -7,6 +7,7 @@ use App\Models\VVoyage;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\MasterAlat;
+use App\Models\Ship;
 use App\Models\ActAlat;
 use App\Models\Operator;
 use App\Models\ActOper;
@@ -235,6 +236,18 @@ class DischargeController extends Controller
         'container_key' => $request->container_key,
         'ctr_active_yn' => 'Y',
       ]);
+
+      $ship = Ship::where('ves_id', $item->ves_id)->where('container_key', $item->container_key)->first();
+            if ($ship) {
+             $ship->update([
+                 'container_no'=>null,
+                 'container_key'=>null,
+                 'ctr_size'=>null,
+                 'ctr_type'=>null,
+                 'dangerous_yn'=>null,
+                 'ctr_i_e_t'=> null,
+             ]);
+            }
 
 
 

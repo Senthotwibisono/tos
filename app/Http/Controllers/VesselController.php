@@ -11,6 +11,9 @@ use App\Models\VService;
 use App\Models\Berth;
 use App\Models\User;
 use App\Models\Item;
+use App\Models\Bay;
+use App\Models\ProfileTier;
+use App\Models\Ship;
 use Carbon\Carbon;
 
 
@@ -243,6 +246,24 @@ class VesselController extends Controller
            'no_ppk' => $request->no_ppk,
            'open_stack_date'=>$request->open_stack_date,
         ]);
+
+        $bay = ProfileTier::where('ves_code', $request->ves_code)->get();
+        if (!empty($bay)) {
+            foreach ($bay as $bayPlan) {
+                //under
+                if ($bayPlan->active == 'Y') {
+                    $ship = Ship::create([
+                        'on_under'=>$bayPlan->on_under,
+                        'ves_id' => $vessel_voyage->ves_id,
+                        'ves_code' => $request->ves_code,
+                        'voy_no' => $request->voy_out,
+                        'bay_slot' => $bayPlan->bay_slot,
+                        'bay_row' =>  $bayPlan->bay_row,
+                        'bay_tier' =>  $bayPlan->bay_tier,
+                    ]);
+                }
+            }
+        }
 
         return redirect('/planning/vessel-schedule')->with('success', "Jadwal Berhasil Dibuat");
     }
