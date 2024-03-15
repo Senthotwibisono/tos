@@ -694,6 +694,9 @@ Route::get('/planning/grid', [ProfileKapal::class, 'grid']);
 Route::get('/profile-kapal/get/bay-{ves?}-{bay?}', [ProfileKapal::class, 'bayProfile']);
 Route::post('/profile-tier/update', [ProfileKapal::class, 'updateTier'])->name('updateProfileTier');
 Route::get('/profile-kapal/cetak-{ves?}', [ProfileKapal::class, 'cetakProfile']);
+Route::get('/planning/edit/ves-bay', [ProfileKapal::class, 'editProfile']);
+Route::post('/planning/update/ves-bay', [ProfileKapal::class, 'updateProfile']);
+Route::post('/planning/delete/ves-bay', [ProfileKapal::class, 'deleteProfile'])->name('deleteProfileBay');
 
 
 // Route for displaying the main profile page

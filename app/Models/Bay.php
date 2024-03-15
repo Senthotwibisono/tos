@@ -10,6 +10,7 @@ class Bay extends Model
     use HasFactory;
 
     protected $table = 'profile_bay'; 
+     protected $primaryKey = 'id';
 
     protected $fillable = [
         'VES_CODE',

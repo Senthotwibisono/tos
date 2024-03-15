@@ -131,7 +131,7 @@
                                 </div>
                                 <div class="col-6">
                                     <div class="form-group">
-                                        <label for="first-name-vertical">Slot</label>
+                                        <label for="first-name-vertical">Bay</label>
                                         <input type="text" id="slot" class="form-control" name="bay_slot">
                                     </div>
                                 </div>

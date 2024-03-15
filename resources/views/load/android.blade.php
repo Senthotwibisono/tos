@@ -137,7 +137,7 @@
                                 </div>
                                 <div class="col-6">
                                     <div class="form-group">
-                                        <label for="first-name-vertical">Row</label>
+                                        <label for="first-name-vertical">Bay</label>
                                         <input type="text" id="row" class="form-control" name="bay_row" >
                                     </div>
                                 </div>

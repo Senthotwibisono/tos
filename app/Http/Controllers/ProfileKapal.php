@@ -23,16 +23,16 @@ class ProfileKapal extends Controller
 
     public function stores(Request $request) // store modal di grid
     {
-        // Validate the request data here if needed
-
-        // Create a new instance of your model
-        $model = new Bay();
+        $vesselMaster = VMaster::where('ves_code', $request->input('ves_code'))->first();
+        $bayExists = Bay::where('VES_CODE', $request->ves_code)->where('BAY1', $request->bay_name)->exists();
+        if ($bayExists) {
+            return redirect('/planning/grid?ves_code=' . $request->ves_code . '&ves_name=' . $vesselMaster->ves_name)->with('error', 'Nama Bay Sudah Pernah Digunakan');
+        }else {
+            $model = new Bay();
 
         // Fill the model with the form data
+        
         $model->VES_CODE = $request->input('ves_code');
-        $vesselMaster = VMaster::where('ves_code', $request->input('ves_code'))->first();
-        // var_dump($vesselMaster->ves_name);
-        // die();
         $model->BAY1 = $request->input('bay_name');
         $model->START_ROW = $request->input('start_row');
         $model->START_ROW_UNDER = $request->input('start_row_under');
@@ -90,6 +90,10 @@ class ProfileKapal extends Controller
         // return redirect()->route('grid-box.index', ['ves_code' => $request->ves_code]);
         // return redirect()->route('grid-box.index', ['ves_code' => $request->ves_code]);
         return redirect('/planning/grid?ves_code=' . $request->ves_code . '&ves_name=' . $vesselMaster->ves_name);
+        }
+
+        // Create a new instance of your model
+       
 
         // return redirect()->route('grid-box.index');
     }
@@ -98,7 +102,7 @@ class ProfileKapal extends Controller
     {
         $ves_code = $request->ves_code;
         // Fetch data from the database based on the VES_CODE
-        $gridBoxData = Bay::where('VES_CODE', $ves_code)->get(); 
+        $gridBoxData = Bay::where('VES_CODE', $ves_code)->orderBy('BAY1', 'asc')->get(); 
         $rowBoxData = Bay::where('VES_CODE','BAY1', $ves_code)->get(); // Data Row
         return view('planning.profile.grid', compact('gridBoxData', 'ves_code'));
     }
@@ -152,6 +156,102 @@ class ProfileKapal extends Controller
         $data['underDeck'] = ProfileTier::where('ves_code', $ves)->where('on_under', '=', 'U')->orderBy('bay_slot', 'asc')->get();
 
         return view('planning.profile.cetak-profile', $data);
+    }
+
+    public function editProfile(Request $request)
+    {
+        $bay = Bay::where('VES_CODE', $request->kapal)->where('BAY1', $request->bay)->first();
+        return response()->json([
+            'success' => true,
+            'message' => 'updated successfully!',
+            'data'    => $bay,
+        ]);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $vesselMaster = VMaster::where('ves_code', $request->ves_code)->first();
+        $bay = Bay::where('VES_CODE', $request->ves_code)->where('BAY1', $request->bay_name_old)->first();
+        $bayExists = Bay::where('VES_CODE', $request->ves_code)->whereNot('BAY1', $request->bay_name_old)->where('BAY1', $request->bay_name)->exists();
+        if ($bayExists) {
+            return redirect('/planning/grid?ves_code=' . $request->ves_code . '&ves_name=' . $vesselMaster->ves_name)->with('error', 'Nama Bay Sudah Pernah Digunakan');
+        }else {
+            if ($bay) {
+                $bay->update([
+                    'BAY1'=>$request->bay_name,
+                    'START_ROW'=>$request->start_row,
+                    'START_ROW_UNDER'=>$request->start_row_under,
+                    'TIER'=>$request->max_tier,
+                    'TIER_UNDER'=>$request->max_tier_under,
+                    'MAX_ROW'=>$request->max_row,
+                    'MAX_ROW_UNDER'=>$request->max_row_under,
+                    'START_TIER'=>$request->start_tier,
+                    'START_TIER_UNDER'=>$request->start_tier_under,
+                ]);
+    
+                $tier = ProfileTier::where('ves_code', $bay->VES_CODE)->where('bay_slot', $request->bay_name_old)->delete();
+                $bayPlan = $bay;
+                //under
+                $rowUnder = $bayPlan->MAX_ROW_UNDER - $bayPlan->START_ROW_UNDER;
+                for ($i = $bayPlan->START_ROW_UNDER; $i <= $rowUnder; $i++) {
+                    $tierUnder = $bayPlan->TIER_UNDER;
+                    for ($r = $bayPlan->START_TIER_UNDER; $r <= $tierUnder + 1; $r++) { // Increment $r by 2
+                        if ($r % 2 == 0) {
+                            $ship = ProfileTier::create([
+                                'on_under'=>'U',
+                                'ves_code' => $request->ves_code,
+                                'voy_no' => $request->voy_out,
+                                'bay_slot' => $bayPlan->BAY1,
+                                'bay_row' => str_pad($i, 2, '0', STR_PAD_LEFT), // Pad $i with leading zeros
+                                'bay_tier' => str_pad($r, 2, '0', STR_PAD_LEFT), // Pad $r with leading zeros
+                                'active'=>'N',
+                            ]);
+                        }
+                    }
+                }
+    
+                
+                $rowOnDeck = $bayPlan->MAX_ROW - $bayPlan->START_ROW;
+                for ($i = $bayPlan->START_ROW; $i <= $rowOnDeck; $i++) {
+                    $tierOnDeck = $bayPlan->START_TIER + $bayPlan->TIER;
+                    for ($r = $bayPlan->START_TIER; $r <= $tierOnDeck - 1; $r++) { // Increment $r by 2
+                        if ($r % 2 == 0) {
+                            $shipOnDeck = ProfileTier::create([
+                                'on_under'=>'O',
+                                'ves_code' => $request->ves_code,
+                                'voy_no' => $request->voy_out,
+                                'bay_slot' => $bayPlan->BAY1,
+                                'bay_row' => str_pad($i, 2, '0', STR_PAD_LEFT), // Pad $i with leading zeros
+                                'bay_tier' => $r, // Pad $r with leading zeros
+                                'active'=>'N',
+                            ]);
+                        }
+                    }
+                }
+    
+                return redirect('/planning/grid?ves_code=' . $request->ves_code . '&ves_name=' . $vesselMaster->ves_name)->with('success', 'Bay Berhasil di Update');
+            }else {
+                return redirect('/planning/grid?ves_code=' . $request->ves_code . '&ves_name=' . $vesselMaster->ves_name)->with('error', 'Terjadi Kesalahan, HubUNGI Admin');
+    
+            }
+        }
+       
+    }
+
+    public function deleteProfile(Request $request)
+    {
+        $bay = Bay::where('id', $request->id)->first();
+        $ves = VMaster::where('ves_code', $bay->VES_CODE)->first();
+        if ($bay) {
+            $tier = ProfileTier::where('ves_code', $bay->VES_CODE)->where('bay_slot', $bay->BAY1)->delete();
+            $bay->delete();
+
+            return redirect('/planning/grid?ves_code=' . $ves->ves_code . '&ves_name=' . $ves->ves_name)->with('success', 'Bay Berhasil di Hapus');
+        }else {
+            return redirect('/planning/grid?ves_code=' . $ves->ves_code . '&ves_name=' . $ves->ves_name)->with('error', 'Terjadi Kesalahan, Hubungi Admin');
+
+        }
+
     }
 }
 
