@@ -246,7 +246,7 @@
                     <!-- Display Ves. Name and Ves. Code as labels -->
                     <div class="form-group">
                         <label for="bay_name">Bay Name (2 characters max):</label>
-                        <input type="text" class="form-control" id="kapal_edit" name="ves_code" value="{{$ves_code}}" required maxlength="2">
+                        <input type="hidden" class="form-control" id="kapal_edit" name="ves_code" value="{{$ves_code}}" required maxlength="2">
                         <input type="hidden" class="form-control" id="bay_name_edit_old" name="bay_name_old" required maxlength="2">
                         <input type="text" class="form-control" id="bay_name_edit" name="bay_name" required maxlength="2">
                     </div>
