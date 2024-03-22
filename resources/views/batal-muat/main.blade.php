@@ -15,7 +15,8 @@
 </div>
 <div class="card">
     <div class="card-header">
-        <button class="btn btn-outline-danger addCont" data-bs-toggle="modal" data-bs-target="#success">Add Container</button>
+        <!-- <button class="btn btn-outline-danger addCont" data-bs-toggle="modal" data-bs-target="#success">Add Container</button> -->
+        <a href="{{ route('addCont-batal-muat')}}" class="btn btn-outline-danger">Add Container</a>
     </div>
     <div class="card-body">
         <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">

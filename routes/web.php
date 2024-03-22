@@ -925,6 +925,7 @@ Route::get('/laporan-operator', [OperatorController::class, 'ReportPrint'])->nam
 
 
 Route::get('/batal-muat', [BatalMuatController::class, 'index'])->name('index-batal-muat');
+Route::get('/batal-muat/addCont-form', [BatalMuatController::class, 'addCont'])->name('addCont-batal-muat');
 Route::post('/batal-muat/store', [BatalMuatController::class, 'store'])->name('post-batal-muat');
 Route::get('/batal-muat-action', [BatalMuatController::class, 'action'])->name('action-batal-muat');
 Route::post('/batal-muat/update', [BatalMuatController::class, 'update'])->name('update-batal-muat');
@@ -933,5 +934,8 @@ Route::post('/batal-muat/update', [BatalMuatController::class, 'update'])->name(
 Route::get('/reports/batal-muat', [BatalMuatController::class, 'indexReport'])->name('indexReport-batal-muat');
 Route::post('/get-data-batal-muat', [BatalMuatController::class, 'get_data_batalMuat']);
 Route::get('/laporan-batalMuat', [BatalMuatController::class, 'ReportPrint'])->name('laporan-batalMuat');
+
+// Report Invoice
+Route::get('/invoice/report-import', [ImportController::class, 'ReportExcel'])->name('report-invoice-import');
 
 

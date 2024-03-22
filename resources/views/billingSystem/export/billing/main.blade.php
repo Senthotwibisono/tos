@@ -148,24 +148,12 @@
       <form action="#">
         <div class="modal-body" style="height:auto;">
           <div class="form-group">
-            
-            <input type="text" id="input_id" disabled value="kosong" class="form-control">
+            <label for="">Jumlah Container</label>
+            <input type="text" id="contInv" disabled value="kosong" class="form-control">
           </div>
           <div class="form-group">
             <label for="">Customer</label>
             <input type="text" id="customer" class="form-control" disabled value="kosong">
-          </div>
-          <div class="form-group">
-            <label>Status Pembayaran</label>
-            <p>
-              <span id="isPaid" class="badge text-white"></span>
-            </p>
-          </div>
-          <div class="form-group">
-            <label>Status Piutang</label>
-            <p>
-              <span id="isPiutang" class="badge text-white"></span>
-            </p>
           </div>
           <input type="hidden" id="idInvoice">
 
@@ -211,6 +199,10 @@
         console.log(response);
         $('#editModal').modal('show');
         $("#editModal #idInvoice").val(response.data.id);
+        $("#editModal #idInvoice").val(response.data.id);
+        $("#editModal #customer").val(response.data.cust_name);
+        $("#editModal #contInv").val(response.data.ctr_20 + response.data.ctr_21 + response.data.ctr_40 + response.data.ctr_42 );
+
         if (response.data.lunas === 'Y') {
         // Jika lunas, nonaktifkan tombol "Verify This Payment"
             $('#payFull').prop('disabled', true);

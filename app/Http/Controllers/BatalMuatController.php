@@ -176,7 +176,7 @@ class BatalMuatController extends Controller
             $end_date = $start_date;
         }
          
-        $data['batalMuat'] = BatalMuat::whereDate('last_update', '>=', $start_date)->whereDate('last_update', '<=', $end_date)->orderBy('old_ves_id', 'desc')->get();
+        $data['batalMuat'] = BatalMuat::whereDate('last_update', '>=', $start_date)->whereDate('last_update', '<=', $end_date)->orderBy('old_ves_id', 'descW')->get();
         $data['ves'] = $data['batalMuat'] ->groupBy('old_ves_id')
         ->map(function ($group) {
             return [
@@ -187,5 +187,14 @@ class BatalMuatController extends Controller
         
 
         return view('reports.batal-muat.laporan-batalMuat', $data);
+    }
+
+
+    public function addCont()
+    {
+        $data['title']= 'Batal Muat || Add Container Form';
+        $data['item'] = Item::where('ctr_i_e_t', '=', 'E')->whereNot('ctr_intern_status', '=', '56')->get();
+        
+        return view('batal-muat.add-cont', $data);
     }
 }

@@ -161,12 +161,12 @@
 
     <!-- yard -->
 
-    <li class="sidebar-item  has-sub @if(Request::is('yard/*') || Request::is('stripping') || Request::is('stuffing') || Request::is('batal-muat')) active @endif">
+    <li class="sidebar-item  has-sub @if(Request::is('yard/*') || Request::is('stripping') || Request::is('stuffing') || Request::is('batal-muat') ||  Request::is('batal-muat/*')) active @endif">
         <a href="#" class='sidebar-link'>
             <i class="fa-solid fa-landmark-flag"></i>
             <span>Yard</span>
         </a>
-        <ul class="submenu  @if(Request::is('yard/*') || Request::is('stripping') || Request::is('stuffing') ||  Request::is('batal-muat')) active @endif">
+        <ul class="submenu  @if(Request::is('yard/*') || Request::is('stripping') || Request::is('stuffing') ||  Request::is('batal-muat') || Request::is('batal-muat/*')) active @endif">
             <!-- <li class="submenu-item ">
                         <a href="form-element-input.html">Yard Operation Control</a>
                     </li>
@@ -266,7 +266,7 @@
 
             <hr>
 
-            <li class="submenu-item @if(Request::is('batal-muat')) active @endif">
+            <li class="submenu-item @if(Request::is('batal-muat') || Request::is('batal-muat/*')) active @endif">
                 <a href="/batal-muat">Batal Muat</a>
             </li>
             <!-- </li> <li class="submenu-item ">

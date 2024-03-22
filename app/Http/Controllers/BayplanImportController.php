@@ -204,15 +204,21 @@ class BayplanImportController extends Controller
             ]);
             $ship = Ship::where('ves_id', $item->ves_id)->where('bay_slot', $item->bay_slot)->where('bay_row', $item->bay_row)->where('bay_tier', $item->bay_tier)->first();
             if ($ship) {
-             $ship->update([
-                 'container_no'=>$item->container_no,
-                 'container_key'=>$item->container_key,
-                 'ctr_size'=>$item->ctr_size,
-                 'ctr_type'=>$item->ctr_type,
-                 'dangerous_yn'=>$item->dangerous_yn,
-                 'ctr_i_e_t'=> "I",
-             ]);
+             if ($ship->container_key == null) {
+                $ship->update([
+                    'container_no'=>$item->container_no,
+                    'container_key'=>$item->container_key,
+                    'ctr_size'=>$item->ctr_size,
+                    'ctr_type'=>$item->ctr_type,
+                    'dangerous_yn'=>$item->dangerous_yn,
+                    'ctr_i_e_t'=> "I",
+                ]);
+             }else {
+                $item->delete();
+                return redirect('/planning/bayplan_import')->with('error', "Bay Row Tier Sudah Terisi");
+             }
             }else {
+                $item->delete();
                 return redirect('/planning/bayplan_import')->with('error', "Bay Row Tier Tidak Ada atau Tidak Sesuai");
             }
             return redirect('/planning/bayplan_import')->with('success', "Container Berhasil Dibuat");
@@ -319,16 +325,44 @@ class BayplanImportController extends Controller
             'ctr_opr' => $request->ctr_opr,
             'user_id' => $request->user_id,
         ]);
+
+        $oldShip = Ship::where('ctr_i_e_t', '=', 'I')->where('container_key', $item->container_key)->first();
         $ship = Ship::where('ves_id', $item->ves_id)->where('bay_slot', $item->bay_slot)->where('bay_row', $item->bay_row)->where('bay_tier', $item->bay_tier)->first();
             if ($ship) {
-             $ship->update([
-                 'container_no'=>$item->container_no,
-                 'container_key'=>$item->container_key,
-                 'ctr_size'=>$item->ctr_size,
-                 'ctr_type'=>$item->ctr_type,
-                 'dangerous_yn'=>$item->dangerous_yn,
-                 'ctr_i_e_t'=> "I",
-             ]);
+                if ($ship->container_key == null || $ship->container_key == $item->container_key) {
+                    if ($ship->container_key != $item->container_key) {
+                        if ($oldShip) {
+                            $oldShip->update([
+                                'container_no'=>null,
+                                'container_key'=>null,
+                                'ctr_size'=>null,
+                                'ctr_type'=>null,
+                                'dangerous_yn'=>null,
+                                'ctr_i_e_t'=> null,
+                            ]);
+                        }
+                    }
+                  
+                    $ship->update([
+                        'container_no'=>$item->container_no,
+                        'container_key'=>$item->container_key,
+                        'ctr_size'=>$item->ctr_size,
+                        'ctr_type'=>$item->ctr_type,
+                        'dangerous_yn'=>$item->dangerous_yn,
+                        'ctr_i_e_t'=> "I",
+                    ]);
+                 }else {
+                    $item->update([
+                        'bay_slot' => $oldShip->bay_slot,
+                        'bay_row' => $oldShip->bay_row,
+                        'bay_tier' => $oldShip->bay_tier,
+                    ]);
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Bay Sudah Terisi!',
+                        'data'    => $item,
+                    ]);
+                 }
             }else {
                 return response()->json([
                     'success' => false,
@@ -347,7 +381,19 @@ class BayplanImportController extends Controller
     public function delete_item($container_key)
     {
 
-        Item::where('container_key', $container_key)->delete();
+        $item = Item::where('container_key', $container_key)->first();
+        $ship = Ship::where('ves_id', $item->ves_id)->where('container_key', $item->container_key)->first();
+        if ($ship) {
+            $ship->update([
+                    'container_no'=>null,
+                    'container_key'=>null,
+                    'ctr_size'=>null,
+                    'ctr_type'=>null,
+                    'dangerous_yn'=>null,
+                    'ctr_i_e_t'=> null,
+            ]);
+        }
+        $item->delete();
         return back();
     }
 

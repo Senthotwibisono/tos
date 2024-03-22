@@ -185,7 +185,7 @@
                               <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
                               <td>0</td>
                               <td>{{ number_format($tarif[$ukuran]->pass_truck_keluar, 0, ',', '.') }}</td>
-                              <td>{{ number_format($jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->pass_truck_keluar, 0, ',', '.') }}</td>
+                              <td>{{ number_format($invoice->{'pass_truck_keluar_'.$ukuran}, 0, ',', '.') }}</td>
                           </tr>
                           @endif
                         <tr>
@@ -193,7 +193,7 @@
                             <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
                             <td>0</td>
                             <td>{{ number_format($tarif[$ukuran]->lolo_empty, 0, ',', '.') }}</td>
-                            <td>{{ number_format($jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->lolo_empty, 0, ',', '.') }}</td>
+                            <td>{{ number_format($invoice->{'lolo_empty_'.$ukuran}, 0, ',', '.') }}</td>
                         </tr>
                         @elseif($invoice->os_id == '9' || $invoice->os_id == '10')
                         <tr>
@@ -201,14 +201,14 @@
                               <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
                               <td>0</td>
                               <td>{{ number_format($tarif[$ukuran]->pass_truck_keluar, 0, ',', '.') }}</td>
-                              <td>{{ number_format($jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->pass_truck_keluar, 0, ',', '.') }}</td>
+                              <td>{{ number_format($invoice->{'pass_truck_keluar_'.$ukuran}, 0, ',', '.') }}</td>
                           </tr>
                           <tr>
                               <td>JPB Extruck</td>
                               <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
                               <td>0</td>
                               <td>{{ number_format($tarif[$ukuran]->jpb_extruck, 0, ',', '.') }}</td>
-                              <td>{{ number_format($jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->jpb_extruck, 0, ',', '.') }}</td>
+                              <td>{{ number_format($invoice->{'jpb_extruck_'.$ukuran}, 0, ',', '.') }}</td>
                           </tr>
                             @if($invoice->os_id == '10')
                             <tr>
@@ -216,7 +216,7 @@
                                 <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
                                 <td>0</td>
                                 <td>{{ number_format($tarif[$ukuran]->lolo_empty, 0, ',', '.') }}</td>
-                                <td>{{ number_format($jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->lolo_empty, 0, ',', '.') }}</td>
+                                <td>{{ number_format($invoice->{'lolo_empty_'.$ukuran}, 0, ',', '.') }}</td>
                             </tr>
                             @endif
                         <tr>
@@ -224,7 +224,7 @@
                             <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
                             <td>1 Hari</td>
                             <td>{{ number_format($tarif[$ukuran]->m1, 0, ',', '.') }}</td>
-                            <td>{{ number_format($jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->m1, 0, ',', '.') }}</td>
+                            <td>{{ number_format($invoice->{'m1_'.$ukuran}, 0, ',', '.') }}</td>
                         </tr>
                         @elseif($invoice->os_id == '11' || $invoice->os_id == '13' || $invoice->os_id == '15')
                             @if($invoice->os_id == '13')
@@ -233,28 +233,28 @@
                               <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
                               <td>0</td>
                               <td>{{ number_format($tarif[$ukuran]->pass_truck_masuk, 0, ',', '.') }}</td>
-                              <td>{{ number_format($jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->pass_truck_masuk, 0, ',', '.') }}</td>
+                              <td>{{ number_format($invoice->{'pass_truck_masuk'.$ukuran}, 0, ',', '.') }}</td>
                           </tr>
                             <tr>
                               <td>Pass Truck Keluar</td>
                               <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
                               <td>0</td>
                               <td>{{ number_format($tarif[$ukuran]->pass_truck_keluar, 0, ',', '.') }}</td>
-                              <td>{{ number_format($jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->pass_truck_keluar, 0, ',', '.') }}</td>
+                              <td>{{ number_format($invoice->{'pass_truck_keluar_'.$ukuran}, 0, ',', '.') }}</td>
                           </tr>
                           <tr>
                                 <td>Lift On/Off Full</td>
                                 <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
                                 <td>0</td>
                                 <td>{{ number_format($tarif[$ukuran]->lolo_full, 0, ',', '.') }}</td>
-                                <td>{{ number_format($jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->lolo_full, 0, ',', '.') }}</td>
+                                <td>{{ number_format($invoice->{'lolo_full_'.$ukuran}, 0, ',', '.') }}</td>
                             </tr>
                             <tr>
                                 <td>Lift On/Off Empty</td>
                                 <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
                                 <td>0</td>
                                 <td>{{ number_format($tarif[$ukuran]->lolo_empty, 0, ',', '.') }}</td>
-                                <td>{{ number_format($jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->lolo_empty, 0, ',', '.') }}</td>
+                                <td>{{ number_format($invoice->{'lolo_empty_'.$ukuran}, 0, ',', '.') }}</td>
                             </tr>
                             @endif
                             <tr>
@@ -262,7 +262,7 @@
                                 <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
                                 <td>0</td>
                                 <td>{{ number_format($tarif[$ukuran]->paket_stuffing, 0, ',', '.') }}</td>
-                                <td>{{ number_format($jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->paket_stuffing, 0, ',', '.') }}</td>
+                                <td>{{ number_format($invoice->{'paket_stuffing_'.$ukuran}, 0, ',', '.') }}</td>
                             </tr>
                         @endif
                

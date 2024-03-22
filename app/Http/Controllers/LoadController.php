@@ -201,64 +201,71 @@ class LoadController extends Controller
       'cc_tt_no.required' => 'Nomor Alat Number is required.',
       'operator.required' => 'Operator Alat Number is required.',
     ]);
-    $act_alat = ActAlat::create([
-      'id_alat' =>  $request->cc_tt_no,
-      'category' => 'Bay',
-      'nama_alat' => $alat->name,
-      'operator_id'=>$request->operator,
-      'operator' => $opr->name,
-      'container_key' => $request->container_key,
-      'container_no' => $request->container_no,
-      'activity' => 'LOAD',
-    ]);
-    $actOper = ActOper::create([
-      'alat_id' => $request->cc_tt_no,
-      'alat_category' =>$alat->category,
-      'alat_name'  =>$alat->name,
-      'operator_id'=>$request->operator,
-      'operator_name'=>$opr->name,
-      'container_key'=>$item->container_key,
-      'container_no'=>$item->container_no,
-      'ves_id'=>$item->ves_id,
-      'ves_name'=>$item->ves_name,
-      'voy_no'=>$item->voy_no,
-      'activity' =>'LOAD',
-  ]);
-    Item::where('container_key', $container_key)->update([
-      'bay_slot' => $request->bay_slot,
-      'bay_row' => $request->bay_row,
-      'bay_tier' => $request->bay_tier,
-      'load_date' => $request->load_date,
-      'cc_tt_no'  => $alat->name,
-      'cc_tt_oper'  => $opr->name,
-      'ctr_intern_status' => '56',
-      'ctr_active_yn' => 'N',
-
-    ]);
-
     $ship = Ship::where('ves_id', $item->ves_id)->where('bay_slot', $request->bay_slot)->where('bay_row', $request->bay_row)->where('bay_tier', $request->bay_tier)->first();
-            if ($ship) {
-             $ship->update([
-                 'container_no'=>$item->container_no,
-                 'container_key'=>$item->container_key,
-                 'ctr_size'=>$item->ctr_size,
-                 'ctr_type'=>$item->ctr_type,
-                 'dangerous_yn'=>$item->dangerous_yn,
-                 'ctr_i_e_t'=> "E",
-             ]);
-            }else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Bay Tidak Ditemukan!',
-                    'data'    => $item,
-                ]);
-            }
+    if ($ship) {
+      if ($ship->container_key == null) {
+          $act_alat = ActAlat::create([
+            'id_alat' =>  $request->cc_tt_no,
+            'category' => 'Bay',
+            'nama_alat' => $alat->name,
+            'operator_id'=>$request->operator,
+            'operator' => $opr->name,
+            'container_key' => $request->container_key,
+            'container_no' => $request->container_no,
+            'activity' => 'LOAD',
+          ]);
+          $actOper = ActOper::create([
+            'alat_id' => $request->cc_tt_no,
+            'alat_category' =>$alat->category,
+            'alat_name'  =>$alat->name,
+            'operator_id'=>$request->operator,
+            'operator_name'=>$opr->name,
+            'container_key'=>$item->container_key,
+            'container_no'=>$item->container_no,
+            'ves_id'=>$item->ves_id,
+            'ves_name'=>$item->ves_name,
+            'voy_no'=>$item->voy_no,
+            'activity' =>'LOAD',
+        ]);
+        Item::where('container_key', $container_key)->update([
+          'bay_slot' => $request->bay_slot,
+          'bay_row' => $request->bay_row,
+          'bay_tier' => $request->bay_tier,
+          'load_date' => $request->load_date,
+          'cc_tt_no'  => $alat->name,
+          'cc_tt_oper'  => $opr->name,
+          'ctr_intern_status' => '56',
+          'ctr_active_yn' => 'N',
+        ]);
+        $ship->update([
+          'container_no'=>$item->container_no,
+          'container_key'=>$item->container_key,
+          'ctr_size'=>$item->ctr_size,
+          'ctr_type'=>$item->ctr_type,
+          'dangerous_yn'=>$item->dangerous_yn,
+          'ctr_i_e_t'=> "E",
+      ]);
     
       return response()->json([
         'success' => true,
         'message' => 'Updated successfully!',
         'item' => $item,
       ]);
+    }else {
+      return response()->json([
+        'success' => false,
+        'message' => 'Bay Sudah Terisi, Silahkan pilih Bay Lain !!',
+        'data'    => $item,
+    ]);
+    }
+     
+    }else {
+        return response()->json([
+            'success' => false,
+            'message' => 'Bay Tidak Ditemukan!',
+            'data'    => $item,
+        ]);
+    }
    
   }
 }

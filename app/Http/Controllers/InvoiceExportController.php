@@ -312,6 +312,55 @@ class InvoiceExportController extends Controller
                     'expired_date'=>$request->expired_date,                
                     'booking_no'=>$request->booking_no,
                     'etd'=> $etd,
+
+                    'ctr_20'=>$request->ctr_20,
+                    'ctr_40'=>$request->ctr_40,
+                    'ctr_21'=>$request->ctr_21,
+                    'ctr_42'=>$request->ctr_42,
+                    'm1_20'=>$request->m1_20,
+                    'm2_20'=>$request->m2_20,
+                    'm3_20'=>$request->m3_20,
+                    'lolo_full_20'=>$request->lolo_full_20,
+                    'lolo_empty_20'=>$request->lolo_empty_20,
+                    'pass_truck_masuk_20'=>$request->pass_truck_masuk_20,
+                    'pass_truck_keluar_20'=>$request->pass_truck_keluar_20,
+                    'jpb_extruck_20'=>$request->jpb_extruck_20,
+                    'sewa_crane_20'=>$request->sewa_crane_20,
+                    'cargo_dooring_20'=>$request->cargo_dooring_20,
+                    'paket_stuffing_20'=>$request->paket_stuffing_20,
+                    'm1_21'=>$request->m1_21,
+                    'm2_21'=>$request->m2_21,
+                    'm3_21'=>$request->m3_21,
+                    'lolo_full_21'=>$request->lolo_full_21,
+                    'lolo_empty_21'=>$request->lolo_empty_21,
+                    'pass_truck_masuk_21'=>$request->pass_truck_masuk_21,
+                    'pass_truck_keluar_21'=>$request->pass_truck_keluar_21,
+                    'jpb_extruck_21'=>$request->jpb_extruck_21,
+                    'sewa_crane_21'=>$request->sewa_crane_21,
+                    'cargo_dooring_21'=>$request->cargo_dooring_21,
+                    'paket_stuffing_21'=>$request->paket_stuffing_21,
+                    'm1_40'=>$request->m1_40,
+                    'm2_40'=>$request->m2_40,
+                    'm3_40'=>$request->m3_40,
+                    'lolo_full_40'=>$request->lolo_full_40,
+                    'lolo_empty_40'=>$request->lolo_empty_40,
+                    'pass_truck_masuk_40'=>$request->pass_truck_masuk_40,
+                    'pass_truck_keluar_40'=>$request->pass_truck_keluar_40,
+                    'jpb_extruck_40'=>$request->jpb_extruck_40,
+                    'sewa_crane_40'=>$request->sewa_crane_40,
+                    'cargo_dooring_40'=>$request->cargo_dooring_40,
+                    'paket_stuffing_40'=>$request->paket_stuffing_40,
+                    'm1_42'=>$request->m1_42,
+                    'm2_42'=>$request->m2_42,
+                    'm3_42'=>$request->m3_42,
+                    'lolo_full_42'=>$request->lolo_full_42,
+                    'lolo_empty_42'=>$request->lolo_empty_42,
+                    'pass_truck_masuk_42'=>$request->pass_truck_masuk_42,
+                    'pass_truck_keluar_42'=>$request->pass_truck_keluar_42,
+                    'jpb_extruck_42'=>$request->jpb_extruck_42,
+                    'sewa_crane_42'=>$request->sewa_crane_42,
+                    'cargo_dooring_42'=>$request->cargo_dooring_42,
+                    'paket_stuffing_42'=>$request->paket_stuffing_42,
                 ]);
             }
 
@@ -347,6 +396,54 @@ class InvoiceExportController extends Controller
                     'expired_date'=>$request->expired_date,
                     'booking_no'=>$request->booking_no,
                     'etd'=> $etd,
+                    'ctr_20'=>$request->ctr_20,
+                    'ctr_40'=>$request->ctr_40,
+                    'ctr_21'=>$request->ctr_21,
+                    'ctr_42'=>$request->ctr_42,
+                    'm1_20'=>$request->m1_20,
+                    'm2_20'=>$request->m2_20,
+                    'm3_20'=>$request->m3_20,
+                    'lolo_full_20'=>$request->lolo_full_20,
+                    'lolo_empty_20'=>$request->lolo_empty_20,
+                    'pass_truck_masuk_20'=>$request->pass_truck_masuk_20,
+                    'pass_truck_keluar_20'=>$request->pass_truck_keluar_20,
+                    'jpb_extruck_20'=>$request->jpb_extruck_20,
+                    'sewa_crane_20'=>$request->sewa_crane_20,
+                    'cargo_dooring_20'=>$request->cargo_dooring_20,
+                    'paket_stuffing_20'=>$request->paket_stuffing_20,
+                    'm1_21'=>$request->m1_21,
+                    'm2_21'=>$request->m2_21,
+                    'm3_21'=>$request->m3_21,
+                    'lolo_full_21'=>$request->lolo_full_21,
+                    'lolo_empty_21'=>$request->lolo_empty_21,
+                    'pass_truck_masuk_21'=>$request->pass_truck_masuk_21,
+                    'pass_truck_keluar_21'=>$request->pass_truck_keluar_21,
+                    'jpb_extruck_21'=>$request->jpb_extruck_21,
+                    'sewa_crane_21'=>$request->sewa_crane_21,
+                    'cargo_dooring_21'=>$request->cargo_dooring_21,
+                    'paket_stuffing_21'=>$request->paket_stuffing_21,
+                    'm1_40'=>$request->m1_40,
+                    'm2_40'=>$request->m2_40,
+                    'm3_40'=>$request->m3_40,
+                    'lolo_full_40'=>$request->lolo_full_40,
+                    'lolo_empty_40'=>$request->lolo_empty_40,
+                    'pass_truck_masuk_40'=>$request->pass_truck_masuk_40,
+                    'pass_truck_keluar_40'=>$request->pass_truck_keluar_40,
+                    'jpb_extruck_40'=>$request->jpb_extruck_40,
+                    'sewa_crane_40'=>$request->sewa_crane_40,
+                    'cargo_dooring_40'=>$request->cargo_dooring_40,
+                    'paket_stuffing_40'=>$request->paket_stuffing_40,
+                    'm1_42'=>$request->m1_42,
+                    'm2_42'=>$request->m2_42,
+                    'm3_42'=>$request->m3_42,
+                    'lolo_full_42'=>$request->lolo_full_42,
+                    'lolo_empty_42'=>$request->lolo_empty_42,
+                    'pass_truck_masuk_42'=>$request->pass_truck_masuk_42,
+                    'pass_truck_keluar_42'=>$request->pass_truck_keluar_42,
+                    'jpb_extruck_42'=>$request->jpb_extruck_42,
+                    'sewa_crane_42'=>$request->sewa_crane_42,
+                    'cargo_dooring_42'=>$request->cargo_dooring_42,
+                    'paket_stuffing_42'=>$request->paket_stuffing_42,
                 ]);
             }
 
@@ -449,7 +546,7 @@ class InvoiceExportController extends Controller
         $lastInvoice = $latest->inv_no;
     
         // Mengekstrak angka dari nomor proforma terakhir
-        $lastNumber = (int)substr($lastInvoice, 1);
+        $lastNumber = (int)substr($lastInvoice, 3);
     
         // Menambahkan 1 ke nomor proforma terakhir
         $nextNumber = $lastNumber + 1;
@@ -472,7 +569,7 @@ class InvoiceExportController extends Controller
         $lastInvoice = $latest->inv_no;
     
         // Mengekstrak angka dari nomor proforma terakhir
-        $lastNumber = (int)substr($lastInvoice, 1);
+        $lastNumber = (int)substr($lastInvoice, 3);
     
         // Menambahkan 1 ke nomor proforma terakhir
         $nextNumber = $lastNumber + 1;

@@ -15,6 +15,8 @@ use App\Models\InvoiceImport;
 use App\Models\JobImport;
 use App\Models\VVoyage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\InvoicesExport; // Assuming you create an export class
 
 
 // BC 20
@@ -459,7 +461,7 @@ class ImportController extends Controller
        
 
         if (!empty($item)) {
-            if ($os == 1 || $os == 2 || $os == 3) {
+            if ($os == 1 || $os == 2) {
                 $nextProformaNumber = $this->getNextProformaNumber();
                 $invoiceNo = $this->getNextInvoiceDSK();
               
@@ -489,6 +491,75 @@ class ImportController extends Controller
                     'expired_date'=>$request->expired_date,
                     'disc_date' => $request->discDate,
                     'do_no'=>$do->do_no,
+                    
+                    'ctr_20' => $request->ctr_20,
+                    'ctr_40' => $request->ctr_40,
+                    'ctr_21' => $request->ctr_21,
+                    'ctr_42' => $request->ctr_42,
+                    'm1_20' => $request->m1_20,
+                    'm2_20' => $request->m2_20,
+                    'm3_20' => $request->m3_20,
+                    'lolo_full_20' => $request->lolo_full_20,
+                    'pass_truck_keluar_20' => $request->pass_truck_keluar_20,
+                    'm1_21' => $request->m1_21,
+                    'm2_21' => $request->m2_21,
+                    'm3_21' => $request->m3_21,
+                    'lolo_full_21' => $request->lolo_full_21,
+                    'pass_truck_keluar_21' => $request->pass_truck_keluar_21,
+                    'm1_40' => $request->m1_40,
+                    'm2_40' => $request->m2_40,
+                    'm3_40' => $request->m3_40,
+                    'lolo_full_40' => $request->lolo_full_40,
+                    'pass_truck_keluar_40' => $request->pass_truck_keluar_40,
+                    'm1_42' => $request->m1_42,
+                    'm2_42' => $request->m2_42,
+                    'm3_42' => $request->m3_42,
+                    'lolo_full_42' => $request->lolo_full_42,
+                    'pass_truck_keluar_42' => $request->pass_truck_keluar_42,
+                ]);
+            }elseif ($os == 3) {
+                $nextProformaNumber = $this->getNextProformaNumber();
+                $invoiceNo = $this->getNextInvoiceDSK();
+              
+
+                $dsk = InvoiceImport::create([
+                    'inv_type'=>'DSK',
+                    'inv_no' =>$invoiceNo,
+                    'proforma_no'=>$nextProformaNumber,
+                    'cust_id'=>$request->cust_id,
+                    'cust_name'=>$request->cust_name,
+                    'fax'=>$request->fax,
+                    'npwp'=>$request->npwp,
+                    'alamat'=>$request->alamat,
+                    'os_id'=>$request->os_id,
+                    'os_name'=>$request->os_name,
+                    'container_key'=>json_encode($request->container_key),
+                    'massa1'=>$request->massa1,
+                    'massa2'=>$request->massa2,
+                    'massa3'=>$request->massa3,
+                    'extend'=>$request->extend,
+                    'total'=>$request->totalDSK,
+                    'pajak'=>$request->pajakDSK,
+                    'grand_total'=>$request->grand_totalDSK,
+                    'order_by'=> Auth::user()->name,
+                    'order_at'=> Carbon::now(),
+                    'lunas'=>'N',
+                    'expired_date'=>$request->expired_date,
+                    'disc_date' => $request->discDate,
+                    'do_no'=>$do->do_no,
+                    
+                    'ctr_20' => $request->ctr_20,
+                    'ctr_40' => $request->ctr_40,
+                    'ctr_21' => $request->ctr_21,
+                    'ctr_42' => $request->ctr_42,
+                    'pass_truck_keluar_20' => $request->pass_truck_keluar_20,
+                    'pass_truck_masuk_20' => $request->pass_truck_masuk_20,
+                    'pass_truck_keluar_21' => $request->pass_truck_keluar_21,
+                    'pass_truck_masuk_21' => $request->pass_truck_masuk_21,
+                    'pass_truck_keluar_40' => $request->pass_truck_keluar_40,
+                    'pass_truck_masuk_40' => $request->pass_truck_masuk_40,
+                    'pass_truck_keluar_42' => $request->pass_truck_keluar_42,
+                    'pass_truck_masuk_42' => $request->pass_truck_masuk_42,
                 ]);
             }
 
@@ -510,35 +581,175 @@ class ImportController extends Controller
                     $massa3inv = null;
                 }     
                 $invoiceNo = $this->getNextInvoiceDS();
-         
-                $ds = InvoiceImport::create([
-                    'inv_type'=>'DS',
-                    'inv_no'=>$invoiceNo,
-                    'proforma_no'=>$proformaDS,
-                    'cust_id'=>$request->cust_id,
-                    'cust_name'=>$request->cust_name,
-                    'fax'=>$request->fax,
-                    'npwp'=>$request->npwp,
-                    'alamat'=>$request->alamat,
-                    'os_id'=>$request->os_id,
-                    'os_name'=>$request->os_name,
-                    'container_key'=>json_encode($request->container_key),
-                    'massa1'=>$request->massa1,
-                    'massa2'=>$request->massa2,
-                    'massa3'=>$request->massa3,
-                    'extend'=>$request->extend,
-                    'total'=>$request->total,
-                    'pajak'=>$request->pajak,
-                    'grand_total'=>$request->grand_total,
-                    'order_by'=> Auth::user()->name,
-                    'order_at'=> Carbon::now(),
-                    'lunas'=>'N',
-                    'expired_date'=>$request->expired_date,
-                    'disc_date' => $request->discDate,
-                    'do_no'=>$do->do_no,
+                if ($os == 1 || $os == 5) {
+                    $ds = InvoiceImport::create([
+                        'inv_type'=>'DS',
+                        'inv_no'=>$invoiceNo,
+                        'proforma_no'=>$proformaDS,
+                        'cust_id'=>$request->cust_id,
+                        'cust_name'=>$request->cust_name,
+                        'fax'=>$request->fax,
+                        'npwp'=>$request->npwp,
+                        'alamat'=>$request->alamat,
+                        'os_id'=>$request->os_id,
+                        'os_name'=>$request->os_name,
+                        'container_key'=>json_encode($request->container_key),
+                        'massa1'=>$request->massa1,
+                        'massa2'=>$request->massa2,
+                        'massa3'=>$request->massa3,
+                        'extend'=>$request->extend,
+                        'total'=>$request->total,
+                        'pajak'=>$request->pajak,
+                        'grand_total'=>$request->grand_total,
+                        'order_by'=> Auth::user()->name,
+                        'order_at'=> Carbon::now(),
+                        'lunas'=>'N',
+                        'expired_date'=>$request->expired_date,
+                        'disc_date' => $request->discDate,
+                        'do_no'=>$do->do_no,
+    
+                        'ctr_20' => $request->ctr_20,
+                        'ctr_40' => $request->ctr_40,
+                        'ctr_21' => $request->ctr_21,
+                        'ctr_42' => $request->ctr_42,
+                      
+                        'lolo_empty_20' => $request->lolo_empty_20,
+                        'pass_truck_masuk_20' => $request->pass_truck_masuk_20,
+                     
+                        'lolo_empty_21' => $request->lolo_empty_21,
+                        'pass_truck_masuk_21' => $request->pass_truck_masuk_21,
+                       
+                        'lolo_empty_40' => $request->lolo_empty_40,
+                        'pass_truck_masuk_40' => $request->pass_truck_masuk_40,
+                        'paket_stripping_40' => $request->paket_stripping_40,
+                        'pemindahan_petikemas_40' => $request->pemindahan_petikemas_40,
+                        
+                        'lolo_empty_42' => $request->lolo_empty_42,
+                        'pass_truck_masuk_42' => $request->pass_truck_masuk_42,
+    
+                    ]);
+                }
+                if ($os == 3) {
+                    $ds = InvoiceImport::create([
+                        'inv_type'=>'DS',
+                        'inv_no'=>$invoiceNo,
+                        'proforma_no'=>$proformaDS,
+                        'cust_id'=>$request->cust_id,
+                        'cust_name'=>$request->cust_name,
+                        'fax'=>$request->fax,
+                        'npwp'=>$request->npwp,
+                        'alamat'=>$request->alamat,
+                        'os_id'=>$request->os_id,
+                        'os_name'=>$request->os_name,
+                        'container_key'=>json_encode($request->container_key),
+                        'massa1'=>$request->massa1,
+                        'massa2'=>$request->massa2,
+                        'massa3'=>$request->massa3,
+                        'extend'=>$request->extend,
+                        'total'=>$request->total,
+                        'pajak'=>$request->pajak,
+                        'grand_total'=>$request->grand_total,
+                        'order_by'=> Auth::user()->name,
+                        'order_at'=> Carbon::now(),
+                        'lunas'=>'N',
+                        'expired_date'=>$request->expired_date,
+                        'disc_date' => $request->discDate,
+                        'do_no'=>$do->do_no,
+    
+                        'ctr_20' => $request->ctr_20,
+                        'ctr_40' => $request->ctr_40,
+                        'ctr_21' => $request->ctr_21,
+                        'ctr_42' => $request->ctr_42,
 
+                        'm1_20' => $request->m1_20,
+                        'm2_20' => $request->m2_20,
+                        'm3_20' => $request->m3_20,
+                        'lolo_empty_20' => $request->lolo_empty_20,
+                        'paket_stripping_20' => $request->paket_stripping_20,
+                        'pemindahan_petikemas_20' => $request->pemindahan_petikemas_20,
+                     
+                        'm1_21' => $request->m1_21,
+                        'm2_21' => $request->m2_21,
+                        'm3_21' => $request->m3_21,
+                        'lolo_empty_21' => $request->lolo_empty_21,
+                        'paket_stripping_21' => $request->paket_stripping_21,
+                        'pemindahan_petikemas_21' => $request->pemindahan_petikemas_21,
+                       
+                        'm1_40' => $request->m1_40,
+                        'm2_40' => $request->m2_40,
+                        'm3_40' => $request->m3_40,
+                        'lolo_empty_40' => $request->lolo_empty_40,
+                        'paket_stripping_40' => $request->paket_stripping_40,
+                        'pemindahan_petikemas_40' => $request->pemindahan_petikemas_40,
+                        
+                        'm1_42' => $request->m1_42,
+                        'm2_42' => $request->m2_42,
+                        'm3_42' => $request->m3_42,
+                        'lolo_empty_42' => $request->lolo_empty_42,
+                        'paket_stripping_42' => $request->paket_stripping_42,
+                        'pemindahan_petikemas_42' => $request->pemindahan_petikemas_42,
+    
+                    ]);
+                }
+                if ($os == 5) {
+                    $ds = InvoiceImport::create([
+                        'inv_type'=>'DS',
+                        'inv_no'=>$invoiceNo,
+                        'proforma_no'=>$proformaDS,
+                        'cust_id'=>$request->cust_id,
+                        'cust_name'=>$request->cust_name,
+                        'fax'=>$request->fax,
+                        'npwp'=>$request->npwp,
+                        'alamat'=>$request->alamat,
+                        'os_id'=>$request->os_id,
+                        'os_name'=>$request->os_name,
+                        'container_key'=>json_encode($request->container_key),
+                        'massa1'=>$request->massa1,
+                        'massa2'=>$request->massa2,
+                        'massa3'=>$request->massa3,
+                        'extend'=>$request->extend,
+                        'total'=>$request->total,
+                        'pajak'=>$request->pajak,
+                        'grand_total'=>$request->grand_total,
+                        'order_by'=> Auth::user()->name,
+                        'order_at'=> Carbon::now(),
+                        'lunas'=>'N',
+                        'expired_date'=>$request->expired_date,
+                        'disc_date' => $request->discDate,
+                        'do_no'=>$do->do_no,
+    
+                        'ctr_20' => $request->ctr_20,
+                        'ctr_40' => $request->ctr_40,
+                        'ctr_21' => $request->ctr_21,
+                        'ctr_42' => $request->ctr_42,
 
-                ]);
+                        'm1_20' => $request->m1_20,
+                        'm2_20' => $request->m2_20,
+                        'm3_20' => $request->m3_20,
+                        'lolo_empty_20' => $request->lolo_empty_20,
+                        'paket_stripping_20' => $request->paket_stripping_20,
+                     
+                        'm1_21' => $request->m1_21,
+                        'm2_21' => $request->m2_21,
+                        'm3_21' => $request->m3_21,
+                        'lolo_empty_21' => $request->lolo_empty_21,
+                        'paket_stripping_21' => $request->paket_stripping_21,
+                       
+                        'm1_40' => $request->m1_40,
+                        'm2_40' => $request->m2_40,
+                        'm3_40' => $request->m3_40,
+                        'lolo_empty_40' => $request->lolo_empty_40,
+                        'paket_stripping_40' => $request->paket_stripping_40,
+                        
+                        'm1_42' => $request->m1_42,
+                        'm2_42' => $request->m2_42,
+                        'm3_42' => $request->m3_42,
+                        'lolo_empty_42' => $request->lolo_empty_42,
+                        'paket_stripping_42' => $request->paket_stripping_42,
+    
+                    ]);
+                }
+               
             }
 
             $contArray = explode(',', $cont[0]);
@@ -617,7 +828,7 @@ private function getNextInvoiceDSK()
 {
     // Mendapatkan nomor proforma terakhir
     $latest = InvoiceImport::where('inv_type', 'DSK')->orderBy('order_at', 'desc')->first();
-
+    
     // Jika tidak ada proforma sebelumnya, kembalikan nomor proforma awal
     if (!$latest) {
         return 'DSK0000001';
@@ -626,12 +837,12 @@ private function getNextInvoiceDSK()
     // Mendapatkan nomor urut proforma terakhir
     $lastInvoice = $latest->inv_no;
 
+
     // Mengekstrak angka dari nomor proforma terakhir
-    $lastNumber = (int)substr($lastInvoice, 1);
+    $lastNumber = (int)substr($lastInvoice, 3);
 
     // Menambahkan 1 ke nomor proforma terakhir
     $nextNumber = $lastNumber + 1;
-
     // Menghasilkan nomor proforma berikutnya dengan format yang benar
     return 'DSK' . str_pad($nextNumber, 7, '0', STR_PAD_LEFT);
 }
@@ -650,7 +861,7 @@ private function getNextInvoiceDS()
     $lastInvoice = $latest->inv_no;
 
     // Mengekstrak angka dari nomor proforma terakhir
-    $lastNumber = (int)substr($lastInvoice, 1);
+    $lastNumber = (int)substr($lastInvoice, 3);
 
     // Menambahkan 1 ke nomor proforma terakhir
     $nextNumber = $lastNumber + 1;
@@ -1155,4 +1366,16 @@ private function getNextJob($lastJobNo)
         return $result;
     }
     
+
+    // Report
+    public function ReportExcel(Request $request)
+    {
+      $os = $request->os_id;
+      $startDate = $request->start;
+      $endDate = $request->end;
+
+      $invoice = InvoiceImport::whereDate('order_at', '>=', $startDate)->whereDate('order_at', '<=', $endDate)->orderBy('order_at', 'asc')->get();
+        $fileName = 'ReportInvoiceImport-' . $startDate . $endDate .'.xlsx';
+      return Excel::download(new InvoicesExport($invoice), $fileName);
+    }
 }

@@ -184,14 +184,14 @@
                             <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
                             <td>0</td>
                             <td>{{ number_format($tarif[$ukuran]->pass_truck_masuk, 0, ',', '.') }}</td>
-                            <td>{{ number_format($jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->pass_truck_masuk, 0, ',', '.') }}</td>
+                            <td>{{ number_format($invoice->{'pass_truck_masuk_'.$ukuran}, 0, ',', '.') }}</td>
                         </tr>
                         <tr>
                             <td>Lift On/Off Empty</td>
                             <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
                             <td>0</td>
                             <td>{{ number_format($tarif[$ukuran]->lolo_empty, 0, ',', '.') }}</td>
-                            <td>{{ number_format($jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->lolo_empty, 0, ',', '.') }}</td>
+                            <td>{{ number_format($invoice->{'lolo_empty_'.$ukuran}, 0, ',', '.') }}</td>
                         </tr>
                         @elseif($invoice->os_id == '3' || $invoice->os_id == '4')
                         <tr>
@@ -199,7 +199,7 @@
                             <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
                             <td>0</td>
                             <td>{{ number_format($tarif[$ukuran]->paket_stripping, 0, ',', '.') }}</td>
-                            <td>{{ number_format($jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->paket_stripping, 0, ',', '.') }}</td>
+                            <td>{{ number_format($invoice->{'paket_stripping_'.$ukuran}, 0, ',', '.') }}</td>
                         </tr>
                             @if($invoice->os_id == 3)
                             <tr>
@@ -207,7 +207,7 @@
                                 <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
                                 <td>0</td>
                                 <td>{{ number_format($tarif[$ukuran]->pemindahan_petikemas, 0, ',', '.') }}</td>
-                                <td>{{ number_format($jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->pemindahan_petikemas, 0, ',', '.') }}</td>
+                                <td>{{ number_format($invoice->{'pemindahan_petikemas_'.$ukuran}, 0, ',', '.') }}</td>
                             </tr>
                             @endif
                         <tr>
@@ -215,21 +215,21 @@
                             <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
                             <td>{{$invoice->massa1}} Hari</td>
                             <td>{{ number_format($tarif[$ukuran]->m1, 0, ',', '.') }}</td>
-                            <td>{{ number_format($jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->m1, 0, ',', '.') }}</td>
+                            <td>{{ number_format($invoice->{'m1_'.$ukuran}, 0, ',', '.') }}</td>
                         </tr>
                         <tr>
                             <td>Penumpukan Massa 2</td>
                             <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
                             <td>{{$invoice->massa2}} Hari</td>
                             <td>{{ number_format($tarif[$ukuran]->m2, 0, ',', '.') }}</td>
-                            <td>{{ number_format($jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->m2 *$invoice->massa2, 0, ',', '.') }}</td>
+                            <td>{{ number_format($invoice->{'m2_'.$ukuran}, 0, ',', '.') }}</td>
                         </tr>
                         <tr>
                             <td>Penumpukan Massa 3</td>
                             <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
                             <td>{{$invoice->massa3}} Hari</td>
                             <td>{{ number_format($tarif[$ukuran]->m3, 0, ',', '.') }}</td>
-                            <td>{{ number_format($jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->m3 *$invoice->massa3, 0, ',', '.') }}</td>
+                            <td>{{ number_format($invoice->{'m3_'.$ukuran}, 0, ',', '.') }}</td>                        
                         </tr>
                         @endif
                
