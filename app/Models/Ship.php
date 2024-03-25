@@ -27,4 +27,9 @@ class Ship extends Model
         'ctr_i_e_t',
         'on_under',
     ];
+
+    public function cont()
+    {
+        return $this->belongsTo(Item::class, 'container_key', 'container_key');
+    }
 }

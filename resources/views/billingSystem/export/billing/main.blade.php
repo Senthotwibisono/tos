@@ -27,7 +27,7 @@
             <p>Rekap Data Billing</p>
           </div>
           <div class="card-body">
-            <form action="/invoice/export" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('report-invoice-export')}}" method="GET" enctype="multipart/form-data">
               @CSRF
               <div class="row">
 
@@ -35,14 +35,15 @@
                   <div class="form-group">
                     <label>Pick Start Date Range</label>
                     <!-- <input name="start" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired"> -->
-                    <input type="date" name="start" class="form-control">
+                    <input type="date" name="start" class="form-control" required>
                   </div>
                 </div>
                 <div class="col-4">
                   <div class="form-group">
                     <label>Pick End Date Range</label>
                     <!-- <input name="end" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired"> -->
-                    <input type="date" name="end" class="form-control">
+                    <input type="date" name="end" class="form-control" required>
+                    <input type="hidden" name="os_id" value="{{$os->id}}">
 
                   </div>
                 </div>

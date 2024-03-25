@@ -259,7 +259,7 @@
                             @if($box && $row->bay_row % 2 == 0)
                                 <div class="kotak{{($box->container_key != null && $box->ctr_i_e_t == 'I') ? ' filled' : ''}}">
                                 @if($box->container_key != null && $box->ctr_i_e_t == "I")
-                                    <Strong>{{$box->container_no}}</Strong>
+                                    <Strong>{{$box->container_no}} / {{$box->cont->ctr_size}} / @if($box->cont->ctr_status == 'MTY') M @else F -- @endif </Strong>
                                 @endif
                                 R<strong>{{ $row->bay_row }}</strong> T<strong>{{ $tier->bay_tier }}</strong> 
                             </div>
@@ -277,7 +277,7 @@
                                 @if($box && $row->bay_row % 2 != 0)
                                     <div class="kotak{{($box->container_key != null && $box->ctr_i_e_t == 'I') ? ' filled' : ''}}">
                                 @if($box->container_key != null && $box->ctr_i_e_t == "I")
-                                <Strong>{{$box->container_no}}</Strong>
+                                <Strong>{{$box->container_no}} / {{$box->cont->ctr_size}} / @if($box->cont->ctr_status == 'MTY') M @else F -- @endif </Strong>
                                 @endif
                                     R<strong>{{ $row->bay_row }}</strong> T<strong>{{ $tier->bay_tier }}</strong> 
                                 </div>
@@ -335,7 +335,7 @@
                             @if($box && $row->bay_row % 2 == 0)
                                     <div class="kotak{{($box->container_key != null && $box->ctr_i_e_t == 'I') ? ' filled' : ''}}">
                                 @if($box->container_key != null && $box->ctr_i_e_t == "I")
-                                <Strong>{{$box->container_no}}</Strong>
+                                <Strong>{{$box->container_no}} / {{$box->cont->ctr_size}} / @if($box->cont->ctr_status == 'MTY') M @else F -- @endif </Strong>
                                 @endif
                                     R<strong>{{ $row->bay_row }}</strong> T<strong>{{ $tier->bay_tier }}</strong> 
                                 </div>
@@ -353,7 +353,7 @@
                                 @if($box && $row->bay_row % 2 != 0)
                                     <div class="kotak{{($box->container_key != null && $box->ctr_i_e_t == 'I') ? ' filled' : ''}}">
                                     @if($box->container_key != null && $box->ctr_i_e_t == "I")
-                                    <Strong>{{$box->container_no}}</Strong>
+                                    <Strong>{{$box->container_no}} / {{$box->cont->ctr_size}} / @if($box->cont->ctr_status == 'MTY') M @else F -- @endif </Strong>
                                     @endif
                                     R<strong>{{ $row->bay_row }}</strong> T<strong>{{ $tier->bay_tier }}</strong> 
                                 </div>

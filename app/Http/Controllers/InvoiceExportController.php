@@ -13,6 +13,8 @@ use App\Models\VVoyage;
 use App\Models\InvoiceExport;
 use App\Models\JobExport;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ReportExport;
 
 use Auth;
 use Carbon\Carbon;
@@ -1048,5 +1050,15 @@ class InvoiceExportController extends Controller
         }
 
         return $result;
+    }
+
+    public function ReportExcel(Request $request)
+    {
+      $os = $request->os_id;
+      $startDate = $request->start;
+      $endDate = $request->end;
+      $invoice = InvoiceExport::where('os_id', $os)->whereDate('order_at', '>=', $startDate)->whereDate('order_at', '<=', $endDate)->orderBy('order_at', 'asc')->get();
+        $fileName = 'ReportInvoiceExport-'.$os.'-'. $startDate . $endDate .'.xlsx';
+      return Excel::download(new ReportExport($invoice), $fileName);
     }
 }

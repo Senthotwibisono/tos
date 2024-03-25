@@ -50,6 +50,7 @@ use App\Http\Controllers\InvoiceExportController;
 use App\Http\Controllers\BayplanDesignController;
 use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\BatalMuatController;
+use App\Http\Controllers\InvoiceExtend;
 
 
 
@@ -938,4 +939,19 @@ Route::get('/laporan-batalMuat', [BatalMuatController::class, 'ReportPrint'])->n
 // Report Invoice
 Route::get('/invoice/report-import', [ImportController::class, 'ReportExcel'])->name('report-invoice-import');
 
+Route::get('/invoice/report-export', [InvoiceExportController::class, 'ReportExcel'])->name('report-invoice-export');
 
+Route::get('/invoice/report-extend', [InvoiceExtend::class, 'ReportExcel'])->name('report-invoice-extend');
+
+
+// Extend
+Route::get('/billing/import/extendIndex', [InvoiceExtend::class, 'index'])->name('index-extend');
+Route::get('/billing/import/extendForm', [InvoiceExtend::class, 'form'])->name('extendForm');
+Route::get('/billing/import/extendPreinvoice', [InvoiceExtend::class, 'preinvoice'])->name('extendPreinvoice');
+Route::post('/billing/import/extendCreate', [InvoiceExtend::class, 'post'])->name('extendCreate');
+Route::get('/extend/pay-button{id?}', [InvoiceExtend::class, 'payExtend'])->name('payExtend');
+Route::post('/invoice/extend-payFullExtend', [InvoiceExtend::class, 'payFull'])->name('payFullExtend');
+Route::post('/invoice/extend-piutangExtend', [InvoiceExtend::class, 'piutang'])->name('piutangExtend');
+Route::get('/pranota/extend-{id?}', [InvoiceExtend::class, 'PranotaExtend']);
+Route::get('/invoice/extend-{id?}', [InvoiceExtend::class, 'InvoiceExtend']);
+Route::get('/invoice/job/extend-{id?}', [InvoiceExtend::class, 'JobExtend']);

@@ -11,6 +11,7 @@ use App\Models\Isocode;
 use App\Models\RO;
 use App\Models\RO_Gate;
 use App\Models\RO_Realisasi;
+use App\Models\JobExtend;
 
 use Auth;
 use Illuminate\Http\Request;
@@ -175,7 +176,12 @@ class Gati extends Controller
         // var_dump($request->job_no);
         // die();
         $item = Item::where('container_key', $container_key)->first();
-        $cek_expired = Job::where('job_no', $item->job_no)->where('active_to', '<=', $request->truck_in_date)->exists();
+        $job = $item->job_no;
+        if (substr($job, 0, 4) === 'JOBP') {
+            $cek_expired = JobExtend::where('job_no', $job)->where('active_to', '<=', $request->truck_in_date)->exists();
+        } elseif (substr($job, 0, 3) === 'JOB') {
+            $cek_expired = Job::where('job_no', $job)->where('active_to', '<=', $request->truck_in_date)->exists();
+        }
 
         if ($item->ctr_i_e_t == 'I') {
             if ($cek_expired) {

@@ -75,7 +75,7 @@
               <a href="{{ route('deliveryMenu')}}" class="submenu-link">Delivery Form</a>
             </li>
             <li class="submenu-item">
-              <a href="/delivery/billing/extend" class="submenu-link">Delivery Form Extend</a>
+              <a href="{{ route('index-extend')}}" class="submenu-link">Delivery Form Extend</a>
             </li>
             <li class="submenu-item">
               <a href="{{ route('mtImport')}}" class="submenu-link">Master Tarif</a>

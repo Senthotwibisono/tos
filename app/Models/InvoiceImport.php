@@ -89,6 +89,6 @@ class InvoiceImport extends Model
         'lunas',
         'lunas_at',
         'expired_date',
-        'do_no,'
+        'do_no'
     ];
 }
