@@ -745,6 +745,8 @@ Route::post('/search-container', [LoadController::class, 'container']);
 Route::post('/get-container-key-load', [LoadController::class, 'get_key']);
 Route::post('/confirm-load', [LoadController::class, 'confirm']);
 Route::post('/get-con-load', [LoadController::class, 'get_cont']);
+Route::get('/get-con/bay-edit/{id?}', [LoadController::class, 'bay_edit']);
+Route::post('/load/updateBay', [LoadController::class, 'bay_update'])->name('updateBayLoad');
 
 //BeaCukai
 Route::get('/bea/req-dok', [BeaController::class, 'index']);

@@ -31,35 +31,38 @@ class LoadController extends Controller
     $formattedData = [];
     $data = [];
 
-    foreach ($confirmed as $tem) {
-      $now = Carbon::now();
-      $discAt = Carbon::parse($tem->disc_date);
+    // foreach ($confirmed as $tem) {
+    //   $now = Carbon::now();
+    //   $discAt = Carbon::parse($tem->disc_date);
 
-      // Perhitungan selisih waktu
-      $diff = $discAt->diffForHumans($now);
+    //   // Perhitungan selisih waktu
+    //   $diff = $discAt->diffForHumans($now);
 
-      // Jika selisih waktu kurang dari 1 hari, maka tampilkan format jam
-      if ($discAt->diffInDays($now) < 1) {
-        $diff = $discAt->diffForHumans($now, true);
-        $diff = str_replace(['hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
-      } else {
-        // Jika selisih waktu lebih dari 1 hari, maka tampilkan format hari dan jam
-        $diff = $discAt->diffForHumans($now, true);
-        $diff = str_replace(['days', 'day', 'hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['hari', 'hari', 'jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
-      }
+    //   // Jika selisih waktu kurang dari 1 hari, maka tampilkan format jam
+    //   if ($discAt->diffInDays($now) < 1) {
+    //     $diff = $discAt->diffForHumans($now, true);
+    //     $diff = str_replace(['hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
+    //   } else {
+    //     // Jika selisih waktu lebih dari 1 hari, maka tampilkan format hari dan jam
+    //     $diff = $discAt->diffForHumans($now, true);
+    //     $diff = str_replace(['days', 'day', 'hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['hari', 'hari', 'jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
+    //   }
 
-      $formattedData[] = [
-        'container_no' => $tem->container_no,
-        'cc_tt_no' => $tem->cc_tt_no,
-        'cc_tt_oper' => $tem->cc_tt_oper,
-        'disc_date' => $diff . ' yang lalu',
-        'ves_name' => $tem->ves_name,
-        'voy_no' => $tem->voy_no,
-        'bay_slot' => $tem->bay_slot,
-        'bay_row' => $tem->bay_row,
-        'bay_tier' => $tem->bay_tier,
-      ];
-    }
+    //   $formattedData[] = [
+    //     'container_no' => $tem->container_no,
+    //     'cc_tt_no' => $tem->cc_tt_no,
+    //     'cc_tt_oper' => $tem->cc_tt_oper,
+    //     'disc_date' => $diff . ' yang lalu',
+    //     'ves_name' => $tem->ves_name,
+    //     'voy_no' => $tem->voy_no,
+    //     'bay_slot' => $tem->bay_slot,
+    //     'bay_row' => $tem->bay_row,
+    //     'bay_tier' => $tem->bay_tier,
+    //     'container_key' => $tem->container_key,
+    //   ];
+    // }
+
+    $data['loaded'] = Item::where('ctr_i_e_t', '=', 'E')->where('ctr_intern_status', '=', '56')->get();
     $items = Item::where('ctr_i_e_t', '=', 'E' )->where(function ($query) {
           $query->where('ctr_intern_status', '=', 51)
               ->orWhere('ctr_intern_status', '=', 53);
@@ -267,5 +270,76 @@ class LoadController extends Controller
         ]);
     }
    
+  }
+
+  public function bay_edit($id)
+  {
+    
+    $item = Item::where('container_key', $id)->first();
+    // var_dump($item->container_no);
+    // die;
+    if ($item) {
+      $ship = $item->ves_id;
+      $bay = Ship::where('ves_id', $ship)->where('container_key', $item->container_key)->where('ctr_i_e_t', '=',  'E')->first();
+      //  var_dump($bay);
+      //  die;
+      
+          return response()->json([
+            'success' => true,
+            'data'    => $item,
+            'bay' => $bay,
+          ]);
+     
+          return response()->json([
+            'success' => false,
+           ]);
+
+    }else {
+          return response()->json([
+            'success' => false,
+           ]);
+    }
+  }
+
+  public function bay_update(Request $request)
+  {
+    $item = Item::where('container_key', $request->container_key)->first();
+    $ves = $request->ves_id;
+    $ship = Ship::where('ves_id', $request->ves_id)->where('bay_slot', $request->bay_slot)->where('bay_row', $request->bay_row)->where('bay_tier', $request->bay_tier)->first();
+    if ($ship) {
+      if ($ship->container_key == $item->container_key) {
+        return back()->with('error', 'Tidak ada Perubahan, Mohon Cek Kembali!!');
+      }elseif ($ship->container_key != null) {
+        $oldCont = $ship->container_no;
+        $message = 'Bay Sudah Terisi Dengan Container '.$oldCont.' !!';
+        return back()->with('error', $message);
+      }else {
+       $oldShip = Ship::where('ves_id', $item->ves_id)->where('bay_slot', $item->bay_slot)->where('bay_row', $item->bay_row)->where('bay_tier', $item->bay_tier)->first();
+         $ship->update([
+          'container_no'=>$item->container_no,
+          'container_key'=>$item->container_key,
+          'ctr_size'=>$item->ctr_size,
+          'ctr_type'=>$item->ctr_type,
+          'dangerous_yn'=>$item->dangerous_yn,
+          'ctr_i_e_t'=> "E",
+         ]);
+         $oldShip->update([
+          'container_no'=>null,
+          'container_key'=>null,
+          'ctr_size'=>null,
+          'ctr_type'=>null,
+          'dangerous_yn'=>null,
+          'ctr_i_e_t'=> null,
+         ]);
+         $item->update([
+            'bay_slot' => $ship->bay_slot,
+            'bay_row' => $ship->bay_row,
+            'bay_tier' => $ship->bay_tier,
+         ]);
+         return back()->with('success', 'Bay Berhasil di Update');
+      }
+    }else {
+      return back()->with('error', 'Bay Tidak Ditemukan');
+    }
   }
 }

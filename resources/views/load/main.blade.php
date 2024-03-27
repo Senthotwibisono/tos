@@ -36,18 +36,22 @@
                             <th>Crane Code</th>
                             <th>Operator</th>
                             <th>Load</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($formattedData as $d)
+                        @foreach($loaded as $load)
                         <tr>
                             <td>{{$loop->iteration}}</td>
-                            <td>{{$d['ves_name']}} || {{$d['voy_no']}}</td>
-                            <td>{{$d['container_no']}}</td>
-                            <td>{{$d['bay_slot']}} || {{$d['bay_row']}} || {{$d['bay_tier']}}</td>
-                            <td>{{$d['cc_tt_no']}}</td>
-                            <td>{{$d['cc_tt_oper']}}</td>
-                            <td>{{$d['disc_date']}}</td>
+                            <td>{{$load->ves_name}} || {{$load->voy_no}}</td>
+                            <td>{{$load->container_no}}</td>
+                            <td>{{$load->bay_slot}} || {{$load->bay_row}} || {{$load->bay_tier}}</td>
+                            <td>{{$load->cc_tt_no}}</td>
+                            <td>{{$load->cc_tt_oper}}</td>
+                            <td>{{$load->load_date}}</td>
+                            <td>
+                                <button class="btn btn-outline-info EditBay" data-id="{{$load->container_key}}">Edit Bay Plan</button>
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -168,6 +172,107 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade text-left" id="editBay" role="dialog" aria-labelledby="myModalLabel110" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h5 class="modal-title white" id="myModalLabel110">Edit Bay Plan</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><i data-feather="x"></i></button>
+            </div>
+            <form action="{{ route('updateBayLoad')}}" method="post">
+             @csrf
+            <div class="modal-body">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6>Data Container</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6" style="border: 1px solid #d3d3d3;">
+                                    <div class="form-group">
+                                        <label for="">Container</label>
+                                        <input type="text" class="form-control" id="contBay" readonly>
+                                        <input type="hidden" class="form-control" name="container_key" id="keyBay" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Size</label>
+                                        <input type="text" class="form-control" id="sizeBay" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Type</label>
+                                        <input type="text" class="form-control" id="typeBay" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Vessel</label>
+                                        <input type="text" class="form-control" id="vesBay" readonly>
+                                        <input type="hidden" class="form-control" name="ves_id" id="vesIdBay" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Voy</label>
+                                        <input type="text" class="form-control" id="voyBay" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row" style="border: 1px solid #d3d3d3;">
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label for="">Last Bay</label>
+                                                <input type="text" id="oldBay" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label for="">Last Row</label>
+                                                <input type="text" id="oldSlot" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <label for="">Last Tier</label>
+                                            <input type="text" id="oldTier" class="form-control" readonly>
+                                        </div>
+                                        <div class="col-6">
+                                            <label for="">Last Deck</label>
+                                            <input type="text" id="lastDeck" class="form-control" readonly>
+                                        </div>
+                                        <br>
+                                    </div>
+                                    <br>
+                                    <hr>
+                                    <br>
+                                    <br>
+                                    <div class="row" style="border: 1px solid red;">
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label for="">New Bay</label>
+                                                <input type="text" name="bay_slot" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label for="">New Row</label>
+                                                <input type="text" name="bay_row" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <label for="">New Tier</label>
+                                            <input type="text" name="bay_tier" class="form-control">
+                                        </div>
+                                        <br>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i><span class="d-none d-sm-block">Close</span></button>
+                <button type="submit" class="btn btn-outline-info ml-1"><i class="bx bx-check d-block d-sm-none"></i><span class="d-none d-sm-block">Update</span></button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
 <style>
     span.select2-container {
         z-index: 10050;
@@ -181,7 +286,20 @@
 <script src="{{asset('dist/assets/js/pages/sweetalert2.js')}}"></script>
 
 <script>
-    // $('.select2').select2();
+  @if(session('success'))
+  Swal.fire({
+    icon: 'success',
+    title: 'Success',
+    text: "{{ session('success') }}"
+  });
+  @endif
+  @if(session('error'))
+  Swal.fire({
+    icon: 'error',
+    title: 'Error',
+    text: "{{ session('error') }}"
+  });
+  @endif
 </script>
 <script>
     // In your Javascript (external .js resource or <script> tag)
@@ -404,6 +522,52 @@
             }
         });
     });
+</script>
+
+<script>
+    $(document).on('click', '.EditBay', function() {
+    let id = $(this).data('id');
+    $.ajax({
+      type: 'GET',
+      url: '/get-con/bay-edit/' + id,
+      cache: false,
+      data: {
+        id: id
+      },
+      dataType: 'json',
+
+      success: function(response) {
+
+        console.log(response);
+        $('#editBay').modal('show');
+        $('#editBay #contBay').val(response.data.container_no);
+        $('#editBay #keyBay').val(response.data.container_key);
+        $('#editBay #sizeBay').val(response.data.ctr_size);
+        $('#editBay #typeBay').val(response.data.ctr_type);
+        $('#editBay #vesBay').val(response.data.ves_name);
+        $('#editBay #vesIdBay').val(response.data.ves_id);
+        $('#editBay #voyBay').val(response.data.voy_no);
+        $('#editBay #oldBay').val(response.bay.bay_slot);
+        $('#editBay #oldSlot').val(response.bay.bay_row);
+        $('#editBay #oldTier').val(response.bay.bay_tier);
+        if (response.bay.on_under === 'O') {
+            $('#editBay #lastDeck').val('On Deck');
+        } else if (response.bay.on_under === 'U') {
+            $('#editBay #lastDeck').val('Under Deck');
+        }
+
+      },
+      error: function(data) {
+        console.log('error:', data)
+
+
+      }
+
+
+
+    });
+
+  });
 </script>
 
 @endsection
