@@ -94,35 +94,36 @@ class LoadController extends Controller
     $formattedData = [];
     $data = [];
 
-    foreach ($confirmed as $tem) {
-      $now = Carbon::now();
-      $discAt = Carbon::parse($tem->disc_date);
+    // foreach ($confirmed as $tem) {
+    //   $now = Carbon::now();
+    //   $discAt = Carbon::parse($tem->disc_date);
 
-      // Perhitungan selisih waktu
-      $diff = $discAt->diffForHumans($now);
+    //   // Perhitungan selisih waktu
+    //   $diff = $discAt->diffForHumans($now);
 
-      // Jika selisih waktu kurang dari 1 hari, maka tampilkan format jam
-      if ($discAt->diffInDays($now) < 1) {
-        $diff = $discAt->diffForHumans($now, true);
-        $diff = str_replace(['hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
-      } else {
-        // Jika selisih waktu lebih dari 1 hari, maka tampilkan format hari dan jam
-        $diff = $discAt->diffForHumans($now, true);
-        $diff = str_replace(['days', 'day', 'hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['hari', 'hari', 'jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
-      }
+    //   // Jika selisih waktu kurang dari 1 hari, maka tampilkan format jam
+    //   if ($discAt->diffInDays($now) < 1) {
+    //     $diff = $discAt->diffForHumans($now, true);
+    //     $diff = str_replace(['hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
+    //   } else {
+    //     // Jika selisih waktu lebih dari 1 hari, maka tampilkan format hari dan jam
+    //     $diff = $discAt->diffForHumans($now, true);
+    //     $diff = str_replace(['days', 'day', 'hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['hari', 'hari', 'jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
+    //   }
 
-      $formattedData[] = [
-        'container_no' => $tem->container_no,
-        'cc_tt_no' => $tem->cc_tt_no,
-        'cc_tt_oper' => $tem->cc_tt_oper,
-        'disc_date' => $diff . ' yang lalu',
-        'ves_name' => $tem->ves_name,
-        'voy_no' => $tem->voy_no,
-        'bay_slot' => $tem->bay_slot,
-        'bay_row' => $tem->bay_row,
-        'bay_tier' => $tem->bay_tier,
-      ];
-    }
+    //   $formattedData[] = [
+    //     'container_no' => $tem->container_no,
+    //     'cc_tt_no' => $tem->cc_tt_no,
+    //     'cc_tt_oper' => $tem->cc_tt_oper,
+    //     'disc_date' => $diff . ' yang lalu',
+    //     'ves_name' => $tem->ves_name,
+    //     'voy_no' => $tem->voy_no,
+    //     'bay_slot' => $tem->bay_slot,
+    //     'bay_row' => $tem->bay_row,
+    //     'bay_tier' => $tem->bay_tier,
+    //   ];
+    // }
+    $data['loaded'] = Item::where('ctr_i_e_t', '=', 'E')->where('ctr_intern_status', '=', '56')->get();
     $items = Item::where('ctr_intern_status', '=', [51, 53])->get();
     $users = User::all();
     $data["active"] = "discharge";
