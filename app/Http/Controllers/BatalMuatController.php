@@ -176,7 +176,7 @@ class BatalMuatController extends Controller
             $end_date = $start_date;
         }
          
-        $data['batalMuat'] = BatalMuat::whereDate('last_update', '>=', $start_date)->whereDate('last_update', '<=', $end_date)->orderBy('old_ves_id', 'descW')->get();
+        $data['batalMuat'] = BatalMuat::whereDate('last_update', '>=', $start_date)->whereDate('last_update', '<=', $end_date)->orderBy('old_ves_id', 'desc')->get();
         $data['ves'] = $data['batalMuat'] ->groupBy('old_ves_id')
         ->map(function ($group) {
             return [
