@@ -202,6 +202,12 @@ class DischargeController extends Controller
       'operator.max' => 'Opss Data Terlalu Panjang.',
     ]);
     if ($item) {
+      if ($item->iso_code == null) {
+        return response()->json([
+          'success' => false,
+          'message' => 'Iso Code belum terisi, uploas Iso Code terlebih dahulu kemudian uodate container!',
+        ]);
+      }
 
       $act_alat = ActAlat::create([
         'id_alat' =>  $request->cc_tt_no,

@@ -59,6 +59,9 @@ class BapleiExc implements ToCollection, WithHeadingRow
 
             $iso_code = trim($row['iso_code']);
             $isoCodeData = Isocode::where('iso_code', $iso_code)->first();
+            if (!$isoCodeData) {
+                return back()->with('error', 'ISO code not found: ' . $iso_code);
+            }
             if ($isoCodeData) {
                 $ctr_size = $isoCodeData->iso_size;
                 $ctr_type = $isoCodeData->iso_type;
@@ -145,6 +148,8 @@ class BapleiExc implements ToCollection, WithHeadingRow
                 }
             }
            
+            return back()->with('success')->with('success', 'Data berhasil diimpor.');
+   
         }
     }
 

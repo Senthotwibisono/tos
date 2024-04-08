@@ -25,7 +25,7 @@
                         </tr>
                       </thead>
                       <tbody>
-                        @if($service->id == 1 || $service->id == 5)
+                        @if($service->id == 1 || $service->id == 16 || $service->id == 5)
                         <tr>
                             <td>Pass Truck Masuk</td>
                             <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>

@@ -101,7 +101,9 @@
           </div>
         </div>
         <div class="row mt-3">
+        <input type="text" name="contKey_Selected" value="{{ implode(',', $selectedCont) }}">
         @if($ctr_20 != null)
+        <input type="hidden" name="ctr_20" value="{{$ctr_20}}">
         <div class="col-12">
                 <h4 class="card-title">
                   Pranota Summary 
@@ -157,6 +159,7 @@
         @endif
         @if($ctr_21 != null)
         <div class="col-12">
+        <input type="hidden" name="ctr_21" value="{{$ctr_21}}">
                 <h4 class="card-title">
                   Pranota Summary 
                 </h4>
@@ -212,6 +215,8 @@
 
         @if($ctr_40 != null)
         <div class="col-12">
+        <input type="hidden" name="ctr_40" value="{{$ctr_40}}">
+
                 <h4 class="card-title">
                   Pranota Summary 
                 </h4>
@@ -268,6 +273,8 @@
 
         @if($ctr_42 != null)
         <div class="col-12">
+        <input type="hidden" name="ctr_42" value="{{$ctr_42}}">
+
                 <h4 class="card-title">
                   Pranota Summary 
                 </h4>

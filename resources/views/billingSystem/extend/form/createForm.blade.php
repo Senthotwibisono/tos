@@ -55,13 +55,22 @@
               <p>Masukan Nomor Invoice Sebelumnya</p>
             </div>
             <div class="col-12" id="selector">
-              <label for="">Container Number</label>
-              <select name="inv_id"  class="js-example-basic-single form-control" style="height: 150%;">
+              <label for="">Invoice Number</label>
+              <select name="inv_id"  class="js-example-basic-single form-control" id="invId" style="height: 150%;">
                 <option disabeled selected value>Pilih Satu !</option>
                @foreach($oldInv as $inv)
                 <option value="{{$inv->id}}">{{$inv->inv_no}} {{$inv->id}}</option>
                @endforeach
               </select>
+            </div>
+            <br>
+            <hr>
+            <br>
+            <div class="col-12">
+              <label for="">Select Container</label>
+              <select name="container_key[]" id="container" class="js-example-basic-multiple form-control" style="height: 150%;" multiple="multiple">
+              <option disabeled selected value>Pilih Container !</option>
+            </select>
             </div>
           </div>
           <div class="row mt-5">
@@ -107,7 +116,59 @@ $(function(){
                     },
                 })
             })
+
+            $('#invId'). on('change', function(){
+                let id = $('#invId').val();
+
+                $.ajax({
+                    type: 'get',
+                    url: "{{ route('getContToExtend')}}",
+                    data : {id : id,
+                            },
+                    cache: false,
+                    
+                    success: function(response) {
+                        console.log(response);
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Saved!',
+                                timer: 2000, // Waktu tampilan SweetAlert (ms)
+                                showConfirmButton: false
+                            }).then(() => {
+                                $('#container').empty();
+                            
+                                $.each(response.cont, function(index, item) {
+                                    $('#container').append($('<option>', {
+                                        value: item.container_key,
+                                        text: item.container_no,
+                                        selected: 'selected'
+                                    }));
+                                });
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.message
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        }
+                    },
+                    error: function(data) {
+                        console.log('error:', data);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.',
+                        });
+                    }
+                })
+            })
+
         })
+        
     });
 </script>
 @endsection

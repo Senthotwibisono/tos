@@ -410,7 +410,7 @@ class ImportController extends Controller
        
 
         $adminMT = MT::where('os_id', $os)->first();
-        if ($os == 1 || $os == 3) {
+        if ($os == 1 || $os == 16 || $os == 3) {
             $adminDSK = 0;
             $data['adminDSK'] = $adminDSK;
         }else {
@@ -461,7 +461,7 @@ class ImportController extends Controller
        
 
         if (!empty($item)) {
-            if ($os == 1 || $os == 2) {
+            if ($os == 1 || $os == 16 || $os == 2) {
                 $nextProformaNumber = $this->getNextProformaNumber();
                 $invoiceNo = $this->getNextInvoiceDSK();
               
@@ -563,7 +563,7 @@ class ImportController extends Controller
                 ]);
             }
 
-            if ($os == 1 || $os == 3) {
+            if ($os == 1 || $os == 16 || $os == 3) {
                 $proformaDS = $dsk->proforma_no;
             }else {
                 $nextProformaNumberDS = $this->getNextProformaNumber();
@@ -581,7 +581,7 @@ class ImportController extends Controller
                     $massa3inv = null;
                 }     
                 $invoiceNo = $this->getNextInvoiceDS();
-                if ($os == 1 || $os == 5) {
+                if ($os == 1 || $os == 5 || $os == 16) {
                     $ds = InvoiceImport::create([
                         'inv_type'=>'DS',
                         'inv_no'=>$invoiceNo,
@@ -765,7 +765,7 @@ class ImportController extends Controller
                     $lastJobNo = JobImport::orderBy('id', 'desc')->value('job_no');
                     $jobNo = $this->getNextJob($lastJobNo);
             
-                    if ($os == 1 || $os == 2 || $os == 3) {
+                    if ($os == 1 || $os == 16 || $os == 2 || $os == 3) {
                         $job = JobImport::create([
                             'inv_id'=>$dsk->id,
                             'job_no'=>$jobNo,
@@ -1231,10 +1231,10 @@ private function getNextJob($lastJobNo)
         $items = Item::whereIn('container_key', $container_keys)->get();
       
         $service = $invoice->os_id;
-        if ($service == 1 || $service == 2 || $service == 5) {
+        if ($service == 1 || $service == 16 || $service == 2 || $service == 5) {
             if ($service == 5) {
                 $os ="SP2RELOKASI";
-            }elseif ($service == 1) {
+            }elseif ($service == 1 || $service == 16) {
                 $os = "SP2IKS";
             }else {
                 $os = "SP2";
@@ -1290,10 +1290,10 @@ private function getNextJob($lastJobNo)
         $container_keys = explode(",", $container_key_string);
         $items = Item::whereIn('container_key', $container_keys)->get();
         $service = $invoice->os_id;
-        if ($service == 1 || $service == 2 || $service == 5) {
+        if ($service == 1 || $service == 16  || $service == 2 || $service == 5) {
             if ($service == 5) {
                 $os ="SP2RELOKASI";
-            }elseif ($service == 1) {
+            }elseif ($service == 1 || $service == 16) {
                 $os = "SP2IKS";
             }else {
                 $os = "SP2";

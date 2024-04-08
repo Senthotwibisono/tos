@@ -182,7 +182,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                @if($invoice->os_id == '1' || $invoice->os_id == '2')
+                @if($invoice->os_id == '1' || $invoice->os_id == '16' || $invoice->os_id == '2')
                 <tr>
                             <td>Pass Truck Keluar</td>
                             <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>

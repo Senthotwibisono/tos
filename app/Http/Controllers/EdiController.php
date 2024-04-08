@@ -326,10 +326,13 @@ class EdiController extends Controller
     );
 
 
-        Excel::import($import, $path->getRealPath(),  null, 'Xlsx');
-        
- 
-         return back()->with('success')->with('success', 'Data berhasil diimpor.');
+    $status = Excel::import($import, $path->getRealPath(), null, 'Xlsx');
+
+    if ($status) {
+        return back()->with('success', 'Data berhasil diimpor.');
+    } else {
+        return back()->with('error', 'Terjadi kesalahan saat mengimpor data.');
+    }
    
 }
 

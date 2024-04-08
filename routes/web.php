@@ -957,3 +957,5 @@ Route::post('/invoice/extend-piutangExtend', [InvoiceExtend::class, 'piutang'])-
 Route::get('/pranota/extend-{id?}', [InvoiceExtend::class, 'PranotaExtend']);
 Route::get('/invoice/extend-{id?}', [InvoiceExtend::class, 'InvoiceExtend']);
 Route::get('/invoice/job/extend-{id?}', [InvoiceExtend::class, 'JobExtend']);
+Route::get('/get-cont-extend-data', [InvoiceExtend::class, 'contData'])->name('getContToExtend');
+

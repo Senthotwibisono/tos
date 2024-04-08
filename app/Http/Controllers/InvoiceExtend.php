@@ -57,6 +57,37 @@ class InvoiceExtend extends Controller
         return view('billingSystem.extend.form.createForm', $data);
     }
 
+    public function contData(Request $request)
+    {
+        $id = $request->id;
+        $inv = InvoiceImport::where('id', $id)->first();
+
+        if ($inv) {
+            $invCont = json_decode($inv->container_key);
+           
+            $container_key_string = $invCont[0];
+        $container_keys = explode(",", $container_key_string);
+    
+                $cont = Item::whereIn('container_key', $container_keys)->get();     
+                // var_dump($invCont, $cont);
+                // die;       
+           
+            if (!$cont->isEmpty()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'updated successfully!',
+                    'data'    => $inv,
+                    'cont' => $cont,
+                ]);
+            }
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something Wrong!',
+            ]);
+        }
+    }
+
     public function preinvoice(Request $request)
     {
         $data['title'] = 'Pre Invoice Exrtend';
@@ -69,9 +100,10 @@ class InvoiceExtend extends Controller
             return back()->with('error', 'Expired date tidak lebih besar dari expired date sebelumnya');
         }
         else {
-           $cont = str_replace(['[', ']', '"'], '', $oldInv->container_key);
-           $contItem = explode(",", $cont);
-           $data['item'] = Item::whereIn('container_key', $contItem)->orderBy('ctr_size', 'asc')->get();
+        //    $cont = str_replace(['[', ']', '"'], '', $oldInv->container_key);
+        //    $contItem = explode(",", $cont);
+        $data['selectedCont'] = $request->container_key;
+           $data['item'] = Item::whereIn('container_key', $request->container_key)->orderBy('ctr_size', 'asc')->get();
             
            $oldExp = Carbon::parse($oldExpired);
            $expDate = Carbon::parse($expired);
@@ -124,9 +156,10 @@ class InvoiceExtend extends Controller
            }
 
         //    jumlah Cont
-        $ctr_20  =$oldInv->ctr_20;
+        $ctr_20  = $data['item']->where('ctr_size', '20')->count();
         if ($ctr_20) {
             $data['tarif20'] = MT::where('os_id', $oldInv->os_id)->where('ctr_size', '20')->first();
+            // dd($data['tarif20']);
               // tarif 20
             if ($data['newM1'] == '0') {
                 $m1_20 = '0';
@@ -142,7 +175,7 @@ class InvoiceExtend extends Controller
             $m3_20 = '0';
         }
 
-        $ctr_21  =$oldInv->ctr_21;
+        $ctr_21  = $data['item']->where('ctr_size', '21')->count();
         if ($ctr_21) {
             $data['tarif21'] = MT::where('os_id', $oldInv->os_id)->where('ctr_size', '21')->first();
              // tarif 21
@@ -160,7 +193,7 @@ class InvoiceExtend extends Controller
             $m3_21 = '0';
         }
         
-        $ctr_40  =$oldInv->ctr_40;
+        $ctr_40  =$data['item']->where('ctr_size', '40')->count();
         if ($ctr_40) {
             $data['tarif40'] = MT::where('os_id', $oldInv->os_id)->where('ctr_size', '40')->first();
             if ($data['newM1'] == '0') {
@@ -176,7 +209,7 @@ class InvoiceExtend extends Controller
             $m2_40 = '0';
             $m3_40 = '0';
         }
-        $ctr_42  =$oldInv->ctr_42;
+        $ctr_42  = $data['item']->where('ctr_size', '42')->count();
         if ($ctr_42) {
             # code...
             $data['tarif42'] = MT::where('os_id', $oldInv->os_id)->where('ctr_size', '42')->first();
@@ -211,10 +244,11 @@ class InvoiceExtend extends Controller
     public function post(Request $request)
     {
         $oldInv = InvoiceImport::where('id', $request->inv_id)->first();
-        $cont = $oldInv->container_key;
+        $cont = "["."". $request->contKey_Selected . "" ."]";
         $cust = Customer::where('id', $request->cust_id)->first();
         $invoiceNo = $oldInv->inv_type . '-' . $this->getNextInvoiceExtend();
-        // dd($invoiceNo);
+        $itemtArray = json_decode($cont);
+        $item = Item::where('container_key', $itemtArray)->get();
         $extend = Extend::create([
             'proforma_no'=>$oldInv->proforma_no,
             'inv_id'=>$oldInv->id,
@@ -226,14 +260,14 @@ class InvoiceExtend extends Controller
             'alamat'=>$cust->alamat,
             'os_id'=>$oldInv->os_id,
             'os_name'=>$oldInv->os_name,
-            'container_key'=>$oldInv->container_key,
+            'container_key'=>"["."". $request->contKey_Selected . "" ."]",
             'm1'=>$request->m1,
             'm2'=>$request->m2,
             'm3'=>$request->m3,
-            'ctr_20'=>$oldInv->ctr_20,
-            'ctr_40'=>$oldInv->ctr_40,
-            'ctr_21'=>$oldInv->ctr_21,
-            'ctr_42'=>$oldInv->ctr_42,
+            'ctr_20'=>$request->ctr_20,
+            'ctr_40'=>$request->ctr_40,
+            'ctr_21'=>$request->ctr_21,
+            'ctr_42'=>$request->ctr_42,
             'm1_20'=>$request->m1_20,
             'm2_20'=>$request->m2_20,
             'm3_20'=>$request->m3_20,
@@ -256,17 +290,13 @@ class InvoiceExtend extends Controller
             'order_by'=> Auth::user()->name,
             'order_at'=> Carbon::now(),
         ]);
-
-        $oldInv->update([
-            'extend'=>'Y'
-        ]);
-
-        $contArray = str_replace(['[', ']', '"'], '', $cont);
-        $contItem = explode(",", $contArray);
-       
-
-            foreach ($contItem as $idCont) {
+        
+        // $contArray = explode(',', $cont[0]);
+        // dd($contArray, $cont);
+        $contArray = json_decode($cont);
+            foreach ($contArray as $idCont) {
                 $selectCont = Item::where('container_key', $idCont)->get();
+                
                 foreach ($selectCont as $item) {
                     $item->update([
                         'selected_do' => 'Y'
