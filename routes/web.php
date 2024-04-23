@@ -51,6 +51,8 @@ use App\Http\Controllers\BayplanDesignController;
 use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\BatalMuatController;
 use App\Http\Controllers\InvoiceExtend;
+use App\Http\Controllers\StevadooringController;
+use App\Http\Controllers\ShiftingController;
 
 
 
@@ -958,4 +960,41 @@ Route::get('/pranota/extend-{id?}', [InvoiceExtend::class, 'PranotaExtend']);
 Route::get('/invoice/extend-{id?}', [InvoiceExtend::class, 'InvoiceExtend']);
 Route::get('/invoice/job/extend-{id?}', [InvoiceExtend::class, 'JobExtend']);
 Route::get('/get-cont-extend-data', [InvoiceExtend::class, 'contData'])->name('getContToExtend');
+
+// Steva Dooring
+Route::get('/billing/stevadooring/billingMain', [StevadooringController::class, 'main'])->name('index-stevadooring');
+Route::get('/billing/stevadooring/masterTarif', [StevadooringController::class, 'TarifIndex'])->name('index-stevadooring-Tarif');
+Route::post('/billing/stevadooring/masterTarif-Update', [StevadooringController::class, 'TarifUpdate'])->name('update-stevadooring-Tarif');
+  // RBM
+Route::get('/billing/stevadooring/RBM', [StevadooringController::class, 'RBM_Index'])->name('index-stevadooring-RBM');
+Route::get('/billing/stevadooring/RBM-create', [StevadooringController::class, 'RBM_Create'])->name('index-stevadooring-RBM_Create');
+Route::post('/billing/stevadooring/RBM-post', [StevadooringController::class, 'RBM_Post'])->name('index-stevadooring-RBM_Post');
+Route::get('/billing/stevadooring/RBM-detali/{id}', [StevadooringController::class, 'RBM_Detail'])->name('index-stevadooring-RBM_Detail');
+Route::post('/billing/stevadooring/RBM-update', [StevadooringController::class, 'RBM_Update'])->name('index-stevadooring-RBM_Update');
+
+// Form
+Route::get('/billing/stevadooring/list-form', [StevadooringController::class, 'listForm'])->name('index-stevadooring-listForm');
+Route::get('/billing/stevadooring/form', [StevadooringController::class, 'Form'])->name('stevadooringForm');
+Route::post('/billing/stevadooring/FormPost', [StevadooringController::class, 'FormPost'])->name('stevadooringPost');
+Route::get('/billing/stevadooring/PreInvoice/{id}', [StevadooringController::class, 'showInvoice'])->name('stevadooringPreInvoice');
+Route::get('/billing/stevadooring/edit-invoice/{id}', [StevadooringController::class, 'editInvoice'])->name('stevadooringEditInvoice');
+Route::post('/billing/stevadooring/FormUpdate', [StevadooringController::class, 'FormUpdate'])->name('stevadooringUpdate');
+Route::post('/billing/stevadooring/DetailPost', [StevadooringController::class, 'stevadooringDetailPost'])->name('stevadooringDetailPost');
+
+// Pranota
+Route::get('/pranota/stevadooring-{id}', [StevadooringController::class, 'Pranota'])->name('index-stevadooring-Pranota');
+// Pay
+Route::get('/stevadooring/pay-button{id}', [StevadooringController::class, 'Pay'])->name('index-stevadooring-Pay');
+Route::post('/invoice/stevadooring-payFull', [StevadooringController::class, 'payFullStevadooring'])->name('index-stevadooring-PayFull');
+Route::post('/invoice/stevadooring-piutang', [StevadooringController::class, 'piutangStevadooring'])->name('index-stevadooring-Piutang');
+
+// invoice
+Route::get('/invoice/stevadooring-{id}', [StevadooringController::class, 'Invoice'])->name('index-stevadooring-Invoice');
+Route::get('/invoice/report-stevadooring', [StevadooringController::class, 'ReportExcel'])->name('report-invoice-stevadooring');
+
+
+// Shifting
+Route::get('/planning/shifting/main', [ShiftingController::class, 'index'])->name('index-shifting');
+Route::post('/get-con-shift', [ShiftingController::class, 'get_cont']);
+Route::post('/post-shifting', [ShiftingController::class, 'shifting']);
 

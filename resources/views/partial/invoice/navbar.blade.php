@@ -111,6 +111,38 @@
         </div>
       </div>
     </li>
+    <!-- Steva -->
+    <li class="menu-item has-sub">
+      <a type="button" class="menu-link">
+        <i class="fa-solid fa-ship"></i>
+        Stevadooring
+      </a>
+      <div class="submenu">
+        <div class="submenu-group-wrapper">
+          <ul class="submenu-group">
+            <li class="submenu-item">
+              <a href="{{ route('index-stevadooring')}}" class="submenu-link">Stevadooring Billing System</a>
+            </li>
+            <li class="submenu-item">
+              <a href="{{ route('index-stevadooring-listForm')}}" class="submenu-link">Stevadooring Form</a>
+            </li>
+            <li class="submenu-item">
+              <a href="{{ route('index-stevadooring-Tarif')}}" class="submenu-link">Master Tarif</a>
+            </li>
+            <li class="submenu-item">
+              <a href="{{ route('index-stevadooring-RBM')}}" class="submenu-link">Realisasi Bongkar Muat Kapal</a>
+            </li>
+            <!-- <li class="submenu-item">
+              <a href="" class="submenu-link">Stuffing Dalam</a>
+            </li>
+            <li class="submenu-item">
+              <a href="" class="submenu-link">Stuffing Luar</a>
+            </li> -->
+          </ul>
+        </div>
+      </div>
+    </li>
+    <!-- end -->
     <li class="menu-item">
       <a href="{{ route('Customer')}}" class="menu-link">
         <i class="fa-solid fa-user">

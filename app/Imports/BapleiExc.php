@@ -148,7 +148,6 @@ class BapleiExc implements ToCollection, WithHeadingRow
                 }
             }
            
-            return back()->with('success')->with('success', 'Data berhasil diimpor.');
    
         }
     }

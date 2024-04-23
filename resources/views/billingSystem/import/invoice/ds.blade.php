@@ -221,20 +221,6 @@
                             <td>{{ number_format($invoice->{'m1_'.$ukuran} / $jumlahContainerPerUkuran[$ukuran], 0, ',', '.') }}</td>
                             <td>{{ number_format($invoice->{'m1_'.$ukuran}, 0, ',', '.') }}</td>
                         </tr>
-                        <tr>
-                            <td>Penumpukan Massa 2</td>
-                            <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
-                            <td>{{$invoice->massa2}} Hari</td>
-                            <td>{{ number_format($invoice->{'m2_'.$ukuran} / $jumlahContainerPerUkuran[$ukuran], 0, ',', '.') }}</td>
-                            <td>{{ number_format($invoice->{'m2_'.$ukuran}, 0, ',', '.') }}</td>
-                        </tr>
-                        <tr>
-                            <td>Penumpukan Massa 3</td>
-                            <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
-                            <td>{{$invoice->massa3}} Hari</td>
-                            <td>{{ number_format($invoice->{'m3_'.$ukuran} / $jumlahContainerPerUkuran[$ukuran], 0, ',', '.') }}</td>                        
-                            <td>{{ number_format($invoice->{'m3_'.$ukuran}, 0, ',', '.') }}</td>                        
-                        </tr>
                         @endif
                
                 </tbody>

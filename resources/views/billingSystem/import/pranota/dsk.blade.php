@@ -126,10 +126,10 @@
               <div class="col-xs-12 col-12">
                 <address>
                   <strong>Metode Pembayaran</strong><br>
-                  Nama Bank :  <br>
-                  Pemilik Rekening :  <br>
-                  Kode Bank : <br>
-                  Nomor Rekening : <br>
+                  Nama Bank : Bank Central Asia (BCA) <br>
+                  Pemilik Rekening :  PT. INDO KONTAINER SARANA<br>
+                  Kode Bank : 014<br>
+                  Nomor Rekening : 0295197531<br>
                   <!-- h.elaine@gmail.com<br> -->
                 </address>
               </div>
@@ -199,20 +199,6 @@
                             <td>{{$invoice->massa1}} Hari</td>
                             <td>{{ number_format($invoice->{'m1_'.$ukuran} / $jumlahContainerPerUkuran[$ukuran], 0, ',', '.') }}</td>
                             <td>{{ number_format($invoice->{'m1_'.$ukuran}, 0, ',', '.') }}</td>
-                        </tr>
-                        <tr>
-                            <td>Penumpukan Massa 2</td>
-                            <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
-                            <td>{{$invoice->massa2}} Hari</td>
-                            <td>{{ number_format($invoice->{'m2_'.$ukuran} / $jumlahContainerPerUkuran[$ukuran], 0, ',', '.') }}</td>
-                            <td>{{ number_format($invoice->{'m2_'.$ukuran}, 0, ',', '.') }}</td>
-                        </tr>
-                        <tr>
-                            <td>Penumpukan Massa 3</td>
-                            <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
-                            <td>{{$invoice->massa3}} Hari</td>
-                            <td>{{ number_format($invoice->{'m3_'.$ukuran} / $jumlahContainerPerUkuran[$ukuran], 0, ',', '.') }}</td>
-                            <td>{{ number_format($invoice->{'m3_'.$ukuran}, 0, ',', '.') }}</td>
                         </tr>
                         @elseif($invoice->os_id == '3')
                         <tr>

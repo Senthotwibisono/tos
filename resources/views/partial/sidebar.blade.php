@@ -40,6 +40,9 @@
             <li class="submenu-item @if(Request::is('planning/ship_planning')) active @endif">
                 <a href="/planning/ship_planning">Ship Planning</a>
             </li>
+            <li class="submenu-item @if(Request::is('planning/shifting/main')) active @endif">
+                <a href="{{route('index-shifting')}}">shifting</a>
+            </li>
             </li>
             <li class="submenu-item @if(Request::is('planning/profile-kapal')) active @endif">
                 <a href="/planning/profile-kapal">Ship Profile</a>

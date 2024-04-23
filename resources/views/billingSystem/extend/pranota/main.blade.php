@@ -126,10 +126,10 @@
               <div class="col-xs-12 col-12">
                 <address>
                   <strong>Metode Pembayaran</strong><br>
-                  Nama Bank :  <br>
-                  Pemilik Rekening :  <br>
-                  Kode Bank : <br>
-                  Nomor Rekening : <br>
+                  Nama Bank : Bank Central Asia (BCA) <br>
+                  Pemilik Rekening :  PT. INDO KONTAINER SARANA<br>
+                  Kode Bank : 014<br>
+                  Nomor Rekening : 0295197531<br>
                   <!-- h.elaine@gmail.com<br> -->
                 </address>
               </div>

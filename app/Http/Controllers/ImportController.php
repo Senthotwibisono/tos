@@ -103,12 +103,12 @@ class ImportController extends Controller
         $id = $request->id;
         $do = DOonline::where('id', $id)->first();
         $now = Carbon::now();
-        if ($now > $do->expired) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Nomor Do Expired !!',
-            ]);
-        }
+        // if ($now > $do->expired) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'Nomor Do Expired !!',
+        //     ]);
+        // }
 
         $ves = $request->ves;
         if (empty($ves)) {
@@ -317,6 +317,10 @@ class ImportController extends Controller
         
         $interval = $discDate->diff($expDate);
         $jumlahHari = $interval->days;
+
+        if($jumlahHari >= 6 ){
+            return redirect()->back()->with('error', 'Melebihi Kuota Massa 1 !!');
+        }
 
         if ($jumlahHari >=5) {
             $data['massa1seharusnya'] = 5;
