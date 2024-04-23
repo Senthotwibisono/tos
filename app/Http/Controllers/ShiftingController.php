@@ -37,6 +37,20 @@ class ShiftingController extends Controller
         return view('shifting.index', $data);
     }
 
+    public function android()
+    {
+        $data['title'] = 'Shifting';
+
+        $data['cont'] = Item::whereIn('ctr_intern_status', ['01', '02', '56'])->get();
+        $data['alat'] = MasterAlat::where('category', '=', 'Bay')->get();
+        $data['operator'] = Operator::where('role', '=', 'cc')->get();
+        $data['shifted'] = Shifting::orderBy('ves_id', 'desc')->orderBy('shifting_time', 'desc')->get();
+        $data['vessel_voyage'] = VVoyage::whereDate('deparature_date', '>=', now())->orderBy('deparature_date', 'desc')->get();
+
+
+        return view('shifting.android', $data);
+    }
+
     public function get_cont(request $request)
     {
       $ves_id = $request->ves_id;

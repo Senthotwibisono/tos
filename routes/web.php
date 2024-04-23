@@ -995,6 +995,7 @@ Route::get('/invoice/report-stevadooring', [StevadooringController::class, 'Repo
 
 // Shifting
 Route::get('/planning/shifting/main', [ShiftingController::class, 'index'])->name('index-shifting');
+Route::get('/planning/shifting/android', [ShiftingController::class, 'android'])->name('android-shifting');
 Route::post('/get-con-shift', [ShiftingController::class, 'get_cont']);
 Route::post('/post-shifting', [ShiftingController::class, 'shifting']);
 
