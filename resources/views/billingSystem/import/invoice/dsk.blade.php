@@ -194,7 +194,7 @@
                             <td>Lift On/Off Full</td>
                             <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
                             <td>0</td>
-                            <td>{{ number_format($invoice->{'lolo_full_'.$ukuran / $jumlahContainerPerUkuran[$ukuran]}, 0, ',', '.') }}</td>
+                            <td>{{ number_format($invoice->{'lolo_full_'.$ukuran} / $jumlahContainerPerUkuran[$ukuran], 0, ',', '.') }}</td>
                             <td>{{ number_format($invoice->{'lolo_full_'.$ukuran}, 0, ',', '.') }}</td>
                         </tr>
                         <tr>

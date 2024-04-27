@@ -79,7 +79,8 @@ class PlacementController extends Controller
         $data['operator'] = Operator::where('role', '=', 'yard')->get();
         $data['supir'] = Operator::where('role', '=', 'truck')->get();
         $vessel = VVoyage::whereDate('etd_date', '>=', now())->get();
-        return view('yard.place.main', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'alat', 'vessel'), $data);
+        $vessel_voyage = VVoyage::whereDate('deparature_date', '>=', now())->orderBy('deparature_date', 'desc')->get();
+        return view('yard.place.main', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'alat', 'vessel', 'vessel_voyage'), $data);
     }
 
     public function android()
@@ -137,7 +138,9 @@ class PlacementController extends Controller
         $data['operator'] = Operator::where('role', '=', 'yard')->get();
         $data['supir'] = Operator::where('role', '=', 'truck')->get();
         $vessel = VVoyage::whereDate('etd_date', '>=', now())->get();
-        return view('yard.place.android-yard', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'alat', 'vessel'), $data);
+        $vessel_voyage = VVoyage::whereDate('deparature_date', '>=', now())->orderBy('deparature_date', 'desc')->get();
+
+        return view('yard.place.android-yard', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'alat', 'vessel', 'vessel_voyage'), $data);
     }
 
 
@@ -529,5 +532,26 @@ class PlacementController extends Controller
 
           
         }
+    }
+
+    public function get_cont(request $request)
+    {
+      $ves_id = $request->ves_id;
+      $container_key = Item::where('ves_id', $ves_id)->whereNot('container_no', '')->whereIn('ctr_intern_status', [02, 03, 04, 12, 50, 51, 13, 14])->get();
+
+      $option = [];
+
+      if ($container_key->isEmpty()) {
+        // Return empty response when no containers are found
+        return response()->json($option);
+      }
+      foreach ($container_key as $kode) {
+        // echo "<option value='$kode->container_key'>$kode->container_no</option>";
+        $option[] = [
+          'value' => $kode->container_key,
+          'text' => $kode->container_no,
+        ];
+      }
+      return response()->json($option);
     }
 }

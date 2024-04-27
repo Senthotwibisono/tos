@@ -452,6 +452,8 @@ Route::post('/dapet-tipe', [PlacementController::class, 'get_tipe']);
 Route::post('/container-tipe', [PlacementController::class, 'tipe_container']);
 Route::post('/placement/changedToMty-{container_key}', [PlacementController::class, 'change']);
 Route::post('/placement/changed-status', [PlacementController::class, 'place_mty']);
+Route::post('/get-con-plc', [PlacementController::class, 'get_cont']);
+
 
 
 Route::get('/yard/yard-view/android', [YardrotController::class, 'Android']);
