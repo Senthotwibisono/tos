@@ -85,7 +85,7 @@
                             <input type="hidden" name="m1_{{$ukuran}}" value="{{$jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->m1}}">
                             </td>
                         </tr>
-                        @elseif($service->id == '11' || $service->id == '13' || $service->id == '15')
+                        @elseif($service->id == '11' || $os == '12' || $service->id == '13' || $service->id == '15')
                             @if($service->id == '13')
                             <tr>
                               <td>Pass Truck Masuk</td>

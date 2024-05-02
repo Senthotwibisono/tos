@@ -230,7 +230,7 @@
                             <td>{{ number_format($invoice->{'m1_'.$ukuran} / $jumlahContainerPerUkuran[$ukuran], 0, ',', '.') }}</td>
                             <td>{{ number_format($invoice->{'m1_'.$ukuran}, 0, ',', '.') }}</td>
                         </tr>
-                        @elseif($invoice->os_id == '11' || $invoice->os_id == '13' || $invoice->os_id == '15')
+                        @elseif($invoice->os_id == '11' || $os == '12' || $invoice->os_id == '13' || $invoice->os_id == '15')
                             @if($invoice->os_id == '13')
                             <tr>
                               <td>Pass Truck Masuk</td>

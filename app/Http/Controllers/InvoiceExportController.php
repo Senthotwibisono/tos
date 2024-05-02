@@ -239,7 +239,7 @@ class InvoiceExportController extends Controller
                 $DS = array_merge($jpbTruck, $pmassa1, $ptKeluar);
             }elseif ($os == 10) {
                 $DS = array_merge($jpbTruck, $pmassa1, $ptKeluar, $loloFull);
-            }elseif ($os == 11 || $os == 15) {
+            }elseif ($os == 11 || $os == 12 || $os == 15) {
                 $DS = array_merge($stuffing);
             }elseif ($os == 13) {
                 $DS = array_merge($stuffing, $loloEmpty, $ptMasuk, $ptKeluar, $loloFull);
@@ -373,7 +373,7 @@ class InvoiceExportController extends Controller
                 $proformaDS = $nextProformaNumberDS;
             }
 
-            if ($os == '6' || $os == '8' ||  $os == '9' || $os == '10' ||  $os == '11' || $os == '13' || $os == '14' || $os == '15') {
+            if ($os == '6' || $os == '8' ||  $os == '9' || $os == '10' ||  $os == '11' || $os == '12' || $os == '13' || $os == '14' || $os == '15') {
                      
                 $invoiceNo = $this->getNextInvoiceDS();
          
@@ -488,7 +488,7 @@ class InvoiceExportController extends Controller
                             'ves_id'=>$item->ves_id,
                         ]);
                     }
-                    if ($os == '6' || $os == '8' ||  $os == '9' || $os == '10' ||  $os == '11' || $os == '13' || $os == '14' || $os == '15') {
+                    if ($os == '6' || $os == '8' ||  $os == '9' || $os == '10' ||  $os == '11'|| $os == '12' || $os == '13' || $os == '14' || $os == '15') {
                         $job = JobExport::create([
                             'inv_id'=>$ds->id,
                             'job_no'=>$jobNo,

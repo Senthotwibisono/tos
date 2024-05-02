@@ -178,7 +178,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                @if($invoice->os_id == '1' || $invoice->os_id == '5')
+                @if($invoice->os_id == '1' || $invoice->os_id == '5' || $invoice->os_id == '16')
                 <tr>
                             <td>Pass Truck Masuk</td>
                             <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>

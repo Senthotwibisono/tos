@@ -106,12 +106,12 @@
           </div>
         </div>
         <div class="row mt-3">
-            @if($service->id == 1 || $service->id == 2 || $service->id == 3)
+            @if($service->id == 1 || $service->id == 2 || $service->id == 3 || $service->id == 16)
              @include('billingSystem.import.form.preInvoice.dsk')
               @endif
               
               <!-- DS -->
-              @if($service->id == 1 || $service->id == 3 || $service->id == 4 || $service->id == 5)
+              @if($service->id == 1 || $service->id == 3 || $service->id == 4 || $service->id == 5 || $service->id == 16)
               @include('billingSystem.import.form.preInvoice.ds')
 
               @endif
