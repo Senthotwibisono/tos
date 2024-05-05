@@ -234,7 +234,7 @@ class InvoiceExportController extends Controller
                 $DS = array_merge($loloEmpty);
             }
 
-        }elseif ($os == 9 || $os == 10 || $os == 11 || $os == 13  || $os == 15) {
+        }elseif ($os == 9 || $os == 10 || $os == 11 || $os == 12 || $os == 13  || $os == 15) {
             if ($os == 9) {
                 $DS = array_merge($jpbTruck, $pmassa1, $ptKeluar);
             }elseif ($os == 10) {

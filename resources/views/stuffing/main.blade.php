@@ -81,6 +81,7 @@
         var truck_no = $('#truck').val();
         var ro_id_gati = $('#id_truck').val();
         var alat = $('#alat').val();
+        var operator = $('#operator').val();
         var data = {
           'ro_no' : $('#nomor_ro').val(),
           'ves_id' : $('#VesselDalam').val(),
@@ -96,7 +97,7 @@
           'user_id': $('#user').val(),
           'ro_id_gati' : $('#truck').val(),
           'alat' : $('#alat').val(),
-
+          'operator': $('#operator').val(),
         }
         $.ajaxSetup({
           headers: {
@@ -252,13 +253,14 @@
         var truck_no = $('#truck_luar').val();
         var ro_id_gati = $('#id_truck_luar').val();
         var alat = $('#alat_luar').val();
+        var operator = $('#operator_luar').val();
         var data = {
           'ro_no' : $('#nomor_ro_luar').val(),
           'container_key': $('#key_luar').val(),
           'truck_no' : $('#truck_luar').val(),
           'ro_id_gati' : $('#id_truck_luar').val(),
           'alat' : $('#alat_luar').val(),
-
+          'operator': $('#operator_luar').val(),
         }
         $.ajaxSetup({
           headers: {

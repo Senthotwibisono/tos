@@ -12,6 +12,8 @@ use App\Models\RO;
 use App\Models\VVoyage;
 use App\Models\MasterAlat;
 use App\Models\ActAlat;
+use App\Models\Operator;
+use App\Models\ActOper;
 use Auth;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
@@ -91,6 +93,7 @@ class Stuffing extends Controller
         $alat = MasterAlat::where('category', '=', 'Yard')->get();
 
         $roDalam = RO::where('stuffing_service', 'in')->orderBy('created_at', 'desc')->get();
+        $data['operator'] = Operator::where('role', '=', 'yard')->get();
         return view('stuffing.main', $data, compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys', 'ro_gate_dalam', 'ro_stuffing_dalam', 'vessel', 'container_truck', 'ro_gate_luar', 'ro_stuffing_luar', 'container_truck_luar', 'alat', 'roDalam'), $data);
     }
 
@@ -160,6 +163,7 @@ class Stuffing extends Controller
             ->pluck('container_count', 'truck_id');
         $vessel = VVoyage::where('deparature_date', '>=', $now)->get();
         $alat = MasterAlat::where('category', '=', 'Yard')->get();
+        $data['operator'] = Operator::where('role', '=', 'yard')->get();
 
         $roDalam = RO::where('stuffing_service', 'in')->orderBy('created_at', 'desc')->get();
         return view('stuffing.android', $data, compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'containerKeys', 'ro_gate_dalam', 'ro_stuffing_dalam', 'vessel', 'container_truck', 'ro_gate_luar', 'ro_stuffing_luar', 'container_truck_luar', 'alat', 'roDalam'), $data);
@@ -204,6 +208,8 @@ class Stuffing extends Controller
         $ro = RO::where('ro_no', $ro_no)->first();
         if ($ro->stuffing_service == "in") {
             $container_key = $request->container_key;
+            // var_dump($container_key);
+            // die;
             $item = Item::where('container_key', $container_key)->first();
             $request->validate([
                 'container_no' => 'required',
@@ -229,6 +235,16 @@ class Stuffing extends Controller
                 ->where('yard_tier', $request->yard_tier)
                 ->first();
 
+            // var_dump($container_key, $yard_rowtier);
+            // die;
+           
+                if (empty($yard_rowtier)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Posisi Tidak Ditemukan, Pilih posisi lain !!',
+                    ]);
+                }
+
             if (is_null($yard_rowtier->container_key)) {
                 $now = Carbon::now();
 
@@ -243,21 +259,18 @@ class Stuffing extends Controller
 
                     $truck = $request->ro_id_gati;
                     $ro_gate = RO_Gate::where('ro_id_gati', $truck)->first();
+                    $opr = Operator::where('id', $request->operator)->first();
+                    // var_dump($opr, $ro);
+                    // die;
 
-                    $ro_gate->update([
-                        'status' => '2',
-                    ]);
-
-
-                    $realisasi = RO_Realisasi::create([
-                        'ro_no' => $request->ro_no,
-                        'container_key' => $container_key,
-                        'container_no' => $request->container_no,
-                        'truck_no' => $ro_gate->truck_no,
-                        'truck_id' => $truck,
-                    ]);
+                    
 
                     $item->update([
+                        'ctr_intern_status' => '09',
+                        'ctr_active_yn' => 'N',
+                    ]);
+                    
+                    $cont = Item::create([
                         'ro_no' => $ro_no,
                         'ves_id' => $request->ves_id,
                         'ves_name' => $request->ves_name,
@@ -268,19 +281,78 @@ class Stuffing extends Controller
                         'yard_row' => $request->yard_row,
                         'yard_tier' => $request->yard_tier,
                         'ctr_intern_status' => '53',
-                        'wharf_yard_oa' => $request->wharf_yard_oa,
                         'stuffing_date' => $now,
                         'truck_no' => $ro_gate->truck_no,
                         'truck_in_date' => $ro_gate->truck_in_date,
                         'stuffing_procces' => $ro->stuffing_service,
+                        'container_no' => $item->container_no,
+                        'ctr_size' => $item->ctr_size,
+                        'ctr_type' => $item->ctr_type,
+                        'ctr_status' => $item->ctr_status,
+                        'iso_code' => $item->iso_code,
+                        `wharf_yard_oa`=> $request->operator,
+                        'disc_load_trans_shift' => $request->disc_load_trans_shift,
+                        'gross' => $item->gross,
+                        'gross_class' => $item->gross_class,
+                        'over_height' => $item->over_height,
+                        'over_weight' => $item->over_weight,
+                        'over_length' => $item->over_length,
+                        'commodity_name' => $item->commodity_name,
+                        'load_port' => $item->load_port,
+                        'disch_port' => $item->disch_port,
+                        'agent' => $item->agent,
+                        'chilled_temp' => $item->chilled_temp,
+                        'imo_code' => $item->imo_code,
+                        'dangerous_yn' => $item->dangerous_yn,
+                        'dangerous_label_yn' => $item->dangerous_label_yn,
+                        'bl_no' => $item->bl_no,
+                        'seal_no' => $item->seal_no,
+                        'disc_load_seq' => $item->disc_load_seq,
+                        'iso_code' => $item->iso_code,
+                        'ctr_opr' => $item->ctr_opr,
+                        'user_id' => $item->user_id,
+                        'selected_do' => 'N',
+                        'ctr_i_e_t' => 'E',
+                        'ctr_active_yn' => 'Y',
                     ]);
+                    // var_dump($cont);
+                    // die;
+                    $realisasi = RO_Realisasi::create([
+                        'ro_no' => $request->ro_no,
+                        'container_key' => $cont->container_key,
+                        'container_no' => $cont->container_no,
+                        'truck_no' => $ro_gate->truck_no,
+                        'truck_id' => $truck,
+                    ]);
+
+                    $ro_gate->update([
+                        'status' => '2',
+                        'container_no' => $cont->container_no,
+                    ]);
+
                     $act_alat = ActAlat::create([
                         'id_alat' =>  $request->alat,
                         'category' => $alat->category,
                         'nama_alat' => $alat->name,
-                        'container_key' => $request->container_key,
-                        'container_no' => $request->container_no,
+                        'container_key' => $cont->container_key,
+                        'container_no' => $cont->container_no,
                         'activity' => 'STFG-IN',
+                        'operator_id'=>$request->operator,
+                        'operator' => $opr->name,
+                    ]);
+
+                    $actOper = ActOper::create([
+                        'alat_id' =>$request->alat,
+                        'alat_category' =>$alat->category,
+                        'alat_name'  =>$alat->name,
+                        'operator_id'=>$request->operator,
+                        'operator_name'=>$opr->name,
+                        'container_key'=>$cont->container_key,
+                        'container_no'=>$cont->container_no,
+                        'ves_id'=>$cont->ves_id,
+                        'ves_name'=>$cont->ves_name,
+                        'voy_no'=>$cont->voy_no,
+                        'activity' =>'STFG-IN',
                     ]);
 
                     $ves_id = $request->ves_id;
@@ -289,7 +361,7 @@ class Stuffing extends Controller
                     return response()->json([
                         'success' => true,
                         'message' => 'Updated successfully!',
-                        'item' => $item,
+                        'item' => $cont,
                     ]);
                 } else {
                     return response()->json([
@@ -317,39 +389,88 @@ class Stuffing extends Controller
 
                 $truck = $request->ro_id_gati;
                 $ro_gate = RO_Gate::where('ro_id_gati', $truck)->first();
-
-
-
-
-                $realisasi = RO_Realisasi::create([
-                    'ro_no' => $request->ro_no,
-                    'container_key' => $container_key,
-                    'container_no' => $item->container_no,
-                    'truck_no' => $request->truck_no,
-                    'truck_id' => $truck,
-                ]);
+                $opr = Operator::where('id', $request->operator)->first();
+                // var_dump($request->operator);
+                // die;
 
                 $item->update([
+                    'ctr_intern_status' => '09',
+                    'ctr_active_y_n' => 'N',
+                ]);
+
+                $cont = Item::create([
                     'ro_no' => $ro_no,
                     'ctr_intern_status' => '06',
-                    'wharf_yard_oa' => $request->wharf_yard_oa,
                     'stuffing_date' => $now,
                     'truck_no' => $request->truck_no,
                     'truck_in_date' => $ro_gate->truck_in_date,
                     'stuffing_procces' => $ro->stuffing_service,
+                    'container_no' => $item->container_no,
+                    'ctr_size' => $item->ctr_size,
+                    'ctr_type' => $item->ctr_type,
+                    'ctr_status' => $item->ctr_status,
+                    'iso_code' => $item->iso_code,
+                    `wharf_yard_oa`=> $request->operator,
+                    'disc_load_trans_shift' => $request->disc_load_trans_shift,
+                    'gross' => $item->gross,
+                    'gross_class' => $item->gross_class,
+                    'over_height' => $item->over_height,
+                    'over_weight' => $item->over_weight,
+                    'over_length' => $item->over_length,
+                    'commodity_name' => $item->commodity_name,
+                    'load_port' => $item->load_port,
+                    'disch_port' => $item->disch_port,
+                    'agent' => $item->agent,
+                    'chilled_temp' => $item->chilled_temp,
+                    'imo_code' => $item->imo_code,
+                    'dangerous_yn' => $item->dangerous_yn,
+                    'dangerous_label_yn' => $item->dangerous_label_yn,
+                    'bl_no' => $item->bl_no,
+                    'seal_no' => $item->seal_no,
+                    'disc_load_seq' => $item->disc_load_seq,
+                    'iso_code' => $item->iso_code,
+                    'ctr_opr' => $item->ctr_opr,
+                    'user_id' => $item->user_id,
+                    'selected_do' => 'N',
+                    'ctr_i_e_t' => 'E',
+                    'ctr_active_yn' => 'Y',
+                ]);
+
+                $realisasi = RO_Realisasi::create([
+                    'ro_no' => $request->ro_no,
+                    'container_key' => $cont->container_key,
+                    'container_no' => $cont->container_no,
+                    'truck_no' => $request->truck_no,
+                    'truck_id' => $truck,
                 ]);
 
                 $act_alat = ActAlat::create([
                     'id_alat' =>  $request->alat,
                     'category' => $alat->category,
                     'nama_alat' => $alat->name,
-                    'container_key' => $request->container_key,
-                    'container_no' => $item->container_no,
+                    'container_key' => $cont->container_key,
+                    'container_no' => $cont->container_no,
                     'activity' => 'STFG-OUT',
+                    'operator_id'=>$request->operator,
+                    'operator' => $opr->name,
+                ]);
+                $actOper = ActOper::create([
+                    'alat_id' =>$request->alat,
+                    'alat_category' =>$alat->category,
+                    'alat_name'  =>$alat->name,
+                    'operator_id'=>$request->operator,
+                    'operator_name'=>$opr->name,
+                    'container_key'=>$cont->container_key,
+                    'container_no'=>$cont->container_no,
+                    'ves_id'=>$cont->ves_id,
+                    'ves_name'=>$cont->ves_name,
+                    'voy_no'=>$cont->voy_no,
+                    'activity' =>'STFG-OUT',
                 ]);
 
                 $ro_gate->update([
                     'status' => '4',
+                    'container_no' => $cont->container_no,
                 ]);
 
                 return response()->json([
@@ -549,12 +670,16 @@ class Stuffing extends Controller
         $truck_table = RO_Realisasi::where('truck_id', '=', $ro_id_gati)->where('status', '=', '1')->get();
         $vessel = VVoyage::where('deparature_date', '>=', $now)->get();
         $alat = MasterAlat::where('category', '=', 'Yard')->get();
-        return view('stuffing.luar.place_cont', compact('truck', 'truck_table', 'vessel', 'now', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'ro', 'container', 'truck_id', 'alat'));
+        $data['operator'] = Operator::where('role', '=', 'yard')->get();
+
+        return view('stuffing.luar.place_cont', compact('truck', 'truck_table', 'vessel', 'now', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'ro', 'container', 'truck_id', 'alat'), $data);
     }
 
     public function update_place_cont_luar(Request $request)
     {
         $container_key = $request->container_key;
+        // var_dump($container_key);
+        // die;
         $item = Item::where('container_key', $container_key)->first();
         $request->validate([
             'container_key' => 'required',
@@ -585,6 +710,7 @@ class Stuffing extends Controller
             $now = Carbon::now();
             $id_alat = $request->alat;
             $alat = MasterAlat::where('id', $id_alat)->first();
+            $opr = Operator::where('id', $request->operator)->first();
 
 
 
@@ -616,6 +742,21 @@ class Stuffing extends Controller
                 'container_key' => $request->container_key,
                 'container_no' => $item->container_no,
                 'activity' => 'STFG-OUT-FULL',
+                'operator_id'=>$request->operator,
+                'operator' => $opr->name,
+            ]);
+            $actOper = ActOper::create([
+                'alat_id' =>$request->alat,
+                'alat_category' =>$alat->category,
+                'alat_name'  =>$alat->name,
+                'operator_id'=>$request->operator,
+                'operator_name'=>$opr->name,
+                'container_key'=>$item->container_key,
+                'container_no'=>$item->container_no,
+                'ves_id'=>$item->ves_id,
+                'ves_name'=>$item->ves_name,
+                'voy_no'=>$item->voy_no,
+                'activity' =>'STFG-OUT-FULL',
             ]);
 
             $ves_id = $request->ves_id;

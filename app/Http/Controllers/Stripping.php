@@ -8,6 +8,8 @@ use App\Models\User;
 use App\Models\Yard;
 use App\Models\MasterAlat;
 use App\Models\ActAlat;
+use App\Models\Operator;
+use App\Models\ActOper;
 use Auth;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
@@ -73,6 +75,7 @@ class Stripping extends Controller
         $yard_tier = Yard::distinct('yard_tier')->pluck('yard_tier');
         $currentDateTime = Carbon::now();
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
+        $data['operator'] = Operator::where('role', '=', 'yard')->get();
 
         // GET ALL JOB_CONTAINER
 
@@ -200,6 +203,7 @@ class Stripping extends Controller
             if ($yard_rowtier->container_key == null || $yard_rowtier->container_key == ' ') { 
             $id_alat = $request->id_alat;
             $alat = MasterAlat::where('id', $id_alat)->first();
+            $opr = Operator::where('id', $request->operator)->first();
 
             $item->update([
                 'yard_block' => $request->yard_block,
@@ -220,9 +224,24 @@ class Stripping extends Controller
                 'id_alat' =>  $request->id_alat,
                 'category' => $alat->category,
                 'nama_alat' => $alat->name,
+                'operator_id'=>$request->operator,
+                'operator' => $opr->name,
                 'container_key' => $request->container_key,
                 'container_no' => $request->container_no,
                 'activity' => 'STR',
+            ]);
+            $actOper = ActOper::create([
+                'alat_id' =>$request->id_alat,
+                'alat_category' =>$alat->category,
+                'alat_name'  =>$alat->name,
+                'operator_id'=>$request->operator,
+                'operator_name'=>$opr->name,
+                'container_key'=>$item->container_key,
+                'container_no'=>$item->container_no,
+                'ves_id'=>$item->ves_id,
+                'ves_name'=>$item->ves_name,
+                'voy_no'=>$item->voy_no,
+                'activity' =>'STR',
             ]);
 
          

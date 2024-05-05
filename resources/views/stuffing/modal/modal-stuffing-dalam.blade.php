@@ -67,19 +67,28 @@
               {{ csrf_field()}}
             </div>
             <div class="col-12">
-              <div class="form-group">
-                <label for="first-name-vertical">Alat</label>
-                <select class="choices form-select" id="alat" required>
-                  <option value="">Pilih Alat</option>
-                  @foreach($alat as $alt)
-                  <option value="{{$alt->id}}">{{$alt->name}}</option>
-                  @endforeach
-                </select>
-                <input type="hidden" id="container_no" class="form-control" name="container_no">
-                <input type="hidden" id="container_key" class="form-control" name="container_key">
+                  <div class="form-group">
+                      <label for="first-name-vertical">Alat</label>
+                      <select class="choices form-select" id="alat" required>
+                          <option value="">Pilih Alata</option>
+                          @foreach($alat as $alt)
+                          <option value="{{$alt->id}}">{{$alt->name}}</option>
+                          @endforeach
+                      </select>
+                  </div>
+                  {{ csrf_field()}}
               </div>
-              {{ csrf_field()}}
-            </div>
+              <div class="col-12">
+                  <div class="form-group">
+                      <label for="first-name-vertical">Op Alat</label>
+                      <select class="choices form-select" id="operator">
+                          <option disabeled selected value>Pilih Satu!</option>
+                          @foreach($operator as $opr)
+                          <option value="{{$opr->id}}">{{$opr->name}}</option>
+                          @endforeach
+                      </select>
+                  </div>
+              </div>
             <div class="col-12">
               <div class="form-group">
                 <label for="first-name-vertical">Type</label>

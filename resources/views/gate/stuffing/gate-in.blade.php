@@ -173,6 +173,7 @@
 
     var data = {
             'ro_id_gati': $('#tayo_full').val(),
+            'truck_no': $('#newTruck').val(),
       
 
 

@@ -14,6 +14,7 @@ class RO_Gate extends Model
 
     protected $fillable = [
         'ro_no',
+        'container_no',
         'truck_no',
         'truck_in_date',
         'truck_out_date',

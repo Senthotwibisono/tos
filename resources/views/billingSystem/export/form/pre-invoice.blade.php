@@ -110,7 +110,7 @@
               @endif
               
               <!-- DS -->
-              @if($service->id == '6' || $service->id == '8' ||  $service->id == '9' || $service->id == '10' ||  $service->id == '11' || $os == '12' || $service->id == '13' || $service->id == '14' || $service->id == '15')
+              @if($service->id == '6' || $service->id == '8' ||  $service->id == '9' || $service->id == '10' ||  $service->id == '11' || $service->id == '12' || $service->id == '13' || $service->id == '14' || $service->id == '15')
               @include('billingSystem.export.form.preInvoice.ds')
 
               @endif

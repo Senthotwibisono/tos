@@ -27,7 +27,7 @@ class DocsController extends Controller
         $title = 'Dokumen R.O';
 
         $ro = RO::orderBy('created_at', 'desc')->get();
-        $vessel_voyage = VVoyage::whereDate('etd_date', '>=', now())->get();
+        $vessel_voyage = VVoyage::whereDate('deparature_date', '>=', now())->get();
         $port = Port::all();
 
         return view('docs.dokumen.ro', compact('title', 'ro', 'vessel_voyage', 'port'));

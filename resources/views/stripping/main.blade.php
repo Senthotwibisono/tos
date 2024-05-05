@@ -83,7 +83,7 @@
               </div>
               {{ csrf_field()}}
             </div>
-            <div class="col-12">
+            <!-- <div class="col-12">
               <div class="form-group">
                 <label for="first-name-vertical">Alat</label>
                 <select class="choices form-select" id="alat" required>
@@ -94,7 +94,30 @@
                 </select>
               </div>
               {{ csrf_field()}}
-              <div>
+              <div> -->
+              <div class="col-12">
+                  <div class="form-group">
+                      <label for="first-name-vertical">Alat</label>
+                      <select class="choices form-select" id="alat" required>
+                          <option value="">Pilih Alata</option>
+                          @foreach($alat as $alt)
+                          <option value="{{$alt->id}}">{{$alt->name}}</option>
+                          @endforeach
+                      </select>
+                  </div>
+                  {{ csrf_field()}}
+              </div>
+              <div class="col-12">
+                  <div class="form-group">
+                      <label for="first-name-vertical">Op Alat</label>
+                      <select class="choices form-select" id="operator">
+                          <option disabeled selected value>Pilih Satu!</option>
+                          @foreach($operator as $opr)
+                          <option value="{{$opr->id}}">{{$opr->name}}</option>
+                          @endforeach
+                      </select>
+                  </div>
+              </div>
             <div class="col-12">
               <div class="form-group">
                 <label for="first-name-vertical">Type</label>
@@ -238,12 +261,22 @@
         var yard_raw = $('#raw').val();
         var yard_tier = $('#tier').val();
         var id_alat = $('#alat').val();
+        var operator = $('#operator').val();
         if (!id_alat) {
         // If any of the required fields are empty, show an error message and return
         Swal.fire({
             icon: 'error',
             title: 'Validation Error',
             text: 'Alat Belum Diisi, cek kembali Ya !!',
+        });
+        return;
+        }
+        if (!operator) {
+        // If any of the required fields are empty, show an error message and return
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Operator Belum Diisi, cek kembali Ya !!',
         });
         return;
         }
@@ -255,7 +288,8 @@
           'yard_row': $('#row').val(),
           'yard_tier': $('#tier').val(),
           'user_id': $('#user').val(),
-           'id_alat' : $('#alat').val(), 
+          'id_alat' : $('#alat').val(),
+          'operator': $('#operator').val(), 
         }
         $.ajaxSetup({
           headers: {

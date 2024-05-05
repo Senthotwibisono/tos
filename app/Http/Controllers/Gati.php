@@ -529,6 +529,7 @@ class Gati extends Controller
             $truck->update([
                 'truck_in_date_after' => $now,
                 'status' => '7',
+                'truck_no'=>$request->truck_no,
             ]);
 
 
