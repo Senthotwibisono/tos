@@ -101,7 +101,7 @@
           </div>
         </div>
         <div class="row mt-3">
-        <input type="text" name="contKey_Selected" value="{{ implode(',', $selectedCont) }}">
+        <input type="hidden" name="contKey_Selected" value="{{ implode(',', $selectedCont) }}">
         @if($ctr_20 != null)
         <input type="hidden" name="ctr_20" value="{{$ctr_20}}">
         <div class="col-12">

@@ -21,6 +21,7 @@ class ShiftingDetail extends Model
         'landing',
         'tarif',
         'jumlah',
-        'total'
+        'total',
+        'detail'
     ];
 }

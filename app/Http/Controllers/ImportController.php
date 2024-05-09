@@ -17,6 +17,7 @@ use App\Models\VVoyage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\InvoicesExport; // Assuming you create an export class
+use App\Models\ImportDetail as Detail; // Assuming you create an export class
 
 
 // BC 20
@@ -521,6 +522,155 @@ class ImportController extends Controller
                     'lolo_full_42' => $request->lolo_full_42,
                     'pass_truck_keluar_42' => $request->pass_truck_keluar_42,
                 ]);
+
+                if ($dsk->ctr_20 != null) {
+                    // LOLO
+                    $lon20 = Detail::create([
+                        'inv_id'=>$dsk->id,
+                        'inv_no'=>$dsk->inv_no,
+                        'inv_type'=>$dsk->inv_type,
+                        'keterangan'=>$dsk->os_name,
+                        'detail'=>'LIFTONFL20',
+                        'ukuran'=>'20',
+                        'jumlah'=>$dsk->ctr_20,
+                        'satuan'=>'unit',
+                        'harga'=>$dsk->lolo_full_20,
+                        'expired_date'=>$dsk->expired_date,
+                        'order_date'=>$dsk->order_date,
+                        'lunas'=>$dsk->lunas,
+                        'cust_id'=>$dsk->cust_name,
+                        'cust_name'=>$dsk->cust_id
+                    ]);
+
+                    $penumpukan20 = Detail::create([
+                        'inv_id'=>$dsk->id,
+                        'inv_no'=>$dsk->inv_no,
+                        'inv_type'=>$dsk->inv_type,
+                        'keterangan'=>$dsk->os_name,
+                        'detail'=>'TUMPUKFL20',
+                        'ukuran'=>'20',
+                        'jumlah'=>$dsk->ctr_20,
+                        'satuan'=>'unit',
+                        'harga'=>$dsk->m1_20,
+                        'expired_date'=>$dsk->expired_date,
+                        'order_date'=>$dsk->order_date,
+                        'lunas'=>$dsk->lunas,
+                        'cust_id'=>$dsk->cust_name,
+                        'cust_name'=>$dsk->cust_id
+                    ]);
+                    
+                }
+                if ($dsk->ctr_21 != null) {
+                    // LOLO
+                    $lon21 = Detail::create([
+                        'inv_id'=>$dsk->id,
+                        'inv_no'=>$dsk->inv_no,
+                        'inv_type'=>$dsk->inv_type,
+                        'keterangan'=>$dsk->os_name,
+                        'detail'=>'LIFTONFL21',
+                        'ukuran'=>'21',
+                        'jumlah'=>$dsk->ctr_21,
+                        'satuan'=>'unit',
+                        'harga'=>$dsk->lolo_full_21,
+                        'expired_date'=>$dsk->expired_date,
+                        'order_date'=>$dsk->order_date,
+                        'lunas'=>$dsk->lunas,
+                        'cust_id'=>$dsk->cust_name,
+                        'cust_name'=>$dsk->cust_id
+                    ]);
+
+                    $penumpukan21 = Detail::create([
+                        'inv_id'=>$dsk->id,
+                        'inv_no'=>$dsk->inv_no,
+                        'inv_type'=>$dsk->inv_type,
+                        'keterangan'=>$dsk->os_name,
+                        'detail'=>'TUMPUKFL21',
+                        'ukuran'=>'21',
+                        'jumlah'=>$dsk->ctr_21,
+                        'satuan'=>'unit',
+                        'harga'=>$dsk->m1_21,
+                        'expired_date'=>$dsk->expired_date,
+                        'order_date'=>$dsk->order_date,
+                        'lunas'=>$dsk->lunas,
+                        'cust_id'=>$dsk->cust_name,
+                        'cust_name'=>$dsk->cust_id
+                    ]);
+                    
+                }
+                if ($dsk->ctr_40 != null) {
+                    // LOLO
+                    $lon40 = Detail::create([
+                        'inv_id'=>$dsk->id,
+                        'inv_no'=>$dsk->inv_no,
+                        'inv_type'=>$dsk->inv_type,
+                        'keterangan'=>$dsk->os_name,
+                        'detail'=>'LIFTONFL40',
+                        'ukuran'=>'40',
+                        'jumlah'=>$dsk->ctr_40,
+                        'satuan'=>'unit',
+                        'harga'=>$dsk->lolo_full_40,
+                        'expired_date'=>$dsk->expired_date,
+                        'order_date'=>$dsk->order_date,
+                        'lunas'=>$dsk->lunas,
+                        'cust_id'=>$dsk->cust_name,
+                        'cust_name'=>$dsk->cust_id
+                    ]);
+
+                    $penumpukan40 = Detail::create([
+                        'inv_id'=>$dsk->id,
+                        'inv_no'=>$dsk->inv_no,
+                        'inv_type'=>$dsk->inv_type,
+                        'keterangan'=>$dsk->os_name,
+                        'detail'=>'TUMPUKFL40',
+                        'ukuran'=>'40',
+                        'jumlah'=>$dsk->ctr_40,
+                        'satuan'=>'unit',
+                        'harga'=>$dsk->m1_40,
+                        'expired_date'=>$dsk->expired_date,
+                        'order_date'=>$dsk->order_date,
+                        'lunas'=>$dsk->lunas,
+                        'cust_id'=>$dsk->cust_name,
+                        'cust_name'=>$dsk->cust_id
+                    ]);
+                    
+                }
+                if ($dsk->ctr_42 != null) {
+                    // LOLO
+                    $lon42 = Detail::create([
+                        'inv_id'=>$dsk->id,
+                        'inv_no'=>$dsk->inv_no,
+                        'inv_type'=>$dsk->inv_type,
+                        'keterangan'=>$dsk->os_name,
+                        'detail'=>'LIFTONFL42',
+                        'ukuran'=>'42',
+                        'jumlah'=>$dsk->ctr_42,
+                        'satuan'=>'unit',
+                        'harga'=>$dsk->lolo_full_42,
+                        'expired_date'=>$dsk->expired_date,
+                        'order_date'=>$dsk->order_date,
+                        'lunas'=>$dsk->lunas,
+                        'cust_id'=>$dsk->cust_name,
+                        'cust_name'=>$dsk->cust_id
+                    ]);
+
+                    $penumpukan42 = Detail::create([
+                        'inv_id'=>$dsk->id,
+                        'inv_no'=>$dsk->inv_no,
+                        'inv_type'=>$dsk->inv_type,
+                        'keterangan'=>$dsk->os_name,
+                        'detail'=>'TUMPUKFL42',
+                        'ukuran'=>'42',
+                        'jumlah'=>$dsk->ctr_42,
+                        'satuan'=>'unit',
+                        'harga'=>$dsk->m1_42,
+                        'expired_date'=>$dsk->expired_date,
+                        'order_date'=>$dsk->order_date,
+                        'lunas'=>$dsk->lunas,
+                        'cust_id'=>$dsk->cust_name,
+                        'cust_name'=>$dsk->cust_id
+                    ]);
+                    
+                }
             }elseif ($os == 3) {
                 $nextProformaNumber = $this->getNextProformaNumber();
                 $invoiceNo = $this->getNextInvoiceDSK();
@@ -564,6 +714,24 @@ class ImportController extends Controller
                     'pass_truck_masuk_40' => $request->pass_truck_masuk_40,
                     'pass_truck_keluar_42' => $request->pass_truck_keluar_42,
                     'pass_truck_masuk_42' => $request->pass_truck_masuk_42,
+                ]);
+                $totalCont = $dsk->ctr_20 + $dsk->ctr_21 + $dsk->ctr_40 + $dsk->ctr_42;
+                $totalPasstruck = $dsk->pass_truck_masuk_20 + $dsk->pass_truck_masuk_21 + $dsk->pass_truck_masuk_40 + $dsk->pass_truck_masuk_42 + $dsk->pass_truck_keluar_20 + $dsk->pass_truck_keluar_21 + $dsk->pass_truck_keluar_40 + $dsk->pass_truck_keluar_42;
+                $passTruckMasukOS3 = Detail::create([
+                    'inv_id'=>$dsk->id,
+                    'inv_no'=>$dsk->inv_no,
+                    'inv_type'=>$dsk->inv_type,
+                    'keterangan'=>$dsk->os_name,
+                    'detail'=>'PASSTRUCK',
+                    'ukuran'=> null,
+                    'jumlah'=>$totalCont,
+                    'satuan'=>'unit',
+                    'harga'=>$totalPasstruck,
+                    'expired_date'=>$dsk->expired_date,
+                    'order_date'=>$dsk->order_date,
+                    'lunas'=>$dsk->lunas,
+                    'cust_id'=>$dsk->cust_name,
+                    'cust_name'=>$dsk->cust_id
                 ]);
             }
 
@@ -632,6 +800,115 @@ class ImportController extends Controller
                         'pass_truck_masuk_42' => $request->pass_truck_masuk_42,
     
                     ]);
+
+                    // detail
+                    // LOLO
+                    if ($ds->ctr_20 != null) {
+                        $lof20 = Detail::create([
+                            'inv_id'=>$ds->id,
+                            'inv_no'=>$ds->inv_no,
+                            'inv_type'=>$ds->inv_type,
+                            'keterangan'=>$ds->os_name,
+                            'detail'=>'LIFTOFMT20',
+                            'ukuran'=>'20',
+                            'jumlah'=>$ds->ctr_20,
+                            'satuan'=>'unit',
+                            'harga'=>$ds->lolo_mty_20,
+                            'expired_date'=>$ds->expired_date,
+                            'order_date'=>$ds->order_date,
+                            'lunas'=>$ds->lunas,
+                            'cust_id'=>$ds->cust_name,
+                            'cust_name'=>$ds->cust_id
+                        ]);
+                    }
+                    if ($ds->ctr_21 != null) {
+                        $lof21 = Detail::create([
+                            'inv_id'=>$ds->id,
+                            'inv_no'=>$ds->inv_no,
+                            'inv_type'=>$ds->inv_type,
+                            'keterangan'=>$ds->os_name,
+                            'detail'=>'LIFTOFMT21',
+                            'ukuran'=>'21',
+                            'jumlah'=>$ds->ctr_21,
+                            'satuan'=>'unit',
+                            'harga'=>$ds->lolo_mty_21,
+                            'expired_date'=>$ds->expired_date,
+                            'order_date'=>$ds->order_date,
+                            'lunas'=>$ds->lunas,
+                            'cust_id'=>$ds->cust_name,
+                            'cust_name'=>$ds->cust_id
+                        ]);
+                    }
+                    if ($ds->ctr_40 != null) {
+                        $lof40 = Detail::create([
+                            'inv_id'=>$ds->id,
+                            'inv_no'=>$ds->inv_no,
+                            'inv_type'=>$ds->inv_type,
+                            'keterangan'=>$ds->os_name,
+                            'detail'=>'LIFTOFMT40',
+                            'ukuran'=>'40',
+                            'jumlah'=>$ds->ctr_40,
+                            'satuan'=>'unit',
+                            'harga'=>$ds->lolo_mty_40,
+                            'expired_date'=>$ds->expired_date,
+                            'order_date'=>$ds->order_date,
+                            'lunas'=>$ds->lunas,
+                            'cust_id'=>$ds->cust_name,
+                            'cust_name'=>$ds->cust_id
+                        ]);
+                    }
+                    if ($ds->ctr_42 != null) {
+                        $lof42 = Detail::create([
+                            'inv_id'=>$ds->id,
+                            'inv_no'=>$ds->inv_no,
+                            'inv_type'=>$ds->inv_type,
+                            'keterangan'=>$ds->os_name,
+                            'detail'=>'LIFTOFMT42',
+                            'ukuran'=>'42',
+                            'jumlah'=>$ds->ctr_42,
+                            'satuan'=>'unit',
+                            'harga'=>$ds->lolo_mty_42,
+                            'expired_date'=>$ds->expired_date,
+                            'order_date'=>$ds->order_date,
+                            'lunas'=>$ds->lunas,
+                            'cust_id'=>$ds->cust_name,
+                            'cust_name'=>$ds->cust_id
+                        ]);
+                    }
+                    $admin = Detail::create([
+                            'inv_id'=>$ds->id,
+                            'inv_no'=>$ds->inv_no,
+                            'inv_type'=>$ds->inv_type,
+                            'keterangan'=>$ds->os_name,
+                            'detail'=>'ADMINISTRASI',
+                            'ukuran'=>null,
+                            'jumlah'=> 1,
+                            'satuan'=>'unit',
+                            'harga'=>2000,
+                            'expired_date'=>$ds->expired_date,
+                            'order_date'=>$ds->order_date,
+                            'lunas'=>$ds->lunas,
+                            'cust_id'=>$ds->cust_name,
+                            'cust_name'=>$ds->cust_id
+                    ]);
+                    $jmlhCont = $ds->ctr_20 + $ds->ctr_21 + $ds->ctr_40 + $ds->ctr_42;
+                    $jmlhTarifPasstruck = $ds->passtruck_masuk_20 + $ds->passtruck_masuk_21 + $ds->passtruck_masuk_40 + $ds->passtruck_masuk_42;
+                    $passTruck = Detail::create([
+                        'inv_id'=>$ds->id,
+                        'inv_no'=>$ds->inv_no,
+                        'inv_type'=>$ds->inv_type,
+                        'keterangan'=>$ds->os_name,
+                        'detail'=>'PASSTRUCK',
+                        'ukuran'=>null,
+                        'jumlah'=> $jmlhCont,
+                        'satuan'=>'unit',
+                        'harga'=>$jmlhTarifPasstruck,
+                        'expired_date'=>$ds->expired_date,
+                        'order_date'=>$ds->order_date,
+                        'lunas'=>$ds->lunas,
+                        'cust_id'=>$ds->cust_name,
+                        'cust_name'=>$ds->cust_id
+                    ]);
                 }
                 if ($os == 3) {
                     $ds = InvoiceImport::create([
@@ -694,66 +971,160 @@ class ImportController extends Controller
                         'pemindahan_petikemas_42' => $request->pemindahan_petikemas_42,
     
                     ]);
-                }
-                if ($os == 5) {
-                    $ds = InvoiceImport::create([
-                        'inv_type'=>'DS',
-                        'inv_no'=>$invoiceNo,
-                        'proforma_no'=>$proformaDS,
-                        'cust_id'=>$request->cust_id,
-                        'cust_name'=>$request->cust_name,
-                        'fax'=>$request->fax,
-                        'npwp'=>$request->npwp,
-                        'alamat'=>$request->alamat,
-                        'os_id'=>$request->os_id,
-                        'os_name'=>$request->os_name,
-                        'container_key'=>json_encode($request->container_key),
-                        'massa1'=>$request->massa1,
-                        'massa2'=>$request->massa2,
-                        'massa3'=>$request->massa3,
-                        'extend'=>$request->extend,
-                        'total'=>$request->total,
-                        'pajak'=>$request->pajak,
-                        'grand_total'=>$request->grand_total,
-                        'order_by'=> Auth::user()->name,
-                        'order_at'=> Carbon::now(),
-                        'lunas'=>'N',
-                        'expired_date'=>$request->expired_date,
-                        'disc_date' => $request->discDate,
-                        'do_no'=>$do->do_no,
-    
-                        'ctr_20' => $request->ctr_20,
-                        'ctr_40' => $request->ctr_40,
-                        'ctr_21' => $request->ctr_21,
-                        'ctr_42' => $request->ctr_42,
 
-                        'm1_20' => $request->m1_20,
-                        'm2_20' => $request->m2_20,
-                        'm3_20' => $request->m3_20,
-                        'lolo_empty_20' => $request->lolo_empty_20,
-                        'paket_stripping_20' => $request->paket_stripping_20,
-                     
-                        'm1_21' => $request->m1_21,
-                        'm2_21' => $request->m2_21,
-                        'm3_21' => $request->m3_21,
-                        'lolo_empty_21' => $request->lolo_empty_21,
-                        'paket_stripping_21' => $request->paket_stripping_21,
-                       
-                        'm1_40' => $request->m1_40,
-                        'm2_40' => $request->m2_40,
-                        'm3_40' => $request->m3_40,
-                        'lolo_empty_40' => $request->lolo_empty_40,
-                        'paket_stripping_40' => $request->paket_stripping_40,
-                        
-                        'm1_42' => $request->m1_42,
-                        'm2_42' => $request->m2_42,
-                        'm3_42' => $request->m3_42,
-                        'lolo_empty_42' => $request->lolo_empty_42,
-                        'paket_stripping_42' => $request->paket_stripping_42,
-    
+                    if ($ds->ctr_20 != null) {
+                        $strip20 = Detail::create([
+                            'inv_id'=>$ds->id,
+                            'inv_no'=>$ds->inv_no,
+                            'inv_type'=>$ds->inv_type,
+                            'keterangan'=>$ds->os_name,
+                            'detail'=>'LIFTOFMT20',
+                            'ukuran'=>'20',
+                            'jumlah'=>$ds->ctr_20,
+                            'satuan'=>'unit',
+                            'harga'=>$ds->paket_stripping_20,
+                            'expired_date'=>$ds->expired_date,
+                            'order_date'=>$ds->order_date,
+                            'lunas'=>$ds->lunas,
+                            'cust_id'=>$ds->cust_name,
+                            'cust_name'=>$ds->cust_id
+                        ]);
+                        $penumpukan20 = Detail::create([
+                            'inv_id'=>$ds->id,
+                            'inv_no'=>$ds->inv_no,
+                            'inv_type'=>$ds->inv_type,
+                            'keterangan'=>$ds->os_name,
+                            'detail'=>'TUMPUKFL20',
+                            'ukuran'=>'20',
+                            'jumlah'=>$ds->ctr_20,
+                            'satuan'=>'unit',
+                            'harga'=>$ds->m1_20,
+                            'expired_date'=>$ds->expired_date,
+                            'order_date'=>$ds->order_date,
+                            'lunas'=>$ds->lunas,
+                            'cust_id'=>$ds->cust_name,
+                            'cust_name'=>$ds->cust_id
+                        ]);
+                    }
+                    if ($ds->ctr_21 != null) {
+                        $strip21 = Detail::create([
+                            'inv_id'=>$ds->id,
+                            'inv_no'=>$ds->inv_no,
+                            'inv_type'=>$ds->inv_type,
+                            'keterangan'=>$ds->os_name,
+                            'detail'=>'LIFTOFMT21',
+                            'ukuran'=>'21',
+                            'jumlah'=>$ds->ctr_21,
+                            'satuan'=>'unit',
+                            'harga'=>$ds->paket_stripping_21,
+                            'expired_date'=>$ds->expired_date,
+                            'order_date'=>$ds->order_date,
+                            'lunas'=>$ds->lunas,
+                            'cust_id'=>$ds->cust_name,
+                            'cust_name'=>$ds->cust_id
+                        ]);
+                        $penumpukan21 = Detail::create([
+                            'inv_id'=>$ds->id,
+                            'inv_no'=>$ds->inv_no,
+                            'inv_type'=>$ds->inv_type,
+                            'keterangan'=>$ds->os_name,
+                            'detail'=>'TUMPUKFL21',
+                            'ukuran'=>'21',
+                            'jumlah'=>$ds->ctr_21,
+                            'satuan'=>'unit',
+                            'harga'=>$ds->m1_21,
+                            'expired_date'=>$ds->expired_date,
+                            'order_date'=>$ds->order_date,
+                            'lunas'=>$ds->lunas,
+                            'cust_id'=>$ds->cust_name,
+                            'cust_name'=>$ds->cust_id
+                        ]);
+                    }
+                    if ($ds->ctr_40 != null) {
+                        $strip40 = Detail::create([
+                            'inv_id'=>$ds->id,
+                            'inv_no'=>$ds->inv_no,
+                            'inv_type'=>$ds->inv_type,
+                            'keterangan'=>$ds->os_name,
+                            'detail'=>'LIFTOFMT40',
+                            'ukuran'=>'40',
+                            'jumlah'=>$ds->ctr_40,
+                            'satuan'=>'unit',
+                            'harga'=>$ds->paket_stripping_40,
+                            'expired_date'=>$ds->expired_date,
+                            'order_date'=>$ds->order_date,
+                            'lunas'=>$ds->lunas,
+                            'cust_id'=>$ds->cust_name,
+                            'cust_name'=>$ds->cust_id
+                        ]);
+                        $penumpukan40 = Detail::create([
+                            'inv_id'=>$ds->id,
+                            'inv_no'=>$ds->inv_no,
+                            'inv_type'=>$ds->inv_type,
+                            'keterangan'=>$ds->os_name,
+                            'detail'=>'TUMPUKFL40',
+                            'ukuran'=>'40',
+                            'jumlah'=>$ds->ctr_40,
+                            'satuan'=>'unit',
+                            'harga'=>$ds->m1_40,
+                            'expired_date'=>$ds->expired_date,
+                            'order_date'=>$ds->order_date,
+                            'lunas'=>$ds->lunas,
+                            'cust_id'=>$ds->cust_name,
+                            'cust_name'=>$ds->cust_id
+                        ]);
+                    }
+                    if ($ds->ctr_42 != null) {
+                        $strip42 = Detail::create([
+                            'inv_id'=>$ds->id,
+                            'inv_no'=>$ds->inv_no,
+                            'inv_type'=>$ds->inv_type,
+                            'keterangan'=>$ds->os_name,
+                            'detail'=>'LIFTOFMT42',
+                            'ukuran'=>'42',
+                            'jumlah'=>$ds->ctr_42,
+                            'satuan'=>'unit',
+                            'harga'=>$ds->paket_stripping_42,
+                            'expired_date'=>$ds->expired_date,
+                            'order_date'=>$ds->order_date,
+                            'lunas'=>$ds->lunas,
+                            'cust_id'=>$ds->cust_name,
+                            'cust_name'=>$ds->cust_id
+                        ]);
+                        $penumpukan42 = Detail::create([
+                            'inv_id'=>$ds->id,
+                            'inv_no'=>$ds->inv_no,
+                            'inv_type'=>$ds->inv_type,
+                            'keterangan'=>$ds->os_name,
+                            'detail'=>'TUMPUKFL42',
+                            'ukuran'=>'42',
+                            'jumlah'=>$ds->ctr_42,
+                            'satuan'=>'unit',
+                            'harga'=>$ds->m1_42,
+                            'expired_date'=>$ds->expired_date,
+                            'order_date'=>$ds->order_date,
+                            'lunas'=>$ds->lunas,
+                            'cust_id'=>$ds->cust_name,
+                            'cust_name'=>$ds->cust_id
+                        ]);
+                    }
+                    $adminDetail = Detail::create([
+                            'inv_id'=>$ds->id,
+                            'inv_no'=>$ds->inv_no,
+                            'inv_type'=>$ds->inv_type,
+                            'keterangan'=>$ds->os_name,
+                            'detail'=>'ADMINISTRASI',
+                            'ukuran'=>null,
+                            'jumlah'=> 1,
+                            'satuan'=>'unit',
+                            'harga'=>2000,
+                            'expired_date'=>$ds->expired_date,
+                            'order_date'=>$ds->order_date,
+                            'lunas'=>$ds->lunas,
+                            'cust_id'=>$ds->cust_name,
+                            'cust_name'=>$ds->cust_id
                     ]);
                 }
-               
             }
 
             $contArray = explode(',', $cont[0]);
@@ -1233,6 +1604,7 @@ private function getNextJob($lastJobNo)
         $container_key_string = $contArray[0];
         $container_keys = explode(",", $container_key_string);
         $items = Item::whereIn('container_key', $container_keys)->get();
+        $details = Detail::where('inv_id', $id)->get();
       
         $service = $invoice->os_id;
         if ($service == 1 || $service == 16 || $service == 2 || $service == 5) {
@@ -1259,6 +1631,11 @@ private function getNextJob($lastJobNo)
                     'invoice_no'=>$invoice->inv_no,
                     'job_no' => $job->job_no,
                     'order_service' => $os,
+                ]);
+            }
+            foreach ($details as $detail) {
+                $detail->update([
+                    'lunas' => 'Y'
                 ]);
             }
 

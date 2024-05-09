@@ -18,6 +18,7 @@ class TTongkakDetail extends Model
         'name',
         'tarif',
         'jumlah',
-        'total'
+        'total',
+        'detail'
     ];
 }

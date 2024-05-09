@@ -53,6 +53,7 @@ use App\Http\Controllers\BatalMuatController;
 use App\Http\Controllers\InvoiceExtend;
 use App\Http\Controllers\StevadooringController;
 use App\Http\Controllers\ShiftingController;
+use App\Http\Controllers\ZahirController;
 
 
 
@@ -944,7 +945,6 @@ Route::get('/laporan-batalMuat', [BatalMuatController::class, 'ReportPrint'])->n
 
 // Report Invoice
 Route::get('/invoice/report-import', [ImportController::class, 'ReportExcel'])->name('report-invoice-import');
-
 Route::get('/invoice/report-export', [InvoiceExportController::class, 'ReportExcel'])->name('report-invoice-export');
 
 Route::get('/invoice/report-extend', [InvoiceExtend::class, 'ReportExcel'])->name('report-invoice-extend');
@@ -1001,3 +1001,8 @@ Route::get('/planning/shifting/android', [ShiftingController::class, 'android'])
 Route::post('/get-con-shift', [ShiftingController::class, 'get_cont']);
 Route::post('/post-shifting', [ShiftingController::class, 'shifting']);
 
+// Zahir
+Route::get('/invoice/zahir-import', [ZahirController::class, 'ZahirImport'])->name('zahir-invoice-import');
+Route::get('/invoice/zahir-export', [ZahirController::class, 'ZahirExport'])->name('zahir-invoice-export');
+Route::get('/invoice/zahir-extend', [ZahirController::class, 'ZahirExtend'])->name('zahir-invoice-extend');
+Route::get('/invoice/zahir-steva', [ZahirController::class, 'ZahirSteva'])->name('zahir-invoice-steva');

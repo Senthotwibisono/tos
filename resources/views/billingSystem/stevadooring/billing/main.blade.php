@@ -17,6 +17,32 @@
         Delivery Form
       </a>
     </div>
+    <div class="card">
+      <div class="card-header">
+        <h4>EXport to Zahir</h4>
+        <form action="{{ route('zahir-invoice-steva')}}" method="GET" enctype="multipart/form-data">
+          <div class="row">
+            <div class="col-4">
+              <div class="form-group">
+                <label>Pick Start Date Range</label>
+                <!-- <input name="start" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired"> -->
+                <input type="date" name="start" class="form-control" required>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-group">
+                <label>Pick End Date Range</label>
+                <!-- <input name="end" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired"> -->
+                <input type="date" name="end" class="form-control" required>
+              </div>
+            </div>
+            <div class="col-4 mt-4">
+              <button class="btn btn-info" type="submit"><i class=" fa fa-file"></i> Export Active Invoice to CSV</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
   </section>
 
   

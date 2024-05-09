@@ -19,6 +19,7 @@ class StevadooringDetail extends Model
         'ctr_status',
         'tarif',
         'jumlah',
-        'total'
+        'total',
+        'detail'
     ];
 }

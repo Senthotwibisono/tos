@@ -18,6 +18,7 @@ class TKapalDetail extends Model
         'gt_kapal',
         'etmal',
         'tarif',
-        'total'
+        'total',
+        'detail'
     ];
 }

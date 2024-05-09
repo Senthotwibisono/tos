@@ -17,6 +17,7 @@ use App\Models\JobImport;
 use App\Models\VVoyage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\JobExtend;
+use App\Models\ExtendDetail as Detail;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ReportExtend;
 
@@ -290,7 +291,84 @@ class InvoiceExtend extends Controller
             'order_by'=> Auth::user()->name,
             'order_at'=> Carbon::now(),
         ]);
-        
+
+        if ($extend->os_id = '1' || $extend->os_id = '2' || $extend->os_id = '5' || $extend->os_id = '16')  {
+            $kode = "PPSP2-";
+        }else {
+            $kode = "PPSPS-";
+        }
+        if ($extend->ctr_20 != null) {
+            $detail20 = Detail::create([
+                'inv_id'=>$extend->id,
+                'inv_no'=>$extend->inv_no,
+                'inv_type'=>'XTD',
+                'keterangan'=>'Invoice Extend',
+                'detail'=> $kode.'20',
+                'ukuran'=>'20',
+                'jumlah'=>$extend->ctr_20,
+                'satuan'=>'unit',
+                'harga'=>$extend->lolo_mty_20,
+                'expired_date'=>$extend->expired_date,
+                'order_date'=>$extend->order_at,
+                'lunas'=>$extend->lunas,
+                'cust_id'=>$extend->cust_name,
+                'cust_name'=>$extend->cust_id
+            ]);
+        }
+        if ($extend->ctr_21 != null) {
+            $detail21 = Detail::create([
+                'inv_id'=>$extend->id,
+                'inv_no'=>$extend->inv_no,
+                'inv_type'=>'XTD',
+                'keterangan'=>'Invoice Extend',
+                'detail'=> $kode.'21',
+                'ukuran'=>'21',
+                'jumlah'=>$extend->ctr_21,
+                'satuan'=>'unit',
+                'harga'=>$extend->lolo_mty_21,
+                'expired_date'=>$extend->expired_date,
+                'order_date'=>$extend->order_at,
+                'lunas'=>$extend->lunas,
+                'cust_id'=>$extend->cust_name,
+                'cust_name'=>$extend->cust_id
+            ]);
+        }
+        if ($extend->ctr_40 != null) {
+            $detail40 = Detail::create([
+                'inv_id'=>$extend->id,
+                'inv_no'=>$extend->inv_no,
+                'inv_type'=>'XTD',
+                'keterangan'=>'Invoice Extend',
+                'detail'=> $kode.'40',
+                'ukuran'=>'40',
+                'jumlah'=>$extend->ctr_40,
+                'satuan'=>'unit',
+                'harga'=>$extend->lolo_mty_40,
+                'expired_date'=>$extend->expired_date,
+                'order_date'=>$extend->order_at,
+                'lunas'=>$extend->lunas,
+                'cust_id'=>$extend->cust_name,
+                'cust_name'=>$extend->cust_id
+            ]);
+        }
+        if ($extend->ctr_42 != null) {
+            $detail42 = Detail::create([
+                'inv_id'=>$extend->id,
+                'inv_no'=>$extend->inv_no,
+                'inv_type'=>'XTD',
+                'keterangan'=>'Invoice Extend',
+                'detail'=> $kode.'42',
+                'ukuran'=>'42',
+                'jumlah'=>$extend->ctr_42,
+                'satuan'=>'unit',
+                'harga'=>$extend->lolo_mty_42,
+                'expired_date'=>$extend->expired_date,
+                'order_date'=>$extend->order_at,
+                'lunas'=>$extend->lunas,
+                'cust_id'=>$extend->cust_name,
+                'cust_name'=>$extend->cust_id
+            ]);
+        }
         // $contArray = explode(',', $cont[0]);
         // dd($contArray, $cont);
         $contArray = json_decode($cont);
@@ -342,6 +420,7 @@ class InvoiceExtend extends Controller
         $container_key_string = $contArray[0];
         $container_keys = explode(",", $container_key_string);
         $items = Item::whereIn('container_key', $container_keys)->get();
+        $details = Detail::where('inv_id', $id)->get();
 
         if ($invoice) {
             $job = JobExtend::where('inv_id', $id)->get();
@@ -353,6 +432,12 @@ class InvoiceExtend extends Controller
                     'job_no' => $jobp->job_no,
                 ]);
             }
+            foreach ($details as $detail) {
+                $detail->update([
+                    'lunas' => 'Y'
+                ]);
+            }
+
 
             $invoice->update([
                 'lunas' => 'Y',
