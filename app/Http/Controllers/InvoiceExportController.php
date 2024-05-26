@@ -54,7 +54,10 @@ class InvoiceExportController extends Controller
         $data['orderService'] = OS::where('ie', '=', 'E')->get();
         $data['dok_ro'] = RO::get();
         $cont = Item::where('ctr_intern_status', ['49'])->where('selected_do', 'N')->get();
-        $data['contBooking'] = $cont->unique('booking_no')->pluck('booking_no');
+        $data['contBooking'] = Item::where('ctr_intern_status', '49')
+        ->where('selected_do', 'N')
+        ->distinct()
+        ->pluck('booking_no');
         $data['roDok'] = RO::get();
         $data['kapalRO'] = VVoyage::where('clossing_date', '>=', Carbon::now())->get();
 
@@ -197,9 +200,9 @@ class InvoiceExportController extends Controller
         // DSK
         if ($os == 6 || $os == 7 || $os == 14) {
             if ($os == 14) {
-                $DSK = array_merge($loloFull, $ptKeluar, $ptKeluar, $pmassa1);
+                $DSK = array_merge($loloFull, $ptMasuk, $ptKeluar, $pmassa1);
             }else {
-                $DSK = array_merge($loloFull, $ptKeluar, $pmassa1);
+                $DSK = array_merge($loloFull, $ptMasuk, $pmassa1);
             }
             
         }else {

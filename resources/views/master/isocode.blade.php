@@ -96,7 +96,9 @@
                                         <select class="form-select" id="iso_size" name="iso_size" required>
                                             <option value=""></option>
                                             <option value="20">20</option>                                             
+                                            <option value="21">21</option>                                             
                                             <option value="40">40</option>
+                                            <option value="42">42</option>
                                             <option value="45">45</option>
                                         </select>
                             </div>
