@@ -13,6 +13,7 @@ class InvoiceExport extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'form_id',
         'inv_type',
         'proforma_no',
         'inv_no',

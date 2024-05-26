@@ -11,6 +11,10 @@ use App\Models\KodeDok;
 use App\Models\RO;
 use App\Models\VVoyage;
 use App\Models\InvoiceExport;
+use App\Models\InvoiceForm as Form;
+use App\Models\ContainerInvoice as Container;
+use App\Models\OSDetail;
+use App\Models\MTDetail;
 use App\Models\ExportDetail as Detail;
 use App\Models\JobExport;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -40,8 +44,28 @@ class InvoiceExportController extends Controller
     public function deliveryMenuExport()
     {
         $data['title'] = "Reciving Menu";
+        $data['formInvoiceImport'] = Form::where('i_e', 'E')->where('done', '=', 'N')->get();
 
         return view('billingSystem.export.form.main', $data);
+    }
+
+    public function deliveryEdit($id)
+    {
+        $user = Auth::user();
+        $data['title'] = "Reciving Form";
+        $data["user"] = $user->id;
+
+        $data['customer'] = Customer::get();
+        $data['orderService'] = OS::where('ie', '=', 'E')->get();
+      
+        $data['ves'] = VVoyage::where('arrival_date', '<=', Carbon::now())->get();
+        $data['form'] = Form::where('id', $id)->first();
+        $data['containerInvoice'] = Container::where('form_id', $id)->get();
+        $cont = Item::where('ctr_intern_status', ['49'])->where('selected_do', 'N')->get();
+        $data['contBooking'] = $cont->unique('booking_no')->pluck('booking_no');
+        $data['roDok'] = RO::get();
+        $data['kapalRO'] = VVoyage::where('clossing_date', '>=', Carbon::now())->get();
+        return view('billingSystem.export.form.edit', $data);
     }
 
     public function deliveryFormExport()
@@ -75,7 +99,18 @@ class InvoiceExportController extends Controller
        $cont = Item::where('booking_no', $booking)->where('ctr_intern_status', ['49'])->where('selected_do', 'N')->get();
        $singleCont = Item::where('booking_no', $booking)->where('ctr_intern_status', ['49'])->where('selected_do', 'N')->first();
     
-       $kapal = VVoyage::where('ves_id', $singleCont->ves_id)->first();
+       if ($singleCont->ves_id == 'PELINDO') {
+        $kapal =[
+            'ves_name' => 'Pelindo',
+            'ves_code' => 'Pelindo',
+            'voy_out' =>null,
+            'clossing_date' =>null,
+            'eta_date' =>null,
+            'etd_date' =>null,
+        ];
+       }else {
+        $kapal = VVoyage::where('ves_id', $singleCont->ves_id)->first();
+       }
        if (!empty($cont)) {
         return response()->json([
             'success' => true,
@@ -89,6 +124,16 @@ class InvoiceExportController extends Controller
             'message' => 'Tidak ada container yang dapat digunakan !!',
         ]);
        }
+    }
+
+    public function getOrder(Request $request)
+    {
+        $os = OS::where('id', $request->id)->first();
+        return response()->json([
+            'success' => true,
+            'message' => 'Tidak ada container yang dapat digunakan !!',
+            'data' => $os
+        ]);
     }
 
     public function getROdataExport(Request $request)
@@ -121,948 +166,581 @@ class InvoiceExportController extends Controller
         }
     }
 
+    public function formInvoice($id)
+    {
+        $data['title'] = 'Invoice Export';
+        $form = Form::where('id', $id)->first();
+        $bigOS = OS::where('id', $form->os_id)->first();
+        $data['customer'] = Customer::where('id', $form->cust_id)->first();
+        $data['expired'] = $form->expired_date;
+        $data['discDate'] = $form->disc_date;
+        // $data['doOnline'] = DOonline::where('id', $form->do_id)->first();
+        $data['service'] = OS::where('id', $form->os_id)->first();
+        $data['selectCont'] = Container::where('form_id', $id)->get();
+        $containerInvoice = Container::where('form_id', $id)->get();
+        $discDate = Carbon::parse($form->disc_date);
+        $expDate = Carbon::parse($form->expired_date);
+        $expDate->addDay(2);
+        $interval = $discDate->diff($expDate);
+        $jumlahHari = $interval->days;
+        $osDSK = OSDetail::where('os_id', $form->os_id)->where('type', '=', 'OSK')->get();
+        $data['dsk'] = $osDSK->isNotEmpty() ? 'Y' : 'N';
+        $osDS = OSDetail::where('os_id', $form->os_id)->where('type', '=', 'OS')->get();
+        $data['ds'] = $osDS->isNotEmpty() ? 'Y' : 'N';
+
+        $groupedBySize = $containerInvoice->groupBy('ctr_size');
+        $ctrGroup = $groupedBySize->map(function ($sizeGroup) {
+            return $sizeGroup->groupBy('ctr_status');
+        });
+        $data['ctrGroup'] = $ctrGroup;
+
+        $resultsDSK = collect(); // Use a collection to store the results
+
+        if ($data['dsk'] == 'Y') {
+            $data['adminDSK'] = 0;
+            $service = $osDSK;
+            foreach ($service as $svc) {
+                foreach ($ctrGroup as $size => $statusGroup) {
+                    foreach ($statusGroup as $status => $containers) {
+                        $containerCount = $containers->count();
+                        $tarif = MT::where('os_id', $bigOS->id)
+                            ->where('ctr_size', $size)
+                            ->where('ctr_status', $status)
+                            ->first();
+                        $tarifDetail = MTDetail::where('master_tarif_id', $tarif->id)
+                            ->where('master_item_id', $svc->master_item_id)
+                            ->first();
+                        if ($tarifDetail) {
+                            if ($tarifDetail->count_by == 'C') {
+                                $hargaC = $tarifDetail->tarif * $containerCount;
+                                $resultsDSK->push([
+                                    'ctr_size' => $size,
+                                    'ctr_status' => $status,
+                                    'count_by' => 'C',
+                                    'tarif' => $tarifDetail->tarif,
+                                    'containerCount' => $containerCount,
+                                    'jumlahHari' => 0,
+                                    'keterangan' => $tarifDetail->master_item_name,
+                                    'harga' => $hargaC,
+                                ]);
+                            } elseif ($tarifDetail->count_by == 'T') {
+                                $hargaT = $tarifDetail->tarif * $containerCount;
+                                $resultsDSK->push([
+                                    'ctr_size' => $size,
+                                    'ctr_status' => $status,
+                                    'count_by' => 'T',
+                                    'tarif' => $tarifDetail->tarif,
+                                    'jumlahHari' => $jumlahHari,
+                                    'containerCount' => $containerCount,
+                                    'keterangan' => $tarifDetail->master_item_name,
+                                    'harga' => $hargaT,
+                                ]);
+                            }
+                        }
+                    }
+                }
+                $singleTarif = MT::where('os_id', $bigOS->id)->first();
+                $singleTarifDetail = MTDetail::where('master_tarif_id', $singleTarif->id)
+                    ->where('master_item_id', $svc->master_item_id)
+                    ->where('count_by', 'O')
+                    ->first();
+                if ($singleTarifDetail) {
+                    $data['adminDSK'] = $singleTarifDetail->tarif;
+                } 
+            }
+            $data['totalDSK'] = $resultsDSK->sum('harga');
+            $data['resultsDSK'] = $resultsDSK;
+            $data['pajakDSK'] = ($data['totalDSK'] + $data['adminDSK']) * 11 / 100;
+            $data['grandTotalDSK'] = $data['totalDSK'] + $data['adminDSK'] + $data['pajakDSK'];
+        }
+
+        if ($data['ds'] == 'Y') {
+            $data['adminDS'] = 0;
+            $resultsDS = collect(); // Use a collection to store the results
+            $service = $osDS;
+            foreach ($service as $svc) {
+                foreach ($ctrGroup as $size => $statusGroup) {
+                    foreach ($statusGroup as $status => $containers) {
+                        $containerCount = $containers->count();
+                        $tarif = MT::where('os_id', $bigOS->id)
+                            ->where('ctr_size', $size)
+                            ->where('ctr_status', $status)
+                            ->first();
+                        $tarifDetail = MTDetail::where('master_tarif_id', $tarif->id)
+                            ->where('master_item_id', $svc->master_item_id)
+                            ->first();
+                        if ($tarifDetail) {
+                            if ($tarifDetail->count_by == 'C') {
+                                $hargaC = $tarifDetail->tarif * $containerCount;
+                                $resultsDS->push([
+                                    'ctr_size' => $size,
+                                    'ctr_status' => $status,
+                                    'count_by' => 'C',
+                                    'tarif' => $tarifDetail->tarif,
+                                    'jumlahHari' => 0,
+                                    'containerCount' => $containerCount,
+                                    'keterangan' => $tarifDetail->master_item_name,
+                                    'harga' => $hargaC,
+                                ]);
+                            } elseif ($tarifDetail->count_by == 'T') {
+                                $hargaT = $tarifDetail->tarif * $containerCount;
+                                $resultsDS->push([
+                                    'ctr_size' => $size,
+                                    'ctr_status' => $status,
+                                    'count_by' => 'T',
+                                    'tarif' => $tarifDetail->tarif,
+                                    'jumlahHari' => $jumlahHari,
+                                    'containerCount' => $containerCount,
+                                    'keterangan' => $tarifDetail->master_item_name,
+                                    'harga' => $hargaT,
+                                ]);
+                            }
+                        }
+                    }
+                }
+                $singleTarif = MT::where('os_id', $bigOS->id)->first();
+                $singleTarifDetail = MTDetail::where('master_tarif_id', $singleTarif->id)
+                    ->where('master_item_id', $svc->master_item_id)
+                    ->where('count_by', 'O')
+                    ->first();
+                if ($singleTarifDetail) {
+                    $data['adminDS'] = $singleTarifDetail->tarif;
+                }
+            }
+            $data['totalDS'] = $resultsDS->sum('harga');
+            $data['resultsDS'] = $resultsDS;
+            $data['pajakDS'] = ($data['totalDS'] + $data['adminDS']) * 11 / 100;
+            $data['grandTotalDS'] = $data['totalDS'] + $data['adminDS'] + $data['pajakDS'];
+        }
+
+        // dd($osDSK, $service, $resultsDSK, $resultsDS);
+        return view('billingSystem.export.form.pre-invoice', compact('form'), $data);
+    }
+
     public function beforeCreate(Request $request)
     {
-        $data['title'] = "Preview Invoice";
-        $cust = $request->customer;
-        $data['customer'] = Customer::where('id', $cust)->first();
-        $data['expired'] = $request->exp_date;
-        $os = $request->order_service;
-        $data['booking'] = $request->booking_no;
-      
-        $data['service'] = OS::where('id', $os)->first();
-        $booking = $request->booking_no;
-        $cont = $request->container;
-        $data['contInvoice'] = implode(',', $cont);
-        $items = Item::whereIn('container_key', $cont)->get();
-        $data['selectCont'] =  Item::whereIn('container_key', $cont)->orderBy('ctr_size', 'asc')->get();
-        $data['ves'] = $request->ves_id;        
-        // dd($ves);
-        $groupedContainers = [];
-
-        foreach ($items as $item) {
-            $containerKey = $item->container_key;
-            $containerSize = $item->ctr_size;
-        
-            
-            if (isset($groupedContainers[$containerSize])) {
-                $groupedContainers[$containerSize][] = $containerKey;
-            } else { 
-                $groupedContainers[$containerSize] = [$containerKey];
-            }
-        }
-
-        $jumlahContainerPerUkuran = [];
-
-        // Hitung jumlah kontainer per ukuran
-        foreach ($groupedContainers as $ukuran => $containers) {
-            // Jumlah kontainer untuk ukuran saat ini adalah panjang array kontainer
-            $jumlahContainerPerUkuran[$ukuran] = count($containers);
-        }
-        $tarif = [];
-        $loloFull = [];
-        $ptMasuk = [];
-        $ptKeluar = [];
-        $pmassa1 = [];
-        $loloEmpty = [];
-        $cargo_dooring = [];
-        $sewa_crane = [];
-        $jpbTruck = [];
-        $stuffing = [];
-
-        foreach ($groupedContainers as $ukuran => $containers) {
-            // Jumlah kontainer untuk ukuran saat ini adalah panjang array kontainer
-            $tarif[$ukuran] = MT::where('os_id', $os)->where('ctr_size', $ukuran)->first();
-            if (empty($tarif[$ukuran])) {
-                return back()->with('error', 'Silahkan Membuat Master Tarif Terlebih Dahulu');
-            }
-            // OSK
-            $loloFull[$ukuran]= $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->lolo_full;
-            $ptKeluar[$ukuran]= $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->pass_truck_keluar;
-            $pmassa1[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->m1;
-            $cargo_dooring[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->cargo_dooring;
-            $sewa_crane[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->sewa_crane;
-
-        
-
-            // OS  
-            $loloEmpty[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->lolo_empty;
-            $ptMasuk[$ukuran]= $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->pass_truck_masuk;
-            $stuffing[$ukuran]= $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->paket_stuffing;
-            $jpbTruck[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->jpb_extruck;
-   
-            
-        }
-
-        // DSK
-        if ($os == 6 || $os == 7 || $os == 14) {
-            if ($os == 14) {
-                $DSK = array_merge($loloFull, $ptKeluar, $ptKeluar, $pmassa1);
+        $contSelect = $request->container;
+        $singleCont = Item::whereIn('container_key', $contSelect)->first();
+        $os = OS::where('id', $request->order_service)->first();
+        if ($os->order == 'SPPS') {
+            $kapal = $request->ves_id;
+            if ($kapal == 'PELINDO') {
+               $ves = (object)[
+                'ves_id'=>'PELINDO',
+                'ves_name'=>'PELINDO'
+               ];
             }else {
-                $DSK = array_merge($loloFull, $ptKeluar, $pmassa1);
+                $vessel = VVoyage::where('ves_id', $kapal)->first();
+                $ves = (object)[
+                    'ves_id'=>$vessel->ves_id,
+                    'ves_name'=>$vessel->ves_name
+                   ];
             }
-            
         }else {
-            if ($os == 11 || $os == 13 ) {
-                $DSK = array_merge($cargo_dooring, $sewa_crane);
-            }else {
-                $DSK = array_merge($ptMasuk);
-            }
-
-        };
-        $DSKtot = array_sum($DSK);
-        // dd($DSKtot);
-       
-
-        $adminMT = MT::where('os_id', $request->order_service)->first();
-     
-            $adminDSK = 0;
-            $data['adminDSK'] = $adminDSK;
-        
-        $ppnDSK = (($DSKtot + $adminDSK) * 11) / 100;
-       
-
-        $data['grandDSK'] = $DSKtot + $ppnDSK + $adminDSK;
-        $data['ppnDSK'] = $ppnDSK;
-        $data['AmountDSK'] = $DSKtot;
-
-        // DS
-       
-        if ($os == 6 || $os == 8 || $os == 14) {
-            if ($os == 6 || $os == 8) {
-                $DS = array_merge($loloEmpty, $ptKeluar,);
-            }else {
-                $DS = array_merge($loloEmpty);
-            }
-
-        }elseif ($os == 9 || $os == 10 || $os == 11 || $os == 12 || $os == 13  || $os == 15) {
-            if ($os == 9) {
-                $DS = array_merge($jpbTruck, $pmassa1, $ptKeluar);
-            }elseif ($os == 10) {
-                $DS = array_merge($jpbTruck, $pmassa1, $ptKeluar, $loloFull);
-            }elseif ($os == 11 || $os == 12 || $os == 15) {
-                $DS = array_merge($stuffing);
-            }elseif ($os == 13) {
-                $DS = array_merge($stuffing, $loloEmpty, $ptMasuk, $ptKeluar, $loloFull);
-            }
-
-        };
-
-
-        if ($os != 7) {
-            $DStot = array_sum($DS);
-        // dd($adminMT);
-        $adminDS = $adminMT->admin;
-        $ppnDS = (($DStot + $adminDS) * 11) / 100;
-        $data['adminDS'] = $adminDS;
-        $data['grandDS'] = $DStot + $ppnDS + $adminDS;
-        $data['ppnDS'] = $ppnDS;
-        $data['AmountDS'] = $DStot;
+            $vessel = VVoyage::where('ves_id', $singleCont->ves_id)->first();
+            $ves = (object)[
+                'ves_id'=>$vessel->ves_id,
+                'ves_name'=>$vessel->ves_name
+               ];
         }
+        
+        $invoice = Form::create([
+            'expired_date'=>$request->exp_date,
+            'os_id'=>$request->order_service,
+            'cust_id'=>$request->customer,
+            'do_id'=>$request->booking_no,
+            'ves_id'=> $ves->ves_id,
+            'i_e'=>'E',
+            'disc_date'=>Carbon::now(),
+            'done'=>'N',
+        ]);
+
        
+        foreach ($contSelect as $cont) {
+            $item = Item::where('container_key', $cont)->first();
+            $contInvoice = Container::create([
+                'container_key'=>$item->container_key,
+                'container_no'=>$item->container_no,
+                'ctr_size'=>$item->ctr_size,
+                'ctr_status'=>$item->ctr_status,
+                'form_id'=>$invoice->id,
+                'ves_id'=>$ves->ves_id,
+                'ves_name'=>$ves->ves_name,
+                'ctr_type'=>$item->ctr_type,
+                'ctr_intern_status'=>$item->ctr_intern_status,
+                'gross'=>$item->gross,
+            ]);
+        }
+        // dd($cont);
 
-        // dd($data['booking']);
-        
+        return redirect()->route('formInvoiceExport', ['id' => $invoice->id])->with('success', 'Silahkan Lanjut ke Tahap Selanjutnya');
+    }
 
-        return view('billingSystem.export.form.pre-invoice', compact('groupedContainers', 'jumlahContainerPerUkuran', 'tarif'), $data)->with('success', 'Silahkan Melanjutkan Proses');
-        
+    public function updateFormExport(Request $request)
+    {
+        $form = Form::where('id', $request->form_id)->first();
+
+        $newContainer = $request->container;
+        $contSelect = $request->container;
+        $singleCont = Item::whereIn('container_key', $contSelect)->first();
+        $os = OS::where('id', $request->order_service)->first();
+        if ($os->order == 'SPPS') {
+            $kapal = $request->ves_id;
+            if ($kapal == 'PELINDO') {
+               $ves = (object)[
+                'ves_id'=>'PELINDO',
+                'ves_name'=>'PELINDO'
+               ];
+            }else {
+                $vessel = VVoyage::where('ves_id', $kapal)->first();
+                $ves = (object)[
+                    'ves_id'=>$vessel->ves_id,
+                    'ves_name'=>$vessel->ves_name
+                   ];
+            }
+        }else {
+            $vessel = VVoyage::where('ves_id', $singleCont->ves_id)->first();
+            $ves = (object)[
+                'ves_id'=>$vessel->ves_id,
+                'ves_name'=>$vessel->ves_name
+               ];
+        }
+
+        $oldCont = Container::where('form_id', $form->id)->get();
+        foreach ($oldCont as $cont) {
+            $cont->delete();
+        }
+
+        $form->update([
+            'expired_date'=>$request->exp_date,
+            'os_id'=>$request->order_service,
+            'cust_id'=>$request->customer,
+            'do_id'=>$request->booking_no,
+            'ves_id'=> $ves->ves_id,
+            'i_e'=>'E',
+            'disc_date'=>Carbon::now(),
+            'done'=>'N',
+        ]);
+        foreach ($newContainer as $cont) {
+            $item = Item::where('container_key', $cont)->first();
+            $contInvoice = Container::create([
+                'container_key'=>$item->container_key,
+                'container_no'=>$item->container_no,
+                'ctr_size'=>$item->ctr_size,
+                'ctr_status'=>$item->ctr_status,
+                'form_id'=>$form->id,
+                'ves_id'=>$ves->ves_id,
+                'ves_name'=>$ves->ves_name,
+                'ctr_type'=>$item->ctr_type,
+                'ctr_intern_status'=>$item->ctr_intern_status,
+                'gross'=>$item->gross,
+            ]);
+        }
+
+        return redirect()->route('formInvoiceExport', ['id' => $form->id])->with('success', 'Silahkan Lanjut ke Tahap Selanjutnya');
     }
 
 
     public function invoiceExport(Request $request)
     {
-        $os = $request->os_id;
-        $cont = $request->container_key;
-        $kapal = $request->ves_id;
-        $item = Item::whereIn('container_key', $cont)->get();
-        if ($kapal != null) {
-            $ves = VVoyage::where('ves_id', $kapal)->first();
-            $etd = $ves->etd_date;
-        }else {
-            $singleItem = Item::whereIn('container_key', $cont)->first();
-            $ves = VVoyage::where('ves_id', $singleItem->ves_id)->first();
-            $etd = $ves->etd_date;
-
-        }
+        $form = Form::where('id', $request->formId)->first();
+        $bigOS = OS::where('id', $form->os_id)->first();
+        $now = Carbon::now();
+        $discDate = Carbon::parse($form->disc_date);
+        $expDate = Carbon::parse($form->expired_date);
+        $expDate->addDay(2);
+        $interval = $discDate->diff($expDate);
+        $jumlahHari = $interval->days;
+        $cont = Container::where('form_id', $form->id)->get();
+        $groupedBySize = $cont->groupBy('ctr_size');
+        $ctrGroup = $groupedBySize->map(function ($sizeGroup) {
+            return $sizeGroup->groupBy('ctr_status');
+        });
+        $osDSK = OSDetail::where('os_id', $form->os_id)->where('type', 'OSK')->get();
+        $dsk = $osDSK->isEmpty() ? 'N' : 'Y';
         
-        
-       
+        $osDS = OSDetail::where('os_id', $form->os_id)->where('type', 'OS')->get();
+        $ds = $osDS->isEmpty() ? 'N' : 'Y';
 
-        if (!empty($item)) {
-            if ($os == '6' || $os == '7' ||  $os == '9' ||  $os == '11' || $os == '13' || $os == '14' || $os == '15') {
-                $nextProformaNumber = $this->getNextProformaNumber();
-                $invoiceNo = $this->getNextInvoiceDSK();
-              
+        // dd($ds, $dsk);
 
-                $dsk = InvoiceExport::create([
-                    'inv_type'=>'OSK',
-                    'inv_no' =>$invoiceNo,
-                    'proforma_no'=>$nextProformaNumber,
-                    'cust_id'=>$request->cust_id,
-                    'cust_name'=>$request->cust_name,
-                    'fax'=>$request->fax,
-                    'npwp'=>$request->npwp,
-                    'alamat'=>$request->alamat,
-                    'os_id'=>$request->os_id,
-                    'os_name'=>$request->os_name,
-                    'container_key'=>json_encode($request->container_key),
-                    'total'=>$request->totalDSK,
-                    'pajak'=>$request->pajakDSK,
-                    'grand_total'=>$request->grand_totalDSK,
-                    'order_by'=> Auth::user()->name,
-                    'order_at'=> Carbon::now(),
-                    'lunas'=>'N',
-                    'expired_date'=>$request->expired_date,                
-                    'booking_no'=>$request->booking_no,
-                    'etd'=> $etd,
-                    'ctr_20'=>$request->ctr_20,
-                    'ctr_40'=>$request->ctr_40,
-                    'ctr_21'=>$request->ctr_21,
-                    'ctr_42'=>$request->ctr_42,
-                    'm1_20'=>$request->m1_20,
-                    'm2_20'=>$request->m2_20,
-                    'm3_20'=>$request->m3_20,
-                    'lolo_full_20'=>$request->lolo_full_20,
-                    'lolo_empty_20'=>$request->lolo_empty_20,
-                    'pass_truck_masuk_20'=>$request->pass_truck_masuk_20,
-                    'pass_truck_keluar_20'=>$request->pass_truck_keluar_20,
-                    'jpb_extruck_20'=>$request->jpb_extruck_20,
-                    'sewa_crane_20'=>$request->sewa_crane_20,
-                    'cargo_dooring_20'=>$request->cargo_dooring_20,
-                    'paket_stuffing_20'=>$request->paket_stuffing_20,
-                    'm1_21'=>$request->m1_21,
-                    'm2_21'=>$request->m2_21,
-                    'm3_21'=>$request->m3_21,
-                    'lolo_full_21'=>$request->lolo_full_21,
-                    'lolo_empty_21'=>$request->lolo_empty_21,
-                    'pass_truck_masuk_21'=>$request->pass_truck_masuk_21,
-                    'pass_truck_keluar_21'=>$request->pass_truck_keluar_21,
-                    'jpb_extruck_21'=>$request->jpb_extruck_21,
-                    'sewa_crane_21'=>$request->sewa_crane_21,
-                    'cargo_dooring_21'=>$request->cargo_dooring_21,
-                    'paket_stuffing_21'=>$request->paket_stuffing_21,
-                    'm1_40'=>$request->m1_40,
-                    'm2_40'=>$request->m2_40,
-                    'm3_40'=>$request->m3_40,
-                    'lolo_full_40'=>$request->lolo_full_40,
-                    'lolo_empty_40'=>$request->lolo_empty_40,
-                    'pass_truck_masuk_40'=>$request->pass_truck_masuk_40,
-                    'pass_truck_keluar_40'=>$request->pass_truck_keluar_40,
-                    'jpb_extruck_40'=>$request->jpb_extruck_40,
-                    'sewa_crane_40'=>$request->sewa_crane_40,
-                    'cargo_dooring_40'=>$request->cargo_dooring_40,
-                    'paket_stuffing_40'=>$request->paket_stuffing_40,
-                    'm1_42'=>$request->m1_42,
-                    'm2_42'=>$request->m2_42,
-                    'm3_42'=>$request->m3_42,
-                    'lolo_full_42'=>$request->lolo_full_42,
-                    'lolo_empty_42'=>$request->lolo_empty_42,
-                    'pass_truck_masuk_42'=>$request->pass_truck_masuk_42,
-                    'pass_truck_keluar_42'=>$request->pass_truck_keluar_42,
-                    'jpb_extruck_42'=>$request->jpb_extruck_42,
-                    'sewa_crane_42'=>$request->sewa_crane_42,
-                    'cargo_dooring_42'=>$request->cargo_dooring_42,
-                    'paket_stuffing_42'=>$request->paket_stuffing_42,
-                ]);
-                $totalCont = $dsk->ctr_20 + $dsk->ctr_40;
-                $passTruckMasuk = $dsk->pass_truck_masuk_20 + $dsk->pass_truck_masuk_40;
-                $passTruckKeluar = $dsk->pass_truck_keluar_20 + $dsk->pass_truck_keluar_40;
-                if ($os == '6' || $os == '7' || $os == '9' || $os == '14' || $os == '15') {
-                    if ($os != '15' || $os != '9') {
-                        if ($dsk->ctr_20 != null) {
-                            // LON
-                            $lon20 = Detail::create([
-                                'inv_id'=>$dsk->id,
-                                'inv_no'=>$dsk->inv_no,
-                                'inv_type'=>$dsk->inv_type,
-                                'keterangan'=>$dsk->os_name,
-                                'detail'=>'LIFTONFL20',
-                                'ukuran'=> '20',
-                                'jumlah'=>$dsk->ctr_20,
-                                'satuan'=>'unit',
-                                'harga'=>$dsk->lolo_full_20,
-                                'expired_date'=>$dsk->expired_date,
-                                'order_date'=>$dsk->order_at,
-                                'lunas'=>$dsk->lunas,
-                                'cust_id'=>$dsk->cust_name,
-                                'cust_name'=>$dsk->cust_id
+       if ($dsk == 'Y') {
+        $nextProformaNumber = $this->getNextProformaNumber();
+        $invoiceNo = $this->getNextInvoiceDSK();
+        $invoiceDSK = InvoiceExport::create([
+            'inv_type'=>'OSK',
+            'form_id'=>$form->id,
+            'inv_no' =>$invoiceNo,
+            'proforma_no'=>$nextProformaNumber,
+            'cust_id'=>$form->cust_id,
+            'cust_name'=>$form->customer->name,
+            'fax'=>$form->customer->fax,
+            'npwp'=>$form->customer->npwp,
+            'alamat'=>$form->customer->alamat,
+            'os_id'=>$form->os_id,
+            'os_name'=>$form->service->name,
+            'massa1'=>$jumlahHari,
+            'lunas'=>'N',
+            'expired_date'=>$form->expired_date,
+            'disc_date' => $form->disc_date,
+            'booking_no'=>$form->do_id,
+            'total'=>$request->totalDSK,
+            'pajak'=>$request->pajakDSK,
+            'grand_total'=>$request->grandTotalDSK,
+            'order_by'=> Auth::user()->name,
+            'order_at'=> Carbon::now(),
+            
+        ]);
+        $admin = 0;
+        foreach ($osDSK as $service) {
+            foreach ($ctrGroup as $size => $statusGroup) {
+                foreach ($statusGroup as $status => $containers) {
+                    $containerCount = $containers->count();
+                    $tarif = MT::where('os_id', $bigOS->id)
+                            ->where('ctr_size', $size)
+                            ->where('ctr_status', $status)
+                            ->first();
+                    $tarifDetail = MTDetail::where('master_tarif_id', $tarif->id)
+                        ->where('master_item_id', $service->master_item_id)
+                        ->first();
+                    if ($tarifDetail) {
+                        if ($service->kode != 'PASSTRUCK') {
+                            $kode = $service->kode . $size;
+                        }else {
+                            $kode = 'PASSTRUCK';
+                        }
+                        if ($tarifDetail->count_by == 'C') {
+                            $hargaC = $tarifDetail->tarif * $containerCount;
+                            $detailImport = Detail::create([
+                             'inv_id'=>$invoiceDSK->id,
+                             'inv_no'=>$invoiceDSK->inv_no,
+                             'inv_type'=>$invoiceDSK->inv_type,
+                             'keterangan'=>$form->service->name,
+                             'ukuran'=>$size,
+                             'jumlah'=>$containerCount,
+                             'satuan'=>'unit',
+                             'expired_date'=>$form->expired_date,
+                             'order_date'=>$invoiceDSK->order_at,
+                             'lunas'=>'N',
+                             'cust_id'=>$form->cust_id,
+                             'cust_name'=>$form->customer->name,
+                             'os_id'=>$form->os_id,
+                             'jumlah_hari'=> 0,
+                             'master_item_id'=>$service->master_item_id,
+                             'master_item_name'=>$service->master_item_name,
+                             'kode'=>$kode,
+                             'tarif'=>$tarifDetail->tarif,
+                             'total'=>$hargaC,
+                             'form_id'=>$form->id,
+                             'count_by'=>'C',
                             ]);
-                            // penumoukan
-                            $penumpukan20 = Detail::create([
-                                'inv_id'=>$dsk->id,
-                                'inv_no'=>$dsk->inv_no,
-                                'inv_type'=>$dsk->inv_type,
-                                'keterangan'=>$dsk->os_name,
-                                'detail'=>'TUMPUKFL20',
-                                'ukuran'=>'20',
-                                'jumlah'=>$dsk->ctr_20,
-                                'satuan'=>'unit',
-                                'harga'=>$dsk->m1_20,
-                                'expired_date'=>$dsk->expired_date,
-                                'order_date'=>$dsk->order_at,
-                                'lunas'=>$dsk->lunas,
-                                'cust_id'=>$dsk->cust_name,
-                                'cust_name'=>$dsk->cust_id
+
+                        }elseif ($tarifDetail->count_by == 'T') {
+                            $hargaC = $tarifDetail->tarif * $containerCount;
+                            $detailImport = Detail::create([
+                             'inv_id'=>$invoiceDSK->id,
+                             'inv_no'=>$invoiceDSK->inv_no,
+                             'inv_type'=>$invoiceDSK->inv_type,
+                             'keterangan'=>$form->service->name,
+                             'ukuran'=>$size,
+                             'jumlah'=>$containerCount,
+                             'satuan'=>'unit',
+                             'expired_date'=>$form->expired_date,
+                             'order_date'=>$invoiceDSK->order_at,
+                             'lunas'=>'N',
+                             'cust_id'=>$form->cust_id,
+                             'cust_name'=>$form->customer->name,
+                             'os_id'=>$form->os_id,
+                             'jumlah_hari'=>$jumlahHari,
+                             'master_item_id'=>$service->master_item_id,
+                             'master_item_name'=>$service->master_item_name,
+                             'kode'=>$kode,
+                             'tarif'=>$tarifDetail->tarif,
+                             'total'=>$hargaC,
+                             'form_id'=>$form->id,
+                             'count_by'=>'T',
                             ]);
                         }
-                        if ($dsk->ctr_40 != null) {
-                            // LON
-                            $lon40 = Detail::create([
-                                'inv_id'=>$dsk->id,
-                                'inv_no'=>$dsk->inv_no,
-                                'inv_type'=>$dsk->inv_type,
-                                'keterangan'=>$dsk->os_name,
-                                'detail'=>'LIFTONFL40',
-                                'ukuran'=> '40',
-                                'jumlah'=>$dsk->ctr_40,
-                                'satuan'=>'unit',
-                                'harga'=>$dsk->lolo_full_40,
-                                'expired_date'=>$dsk->expired_date,
-                                'order_date'=>$dsk->order_at,
-                                'lunas'=>$dsk->lunas,
-                                'cust_id'=>$dsk->cust_name,
-                                'cust_name'=>$dsk->cust_id
-                            ]);
-                            // penumoukan
-                            $penumpukan40 = Detail::create([
-                                'inv_id'=>$dsk->id,
-                                'inv_no'=>$dsk->inv_no,
-                                'inv_type'=>$dsk->inv_type,
-                                'keterangan'=>$dsk->os_name,
-                                'detail'=>'TUMPUKFL40',
-                                'ukuran'=>'40',
-                                'jumlah'=>$dsk->ctr_40,
-                                'satuan'=>'unit',
-                                'harga'=>$dsk->m1_40,
-                                'expired_date'=>$dsk->expired_date,
-                                'order_date'=>$dsk->order_at,
-                                'lunas'=>$dsk->lunas,
-                                'cust_id'=>$dsk->cust_name,
-                                'cust_name'=>$dsk->cust_id
-                            ]);
-                        }
-                    }
-                    $detailPassTruckMasuk = Detail::create([
-                        'inv_id'=>$dsk->id,
-                        'inv_no'=>$dsk->inv_no,
-                        'inv_type'=>$dsk->inv_type,
-                        'keterangan'=>$dsk->os_name,
-                        'detail'=>'PASSTRUCK',
-                        'ukuran'=> null,
-                        'jumlah'=>$totalCont,
-                        'satuan'=>'unit',
-                        'harga'=>$passTruckMasuk,
-                        'expired_date'=>$dsk->expired_date,
-                        'order_date'=>$dsk->order_at,
-                        'lunas'=>$dsk->lunas,
-                        'cust_id'=>$dsk->cust_name,
-                        'cust_name'=>$dsk->cust_id
-                    ]);
-                    if ($os == '14') {
-                        $detailPassTruckKeluar = Detail::create([
-                            'inv_id'=>$dsk->id,
-                            'inv_no'=>$dsk->inv_no,
-                            'inv_type'=>$dsk->inv_type,
-                            'keterangan'=>$dsk->os_name,
-                            'detail'=>'PASSTRUCK',
-                            'ukuran'=> null,
-                            'jumlah'=>$totalCont,
-                            'satuan'=>'unit',
-                            'harga'=>$passTruckKeluar,
-                            'expired_date'=>$dsk->expired_date,
-                            'order_date'=>$dsk->order_at,
-                            'lunas'=>$dsk->lunas,
-                            'cust_id'=>$dsk->cust_name,
-                            'cust_name'=>$dsk->cust_id
-                        ]);
-                    }
+                    }    
                 }
-                if ($os == '11' || $os == '13') {
-                    if ($dsk->ctr_20 != null) {
-                        // LON
-                        $cargoDooring20 = Detail::create([
-                            'inv_id'=>$dsk->id,
-                            'inv_no'=>$dsk->inv_no,
-                            'inv_type'=>$dsk->inv_type,
-                            'keterangan'=>$dsk->os_name,
-                            'detail'=>'CARGODOORING',
-                            'ukuran'=> '20',
-                            'jumlah'=>$dsk->ctr_20,
-                            'satuan'=>'unit',
-                            'harga'=>$dsk->cargo_dooring_20,
-                            'expired_date'=>$dsk->expired_date,
-                            'order_date'=>$dsk->order_at,
-                            'lunas'=>$dsk->lunas,
-                            'cust_id'=>$dsk->cust_name,
-                            'cust_name'=>$dsk->cust_id
-                        ]);
-                        // penumoukan
-                        $sewaCrane20 = Detail::create([
-                            'inv_id'=>$dsk->id,
-                            'inv_no'=>$dsk->inv_no,
-                            'inv_type'=>$dsk->inv_type,
-                            'keterangan'=>$dsk->os_name,
-                            'detail'=>'Biaya Penggunaan Peralatan',
-                            'ukuran'=>'20',
-                            'jumlah'=>$dsk->ctr_20,
-                            'satuan'=>'unit',
-                            'harga'=>$dsk->sewa_crane_20,
-                            'expired_date'=>$dsk->expired_date,
-                            'order_date'=>$dsk->order_at,
-                            'lunas'=>$dsk->lunas,
-                            'cust_id'=>$dsk->cust_name,
-                            'cust_name'=>$dsk->cust_id
-                        ]);
-                    }
-                    if ($dsk->ctr_40 != null) {
-                        // cargoDooring
-                        $cargoDooring40 = Detail::create([
-                            'inv_id'=>$dsk->id,
-                            'inv_no'=>$dsk->inv_no,
-                            'inv_type'=>$dsk->inv_type,
-                            'keterangan'=>$dsk->os_name,
-                            'detail'=>'CARGODOORING',
-                            'ukuran'=> '40',
-                            'jumlah'=>$dsk->ctr_40,
-                            'satuan'=>'unit',
-                            'harga'=>$dsk->cargo_dooring_40,
-                            'expired_date'=>$dsk->expired_date,
-                            'order_date'=>$dsk->order_at,
-                            'lunas'=>$dsk->lunas,
-                            'cust_id'=>$dsk->cust_name,
-                            'cust_name'=>$dsk->cust_id
-                        ]);
-                        // penumoukan
-                        $sewaCrane40 = Detail::create([
-                            'inv_id'=>$dsk->id,
-                            'inv_no'=>$dsk->inv_no,
-                            'inv_type'=>$dsk->inv_type,
-                            'keterangan'=>$dsk->os_name,
-                            'detail'=>'Biaya Penggunaan Peralatan',
-                            'ukuran'=>'40',
-                            'jumlah'=>$dsk->ctr_40,
-                            'satuan'=>'unit',
-                            'harga'=>$dsk->sewa_crane_40,
-                            'expired_date'=>$dsk->expired_date,
-                            'order_date'=>$dsk->order_at,
-                            'lunas'=>$dsk->lunas,
-                            'cust_id'=>$dsk->cust_name,
-                            'cust_name'=>$dsk->cust_id
-                        ]);
-                    }
-                }
-
-                
             }
-
-            if ($os == '6' ||  $os == '9' ||  $os == '11' || $os == '13' || $os == '14' || $os == '15') {
-                $proformaDS = $dsk->proforma_no;
-            }else {
-                $nextProformaNumberDS = $this->getNextProformaNumber();
-                $proformaDS = $nextProformaNumberDS;
-            }
-
-            if ($os == '6' || $os == '8' ||  $os == '9' || $os == '10' ||  $os == '11' || $os == '12' || $os == '13' || $os == '14' || $os == '15') {
-                     
-                $invoiceNo = $this->getNextInvoiceDS();
-         
-                $ds = InvoiceExport::create([
-                    'inv_type'=>'OS',
-                    'inv_no'=>$invoiceNo,
-                    'proforma_no'=>$proformaDS,
-                    'cust_id'=>$request->cust_id,
-                    'cust_name'=>$request->cust_name,
-                    'fax'=>$request->fax,
-                    'npwp'=>$request->npwp,
-                    'alamat'=>$request->alamat,
-                    'os_id'=>$request->os_id,
-                    'os_name'=>$request->os_name,
-                    'container_key'=>json_encode($request->container_key),
-                    'total'=>$request->total,
-                    'pajak'=>$request->pajak,
-                    'grand_total'=>$request->grand_total,
-                    'order_by'=> Auth::user()->name,
-                    'order_at'=> Carbon::now(),
-                    'lunas'=>'N',
-                    'expired_date'=>$request->expired_date,
-                    'booking_no'=>$request->booking_no,
-                    'etd'=> $etd,
-                    'ctr_20'=>$request->ctr_20,
-                    'ctr_40'=>$request->ctr_40,
-                    'ctr_21'=>$request->ctr_21,
-                    'ctr_42'=>$request->ctr_42,
-                    'm1_20'=>$request->m1_20,
-                    'm2_20'=>$request->m2_20,
-                    'm3_20'=>$request->m3_20,
-                    'lolo_full_20'=>$request->lolo_full_20,
-                    'lolo_empty_20'=>$request->lolo_empty_20,
-                    'pass_truck_masuk_20'=>$request->pass_truck_masuk_20,
-                    'pass_truck_keluar_20'=>$request->pass_truck_keluar_20,
-                    'jpb_extruck_20'=>$request->jpb_extruck_20,
-                    'sewa_crane_20'=>$request->sewa_crane_20,
-                    'cargo_dooring_20'=>$request->cargo_dooring_20,
-                    'paket_stuffing_20'=>$request->paket_stuffing_20,
-                    'm1_21'=>$request->m1_21,
-                    'm2_21'=>$request->m2_21,
-                    'm3_21'=>$request->m3_21,
-                    'lolo_full_21'=>$request->lolo_full_21,
-                    'lolo_empty_21'=>$request->lolo_empty_21,
-                    'pass_truck_masuk_21'=>$request->pass_truck_masuk_21,
-                    'pass_truck_keluar_21'=>$request->pass_truck_keluar_21,
-                    'jpb_extruck_21'=>$request->jpb_extruck_21,
-                    'sewa_crane_21'=>$request->sewa_crane_21,
-                    'cargo_dooring_21'=>$request->cargo_dooring_21,
-                    'paket_stuffing_21'=>$request->paket_stuffing_21,
-                    'm1_40'=>$request->m1_40,
-                    'm2_40'=>$request->m2_40,
-                    'm3_40'=>$request->m3_40,
-                    'lolo_full_40'=>$request->lolo_full_40,
-                    'lolo_empty_40'=>$request->lolo_empty_40,
-                    'pass_truck_masuk_40'=>$request->pass_truck_masuk_40,
-                    'pass_truck_keluar_40'=>$request->pass_truck_keluar_40,
-                    'jpb_extruck_40'=>$request->jpb_extruck_40,
-                    'sewa_crane_40'=>$request->sewa_crane_40,
-                    'cargo_dooring_40'=>$request->cargo_dooring_40,
-                    'paket_stuffing_40'=>$request->paket_stuffing_40,
-                    'm1_42'=>$request->m1_42,
-                    'm2_42'=>$request->m2_42,
-                    'm3_42'=>$request->m3_42,
-                    'lolo_full_42'=>$request->lolo_full_42,
-                    'lolo_empty_42'=>$request->lolo_empty_42,
-                    'pass_truck_masuk_42'=>$request->pass_truck_masuk_42,
-                    'pass_truck_keluar_42'=>$request->pass_truck_keluar_42,
-                    'jpb_extruck_42'=>$request->jpb_extruck_42,
-                    'sewa_crane_42'=>$request->sewa_crane_42,
-                    'cargo_dooring_42'=>$request->cargo_dooring_42,
-                    'paket_stuffing_42'=>$request->paket_stuffing_42,
-                ]);
-                $totalCont = $ds->ctr_20 + $ds->ctr_40;
-                $passTruckMasuk = $ds->pass_truck_masuk_20 + $ds->pass_truck_masuk_40;
-                $passTruckKeluar = $ds->pass_truck_keluar_20 + $ds->pass_truck_keluar_40;
-                if ($os == '6' || $os == '8' || $os == '14') {
-                    if ($ds->ctr_20 != null) {
-                        // LON
-                        $lof20 = Detail::create([
-                            'inv_id'=>$ds->id,
-                            'inv_no'=>$ds->inv_no,
-                            'inv_type'=>$ds->inv_type,
-                            'keterangan'=>$ds->os_name,
-                            'detail'=>'LIFTOFMT20',
-                            'ukuran'=> '20',
-                            'jumlah'=>$ds->ctr_20,
-                            'satuan'=>'unit',
-                            'harga'=>$ds->lolo_empty_20,
-                            'expired_date'=>$ds->expired_date,
-                            'order_date'=>$ds->order_at,
-                            'lunas'=>$ds->lunas,
-                            'cust_id'=>$ds->cust_name,
-                            'cust_name'=>$ds->cust_id
-                        ]);
-                    }
-                    if ($ds->ctr_40 != null) {
-                        // LON
-                        $lof40 = Detail::create([
-                            'inv_id'=>$ds->id,
-                            'inv_no'=>$ds->inv_no,
-                            'inv_type'=>$ds->inv_type,
-                            'keterangan'=>$ds->os_name,
-                            'detail'=>'LIFTOFMT40',
-                            'ukuran'=> '40',
-                            'jumlah'=>$ds->ctr_40,
-                            'satuan'=>'unit',
-                            'harga'=>$ds->lolo_empty_40,
-                            'expired_date'=>$ds->expired_date,
-                            'order_date'=>$ds->order_at,
-                            'lunas'=>$ds->lunas,
-                            'cust_id'=>$ds->cust_name,
-                            'cust_name'=>$ds->cust_id
-                        ]);
-                    }
-                    if ($os != '14') {
-                        $detailPassTruckKeluar = Detail::create([
-                            'inv_id'=>$ds->id,
-                            'inv_no'=>$ds->inv_no,
-                            'inv_type'=>$ds->inv_type,
-                            'keterangan'=>$ds->os_name,
-                            'detail'=>'PASSTRUCK',
-                            'ukuran'=> null,
-                            'jumlah'=>$totalCont,
-                            'satuan'=>'unit',
-                            'harga'=>$passTruckKeluar,
-                            'expired_date'=>$ds->expired_date,
-                            'order_date'=>$ds->order_at,
-                            'lunas'=>$ds->lunas,
-                            'cust_id'=>$ds->cust_name,
-                            'cust_name'=>$ds->cust_id
-                        ]);
-                        $admin = Detail::create([
-                            'inv_id'=>$ds->id,
-                            'inv_no'=>$ds->inv_no,
-                            'inv_type'=>$ds->inv_type,
-                            'keterangan'=>$ds->os_name,
-                            'detail'=>'ADMINISTRASI',
-                            'ukuran'=>null,
-                            'jumlah'=> 1,
-                            'satuan'=>'unit',
-                            'harga'=>2000,
-                            'expired_date'=>$ds->expired_date,
-                            'order_date'=>$ds->order_at,
-                            'lunas'=>$ds->lunas,
-                            'cust_id'=>$ds->cust_name,
-                            'cust_name'=>$ds->cust_id
-                    ]);
-                    }
-                }elseif ($os == '9' || $os == '10') {
-                    if ($os == '10') {
-                        $detailPassTruckKeluar = Detail::create([
-                            'inv_id'=>$ds->id,
-                            'inv_no'=>$ds->inv_no,
-                            'inv_type'=>$ds->inv_type,
-                            'keterangan'=>$ds->os_name,
-                            'detail'=>'PASSTRUCK',
-                            'ukuran'=> null,
-                            'jumlah'=>$totalCont,
-                            'satuan'=>'unit',
-                            'harga'=>$passTruckKeluar,
-                            'expired_date'=>$ds->expired_date,
-                            'order_date'=>$ds->order_at,
-                            'lunas'=>$ds->lunas,
-                            'cust_id'=>$ds->cust_name,
-                            'cust_name'=>$ds->cust_id
-                        ]);
-                        if ($ds->ctr_20 != null) {
-                            // LON
-                            $lof20 = Detail::create([
-                                'inv_id'=>$ds->id,
-                                'inv_no'=>$ds->inv_no,
-                                'inv_type'=>$ds->inv_type,
-                                'keterangan'=>$ds->os_name,
-                                'detail'=>'LIFTOFFL20',
-                                'ukuran'=> '20',
-                                'jumlah'=>$ds->ctr_20,
-                                'satuan'=>'unit',
-                                'harga'=>$ds->lolo_full_20,
-                                'expired_date'=>$ds->expired_date,
-                                'order_date'=>$ds->order_at,
-                                'lunas'=>$ds->lunas,
-                                'cust_id'=>$ds->cust_name,
-                                'cust_name'=>$ds->cust_id
-                            ]);
-                        }
-                        if ($ds->ctr_40 != null) {
-                            // LON
-                            $lof40 = Detail::create([
-                                'inv_id'=>$ds->id,
-                                'inv_no'=>$ds->inv_no,
-                                'inv_type'=>$ds->inv_type,
-                                'keterangan'=>$ds->os_name,
-                                'detail'=>'LIFTOFFL40',
-                                'ukuran'=> '40',
-                                'jumlah'=>$ds->ctr_40,
-                                'satuan'=>'unit',
-                                'harga'=>$ds->lolo_full_40,
-                                'expired_date'=>$ds->expired_date,
-                                'order_date'=>$ds->order_at,
-                                'lunas'=>$ds->lunas,
-                                'cust_id'=>$ds->cust_name,
-                                'cust_name'=>$ds->cust_id
-                            ]);
-                        }
-                    }
-                    if ($ds->ctr_20 != null) {
-                        // LON
-                        $jpbTruck20 = Detail::create([
-                            'inv_id'=>$ds->id,
-                            'inv_no'=>$ds->inv_no,
-                            'inv_type'=>$ds->inv_type,
-                            'keterangan'=>$ds->os_name,
-                            'detail'=>'JPB-EXTR20',
-                            'ukuran'=> '20',
-                            'jumlah'=>$ds->ctr_20,
-                            'satuan'=>'unit',
-                            'harga'=>$ds->jpb_extruck_20,
-                            'expired_date'=>$ds->expired_date,
-                            'order_date'=>$ds->order_at,
-                            'lunas'=>$ds->lunas,
-                            'cust_id'=>$ds->cust_name,
-                            'cust_name'=>$ds->cust_id
-                        ]);
-                        // penumoukan
-                        $penumpukan20 = Detail::create([
-                            'inv_id'=>$ds->id,
-                            'inv_no'=>$ds->inv_no,
-                            'inv_type'=>$ds->inv_type,
-                            'keterangan'=>$ds->os_name,
-                            'detail'=>'TUMPUKFL20',
-                            'ukuran'=>'20',
-                            'jumlah'=>$ds->ctr_20,
-                            'satuan'=>'unit',
-                            'harga'=>$ds->m1_20,
-                            'expired_date'=>$ds->expired_date,
-                            'order_date'=>$ds->order_at,
-                            'lunas'=>$ds->lunas,
-                            'cust_id'=>$ds->cust_name,
-                            'cust_name'=>$ds->cust_id
-                        ]);
-                    }
-                    if ($ds->ctr_40 != null) {
-                        // LON
-                        $jpbTruck40 = Detail::create([
-                            'inv_id'=>$ds->id,
-                            'inv_no'=>$ds->inv_no,
-                            'inv_type'=>$ds->inv_type,
-                            'keterangan'=>$ds->os_name,
-                            'detail'=>'JPB-EXTR40',
-                            'ukuran'=> '40',
-                            'jumlah'=>$ds->ctr_40,
-                            'satuan'=>'unit',
-                            'harga'=>$ds->jpb_extruck_40,
-                            'expired_date'=>$ds->expired_date,
-                            'order_date'=>$ds->order_at,
-                            'lunas'=>$ds->lunas,
-                            'cust_id'=>$ds->cust_name,
-                            'cust_name'=>$ds->cust_id
-                        ]);
-                        // penumoukan
-                        $penumpukan40 = Detail::create([
-                            'inv_id'=>$ds->id,
-                            'inv_no'=>$ds->inv_no,
-                            'inv_type'=>$ds->inv_type,
-                            'keterangan'=>$ds->os_name,
-                            'detail'=>'TUMPUKFL40',
-                            'ukuran'=>'40',
-                            'jumlah'=>$ds->ctr_40,
-                            'satuan'=>'unit',
-                            'harga'=>$ds->m1_40,
-                            'expired_date'=>$ds->expired_date,
-                            'order_date'=>$ds->order_at,
-                            'lunas'=>$ds->lunas,
-                            'cust_id'=>$ds->cust_name,
-                            'cust_name'=>$ds->cust_id
-                        ]);
-                    }
-                    $admin = Detail::create([
-                        'inv_id'=>$ds->id,
-                        'inv_no'=>$ds->inv_no,
-                        'inv_type'=>$ds->inv_type,
-                        'keterangan'=>$ds->os_name,
-                        'detail'=>'ADMINISTRASI',
-                        'ukuran'=>null,
+            $singleTarif = MT::where('os_id', $bigOS->id)->first();
+                $singleTarifDetail = MTDetail::where('master_tarif_id', $singleTarif->id)
+                    ->where('master_item_id', $service->master_item_id)
+                    ->where('count_by', 'O')
+                    ->first();
+                if ($singleTarifDetail) {
+                    $detailImport = Detail::create([
+                        'inv_id'=>$invoiceDSK->id,
+                        'inv_no'=>$invoiceDSK->inv_no,
+                        'inv_type'=>$invoiceDSK->inv_type,
+                        'keterangan'=>$form->service->name,
+                        'ukuran'=> '0',
                         'jumlah'=> 1,
                         'satuan'=>'unit',
-                        'harga'=>2000,
-                        'expired_date'=>$ds->expired_date,
-                        'order_date'=>$ds->order_at,
-                        'lunas'=>$ds->lunas,
-                        'cust_id'=>$ds->cust_name,
-                        'cust_name'=>$ds->cust_id
-                ]);
-                }elseif ($os == '11' || $os == '12' || $os= '13' || $os= '15') {
-                    if ($ds->ctr_20 != null) {
-                        // LON
-                        $pkStuff20 = Detail::create([
-                            'inv_id'=>$ds->id,
-                            'inv_no'=>$ds->inv_no,
-                            'inv_type'=>$ds->inv_type,
-                            'keterangan'=>$ds->os_name,
-                            'detail'=>'STUFFING20',
-                            'ukuran'=> '20',
-                            'jumlah'=>$ds->ctr_20,
-                            'satuan'=>'unit',
-                            'harga'=>$ds->paket_stuffing_20,
-                            'expired_date'=>$ds->expired_date,
-                            'order_date'=>$ds->order_at,
-                            'lunas'=>$ds->lunas,
-                            'cust_id'=>$ds->cust_name,
-                            'cust_name'=>$ds->cust_id
-                        ]);
-                    }
-                    if ($ds->ctr_40 != null) {
-                        // LON
-                        $pkStuff40 = Detail::create([
-                            'inv_id'=>$ds->id,
-                            'inv_no'=>$ds->inv_no,
-                            'inv_type'=>$ds->inv_type,
-                            'keterangan'=>$ds->os_name,
-                            'detail'=>'STUFFING40',
-                            'ukuran'=> '40',
-                            'jumlah'=>$ds->ctr_40,
-                            'satuan'=>'unit',
-                            'harga'=>$ds->paket_stuffing_40,
-                            'expired_date'=>$ds->expired_date,
-                            'order_date'=>$ds->order_at,
-                            'lunas'=>$ds->lunas,
-                            'cust_id'=>$ds->cust_name,
-                            'cust_name'=>$ds->cust_id
-                        ]);
-                    }
-                    if ($os == '13') {
-                        if ($ds->ctr_20 != null) {
-                            // LON
-                            $lon20 = Detail::create([
-                                'inv_id'=>$ds->id,
-                                'inv_no'=>$ds->inv_no,
-                                'inv_type'=>$ds->inv_type,
-                                'keterangan'=>$ds->os_name,
-                                'detail'=>'LIFTONFL20',
-                                'ukuran'=> '20',
-                                'jumlah'=>$ds->ctr_20,
-                                'satuan'=>'unit',
-                                'harga'=>$ds->lolo_full_20,
-                                'expired_date'=>$ds->expired_date,
-                                'order_date'=>$ds->order_at,
-                                'lunas'=>$ds->lunas,
-                                'cust_id'=>$ds->cust_name,
-                                'cust_name'=>$ds->cust_id
-                            ]);
-                            // penumoukan
-                            $lof20 = Detail::create([
-                                'inv_id'=>$ds->id,
-                                'inv_no'=>$ds->inv_no,
-                                'inv_type'=>$ds->inv_type,
-                                'keterangan'=>$ds->os_name,
-                                'detail'=>'LIFTOFMT20',
-                                'ukuran'=> '20',
-                                'jumlah'=>$ds->ctr_20,
-                                'satuan'=>'unit',
-                                'harga'=>$ds->lolo_empty_20,
-                                'expired_date'=>$ds->expired_date,
-                                'order_date'=>$ds->order_at,
-                                'lunas'=>$ds->lunas,
-                                'cust_id'=>$ds->cust_name,
-                                'cust_name'=>$ds->cust_id
-                            ]);
-                        }
-                        if ($ds->ctr_40 != null) {
-                            // LON
-                            $lon40 = Detail::create([
-                                'inv_id'=>$ds->id,
-                                'inv_no'=>$ds->inv_no,
-                                'inv_type'=>$ds->inv_type,
-                                'keterangan'=>$ds->os_name,
-                                'detail'=>'LIFTONFL40',
-                                'ukuran'=> '40',
-                                'jumlah'=>$ds->ctr_40,
-                                'satuan'=>'unit',
-                                'harga'=>$ds->lolo_full_40,
-                                'expired_date'=>$ds->expired_date,
-                                'order_date'=>$ds->order_at,
-                                'lunas'=>$ds->lunas,
-                                'cust_id'=>$ds->cust_name,
-                                'cust_name'=>$ds->cust_id
-                            ]);
-                            // penumoukan
-                            $lof40 = Detail::create([
-                                'inv_id'=>$ds->id,
-                                'inv_no'=>$ds->inv_no,
-                                'inv_type'=>$ds->inv_type,
-                                'keterangan'=>$ds->os_name,
-                                'detail'=>'LIFTOFMT40',
-                                'ukuran'=> '40',
-                                'jumlah'=>$ds->ctr_40,
-                                'satuan'=>'unit',
-                                'harga'=>$ds->lolo_empty_40,
-                                'expired_date'=>$ds->expired_date,
-                                'order_date'=>$ds->order_at,
-                                'lunas'=>$ds->lunas,
-                                'cust_id'=>$ds->cust_name,
-                                'cust_name'=>$ds->cust_id
-                            ]);
-                        }
-                        $detailPassTruckMasuk = Detail::create([
-                            'inv_id'=>$ds->id,
-                            'inv_no'=>$ds->inv_no,
-                            'inv_type'=>$ds->inv_type,
-                            'keterangan'=>$ds->os_name,
-                            'detail'=>'PASSTRUCK',
-                            'ukuran'=> null,
-                            'jumlah'=>$totalCont,
-                            'satuan'=>'unit',
-                            'harga'=>$passTruckMasuk,
-                            'expired_date'=>$ds->expired_date,
-                            'order_date'=>$ds->order_at,
-                            'lunas'=>$ds->lunas,
-                            'cust_id'=>$ds->cust_name,
-                            'cust_name'=>$ds->cust_id
-                        ]);
-                        $detailPassTruckKeluar = Detail::create([
-                            'inv_id'=>$ds->id,
-                            'inv_no'=>$ds->inv_no,
-                            'inv_type'=>$ds->inv_type,
-                            'keterangan'=>$ds->os_name,
-                            'detail'=>'PASSTRUCK',
-                            'ukuran'=> null,
-                            'jumlah'=>$totalCont,
-                            'satuan'=>'unit',
-                            'harga'=>$passTruckKeluar,
-                            'expired_date'=>$ds->expired_date,
-                            'order_date'=>$ds->order_at,
-                            'lunas'=>$ds->lunas,
-                            'cust_id'=>$ds->cust_name,
-                            'cust_name'=>$ds->cust_id
-                        ]);
-                    }
+                        'expired_date'=>$form->expired_date,
+                        'order_date'=>$invoiceDSK->order_at,
+                        'lunas'=>'N',
+                        'cust_id'=>$form->cust_id,
+                        'cust_name'=>$form->customer->name,
+                        'os_id'=>$form->os_id,
+                        'jumlah_hari'=>'0',
+                        'master_item_id'=>$service->master_item_id,
+                        'master_item_name'=>$service->master_item_name,
+                        'kode'=>$service->kode,
+                        'tarif'=>$tarifDetail->tarif,
+                        'total'=>$tarifDetail->tarif,
+                        'form_id'=>$form->id,
+                        'count_by'=>'O',
+                       ]);
                 }
-            }
+        }
+       }
 
-            $contArray = explode(',', $cont[0]);
-
-            foreach ($contArray as $idCont) {
-                $selectCont = Item::where('container_key', $idCont)->get();
-
-                foreach ($selectCont as $item) {
-                    if ($kapal != null) {
-                        $ves = VVoyage::where('ves_id', $kapal)->first();
-                        $item->update([
-                            'selected_do' => 'Y',
-                            'ves_id' => $ves->ves_id,
-                            'ves_name' => $ves->ves_name,
-                            'ves_code' => $ves->ves_code,
-                            'voy_no' => $ves->voy_no,
-                        ]);
-                    }else {
-                        $item->update([
-                            'selected_do' => 'Y'
-                        ]);
-                    }
-                   
-                   
-
-                    $lastJobNo = JobExport::orderBy('id', 'desc')->value('job_no');
-                    $jobNo = $this->getNextJob($lastJobNo);
+       if ($ds == 'Y') {
+        $nextProformaNumber = $this->getNextProformaNumber();
+        $invoiceNo = $this->getNextInvoiceDS();
+        $invoiceDS = InvoiceExport::create([
+            'inv_type'=>'OS',
+            'form_id'=>$form->id,
+            'inv_no' =>$invoiceNo,
+            'proforma_no'=>$nextProformaNumber,
+            'cust_id'=>$form->cust_id,
+            'cust_name'=>$form->customer->name,
+            'fax'=>$form->customer->fax,
+            'npwp'=>$form->customer->npwp,
+            'alamat'=>$form->customer->alamat,
+            'os_id'=>$form->os_id,
+            'os_name'=>$form->service->name,
+            'massa1'=>$jumlahHari,
+            'lunas'=>'N',
+            'expired_date'=>$form->expired_date,
+            'disc_date' => $form->disc_date,
+            'booking_no'=>$form->do_id,
+            'total'=>$request->totalDS,
+            'pajak'=>$request->pajakDS,
+            'grand_total'=>$request->grandTotalDS,
+            'order_by'=> Auth::user()->name,
+            'order_at'=> Carbon::now(),
             
-                    if ($os == '6' || $os == '7' ||  $os == '9' ||  $os == '11' || $os == '13' || $os == '14' || $os == '15') {
-                        $job = JobExport::create([
-                            'inv_id'=>$dsk->id,
-                            'job_no'=>$jobNo,
-                            'os_id'=>$request->os_id,
-                            'os_name'=>$request->os_name,
-                            'cust_id'=>$request->cust_id,
-                            'active_to'=>$dsk->expired_date,
-                            'container_key'=>$item->container_key,
-                            'container_no'=>$item->container_no,
-                            'ves_id'=>$item->ves_id,
-                        ]);
-                    }
-                    if ($os == '6' || $os == '8' ||  $os == '9' || $os == '10' ||  $os == '11'|| $os == '12' || $os == '13' || $os == '14' || $os == '15') {
-                        $job = JobExport::create([
-                            'inv_id'=>$ds->id,
-                            'job_no'=>$jobNo,
-                            'os_id'=>$request->os_id,
-                            'os_name'=>$request->os_name,
-                            'cust_id'=>$request->cust_id,
-                            'active_to'=>$request->expired_date,
-                            'container_key'=>$item->container_key,
-                            'container_no'=>$item->container_no,
-                            'ves_id'=>$item->ves_id,
-                        ]);
-                    }
-                   
+        ]);
+        $admin = 0;
+        foreach ($osDS as $service) {
+            foreach ($ctrGroup as $size => $statusGroup) {
+                foreach ($statusGroup as $status => $containers) {
+                    $containerCount = $containers->count();
+                    $tarif = MT::where('os_id', $bigOS->id)
+                            ->where('ctr_size', $size)
+                            ->where('ctr_status', $status)
+                            ->first();
+                    $tarifDetail = MTDetail::where('master_tarif_id', $tarif->id)
+                        ->where('master_item_id', $service->master_item_id)
+                        ->first();
+                    if ($tarifDetail) {
+                        if ($service->kode != 'PASSTRUCK') {
+                            $kode = $service->kode . $size;
+                        }else {
+                            $kode = 'PASSTRUCK';
+                        }
+                       
+                        if ($tarifDetail->count_by == 'C') {
+                            $hargaC = $tarifDetail->tarif * $containerCount;
+                            $detailImport = Detail::create([
+                             'inv_id'=>$invoiceDS->id,
+                             'inv_no'=>$invoiceDS->inv_no,
+                             'inv_type'=>$invoiceDS->inv_type,
+                             'keterangan'=>$form->service->name,
+                             'ukuran'=>$size,
+                             'jumlah'=>$containerCount,
+                             'satuan'=>'unit',
+                             'expired_date'=>$form->expired_date,
+                             'order_date'=>$invoiceDS->order_at,
+                             'lunas'=>'N',
+                             'cust_id'=>$form->cust_id,
+                             'cust_name'=>$form->customer->name,
+                             'os_id'=>$form->os_id,
+                             'jumlah_hari'=> 0,
+                             'master_item_id'=>$service->master_item_id,
+                             'master_item_name'=>$service->master_item_name,
+                             'kode'=>$kode,
+                             'tarif'=>$tarifDetail->tarif,
+                             'total'=>$hargaC,
+                             'form_id'=>$form->id,
+                             'count_by'=>'C',
+                            ]);
+
+                        }elseif ($tarifDetail->count_by == 'T') {
+                            $hargaC = $tarifDetail->tarif * $containerCount;
+                            $detailImport = Detail::create([
+                             'inv_id'=>$invoiceDS->id,
+                             'inv_no'=>$invoiceDS->inv_no,
+                             'inv_type'=>$invoiceDS->inv_type,
+                             'keterangan'=>$form->service->name,
+                             'ukuran'=>$size,
+                             'jumlah'=>$containerCount,
+                             'satuan'=>'unit',
+                             'expired_date'=>$form->expired_date,
+                             'order_date'=>$invoiceDS->order_at,
+                             'lunas'=>'N',
+                             'cust_id'=>$form->cust_id,
+                             'cust_name'=>$form->customer->name,
+                             'os_id'=>$form->os_id,
+                             'jumlah_hari'=>$jumlahHari,
+                             'master_item_id'=>$service->master_item_id,
+                             'master_item_name'=>$service->master_item_name,
+                             'kode'=>$kode,
+                             'tarif'=>$tarifDetail->tarif,
+                             'total'=>$hargaC,
+                             'form_id'=>$form->id,
+                             'count_by'=>'T',
+                            ]);
+                        }
+                    }    
                 }
             }
-            return redirect()->route('billingExportMain')->with('success', 'Menunggu Pembayaran');
+            $singleTarif = MT::where('os_id', $bigOS->id)->first();
+                $singleTarifDetail = MTDetail::where('master_tarif_id', $singleTarif->id)
+                    ->where('master_item_id', $service->master_item_id)
+                    ->where('count_by', 'O')
+                    ->first();
+                if ($singleTarifDetail) {
+                    $detailImport = Detail::create([
+                        'inv_id'=>$invoiceDS->id,
+                        'inv_no'=>$invoiceDS->inv_no,
+                        'inv_type'=>$invoiceDS->inv_type,
+                        'keterangan'=>$form->service->name,
+                        'ukuran'=> '0',
+                        'jumlah'=> 1,
+                        'satuan'=>'unit',
+                        'expired_date'=>$form->expired_date,
+                        'order_date'=>$invoiceDS->order_at,
+                        'lunas'=>'N',
+                        'cust_id'=>$form->cust_id,
+                        'cust_name'=>$form->customer->name,
+                        'os_id'=>$form->os_id,
+                        'jumlah_hari'=>'0',
+                        'master_item_id'=>$service->master_item_id,
+                        'master_item_name'=>$service->master_item_name,
+                        'kode'=>$service->kode,
+                        'tarif'=>$tarifDetail->tarif,
+                        'total'=>$tarifDetail->tarif,
+                        'form_id'=>$form->id,
+                        'count_by'=>'O',
+                       ]);
+                }
+        }
+       }
 
-        } 
+       $form->update([
+        'done'=>'Y',
+       ]);
+       foreach ($cont as $contItem) {
+        $item = Item::where('container_key', $contItem->container_key)->first();
+        $item->update([
+            'selected_do'=>'Y',
+        ]);
+       }
+       return redirect()->route('billingExportMain')->with('success', 'Menunggu Pembayaran');
 
        
     }
@@ -1093,7 +771,7 @@ class InvoiceExportController extends Controller
     private function getNextInvoiceDSK()
     {
         // Mendapatkan nomor proforma terakhir
-        $latest = InvoiceExport::where('inv_type', 'OSK')->orderBy('order_at', 'desc')->first();
+        $latest = InvoiceExport::where('inv_type', 'OSK')->orderBy('proforma_no', 'desc')->first();
     
         // Jika tidak ada proforma sebelumnya, kembalikan nomor proforma awal
         if (!$latest) {
@@ -1153,6 +831,33 @@ class InvoiceExportController extends Controller
         return 'JOB' . str_pad($nextNumber, 7, '0', STR_PAD_LEFT);
     }
 
+    public function recivingInvoiceDelete($id)
+    {
+        $invoice = InvoiceExport::where('form_id', $id)->get();
+        foreach ($invoice as $inv) {
+            $inv->delete();
+        }
+
+        $invoiceDetail = Detail::where('form_id', $id)->get();
+        foreach ($invoiceDetail as $detail) {
+            $detail->delete();
+        }
+
+        $containerInvoice = Container::where('form_id', $id)->get();
+        foreach ($containerInvoice as $cont) {
+            $item = Item::where('container_key', $cont->container_key)->first();
+            $item->update([
+                'selected_do'=>'N',
+            ]);
+            $cont->delete();
+        }
+
+        $form = Form::where('id', $id)->first();
+        $form->delete();
+
+        return response()->json(['message' => 'Data berhasil dihapus.']);
+    }
+
     public function PranotaExportOSK($id)
     {
 
@@ -1160,70 +865,19 @@ class InvoiceExportController extends Controller
 
         $data['invoice'] = InvoiceExport::where('id', $id)->first();
 
-        $cont = $data['invoice']->container_key;
-        $contArray = json_decode($data['invoice']->container_key);
-        $container_key_string = $contArray[0];
-        $container_keys = explode(",", $container_key_string);
-        $items = Item::whereIn('container_key', $container_keys)->get();
-        $data['contInvoce'] = Item::whereIn('container_key', $container_keys)->orderBy('ctr_size', 'asc')->get();
-      
-        $groupedContainers = [];
+        $data['contInvoice'] = Container::where('form_id', $data['invoice']->form_id)->orderBy('ctr_size', 'asc')->get();
+        $invDetail = Detail::where('inv_id', $id)->whereNot('count_by', '=', 'O')->orderBy('count_by', 'asc')->orderBy('kode', 'asc')->get();
+        $data['invGroup'] = $invDetail->groupBy('ukuran');
 
-        foreach ($items as $item) {
-            $containerKey = $item->container_key;
-            $containerSize = $item->ctr_size;
-        
-            
-            if (isset($groupedContainers[$containerSize])) {
-                $groupedContainers[$containerSize][] = $containerKey;
-            } else { 
-                $groupedContainers[$containerSize] = [$containerKey];
-            }
+        $data['admin'] = 0;
+        $adminDSK = Detail::where('inv_id', $id)->where('count_by', '=', 'O')->first();
+        if ($adminDSK) {
+            $data['admin'] = $adminDSK->total;
         }
-
-        $jumlahContainerPerUkuran = [];
-
-        // Hitung jumlah kontainer per ukuran
-        foreach ($groupedContainers as $ukuran => $containers) {
-            // Jumlah kontainer untuk ukuran saat ini adalah panjang array kontainer
-            $jumlahContainerPerUkuran[$ukuran] = count($containers);
-        }
-
-        $tarif = [];
-        $loloFull = [];
-        $ptMasuk = [];
-        $ptKeluar = [];
-        $pmassa1 = [];
-        $pmassa2 = [];
-        $pmassa3 = [];
-        $loloEmpty = [];
-        $stripping = [];
-        $movePetikemas = [];
-        foreach ($groupedContainers as $ukuran => $containers) {
-            // Jumlah kontainer untuk ukuran saat ini adalah panjang array kontainer
-            $tarif[$ukuran] = MT::where('os_id', $data['invoice']->os_id)->where('ctr_size', $ukuran)->first();
-            if (empty($tarif[$ukuran])) {
-                return back()->with('error', 'Silahkan Membuat Master Tarif Terlebih Dahulu');
-            }
-            // DSK
-            $loloFull[$ukuran]= $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->lolo_full;
-            $ptKeluar[$ukuran]= $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->pass_truck_keluar;
-            $pmassa1[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->m1;
-
-
-            // DS  
-            $loloEmpty[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->lolo_empty;
-            $ptMasuk[$ukuran]= $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->pass_truck_masuk;
-            $stripping[$ukuran]= $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->paket_stripping;
-            $movePetikemas[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->pemindahan_petikemas;
-   
-            
-        }
-        
         $data['terbilang'] = $this->terbilang($data['invoice']->grand_total);
 
 
-        return view('billingSystem.export.pranota.dsk', compact('groupedContainers', 'jumlahContainerPerUkuran', 'tarif'), $data);
+        return view('billingSystem.export.pranota.dsk', $data);
     }
     public function PranotaExportOS($id)
     {
@@ -1232,70 +886,20 @@ class InvoiceExportController extends Controller
 
         $data['invoice'] = InvoiceExport::where('id', $id)->first();
 
-        $cont = $data['invoice']->container_key;
-        $contArray = json_decode($data['invoice']->container_key);
-        $container_key_string = $contArray[0];
-        $container_keys = explode(",", $container_key_string);
-        $items = Item::whereIn('container_key', $container_keys)->get();
-        $data['contInvoce'] = Item::whereIn('container_key', $container_keys)->orderBy('ctr_size', 'asc')->get();
-      
-        $groupedContainers = [];
+        $data['contInvoice'] = Container::where('form_id', $data['invoice']->form_id)->orderBy('ctr_size', 'asc')->get();
+        $invDetail = Detail::where('inv_id', $id)->whereNot('count_by', '=', 'O')->orderBy('count_by', 'asc')->orderBy('kode', 'asc')->get();
+        $data['invGroup'] = $invDetail->groupBy('ukuran');
 
-        foreach ($items as $item) {
-            $containerKey = $item->container_key;
-            $containerSize = $item->ctr_size;
-        
-            
-            if (isset($groupedContainers[$containerSize])) {
-                $groupedContainers[$containerSize][] = $containerKey;
-            } else { 
-                $groupedContainers[$containerSize] = [$containerKey];
-            }
+        $data['admin'] = 0;
+        $adminDS = Detail::where('inv_id', $id)->where('count_by', '=', 'O')->first();
+        if ($adminDS) {
+            $data['admin'] = $adminDS->total;
         }
-
-        $jumlahContainerPerUkuran = [];
-
-        // Hitung jumlah kontainer per ukuran
-        foreach ($groupedContainers as $ukuran => $containers) {
-            // Jumlah kontainer untuk ukuran saat ini adalah panjang array kontainer
-            $jumlahContainerPerUkuran[$ukuran] = count($containers);
-        }
-
-        $tarif = [];
-        $loloFull = [];
-        $ptMasuk = [];
-        $ptKeluar = [];
-        $pmassa1 = [];
-        $pmassa2 = [];
-        $pmassa3 = [];
-        $loloEmpty = [];
-        $stripping = [];
-        $movePetikemas = [];
-        foreach ($groupedContainers as $ukuran => $containers) {
-            // Jumlah kontainer untuk ukuran saat ini adalah panjang array kontainer
-            $tarif[$ukuran] = MT::where('os_id', $data['invoice']->os_id)->where('ctr_size', $ukuran)->first();
-            if (empty($tarif[$ukuran])) {
-                return back()->with('error', 'Silahkan Membuat Master Tarif Terlebih Dahulu');
-            }
-            // DSK
-            $loloFull[$ukuran]= $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->lolo_full;
-            $ptKeluar[$ukuran]= $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->pass_truck_keluar;
-            $pmassa1[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->m1 * $data['invoice']->massa1;
-            $pmassa2[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->m2 * $data['invoice']->massa2;
-            $pmassa3[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->m3 * $data['invoice']->massa3;
-
-            // DS  
-            $loloEmpty[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->lolo_empty;
-            $ptMasuk[$ukuran]= $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->pass_truck_masuk;
-            $stripping[$ukuran]= $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->paket_stripping;
-            $movePetikemas[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->pemindahan_petikemas;
-   
-            
-        }
+        $data['terbilang'] = $this->terbilang($data['invoice']->grand_total);
 
         $data['terbilang'] = $this->terbilang($data['invoice']->grand_total);
 
-        return view('billingSystem.export.pranota.ds',compact('groupedContainers', 'jumlahContainerPerUkuran', 'tarif'), $data);
+        return view('billingSystem.export.pranota.ds', $data);
     }
 
     public function payExport($id)
@@ -1315,52 +919,50 @@ class InvoiceExportController extends Controller
         $id = $request->inv_id;
 
         $invoice = InvoiceExport::where('id', $id)->first();
-        $cont = $invoice->container_key;
-        $contArray = json_decode($invoice->container_key);
-        $container_key_string = $contArray[0];
-        $container_keys = explode(",", $container_key_string);
-        $items = Item::whereIn('container_key', $container_keys)->get();
+        $containerInvoice = Container::where('form_id', $invoice->form_id)->get();
+        $bigOS = OS::where('id', $invoice->os_id)->first();
+        foreach ($containerInvoice as $cont) {
+            $lastJobNo = JobExport::orderBy('id', 'desc')->value('job_no');
+            $jobNo = $this->getNextJob($lastJobNo);
+            $job = JobExport::where('inv_id', $invoice->id)->where('container_key', $cont->container_key)->first();
+            if (!$job) {
+                $job = JobExport::create([
+                    'inv_id'=>$invoice->id,
+                    'job_no'=>$jobNo,
+                    'os_id'=>$invoice->os_id,
+                    'os_name'=>$invoice->os_name,
+                    'cust_id'=>$invoice->cust_id,
+                    'active_to'=>$invoice->expired_date,
+                    'container_key'=>$cont->container_key,
+                    'container_no'=>$cont->container_no,
+                    'ves_id'=>$cont->ves_id,
+                ]);
+            }
+            $item = Item::where('container_key', $cont->container_key)->first();
+            $item->update([
+                'invoice_no'=>$invoice->inv_no,
+                'job_no' => $job->job_no,
+                'order_service' => $bigOS->order,
+            ]);
+        }
+
         $details = Detail::where('inv_id', $id)->get();
-        $service = $invoice->os_id;
-        if ($service == 6 || $service == 7 || $service == 8 || $service == 8) {
-            $os = "EXPORT";
-        }else {
-            $os = "STUFFING";
-        }
-
-        if ($invoice) {
-            foreach ($items as $item) {
-                $job = JobExport::where('container_key', $item->container_key)->first();
-                $item->update([
-                    'invoice_no'=>$invoice->inv_no,
-                    'job_no' => $job->job_no,
-                    'order_service' => $os,
-                ]);
-            }
-            foreach ($details as $detail) {
-                $detail->update([
-                    'lunas' => 'Y'
-                ]);
-            }
-
-            $invoice->update([
-                'lunas' => 'Y',
-                'lunas_at'=> Carbon::now(),
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'updated successfully!',
-                'data'    => $items,
-            ]);
-        }else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Something Wrong!',
+        foreach ($details as $detail) {
+            $detail->update([
+            'lunas'=>'Y'
             ]);
         }
-       
 
+        $invoice->update([
+            'lunas' => 'Y',
+            'lunas_at'=> Carbon::now(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'updated successfully!',
+            'data'    => $item,
+        ]);
         
     }
 
@@ -1369,48 +971,47 @@ class InvoiceExportController extends Controller
         $id = $request->inv_id;
 
         $invoice = InvoiceExport::where('id', $id)->first();
-        $cont = $invoice->container_key;
-        $contArray = json_decode($invoice->container_key);
-        $container_key_string = $contArray[0];
-        $container_keys = explode(",", $container_key_string);
-        $items = Item::whereIn('container_key', $container_keys)->get();
-        $service = $invoice->os_id;
-        if ($service == 6 || $service == 7 || $service == 8 || $service == 8) {
-            $os = "EXPORT";
-        }else {
-            $os = "STUFFING";
-        }
-
-
-        if ($invoice) {
-            foreach ($items as $item) {
-                $job = JobExport::where('container_key', $item->container_key)->first();
-                $item->update([
-                    'invoice_no'=>$invoice->inv_no,
-                    'job_no' => $job->job_no,
-                    'order_service' => $os,
-                ]);
-            }
-
-            $invoice->update([
-                'lunas' => 'P',
-                'lunas_at'=> Carbon::now(),
+        $containerInvoice = Container::where('form_id', $invoice->form_id)->get();
+        $bigOS = OS::where('id', $invoice->os_id)->first();
+        foreach ($containerInvoice as $cont) {
+            $lastJobNo = JobExport::orderBy('id', 'desc')->value('job_no');
+            $jobNo = $this->getNextJob($lastJobNo);
+            $job = JobExport::create([
+                'inv_id'=>$invoice->id,
+                'job_no'=>$jobNo,
+                'os_id'=>$invoice->os_id,
+                'os_name'=>$invoice->os_name,
+                'cust_id'=>$invoice->cust_id,
+                'active_to'=>$invoice->expired_date,
+                'container_key'=>$cont->container_key,
+                'container_no'=>$cont->container_no,
+                'ves_id'=>$cont->ves_id,
             ]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'updated successfully!',
-                'data'    => $items,
-            ]);
-        }else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Something Wrong!',
+            $item = Item::where('container_key', $cont->container_key)->first();
+            $item->update([
+                'invoice_no'=>$invoice->inv_no,
+                'job_no' => $job->job_no,
+                'order_service' => $bigOS->order,
             ]);
         }
-       
 
-        
+        $details = Detail::where('inv_id', $id)->get();
+        foreach ($details as $detail) {
+            $detail->update([
+            'lunas'=>'P'
+            ]);
+        }
+
+        $invoice->update([
+            'lunas' => 'P',
+            'lunas_at'=> Carbon::now(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'updated successfully!',
+            'data'    => $item,
+        ]);
     }
 
 
@@ -1421,73 +1022,17 @@ class InvoiceExportController extends Controller
         $data['title'] = "Invoice";
 
         $data['invoice'] = InvoiceExport::where('id', $id)->first();
-
-        $cont = $data['invoice']->container_key;
-        $contArray = json_decode($data['invoice']->container_key);
-        $container_key_string = $contArray[0];
-        $container_keys = explode(",", $container_key_string);
-        $items = Item::whereIn('container_key', $container_keys)->get();
-        $data['contInvoce'] = Item::whereIn('container_key', $container_keys)->orderBy('ctr_size', 'asc')->get();
-      
-        $groupedContainers = [];
-
-        foreach ($items as $item) {
-            $containerKey = $item->container_key;
-            $containerSize = $item->ctr_size;
-        
-            
-            if (isset($groupedContainers[$containerSize])) {
-                $groupedContainers[$containerSize][] = $containerKey;
-            } else { 
-                $groupedContainers[$containerSize] = [$containerKey];
-            }
+        $data['contInvoice'] = Container::where('form_id', $data['invoice']->form_id)->orderBy('ctr_size', 'asc')->get();
+        $invDetail = Detail::where('inv_id', $id)->whereNot('count_by', '=', 'O')->orderBy('count_by', 'asc')->orderBy('kode', 'asc')->get();
+        $data['invGroup'] = $invDetail->groupBy('ukuran');
+        $data['admin'] = 0;
+        $adminDSK = Detail::where('inv_id', $id)->where('count_by', '=', 'O')->first();
+        if ($adminDSK) {
+            $data['admin'] = $adminDSK->total;
         }
-
-        $jumlahContainerPerUkuran = [];
-
-        // Hitung jumlah kontainer per ukuran
-        foreach ($groupedContainers as $ukuran => $containers) {
-            // Jumlah kontainer untuk ukuran saat ini adalah panjang array kontainer
-            $jumlahContainerPerUkuran[$ukuran] = count($containers);
-        }
-
-        $tarif = [];
-        $loloFull = [];
-        $ptMasuk = [];
-        $ptKeluar = [];
-        $pmassa1 = [];
-        $loloEmpty = [];
-        $cargo_dooring = [];
-        $sewa_crane = [];
-        $jpbTruck = [];
-        $stuffing = [];
-        foreach ($groupedContainers as $ukuran => $containers) {
-            // Jumlah kontainer untuk ukuran saat ini adalah panjang array kontainer
-            $tarif[$ukuran] = MT::where('os_id', $data['invoice']->os_id)->where('ctr_size', $ukuran)->first();
-            if (empty($tarif[$ukuran])) {
-                return back()->with('error', 'Silahkan Membuat Master Tarif Terlebih Dahulu');
-            }
-            // DSK
-            $loloFull[$ukuran]= $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->lolo_full;
-            $ptKeluar[$ukuran]= $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->pass_truck_keluar;
-            $pmassa1[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->m1;
-            $cargo_dooring[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->cargo_dooring;
-            $sewa_crane[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->sewa_crane;
-
-
-            // DS  
-            $loloEmpty[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->lolo_empty;
-            $ptMasuk[$ukuran]= $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->pass_truck_masuk;
-            $stuffing[$ukuran]= $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->paket_stuffing;
-            $jpbTruck[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->jpb_extruck;
-   
-            
-        }
-        
         $data['terbilang'] = $this->terbilang($data['invoice']->grand_total);
 
-
-        return view('billingSystem.export.invoice.dsk', compact('groupedContainers', 'jumlahContainerPerUkuran', 'tarif'), $data);
+        return view('billingSystem.export.invoice.dsk', $data);
     }
     public function InvoiceExportOS($id)
     {
@@ -1496,70 +1041,18 @@ class InvoiceExportController extends Controller
 
         $data['invoice'] = InvoiceExport::where('id', $id)->first();
 
-        $cont = $data['invoice']->container_key;
-        $contArray = json_decode($data['invoice']->container_key);
-        $container_key_string = $contArray[0];
-        $container_keys = explode(",", $container_key_string);
-        $items = Item::whereIn('container_key', $container_keys)->get();
-        $data['contInvoce'] = Item::whereIn('container_key', $container_keys)->orderBy('ctr_size', 'asc')->get();
-      
-        $groupedContainers = [];
+        $data['contInvoice'] = Container::where('form_id', $data['invoice']->form_id)->orderBy('ctr_size', 'asc')->get();
+        $invDetail = Detail::where('inv_id', $id)->whereNot('count_by', '=', 'O')->orderBy('count_by', 'asc')->orderBy('kode', 'asc')->get();
+        $data['invGroup'] = $invDetail->groupBy('ukuran');
 
-        foreach ($items as $item) {
-            $containerKey = $item->container_key;
-            $containerSize = $item->ctr_size;
-        
-            
-            if (isset($groupedContainers[$containerSize])) {
-                $groupedContainers[$containerSize][] = $containerKey;
-            } else { 
-                $groupedContainers[$containerSize] = [$containerKey];
-            }
+        $data['admin'] = 0;
+        $adminDS = Detail::where('inv_id', $id)->where('count_by', '=', 'O')->first();
+        if ($adminDS) {
+            $data['admin'] = $adminDS->total;
         }
-
-        $jumlahContainerPerUkuran = [];
-
-        // Hitung jumlah kontainer per ukuran
-        foreach ($groupedContainers as $ukuran => $containers) {
-            // Jumlah kontainer untuk ukuran saat ini adalah panjang array kontainer
-            $jumlahContainerPerUkuran[$ukuran] = count($containers);
-        }
-
-        $tarif = [];
-        $loloFull = [];
-        $ptMasuk = [];
-        $ptKeluar = [];
-        $pmassa1 = [];
-        $loloEmpty = [];
-        $cargo_dooring = [];
-        $sewa_crane = [];
-        $jpbTruck = [];
-        $stuffing = [];
-        foreach ($groupedContainers as $ukuran => $containers) {
-            // Jumlah kontainer untuk ukuran saat ini adalah panjang array kontainer
-            $tarif[$ukuran] = MT::where('os_id', $data['invoice']->os_id)->where('ctr_size', $ukuran)->first();
-            if (empty($tarif[$ukuran])) {
-                return back()->with('error', 'Silahkan Membuat Master Tarif Terlebih Dahulu');
-            }
-            // DSK
-            $loloFull[$ukuran]= $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->lolo_full;
-            $ptKeluar[$ukuran]= $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->pass_truck_keluar;
-            $pmassa1[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->m1;
-            $stuffing[$ukuran]= $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->paket_stuffing;
-            $jpbTruck[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->jpb_extruck;
-
-            // DS  
-            $loloEmpty[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->lolo_empty;
-            $ptMasuk[$ukuran]= $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->pass_truck_masuk;
-            $stuffing[$ukuran]= $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->paket_stuffing;
-            $jpbTruck[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->jpb_extruck;
-   
-            
-        }
-
         $data['terbilang'] = $this->terbilang($data['invoice']->grand_total);
 
-        return view('billingSystem.export.invoice.ds',compact('groupedContainers', 'jumlahContainerPerUkuran', 'tarif'), $data);
+        return view('billingSystem.export.invoice.ds', $data);
     }
 
 
@@ -1570,7 +1063,19 @@ class InvoiceExportController extends Controller
         $data['inv'] = InvoiceExport::where('id', $id)->first();
         $data['job'] = JobExport::where('inv_id', $id)->get();
         $singleJob =  JobExport::where('inv_id', $id)->first();
-        $data['kapal'] = VVoyage::where('ves_id', $singleJob->ves_id)->first();
+        $kapal = VVoyage::where('ves_id', $singleJob->ves_id)->first();
+       
+        if ($singleJob->ves_id == "PELINDO") {
+            $data['kapal'] = (object)[
+                'ves_name' => 'PELINDO',
+                'voy_out' => 'PELINDO',
+                'clossing_date' => 'PELINDO',
+                'etd_date' => 'PELINDO',
+            ];
+        }else {
+            $data['kapal'] = $kapal;
+        }
+        // dd($singleJob->ves_id, $data['kapal'],  $data['inv']->id);
         $data['cont'] = Item::get();
         foreach ($data['job'] as $jb) {
             foreach ($data['cont'] as $ct) {
@@ -1619,7 +1124,7 @@ class InvoiceExportController extends Controller
       $os = $request->os_id;
       $startDate = $request->start;
       $endDate = $request->end;
-      $invoice = InvoiceExport::where('os_id', $os)->whereDate('order_at', '>=', $startDate)->whereDate('order_at', '<=', $endDate)->orderBy('order_at', 'asc')->get();
+      $invoice = Detail::where('os_id', $os)->whereDate('order_date', '>=', $startDate)->whereDate('order_date', '<=', $endDate)->orderBy('order_date', 'asc')->get();
         $fileName = 'ReportInvoiceExport-'.$os.'-'. $startDate . $endDate .'.xlsx';
       return Excel::download(new ReportExport($invoice), $fileName);
     }

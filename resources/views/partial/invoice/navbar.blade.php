@@ -78,7 +78,7 @@
               <a href="{{ route('index-extend')}}" class="submenu-link">Delivery Form Extend</a>
             </li>
             <li class="submenu-item">
-              <a href="{{ route('mtImport')}}" class="submenu-link">Master Tarif</a>
+              <a href="{{ route('invoice-master-tarifImport')}}" class="submenu-link">Master Tarif</a>
             </li>
           </ul>
         </div>
@@ -99,7 +99,7 @@
               <a href="{{ route('deliveryMenuExport')}}" class="submenu-link">Receiving Form</a>
             </li>
             <li class="submenu-item">
-              <a href="{{ route('mtExport')}}" class="submenu-link">Master Tarif</a>
+              <a href="{{ route('invoice-master-tarifExport')}}" class="submenu-link">Master Tarif</a>
             </li>
             <!-- <li class="submenu-item">
               <a href="" class="submenu-link">Stuffing Dalam</a>
@@ -286,12 +286,12 @@
             </li>
 
 
-
+<!-- 
             <li class="submenu-item  ">
               <a href="layout-vertical-navbar.html" class='submenu-link'>Coparn Online Check</a>
 
 
-            </li>
+            </li> -->
 
 
 
@@ -303,10 +303,17 @@
 
 
 
-            <li class="submenu-item active ">
+            <!-- <li class="submenu-item active ">
               <a href="layout-horizontal.html" class='submenu-link'>Checking Part Of</a>
 
 
+            </li> -->
+
+            <li class="submenu-item active ">
+              <a href="{{route('invoice-master-item')}}" class='submenu-link'>Master Item</a>
+            </li>
+            <li class="submenu-item active ">
+              <a href="{{route('invoice-master-os')}}" class='submenu-link'>Order Service</a>
             </li>
 
           </ul>

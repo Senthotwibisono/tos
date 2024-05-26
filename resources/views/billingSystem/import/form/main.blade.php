@@ -38,13 +38,33 @@
                     <th>Order Service</th>
                     <th>Expired Date</th>
                     <th>Bill Of Loading Number</th>
-                    <th>Created At</th>
-                    <th>Status</th>
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  
+                  @foreach($formInvoiceImport as $form)
+                  <tr>
+                    <td>{{$loop->iteration}}</td>
+                    <td>{{$form->customer->name}}</td>
+                    <td>{{$form->doOnline->do_no}}</td>
+                    <td>{{$form->service->name}}</td>
+                    <td>{{$form->expired_date}}</td>
+                    <td>{{$form->doOnline->bl_no}}</td>
+                    <td>
+                      <div class="row">
+                        <div class="col-4">
+                          <a href="/billing/import/delivery-editForm/{{$form->id}}" class="btn btn-outline-warning">Edit</a>
+                         </div>
+                         <div class="col-4">
+                          <form action="" method="post">
+                             @csrf
+                             <button type="button" class="btn btn-outline-danger">Delete</button>
+                           </form>
+                         </div>
+                      </div>
+                    </td>
+                  </tr>
+                  @endforeach
                 </tbody>
               </table>
             </div>

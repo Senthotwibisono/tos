@@ -57,7 +57,9 @@
 
 
   .grid {
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     background: #fff;
     color: #666666;
@@ -110,7 +112,7 @@
               <div class="col-xs-12 col-12">
                 <address>
                   <strong>Tipe Invoice:</strong><br>
-                            DSK
+                            OSK
                 </address>
               </div>
               <div class="col-xs-12 col-12">
@@ -130,10 +132,10 @@
               <div class="col-xs-12 col-12">
                 <address>
                   <strong>Metode Pembayaran</strong><br>
-                  Nama Bank :  <br>
-                  Pemilik Rekening :  <br>
-                  Kode Bank : <br>
-                  Nomor Rekening : <br>
+                  Nama Bank : <strong>Bank Central Asia (BCA)</strong> <br>
+                  Pemilik Rekening :  <strong>PT. INDO KONTAINER SARANA</strong><br>
+                  Kode Bank : <strong>014</strong><br>
+                  Nomor Rekening : <strong>0295197531</strong><br>
                   <!-- h.elaine@gmail.com<br> -->
                 </address>
               </div>
@@ -153,7 +155,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                 @foreach($contInvoce as $cont)
+                @foreach($contInvoice as $cont)
                     <tr>
                         <td>{{$cont->container_no}}</td>
                         <td>{{$cont->ctr_size}}</td>
@@ -168,7 +170,7 @@
           <div class="row mt-3">
               <div class="col-md-12">
                   <h3>PRANOTA SUMMARY</h3>
-                  @foreach($groupedContainers as $ukuran => $containers)
+                  @foreach ($invGroup as $ukuran => $details)
                   <span>Container <strong>{{$ukuran}}</strong></span>
               <table class="table table-striped">
                 <thead>
@@ -182,66 +184,15 @@
                   </tr>
                 </thead>
                 <tbody>
-                @if($invoice->os_id == '6' || $invoice->os_id == '7' || $invoice->os_id == '14')
+                @foreach ($details as $detail)
                 <tr>
-                                    <td>Pass Truck Masuk</td>n 
-                                    <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
-                                    <td>0</td>
-                                    <td>{{ number_format($invoice->{'pass_truck_masuk_'.$ukuran} / $jumlahContainerPerUkuran[$ukuran] , 0, ',', '.') }}</td>
-                                    <td>{{ number_format($invoice->{'pass_truck_masuk_'.$ukuran}, 0, ',', '.') }}</td>
-                                </tr>
-                                @if($invoice->os_id == '14')
-                                    <tr>
-                                        <td>Pass Truck Keluar</td>
-                                        <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
-                                        <td>0</td>
-                                        <td>{{ number_format($invoice->{'pass_truck_masuk_'.$ukuran} / $jumlahContainerPerUkuran[$ukuran], 0, ',', '.') }}</td>
-                                        <td>{{ number_format($invoice->{'pass_truck_masuk_'.$ukuran}, 0, ',', '.') }}</td>
-                                    </tr>
-                                @endif
-                                <tr>
-                                    <td>Lift On/Off Full</td>
-                                    <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
-                                    <td>0</td>
-                                    <td>{{ number_format($invoice->{'lolo_full_'.$ukuran} / $jumlahContainerPerUkuran[$ukuran], 0, ',', '.') }}</td>
-                                    <td>{{ number_format($invoice->{'lolo_full_'.$ukuran}, 0, ',', '.') }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Penumpukan Massa 1</td>
-                                    <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
-                                    <td>1 Hari</td>
-                                    <td>{{ number_format($invoice->{'m1_'.$ukuran} / $jumlahContainerPerUkuran[$ukuran], 0, ',', '.') }}</td>
-                                    <td>{{ number_format($invoice->{'m1_'.$ukuran}, 0, ',', '.') }}</td>
-                                </tr>
-                            @elseif($invoice->os_id == '9' || $invoice->os_id == '15' || $invoice->os_id == '11' || $invoice->os_id == '13')
-                                @if($invoice->os_id == '9' || $invoice->os_id == '15')
-                                    <tr>
-                                        <td>Pass Truck</td>
-                                        <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
-                                        <td>0</td>
-                                        <td>{{ number_format($invoice->{'pass_truck_masuk_'.$ukuran} / $jumlahContainerPerUkuran[$ukuran], 0, ',', '.') }}</td>
-                                        <td>{{ number_format($invoice->{'pass_truck_masuk_'.$ukuran}, 0, ',', '.') }}</td>
-                                    </tr>
-                                @endif
-                                @if($invoice->os_id == '11' || $invoice->os_id == '13')
-                                    <tr>
-                                        <td>Cargo Dooring</td>
-                                        <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
-                                        <td>0</td>
-                                        <td>{{ number_format($invoice->{'cargo_dooring_'.$ukuran} / $jumlahContainerPerUkuran[$ukuran], 0, ',', '.') }}</td>
-                                        <td>{{ number_format($invoice->{'cargo_dooring_'.$ukuran}, 0, ',', '.') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Sewa Crane</td>
-                                        <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
-                                        <td>0</td>
-                                        <td>{{ number_format($tarif[$ukuran]->sewa_crane / $jumlahContainerPerUkuran[$ukuran], 0, ',', '.') }}</td>
-                                        <td>{{ number_format($tarif[$ukuran]->sewa_crane, 0, ',', '.') }}</td>
-                                    </tr>
-                                @endif
-                            @endif
-               
-               
+                    <td class="text-right">{{ $detail->master_item_name }}</td>
+                    <td class="text-right">{{ $detail->jumlah }}</td>
+                    <td class="text-right">{{ $detail->jumlah_hari }}</td>
+                    <td class="text-right">{{ $detail->tarif }}</td>
+                    <td class="text-right">{{ $detail->total }}</td>
+                </tr>
+                @endforeach
                 </tbody>
             </table>
             @endforeach
@@ -250,17 +201,27 @@
           <div class="row p-3">
             <div class="col-xs-12 col-6">
               <p>Total Amount: </p>
+              <p>Admin :</p>
               <p>Tax (11%): </p>
               <p>Grand Total: </p>
             </div>
             <div class="col-xs-12 col-6" style="text-align: right;">
               <p><strong>Rp. {{number_format ($invoice->total), 0, ',', '.'}} ,00 ~</strong></p>
+              <p><strong>Rp. {{number_format ($admin), 0, ',', '.'}} ,00 ~</strong></p>
               <p><strong>Rp. {{number_format ($invoice->pajak), 0, ',', '.'}}, 00 ~</strong></p>
               <p><strong>Rp.  {{number_format ($invoice->grand_total), 0, ',', '.'}},00 ~</strong></p>
 
             </div>
             <div class="col-12">
               <p>Terbilang <strong>"{{$terbilang}} Rupiah"</strong></p>
+            </div>
+            <div class="col-12">
+              <h4>Note : </h4>
+              <p><strong>1. Pembayaran secara penuh sesuai nilai invoice. Biaya lainnya diluar tanggung jawab kami.</strong></p>
+              <p><strong>2. Complain Invoice Maksimal 3 (tiga) hari setelah invoice diterima.</strong></p>
+              <p><strong>3. Invoice dianggap lunas jika pembayaran masuk ke rekening yang telah diinfokan di invoice ini.</strong></p>
+              <p><strong>4. Due date dihitung dari ATD. </strong></p>
+              <p><strong>5. Tidak Menerima pembayaran dalam bentuk tunai.</strong></p>
             </div>
           </div>
         </div>

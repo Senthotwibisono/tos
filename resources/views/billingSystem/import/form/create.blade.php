@@ -9,7 +9,7 @@
 </div>
 <div class="page-content mb-5">
   <section class="row">
-    <form action="{{ route('beforeCreate')}}" method="GET" id="formSubmit" enctype="multipart/form-data">
+    <form action="{{ route('beforeCreate')}}" method="POST" id="formSubmit" enctype="multipart/form-data">
       @CSRF
       <div class="card">
         <div class="card-body">
@@ -51,7 +51,7 @@
             <div class="col-6">
               <div class="form-group">
                 <label>Order Service</label>
-                <select name="order_service" class="form-select" required id="orderService">
+                <select name="order_service" class="form-select js-example-basic-single" required id="orderService">
                   <option value="" default selected disabled>Pilih Salah Satu..</option>
                  @foreach($orderService as $os)
                  <option value="{{$os->id}}">{{$os->name}}</option>

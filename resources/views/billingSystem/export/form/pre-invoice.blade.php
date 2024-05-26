@@ -10,7 +10,7 @@
 <div class="page content mb-5">
   <form action="{{ route('invoiceExport')}}" method="POST" enctype="multipart/form-data">
     @CSRF
-    <input type="hidden" name="deliveryFormId" >
+    <input type="hidden" name="formId" value="{{$form->id}}">
     <div class="card">
       <div class="card-body">
         <div class="row">
@@ -50,7 +50,7 @@
           <div class="col-6">
             <div class="form-group">
               <label for="">Booking Number</label>
-              <input type="text" class="form-control" name="booking_no" readonly value="{{$booking}}">
+              <input type="text" class="form-control" name="booking_no" readonly value="{{$form->do_id}}">
             </div>
           </div>
           <div class="col-6">
@@ -58,10 +58,10 @@
               <label for="">Order Service</label>
               <input type="text" class="form-control" name="os_name"readonly value="{{$service->name}}">
               <input type="hidden" class="form-control" name="os_id"readonly value="{{$service->id}}">
-              <input type="hidden" class="form-control" name="ves_id"readonly value="{{$ves}}">
+      
 
 
-              <input type="hidden" name="container_key[]" value="{{$contInvoice}}">
+            
           
             </div>
           </div>
@@ -105,14 +105,12 @@
           </div>
         </div>
         <div class="row mt-3">
-            @if($service->id == '6' || $service->id == '7' ||  $service->id == '9' ||  $service->id == '11' || $service->id == '13' || $service->id == '14' || $service->id == '15' )
-             @include('billingSystem.export.form.preInvoice.dsk')
+              @if($dsk == 'Y')
+               @include('billingSystem.export.form.preInvoice.dsk')
               @endif
               
-              <!-- DS -->
-              @if($service->id == '6' || $service->id == '8' ||  $service->id == '9' || $service->id == '10' ||  $service->id == '11' || $service->id == '12' || $service->id == '13' || $service->id == '14' || $service->id == '15')
-              @include('billingSystem.export.form.preInvoice.ds')
-
+              @if($ds == 'Y')
+                @include('billingSystem.export.form.preInvoice.ds')
               @endif
               
            
@@ -122,11 +120,9 @@
         <div class="row mt-3">
           <div class="col-12 text-right">
             <button type="submit" class="btn btn-success"><i class="fa fa-check-circle"></i> Submit</button>
-            <button class="btn btn-primary text-white opacity-50" data-toggle="tooltip" data-placement="top" title="Still on Development!">
-              <a><i class="fa fa-pen"></i> Edit</a>
-            </button>
+            <a href="/billing/export/reciving-editForm/{{$form->id}}" class="btn btn-primary text-white"><i class="fa fa-pen"></i> Edit</a>
             <!-- <a type="button" class="btn btn-primary" style="opacity: 50%;"><i class="fa fa-pen "></i> Edit</a> -->
-            <a onclick="cancelAddCustomer();" type="button" class="btn btn-warning"><i class="fa fa-close"></i> Batal</a>
+            <a class="btn btn-danger Delete" data-id="{{$form->id}}"><i class="fa fa-close"></i> Batal</a>
           </div>
         </div>
 
@@ -136,4 +132,51 @@
   </form>
 </div>
 
+@endsection
+@section('custom_js')
+<script>
+$(document).ready(function() {
+    $('.Delete').on('click', function() {
+        var formId = $(this).data('id'); // Ambil ID dari data-id atribut
+
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Anda tidak akan bisa mengembalikan ini!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/billing/import/delivery-deleteForm/' + formId, // Ganti dengan endpoint penghapusan Anda
+                    type: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}' // Sertakan token CSRF untuk keamanan
+                    },
+                    success: function(response) {
+                        Swal.fire(
+                            'Dihapus!',
+                            'Data berhasil dihapus.',
+                            'success'
+                        ).then(() => {
+                            window.location.href = '/billing/export/delivey-system'; // Arahkan ke halaman beranda setelah penghapusan sukses
+                        });
+                    },
+                    error: function(xhr) {
+                        console.error(xhr.responseText);
+                        Swal.fire(
+                            'Gagal!',
+                            'Terjadi kesalahan saat menghapus data.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    });
+});
+</script>
 @endsection
