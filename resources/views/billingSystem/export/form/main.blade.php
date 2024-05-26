@@ -29,7 +29,7 @@
         <div class="card-body">
           <div class="row">
             <div class="col-12">
-              <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
+            <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
                 <thead>
                   <tr>
                     <th>#</th>
@@ -37,14 +37,32 @@
                     <th>Do Number</th>
                     <th>Order Service</th>
                     <th>Expired Date</th>
-                    <th>Bill Of Loading Number</th>
-                    <th>Created At</th>
-                    <th>Status</th>
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  
+                  @foreach($formInvoiceImport as $form)
+                  <tr>
+                    <td>{{$loop->iteration}}</td>
+                    <td>{{$form->customer->name}}</td>
+                    <td>{{$form->do_id}}</td>
+                    <td>{{$form->service->name}}</td>
+                    <td>{{$form->expired_date}}</td>
+                    <td>
+                      <div class="row">
+                        <div class="col-4">
+                          <a href="/billing/export/reciving-editForm/{{$form->id}}" class="btn btn-outline-warning">Edit</a>
+                         </div>
+                         <div class="col-4">
+                          <form action="" method="post">
+                             @csrf
+                             <button type="button" class="btn btn-outline-danger">Delete</button>
+                           </form>
+                         </div>
+                      </div>
+                    </td>
+                  </tr>
+                  @endforeach
                 </tbody>
               </table>
             </div>

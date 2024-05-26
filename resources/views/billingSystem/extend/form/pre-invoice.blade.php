@@ -129,7 +129,7 @@
                         <td>Massa 1</td>
                         <td>{{$ctr_20}}</td>
                         <td>{{$newM1}}</td>
-                        <td>{{$tarif20->m1}}</td>
+                        <td>0</td>
                         <td>{{$m1_20}} <input type="hidden" name="m1_20" value="{{$m1_20}}"> </td>
                        </tr>
                        @endif
@@ -138,7 +138,7 @@
                         <td>Massa 2</td>
                         <td>{{$ctr_20}}</td>
                         <td>{{$newM2}}</td>
-                        <td>{{$tarif20->m2}}</td>
+                        <td>54.000</td>
                         <td>{{$m2_20}} <input type="hidden" name="m2_20" value="{{$m2_20}}"> </td>
                        </tr>
                        @endif
@@ -147,7 +147,7 @@
                         <td>Massa 3</td>
                         <td>{{$ctr_20}}</td>
                         <td>{{$newM3}}</td>
-                        <td>{{$tarif20->m3}}</td>
+                        <td>81.000</td>
                         <td>{{$m3_20}} <input type="hidden" name="m3_20" value="{{$m3_20}}"></td>
                        </tr>
                        @endif

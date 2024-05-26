@@ -17,15 +17,32 @@ class ExportDetail extends Model
         'inv_no',
         'inv_type',
         'keterangan',
-        'detail',
         'ukuran',
         'jumlah',
         'satuan',
-        'harga',
         'expired_date',
         'order_date',
         'lunas',
         'cust_id',
-        'cust_name'
+        'cust_name',
+        'os_id',
+        'jumlah_hari',
+        'master_item_id',
+        'master_item_name',
+        'kode',
+        'tarif',
+        'total',
+        'form_id',
+        'count_by'
     ];
+
+    public function Form()
+    {
+        return $this->belongsTo(InvoiceForm::class, 'form_id', 'id');
+    }
+
+    public function service()
+    {
+        return $this->belongsTo(OrderService::class, 'os_id', 'id');
+    }
 }

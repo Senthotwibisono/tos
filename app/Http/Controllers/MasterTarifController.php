@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\OrderService as OS;
+use App\Models\OSDetail;
 use App\Models\MasterTarif as MT;
 use App\Models\Customer;
 use App\Models\DOonline;
@@ -30,16 +31,12 @@ class MasterTarifController extends Controller
 
     public function orderService(Request $request)
     {
-        $status = $request->ie;
-        if ($status == 'Import') {
-            $ie = 'I';
-        }else {
-            $ie = 'E';
-        }
+       
 
         $os = OS::create([
             'name'=>$request->name,
-            'ie'=>$ie,
+            'ie'=>$request->ie,
+            'order'=>$request->order,
         ]);
 
         return redirect()->back()->with('success', 'Service ordered successfully.');

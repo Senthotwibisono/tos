@@ -57,14 +57,16 @@
 
 
   .grid {
-    position: relative;
-    width: 100%;
-    background: #fff;
-    color: #666666;
-    border-radius: 2px;
-    margin-bottom: 25px;
-    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
-  }
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          background: #fff;
+          color: #666666;
+          border-radius: 2px;
+          margin-bottom: 25px;
+          box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
+        }
 </style>
 
 <div class="container">
@@ -130,10 +132,10 @@
               <div class="col-xs-12 col-12">
                 <address>
                   <strong>Metode Pembayaran</strong><br>
-                  Nama Bank : Bank Central Asia (BCA) <br>
-                  Pemilik Rekening :  PT. INDO KONTAINER SARANA<br>
-                  Kode Bank : 014<br>
-                  Nomor Rekening : 0295197531<br>
+                  Nama Bank : <strong>Bank Central Asia (BCA)</strong> <br>
+                  Pemilik Rekening :  <strong>PT. INDO KONTAINER SARANA</strong><br>
+                  Kode Bank : <strong>014</strong><br>
+                  Nomor Rekening : <strong>0295197531</strong><br>
                   <!-- h.elaine@gmail.com<br> -->
                 </address>
               </div>
@@ -360,6 +362,14 @@
             </div>
             <div class="col-12">
               <p>Terbilang <strong>"{{$terbilang}} Rupiah"</strong></p>
+            </div>
+            <div class="col-12">
+              <h4>Note : </h4>
+              <p><strong>1. Pembayaran secara penuh sesuai nilai invoice. Biaya lainnya diluar tanggung jawab kami.</strong></p>
+              <p><strong>2. Complain Invoice Maksimal 3 (tiga) hari setelah invoice diterima.</strong></p>
+              <p><strong>3. Invoice dianggap lunas jika pembayaran masuk ke rekening yang telah diinfokan di invoice ini.</strong></p>
+              <p><strong>4. Due date dihitung dari ATD. </strong></p>
+              <p><strong>5. Tidak Menerima pembayaran dalam bentuk tunai.</strong></p>
             </div>
           </div>
         </div>

@@ -9,7 +9,7 @@
 </div>
 <div class="page-content mb-5">
   <section class="row">
-    <form action="{{ route('beforeCreateExport')}}" method="GET" id="formSubmit" enctype="multipart/form-data">
+    <form action="{{ route('beforeCreateExport')}}" method="post" id="formSubmit" enctype="multipart/form-data">
       @CSRF
       <div class="card">
         <div class="card-body">
@@ -57,10 +57,11 @@
                  <option value="{{$os->id}}">{{$os->name}}</option>
                  @endforeach
                 </select>
+                <input type="hidden" id="order">
               </div>
             </div>
           </div>
-          <di id="do_fill">
+          <div id="do_fill">
           <div class="row mt-5" >
             <div class="col-12">
               <h5>Information Shipping Agent</h5>
@@ -92,7 +93,7 @@
             
             <div class="col-12 col-md-4">
               <div class="form-group">
-                <label for="">Estimate Departur of Vessel</label>
+                <label for="">Estimate Departure of Vessel</label>
                 <input name="do_exp_date" id="do_exp_date"  readonly type="date-time" class="form-control flatpickr-range mb-3" >
               </div>
             </div>
@@ -124,7 +125,7 @@
                 </div>
               </div>
            
-              <div class="col-12 col-md-4" id="ro_no">
+              <div class="col-12 col-md-4">
                 <div class="form-group">
                   <label for="">RO Number</label>
                   <select  name="booking_no" id="RoNo" class="js-example-basic-single form-control" style="height: 150%;">
@@ -145,6 +146,7 @@
                     @foreach($kapalRO as $kpl)
                     <option value="{{$kpl->ves_id}}">{{$kpl->ves_name}} -- {{$kpl->voy_out}}</option>
                     @endforeach
+                    <option value="PELINDO">Relokasi Pelindo</option>
                   </select>
               </div>
             </div>
@@ -247,6 +249,34 @@ $(function(){
                         $('#npwp').val(response.data.npwp);
                         $('#address').val(response.data.alamat);
                    
+                    },
+                    error: function(data){
+                        console.log('error:',data)
+                    },
+                })
+            })
+
+            $('#orderService'). on('change', function(){
+                let id = $('#orderService').val();
+
+                $.ajax({
+                    type: 'get',
+                    url: "{{ route('getOrder')}}",
+                    data : {id : id},
+                    cache: false,
+                    
+                    success: function(response){
+                        $('#order').val(response.data.order);
+                        $('#containerSelector').empty();
+                        // $('#booking_no').empty();
+                        // $('#RoNo').empty();
+                          if (response.data.order == "SPPS") {
+                            $('#do_fill').hide();
+                            $('#roDok').show();
+                          } else {
+                            $('#do_fill').show();
+                            $('#roDok').hide();
+                          }
                     },
                     error: function(data){
                         console.log('error:',data)
@@ -428,11 +458,11 @@ $(function(){
 
 <script>
   document.getElementById('orderService').addEventListener('change', function() {
-    var selectedValue = this.value;
+    var selectedValue = $('#order').val();
     var do_fill = document.getElementById('do_fill');
     var roDok = document.getElementById('roDok');
     
-    if (selectedValue == 9 || selectedValue == 10 || selectedValue == 12 || selectedValue == 13 || selectedValue == 15) {
+    if (selectedValue == "SPPS") {
       do_fill.style.display = 'none';
       roDok.style.display = 'block';
       $('.js-example-basic-single').select2();

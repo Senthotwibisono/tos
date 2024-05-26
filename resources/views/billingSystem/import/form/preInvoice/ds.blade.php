@@ -1,10 +1,9 @@
 <div class="col-12">
                 <h4 class="card-title">
-                  Invoice DS 
+                  Invoice DS
                 </h4>
               </div>
-              @foreach($groupedContainers as $ukuran => $containers)
-              <input type="hidden" name="ctr_{{$ukuran}}" value="{{$jumlahContainerPerUkuran[$ukuran]}}">
+              @foreach($ctrGroup as $ukuran => $containers)
               <div class="col-12">
                 <h4 class="card-title">
                   Pranota Summary 
@@ -25,60 +24,17 @@
                         </tr>
                       </thead>
                       <tbody>
-                        @if($service->id == 1 || $service->id == 16 || $service->id == 5)
-                        <tr>
-                            <td>Pass Truck Masuk</td>
-                            <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
-                            <td>0</td>
-                            <td>{{ number_format($tarif[$ukuran]->pass_truck_masuk, 0, ',', '.') }}</td>
-                            <td>{{ number_format($jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->pass_truck_masuk, 0, ',', '.') }} <input type="hidden" name="pass_truck_masuk_{{$ukuran}}" value="{{$jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->pass_truck_masuk}}"></td>
-                        </tr>
-                        <tr>
-                            <td>Lift On/Off Empty</td>
-                            <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
-                            <td>0</td>
-                            <td>{{ number_format($tarif[$ukuran]->lolo_empty, 0, ',', '.') }}</td>
-                            <td>{{ number_format($jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->lolo_empty, 0, ',', '.') }} <input type="hidden" name="lolo_empty_{{$ukuran}}" value="{{$jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->lolo_empty}}"></td>
-                        </tr>
-                        @elseif($service->id == 3 || $service->id == 4)
-                        <tr>
-                            <td>Paket Stripping</td>
-                            <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
-                            <td>0</td>
-                            <td>{{ number_format($tarif[$ukuran]->paket_stripping, 0, ',', '.') }}</td>
-                            <td>{{ number_format($jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->paket_stripping, 0, ',', '.') }} <input type="hidden" name="paket_stripping_{{$ukuran}}" value="{{$jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->paket_stripping}}"></td>
-                        </tr>
-                            @if($service->id == 3)
+                      @foreach($resultsDS as $result)
+                        @if($result['ctr_size'] == $ukuran && $result['count_by'] != 'O')
                             <tr>
-                                <td>Pemindahan Petikemas</td>
-                                <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
-                                <td>0</td>
-                                <td>{{ number_format($tarif[$ukuran]->pemindahan_petikemas, 0, ',', '.') }}</td>
-                                <td>{{ number_format($jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->pemindahan_petikemas, 0, ',', '.') }}<input type="hidden" name="pemindahan_petikemas_{{$ukuran}}" value="{{$jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->pemindahan_petikemas}}"></td>
+                                <td>{{ $result['keterangan'] }}</td>
+                                <td>{{ $result['containerCount'] }}</td>
+                                <td>{{ $result['jumlahHari'] }}</td>
+                                <td>{{ $result['tarif'] }}</td>
+                                <td>{{ $result['harga'] }}</td>
                             </tr>
-                            @endif
-                        <tr>
-                            <td>Penumpukan Massa 1</td>
-                            <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
-                            <td>{{$massa1}} Hari</td>
-                            <td>{{ number_format($tarif[$ukuran]->m1, 0, ',', '.') }}</td>
-                            <td>{{ number_format($jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->m1 *$massa1, 0, ',', '.') }} <input type="hidden" name="m1_{{$ukuran}}" value="{{$jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->m1 *$massa1}}"></td>
-                        </tr>
-                        <tr>
-                            <td>Penumpukan Massa 2</td>
-                            <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
-                            <td>{{$massa2}} Hari</td>
-                            <td>{{ number_format($tarif[$ukuran]->m2, 0, ',', '.') }}</td>
-                            <td>{{ number_format($jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->m2 *$massa2, 0, ',', '.') }} <input type="hidden" name="m2_{{$ukuran}}" value="{{$jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->m2 *$massa2}}"></td>
-                        </tr>
-                        <tr>
-                            <td>Penumpukan Massa 3</td>
-                            <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
-                            <td>{{$massa3}} Hari</td>
-                            <td>{{ number_format($tarif[$ukuran]->m3, 0, ',', '.') }}</td>
-                            <td>{{ number_format($jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->m3 *$massa3, 0, ',', '.') }} <input type="hidden" name="m3_{{$ukuran}}" value="{{$jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->m3 *$massa3}}"></td>
-                        </tr>
                         @endif
+                      @endforeach
                       </tbody>
                     </table>
                   </div>
@@ -100,13 +56,13 @@
                     </div>
 
                       <div class="col-6 mt-4" style="text-align:right;">
-                        <h4 class="text-white"> Rp. {{number_format($AmountDS, 0, ',', '.')}}</h4>
-                        <input type="hidden" name="total" value="{{ $AmountDS + $adminDS }}">
+                        <h4 class="text-white"> Rp. {{number_format($totalDS, 0, ',', '.')}}</h4>
                         <h4 class="text-white"> Rp. {{number_format($adminDS, 0, ',', '.')}}</h4>
-                        <input type="hidden" name="pajak" value="{{$ppnDS}}">
-                        <h4 class="text-white">Rp. {{number_format($ppnDS, 0, ',', '.')}}</h4>
-                        <input type="hidden" name="grand_total" value="{{$grandDS}}">
-                        <h4 class="color:#ff5265;"> Rp. {{number_format($grandDS, 0, ',', '.')}}</h4>
+                        <h4 class="text-white">Rp. {{number_format($pajakDS, 0, ',', '.')}}</h4>
+                        <h4 class="color:#ff5265;">Rp. {{number_format($grandTotalDS, 0, ',', '.')}} </h4>
+                        <input type="hidden" name="totalDS" value="{{$totalDS}}">
+                        <input type="hidden" name="pajakDS" value="{{$pajakDS}}">
+                        <input type="hidden" name="grandTotalDS" value="{{$grandTotalDS}}">
                        
                       </div>
                     </div>

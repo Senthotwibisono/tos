@@ -15,5 +15,8 @@ class OrderService extends Model
     protected $fillable = [
         'name',
         'ie',
+        'order',
+        // 'dsk/osk',
+        // 'osk/os',
     ];
 }

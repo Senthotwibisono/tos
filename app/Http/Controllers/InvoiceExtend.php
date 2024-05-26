@@ -6,15 +6,20 @@ use Illuminate\Http\Request;
 use Auth;
 use Carbon\Carbon;
 use App\Models\OrderService as OS;
+use App\Models\OSDetail;
 use App\Models\MasterTarif as MT;
+use App\Models\MTDetail;
 use App\Models\Customer;
 use App\Models\DOonline;
 use App\Models\Item;
 use App\Models\Extend;
 use App\Models\KodeDok;
 use App\Models\InvoiceImport;
+use App\Models\ImportDetail;
 use App\Models\JobImport;
 use App\Models\VVoyage;
+use App\Models\InvoiceForm as Form;
+use App\Models\ContainerInvoice as Container;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\JobExtend;
 use App\Models\ExtendDetail as Detail;
@@ -43,16 +48,9 @@ class InvoiceExtend extends Controller
         $user = Auth::user();
         $data["user"] = $user->id;
 
-        $data['oldInv'] = InvoiceImport::where(function($query) {
-            $query->whereIn('os_id', [1, 2])
-                  ->where('inv_type', 'DSK');
-        })
-        ->orWhere(function($query) {
-            $query->whereIn('os_id', [3, 4])
-                  ->where('inv_type', 'DS');
-        })
-        ->where('lunas', '=', 'Y')
-        ->get();
+        $tumpuk = ImportDetail::where('count_by', 'T')->get();
+        $invIds = $tumpuk->pluck('inv_id');
+        $data['oldInv'] = InvoiceImport::whereIn('id', $invIds)->where('lunas', '=', 'Y')->get();
         $data['customer'] = Customer::get();
         $data['now'] = Carbon::now();
         return view('billingSystem.extend.form.createForm', $data);
@@ -64,12 +62,8 @@ class InvoiceExtend extends Controller
         $inv = InvoiceImport::where('id', $id)->first();
 
         if ($inv) {
-            $invCont = json_decode($inv->container_key);
            
-            $container_key_string = $invCont[0];
-        $container_keys = explode(",", $container_key_string);
-    
-                $cont = Item::whereIn('container_key', $container_keys)->get();     
+                $cont = Container::where('form_id', $inv->form_id)->get();
                 // var_dump($invCont, $cont);
                 // die;       
            
@@ -94,6 +88,17 @@ class InvoiceExtend extends Controller
         $data['title'] = 'Pre Invoice Exrtend';
         $data['customer'] = Customer::where('id', $request->customer)->first();
         $oldInv = InvoiceImport::where('id', $request->inv_id)->first();
+        $oldService = OS::where('id', $oldInv->os_id)->first();
+        // dd($oldService);
+        if ($oldService->order == 'SP2') {
+            $newOS = OS::where('ie', '=', 'X')->where('name', '=', 'Perpanjangan Penumpukan SP2')->first();
+        }else {
+            $newOS = OS::where('ie', '=', 'X')->where('name', '=', 'Perpanjangan Penumpukan SPPS')->first();
+        }
+        $tarif20 = MT::where('os_id', $newOS->id)->where('ctr_size', '=', '20')->first();
+        $tarifCont20 = MTDetail::where('master_tarif_id', $tarif20->id)->first();
+        
+        // dd($tarif);
         $oldExpired = $oldInv->expired_date;
         $expired = $request->exp_date;
 
@@ -165,11 +170,12 @@ class InvoiceExtend extends Controller
             if ($data['newM1'] == '0') {
                 $m1_20 = '0';
             }else {
-                $m1_20 = $data['tarif20']->m1 * $ctr_20 * $data['newM1'];
+                $m1_20 = 0 * $ctr_20 * $data['newM1'];
             }
 
-            $m2_20 = $data['tarif20']->m2 * $ctr_20  * $data['newM2'];
-            $m3_20 = $data['tarif20']->m3 * $ctr_20  * $data['newM3'];
+            $m2_20 = 54000 * $ctr_20  * $data['newM2'];
+            // dd($ctr_20, $data['newM2']);
+            $m3_20 = 81000 * $ctr_20  * $data['newM3'];
         }else {
             $m1_20 = '0';
             $m2_20 = '0';
@@ -183,11 +189,11 @@ class InvoiceExtend extends Controller
         if ($data['newM1'] == '0') {
             $m1_21 = '0';
         }else {
-            $m1_21 = $data['tarif21']->m1 * $ctr_21 * $data['newM1'];
+            $m1_21 = 0 * $ctr_21 * $data['newM1'];
         }
 
-        $m2_21 = $data['tarif21']->m2 * $ctr_21 * $data['newM2'];
-        $m3_21 = $data['tarif21']->m3 * $ctr_21 * $data['newM3'];
+        $m2_21 = 124000 * $ctr_21 * $data['newM2'];
+        $m3_21 = 186000 * $ctr_21 * $data['newM3'];
         }else {
             $m1_21 = '0';
             $m2_21 = '0';
@@ -200,11 +206,11 @@ class InvoiceExtend extends Controller
             if ($data['newM1'] == '0') {
                 $m1_40 = '0';
             }else {
-                $m1_40 = $data['tarif40']->m1 * $ctr_40 * $data['newM1']; 
+                $m1_40 = 0 * $ctr_40 * $data['newM1']; 
             }
     
-            $m2_40 = $data['tarif40']->m2 * $ctr_40 * $data['newM2'];
-            $m3_40 = $data['tarif40']->m3 * $ctr_40 * $data['newM3'];
+            $m2_40 = 108000 * $ctr_40 * $data['newM2'];
+            $m3_40 = 162000 * $ctr_40 * $data['newM3'];
         }else {
             $m1_40 = '0';
             $m2_40 = '0';
@@ -218,11 +224,11 @@ class InvoiceExtend extends Controller
              if ($data['newM1'] == '0') {
                 $m1_42 = '0';
             }else {
-                $m1_42 = $data['tarif42']->m1 * $ctr_42 * $data['newM1'];
+                $m1_42 = 0 * $ctr_42 * $data['newM1'];
             }
         
-            $m2_42 = $data['tarif42']->m2 * $ctr_42 * $data['newM2'];
-            $m3_42 = $data['tarif42']->m3 * $ctr_42 * $data['newM3'];
+            $m2_42 = 248000 * $ctr_42 * $data['newM2'];
+            $m3_42 = 248000 * $ctr_42 * $data['newM3'];
         }else {
             $m1_42 = '0';
             $m2_42 = '0';
@@ -230,7 +236,8 @@ class InvoiceExtend extends Controller
         }
            
         $tarif = MT::where('os_id', $oldInv->os_id)->first();
-        $admin = $tarif->admin;
+        $tarifAdmin = MTDetail::where('master_tarif_id', $tarif->id)->where('count_by', '=', 'O')->first();
+        $admin = $tarifAdmin->tarif;
         $pajak = $tarif->pajak;
         $total = $m1_20 + $m2_20 + $m3_20 + $m1_21 + $m2_21 + $m3_21 + $m1_40 + $m2_40 + $m3_40 + $m1_42 + $m2_42 + $m3_42;
         

@@ -26,9 +26,9 @@
                 <a href="{{ route('uploadView')}}" type="button" class="btn btn-success">
                   Upload Coparn Document With File
                 </a>
-                <button href="#" type="button" class="btn btn-primary" disabled>
+                <a href="{{ route('uploadSingle')}}" type="button" class="btn btn-primary">
                   Create Single Coparn Document
-                </button>
+                </a>
               </div>
             </div>
           </div>

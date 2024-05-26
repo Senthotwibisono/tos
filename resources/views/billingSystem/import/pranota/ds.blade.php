@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=0.5">
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <title> {{$title}} | Icon Sarana</title>
@@ -13,59 +13,62 @@
 </head>
 
 
-<style>
-  body {
-    margin-top: 20px;
-    background: #eee;
-  }
+   <style>
+        body {
+            margin-top: 0px;
+            margin-left: 0px;
+            margin-right: 0px;
+            background: #eee;
+        }
 
-  .invoice {
-    padding: 30px;
-  }
+        .invoice {
+            padding: 30px;
+        }
 
-  .invoice h2 {
-    margin-top: 0px;
-    line-height: 0.8em;
-  }
+        .invoice h2 {
+            margin-top: 0px;
+            line-height: 0.8em;
+        }
 
-  .invoice .small {
-    font-weight: 300;
-  }
+        .invoice .small {
+            font-weight: 300;
+        }
 
-  .invoice hr {
-    margin-top: 10px;
-    border-color: #ddd;
-  }
+        .invoice hr {
+            margin-top: 10px;
+            border-color: #ddd;
+        }
 
-  .invoice .table tr.line {
-    border-bottom: 1px solid #ccc;
-  }
+        .invoice .table tr.line {
+            border-bottom: 1px solid #ccc;
+        }
 
-  .invoice .table td {
-    border: none;
-  }
+        .invoice .table td {
+            border: none;
+        }
 
-  .invoice .identity {
-    margin-top: 10px;
-    font-size: 1.1em;
-    font-weight: 300;
-  }
+        .invoice .identity {
+            margin-top: 10px;
+            font-size: 1.1em;
+            font-weight: 300;
+        }
 
-  .invoice .identity strong {
-    font-weight: 600;
-  }
+        .invoice .identity strong {
+            font-weight: 100;
+        }
 
-
-  .grid {
-    position: relative;
-    width: 100%;
-    background: #fff;
-    color: #666666;
-    border-radius: 2px;
-    margin-bottom: 25px;
-    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
-  }
-</style>
+        .grid {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          background: #fff;
+          color: #666666;
+          border-radius: 2px;
+          margin-bottom: 25px;
+          box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 
 <div class="container">
   <div class="row">
@@ -120,16 +123,16 @@
               <div class="col-xs-12 col-12">
                 <address>
                   <strong>Order Date:</strong><br>
-                  {{$invoice->order_at}}
+                    {{$invoice->order_at}}
                 </address>
               </div>
               <div class="col-xs-12 col-12">
                 <address>
                   <strong>Metode Pembayaran</strong><br>
-                  Nama Bank : Bank Central Asia (BCA) <br>
-                  Pemilik Rekening :  PT. INDO KONTAINER SARANA<br>
-                  Kode Bank : 014<br>
-                  Nomor Rekening : 0295197531<br>
+                  Nama Bank : <strong>Bank Central Asia (BCA)</strong> <br>
+                  Pemilik Rekening :  <strong>PT. INDO KONTAINER SARANA</strong><br>
+                  Kode Bank : <strong>014</strong><br>
+                  Nomor Rekening : <strong>0295197531</strong><br>
                   <!-- h.elaine@gmail.com<br> -->
                 </address>
               </div>
@@ -149,7 +152,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                 @foreach($contInvoce as $cont)
+                 @foreach($contInvoice as $cont)
                     <tr>
                         <td>{{$cont->container_no}}</td>
                         <td>{{$cont->ctr_size}}</td>
@@ -164,7 +167,7 @@
           <div class="row mt-3">
               <div class="col-md-12">
                   <h3>PRANOTA SUMMARY</h3>
-                  @foreach($groupedContainers as $ukuran => $containers)
+                  @foreach ($invGroup as $ukuran => $details)
                   <span>Container <strong>{{$ukuran}}</strong></span>
               <table class="table table-striped">
                 <thead>
@@ -178,47 +181,15 @@
                   </tr>
                 </thead>
                 <tbody>
-                @if($invoice->os_id == '1' || $invoice->os_id == '5' || $invoice->os_id == '16')
+                @foreach ($details as $detail)
                 <tr>
-                            <td>Pass Truck Masuk</td>
-                            <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
-                            <td>0</td>
-                            <td>{{ number_format($invoice->{'pass_truck_masuk_'.$ukuran} / $jumlahContainerPerUkuran[$ukuran], 0, ',', '.') }}</td>
-                            <td>{{ number_format($invoice->{'pass_truck_masuk_'.$ukuran}, 0, ',', '.') }}</td>
-                        </tr>
-                        <tr>
-                            <td>Lift On/Off Empty</td>
-                            <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
-                            <td>0</td>
-                            <td>{{ number_format($invoice->{'lolo_empty_'.$ukuran} / $jumlahContainerPerUkuran[$ukuran], 0, ',', '.') }}</td>
-                            <td>{{ number_format($invoice->{'lolo_empty_'.$ukuran}, 0, ',', '.') }}</td>
-                        </tr>
-                        @elseif($invoice->os_id == '3' || $invoice->os_id == '4')
-                        <tr>
-                            <td>Paket Stripping</td>
-                            <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
-                            <td>0</td>
-                            <td>{{ number_format($invoice->{'paket_stripping_'.$ukuran} / $jumlahContainerPerUkuran[$ukuran], 0, ',', '.') }}</td>
-                            <td>{{ number_format($invoice->{'paket_stripping_'.$ukuran}, 0, ',', '.') }}</td>
-                        </tr>
-                            @if($invoice->os_id == 3)
-                            <tr>
-                                <td>Pemindahan Petikemas</td>
-                                <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
-                                <td>0</td>
-                                <td>{{ number_format($invoice->{'pemindahan_petikemas_'.$ukuran} / $jumlahContainerPerUkuran[$ukuran], 0, ',', '.') }}</td>
-                                <td>{{ number_format($invoice->{'pemindahan_petikemas_'.$ukuran}, 0, ',', '.') }}</td>
-                            </tr>
-                            @endif
-                        <tr>
-                            <td>Penumpukan Massa 1</td>
-                            <td>{{$jumlahContainerPerUkuran[$ukuran]}}</td>
-                            <td>{{$invoice->massa1}} Hari</td>
-                            <td>{{ number_format($invoice->{'m1_'.$ukuran} / $jumlahContainerPerUkuran[$ukuran], 0, ',', '.') }}</td>
-                            <td>{{ number_format($invoice->{'m1_'.$ukuran}, 0, ',', '.') }}</td>
-                        </tr>
-                        @endif
-               
+                    <td class="text-right">{{ $detail->master_item_name }}</td>
+                    <td class="text-right">{{ $detail->jumlah }}</td>
+                    <td class="text-right">{{ $detail->jumlah_hari }}</td>
+                    <td class="text-right">{{ $detail->tarif }}</td>
+                    <td class="text-right">{{ $detail->total }}</td>
+                </tr>
+                @endforeach
                 </tbody>
             </table>
             @endforeach
@@ -227,17 +198,27 @@
           <div class="row p-3">
             <div class="col-xs-12 col-6">
               <p>Total Amount: </p>
+              <p>Admin :</p>
               <p>Tax (11%): </p>
               <p>Grand Total: </p>
             </div>
             <div class="col-xs-12 col-6" style="text-align: right;">
               <p><strong>Rp. {{number_format ($invoice->total), 0, ',', '.'}} ,00 ~</strong></p>
+              <p><strong>Rp. {{number_format ($admin), 0, ',', '.'}} ,00 ~</strong></p>
               <p><strong>Rp. {{number_format ($invoice->pajak), 0, ',', '.'}}, 00 ~</strong></p>
               <p><strong>Rp.  {{number_format ($invoice->grand_total), 0, ',', '.'}},00 ~</strong></p>
 
             </div>
             <div class="col-12">
               <p>Terbilang <strong>"{{$terbilang}} Rupiah"</strong></p>
+            </div>
+            <div class="col-12">
+              <h4>Note : </h4>
+              <p><strong>1. Pembayaran secara penuh sesuai nilai invoice. Biaya lainnya diluar tanggung jawab kami.</strong></p>
+              <p><strong>2. Complain Invoice Maksimal 3 (tiga) hari setelah invoice diterima.</strong></p>
+              <p><strong>3. Invoice dianggap lunas jika pembayaran masuk ke rekening yang telah diinfokan di invoice ini.</strong></p>
+              <p><strong>4. Due date dihitung dari ATD. </strong></p>
+              <p><strong>5. Tidak Menerima pembayaran dalam bentuk tunai.</strong></p>
             </div>
           </div>
         </div>

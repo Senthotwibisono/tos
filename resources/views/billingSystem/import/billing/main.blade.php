@@ -149,6 +149,9 @@
                       @endif
                       <td>
                       <button type="button" id="pay" data-id="{{$inv->id}}" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>
+                      @if($inv->lunas == "N")
+                      <button type="button" data-id="{{$inv->form_id}}" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>
+                      @endif
                       </td> <!-- Tambahkan aksi sesuai kebutuhan -->
                     </tr>
                     @endif
@@ -212,6 +215,53 @@
 @endsection
 
 @section('custom_js')
+
+<script>
+$(document).ready(function() {
+    $('.Delete').on('click', function() {
+        var formId = $(this).data('id'); // Ambil ID dari data-id atribut
+
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Anda tidak akan bisa mengembalikan ini!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/billing/import/delivery-deleteInvoice/' + formId, // Ganti dengan endpoint penghapusan Anda
+                    type: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}' // Sertakan token CSRF untuk keamanan
+                    },
+                    success: function(response) {
+                        Swal.fire(
+                            'Dihapus!',
+                            'Data berhasil dihapus.',
+                            'success'
+                        ).then(() => {
+                            window.location.href = '/billing/import/delivey-system'; // Arahkan ke halaman beranda setelah penghapusan sukses
+                        });
+                    },
+                    error: function(xhr) {
+                        console.error(xhr.responseText);
+                        Swal.fire(
+                            'Gagal!',
+                            'Terjadi kesalahan saat menghapus data.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    });
+});
+</script>
+
 <script>
    $(document).on('click', '.pay', function() {
     let id = $(this).data('id');

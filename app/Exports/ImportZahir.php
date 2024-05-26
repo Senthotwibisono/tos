@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\ImportDetail;
 use App\Models\Item; 
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -43,36 +44,41 @@ class ImportZahir implements FromCollection, WithMapping, WithHeadings, ShouldAu
                 break;
         }
 
+        if ($data->jumlah_hari != 0) {
+            $item = $data->jumlah_hari;
+        }else {
+            $item = $data->jumlah;
+        }
 
         return [
-           $data->order_date,
+            date("d/m/Y", strtotime($data->order_date)),
            $data->inv_no,
-           $data->cust_id,
+           $data->cust_name,
            'Head Quarter',
            'Head Quarter',
-           '0',
-           $data->keterangan,
-           '0',
+           '',
+           $data->master_item_name,
+           '',
            $status,
-           '0',
-           '0',
-           '0',
-           $data->detail,
-           $data->jumlah,
+           '',
+           '',
+           '',
+           $data->kode,
+           $item,
            $data->satuan,
-           $data->harga,
-           '0',
+           $data->total,
+           '',
            'VAT',
-           $data->expired_date,
-           '0',
+           date("d/m/Y", strtotime($data->expired_date)),
+           '',
            'Head Quarter',
-           '0',
-           '0',
-           '0',
+           '',
+           '',
+           '',
            'IDR',
            '1',
-           '0',
-           '0'
+           '',
+           '',
 
             
         ];
@@ -81,10 +87,10 @@ class ImportZahir implements FromCollection, WithMapping, WithHeadings, ShouldAu
     public function headings(): array
     {
         return [
-            'TGL TRANS', ' NO. REFERENSI/INV', 'NAMA PELANGGAN', 'NAMA GUDANG', 'NAMA DEPT', 'ID JOB', 'KETERANGAN',
+            'TGL TRANS', 'NO. REFERENSI/INV', 'NAMA PELANGGAN', 'NAMA GUDANG', 'NAMA DEPT', 'ID JOB', 'KETERANGAN',
                 'NAMA SALESMAN', 'ISTUNAI', 'BIAYALAIN', 'DISKONFINAL', 'UANGMUKA', 'PLU/KODE BARANG', 'QTY', 'SATUAN', 
                 'HARGA', 'DISKON (%)', 'KODE PAJAK', 'TGL JATUH TEMPO', 'AKUN BANK', 'NAMA DEPT DETAIL', 'IDJ JOB DETAIL',
-                'NOTE DETA', 'NO DOKUMEN', 'MATA UANG', 'NILAI TUKAR', 'NOMOR SERI', 'NOMOR SO'
+                'NOTE DETA', 'NO DOKUMEN', 'MATA UANG', 'NILAI TUKAR', 'NOMOR SERI', 'NOMOR SO',
         ];
     }
 
