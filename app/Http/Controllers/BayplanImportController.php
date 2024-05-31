@@ -31,7 +31,7 @@ class BayplanImportController extends Controller
     {
         $title = 'Bay Plan Import';
 
-        $item = Item::whereIn('ctr_intern_status', ['01', '15'])->whereNot('container_no', '=', '')->orderBy('container_key', 'desc')->get();
+        $item = Item::whereIn('ctr_intern_status', ['01', '03', '02', '15'])->whereNot('container_no', '=', '')->orderBy('container_key', 'desc')->get();
         $formattedData = [];
         $data = [];
 

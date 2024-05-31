@@ -57,7 +57,7 @@ class ImportController extends Controller
     public function billingMain()
     {
         $data['title'] = "Delivery Billing System";
-        $data['invoice'] = InvoiceImport::orderBy('order_at', 'asc')->orderBy('lunas', 'asc')->get();
+        $data['invoice'] = InvoiceImport::whereNot('form_id', '=', '')->orderBy('order_at', 'asc')->orderBy('lunas', 'asc')->get();
         $data['service'] = OS::where('ie', '=' , 'I')->orderBy('id', 'asc')->get();
 
         return view('billingSystem.import.billing.main', $data);

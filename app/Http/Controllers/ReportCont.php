@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Response;
 
 use Illuminate\Http\Request;
 use App\Models\Item;
+use App\Models\VVoyage;
 use PDF;
 use TCPDF;
 use Dompdf\Dompdf;
@@ -106,9 +107,11 @@ public function generatePDF_disch(Request $request)
     $title = 'Realisasi Bongkar';
     $confirmed = Item::where('ctr_intern_status', '!=', 01,)->orderBy('update_time', 'desc')->get();
    $item = Item::orderBy('ves_id', 'desc')->distinct('ves_id')->pluck('ves_id');
+   $data['ves'] = VVoyage::whereIn('ves_id', $item)->get();
+//    dd($item, $ves);
    $vesCodes = []; // Membuat array kosong untuk menampung ves_codes        
 
-        return view('planning.print.realisasibongkar', compact('item', 'vesCodes', 'title'));
+        return view('planning.print.realisasibongkar', compact('item', 'vesCodes', 'title'), $data);
 }
 
 public function get_ves_bongkar(Request $request)

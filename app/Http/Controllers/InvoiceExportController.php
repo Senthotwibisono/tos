@@ -78,7 +78,10 @@ class InvoiceExportController extends Controller
         $data['orderService'] = OS::where('ie', '=', 'E')->get();
         $data['dok_ro'] = RO::get();
         $cont = Item::where('ctr_intern_status', ['49'])->where('selected_do', 'N')->get();
-        $data['contBooking'] = $cont->unique('booking_no')->pluck('booking_no');
+        $data['contBooking'] = Item::where('ctr_intern_status', '49')
+        ->where('selected_do', 'N')
+        ->distinct()
+        ->pluck('booking_no');
         $data['roDok'] = RO::get();
         $data['kapalRO'] = VVoyage::where('clossing_date', '>=', Carbon::now())->get();
 

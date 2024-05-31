@@ -21,36 +21,41 @@
     <div class="card mt-5">
         <div class="card-header">
           
-             <div class="row">
-                    <div class="col-lg-3 mb-1">
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="">Choose Ves Id</span>
-                                <select class="form-select" id="vesid" name="ves_id">
-                                    <option value="-">-</option>
-                                    @foreach($item as $itm)
-                                        
-                                    <option value="{{$itm}}">{{str_pad($itm,4,'0', STR_PAD_LEFT)}}</option>
-                                    @endforeach
-                                </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-2 mb-1">
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">Ves Code</span>
-                            <input type="text" class="form-control" id="code"  name="ves_code" disabled>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 mb-1">
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">Ves Name</span>
-                            <input type="text" class="form-control" id="name" name="ves_name"  disabled>
-                        </div>
-                    </div>
-                   
-                    <div class="col-lg-2 mb-1">
-                        <a href="#" class="btn icon btn-info search"><i class="bi bi-search"></i></i></a>
-                    </div>
-            </div>
+        <div class="row">
+    <div class="col-lg-3 mb-1">
+        <div class="form-group">
+            <label for="vesid">Vessel</label>
+            <select class="form-control choices" id="vesid" name="ves_id" style="height: 150px; width: 150px;">
+                <option value="-">-</option>
+                @foreach($ves as $kapal)
+                    <option value="{{$kapal->ves_id}}">{{$kapal->ves_name}} -- {{$kapal->voy_out}}</option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+
+    <div class="col-lg-2 mb-1">
+        <div class="form-group">
+            <label for="code">Vessel Code</label>
+            <input type="text" class="form-control" id="code" name="ves_code" placeholder="Vessel Code" disabled>
+        </div>
+    </div>
+
+    <div class="col-lg-3 mb-1">
+        <div class="form-group">
+            <label for="name">Vessel Name</label>
+            <input type="text" class="form-control" id="name" name="ves_name" placeholder="Vessel Name" disabled>
+        </div>
+    </div>
+
+    <div class="col-lg-2 mb-1 d-flex align-items-end">
+        <div class="form-group">
+            <label for="search-btn" class="d-none">Search</label>
+            <a href="#" class="btn icon btn-info search" id="search-btn"><i class="bi bi-search"></i></a>
+        </div>
+    </div>
+</div>
+
            
         </div>
         <hr>
