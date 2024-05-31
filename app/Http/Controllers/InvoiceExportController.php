@@ -322,85 +322,6 @@ class InvoiceExportController extends Controller
 
     public function beforeCreate(Request $request)
     {
-<<<<<<< HEAD
-        $data['title'] = "Preview Invoice";
-        $cust = $request->customer;
-        $data['customer'] = Customer::where('id', $cust)->first();
-        $data['expired'] = $request->exp_date;
-        $os = $request->order_service;
-        $data['booking'] = $request->booking_no;
-      
-        $data['service'] = OS::where('id', $os)->first();
-        $booking = $request->booking_no;
-        $cont = $request->container;
-        $data['contInvoice'] = implode(',', $cont);
-        $items = Item::whereIn('container_key', $cont)->get();
-        $data['selectCont'] =  Item::whereIn('container_key', $cont)->orderBy('ctr_size', 'asc')->get();
-        $data['ves'] = $request->ves_id;        
-        // dd($ves);
-        $groupedContainers = [];
-
-        foreach ($items as $item) {
-            $containerKey = $item->container_key;
-            $containerSize = $item->ctr_size;
-        
-            
-            if (isset($groupedContainers[$containerSize])) {
-                $groupedContainers[$containerSize][] = $containerKey;
-            } else { 
-                $groupedContainers[$containerSize] = [$containerKey];
-            }
-        }
-
-        $jumlahContainerPerUkuran = [];
-
-        // Hitung jumlah kontainer per ukuran
-        foreach ($groupedContainers as $ukuran => $containers) {
-            // Jumlah kontainer untuk ukuran saat ini adalah panjang array kontainer
-            $jumlahContainerPerUkuran[$ukuran] = count($containers);
-        }
-        $tarif = [];
-        $loloFull = [];
-        $ptMasuk = [];
-        $ptKeluar = [];
-        $pmassa1 = [];
-        $loloEmpty = [];
-        $cargo_dooring = [];
-        $sewa_crane = [];
-        $jpbTruck = [];
-        $stuffing = [];
-
-        foreach ($groupedContainers as $ukuran => $containers) {
-            // Jumlah kontainer untuk ukuran saat ini adalah panjang array kontainer
-            $tarif[$ukuran] = MT::where('os_id', $os)->where('ctr_size', $ukuran)->first();
-            if (empty($tarif[$ukuran])) {
-                return back()->with('error', 'Silahkan Membuat Master Tarif Terlebih Dahulu');
-            }
-            // OSK
-            $loloFull[$ukuran]= $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->lolo_full;
-            $ptKeluar[$ukuran]= $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->pass_truck_keluar;
-            $pmassa1[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->m1;
-            $cargo_dooring[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->cargo_dooring;
-            $sewa_crane[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->sewa_crane;
-
-        
-
-            // OS  
-            $loloEmpty[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->lolo_empty;
-            $ptMasuk[$ukuran]= $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->pass_truck_masuk;
-            $stuffing[$ukuran]= $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->paket_stuffing;
-            $jpbTruck[$ukuran] = $jumlahContainerPerUkuran[$ukuran] * $tarif[$ukuran]->jpb_extruck;
-   
-            
-        }
-
-        // DSK
-        if ($os == 6 || $os == 7 || $os == 14) {
-            if ($os == 14) {
-                $DSK = array_merge($loloFull, $ptMasuk, $ptKeluar, $pmassa1);
-            }else {
-                $DSK = array_merge($loloFull, $ptMasuk, $pmassa1);
-=======
         $contSelect = $request->container;
         $singleCont = Item::whereIn('container_key', $contSelect)->first();
         $os = OS::where('id', $request->order_service)->first();
@@ -417,7 +338,6 @@ class InvoiceExportController extends Controller
                     'ves_id'=>$vessel->ves_id,
                     'ves_name'=>$vessel->ves_name
                    ];
->>>>>>> origin/main
             }
         }else {
             $vessel = VVoyage::where('ves_id', $singleCont->ves_id)->first();

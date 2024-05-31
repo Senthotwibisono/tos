@@ -220,7 +220,7 @@
                                 </tbody>
                             </table>
                             @else
-                            <h4>OSK</h4>
+                            <h4>OS</h4>
                             <input type="hidden" name="type" value="OS">
                             <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table2">
                                 <thead>
