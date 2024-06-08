@@ -46,4 +46,8 @@ class ExtendDetail extends Model
     {
         return $this->belongsTo(OrderService::class, 'os_id', 'id');
     }
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'cust_id', 'id');
+    }
 }

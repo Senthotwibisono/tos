@@ -59,7 +59,7 @@ class ImportZahir implements FromCollection, WithMapping, WithHeadings, ShouldAu
         return [
             date("d/m/Y", strtotime($data->order_date)),
            $data->inv_no,
-           $data->cust_name,
+           $data->customer->mapping_zahir,
            'Head Quarter',
            'Head Quarter',
            '',

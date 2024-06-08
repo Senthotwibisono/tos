@@ -62,8 +62,8 @@
                     <tr>
                         <td>{{$loop->iteration}}</td>
                         <td>{{$cust->code}}</td>
-                        <td>{{$cust->mapping_zahir}}</td>
                         <td>{{$cust->name}}</td>
+                        <td>{{$cust->mapping_zahir}}</td>
                         <td>{{$cust->phone}}</td>
                         <td>{{$cust->fax}}</td>
                         <td>{{$cust->alamat}}</td>
