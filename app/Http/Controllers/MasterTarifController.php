@@ -154,6 +154,7 @@ class MasterTarifController extends Controller
             'email'=>$request->email,
             'fax'=>$request->fax,
             'phone'=>$request->phone,
+            'mapping_zahir'=>$request->mapping_zahir,
         ]);
 
         return redirect('/billing/customer')->with('success', 'Customer added successfully.');
@@ -181,6 +182,7 @@ class MasterTarifController extends Controller
                     'email'=>$request->email,
                     'fax'=>$request->fax,
                     'phone'=>$request->phone,
+                    'mapping_zahir'=>$request->mapping_zahir,
                 ]);
 
                 return redirect('/billing/customer')->with('success', 'Customer update successfully.');

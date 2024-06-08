@@ -88,6 +88,14 @@
                             <option value="N">No</option>
                         </select>
                     </div>
+                    <label>Periode Massa</label>
+                    <div class="form-group">
+                        <select class="js-example-basic-single form-select select2" style="width: 100%;" name="massa" id="" >
+                            <option disabled selected value>Pilih Satu!</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i> <span class="d-none d-sm-block">Close</span> </button>
@@ -132,6 +140,14 @@
                             <option disabled selected value>Pilih Satu!</option>
                             <option value="Y">Yes</option>
                             <option value="N">No</option>
+                        </select>
+                    </div>
+                    <label>Massa </label>
+                    <div class="form-group">
+                        <select class="form-select" style="width: 100%;" name="" id="" >
+                            <option disabled selected value>Pilih Satu!</option>
+                            <option value="Y">2</option>
+                            <option value="N">3</option>
                         </select>
                     </div>
                 </div>

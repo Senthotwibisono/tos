@@ -9,7 +9,7 @@
 </div>
 <div class="page-content mb-5">
   <section class="row">
-    <form action="{{ route('extendPreinvoice')}}" method="GET" id="formSubmit" enctype="multipart/form-data">
+    <form action="{{ route('extendPostForm')}}" method="POST" id="formSubmit" enctype="multipart/form-data">
       @CSRF
       <div class="card">
         <div class="card-body">
@@ -51,6 +51,21 @@
           </div>
           <div class="row mt-5">
             <div class="col-12">
+              <h5>Order Service</h5>
+              <p>Pilih Order Service</p>
+            </div>
+            <div class="col-12" id="selector">
+              <label for=""></label>
+              <select name="order_service"  class="js-example-basic-single form-control" id="os_id" style="height: 150%;">
+                <option disabeled selected value>Pilih Satu !</option>
+               @foreach($OrderService as $os)
+                <option value="{{$os->id}}">{{$os->name}}</option>
+               @endforeach
+              </select>
+            </div>
+
+          <div class="row mt-5">
+            <div class="col-12">
               <h5>Add Invoice</h5>
               <p>Masukan Nomor Invoice Sebelumnya</p>
             </div>
@@ -59,7 +74,7 @@
               <select name="inv_id"  class="js-example-basic-single form-control" id="invId" style="height: 150%;">
                 <option disabeled selected value>Pilih Satu !</option>
                @foreach($oldInv as $inv)
-                <option value="{{$inv->id}}">{{$inv->inv_no}} {{$inv->id}}</option>
+                <option value="{{$inv->id}}">{{$inv->inv_no}}</option>
                @endforeach
               </select>
             </div>

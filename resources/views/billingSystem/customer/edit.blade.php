@@ -25,6 +25,10 @@
                   <input name="id" type="hidden" value="{{$cust->id}}" class="form-control" required>
                 </div>
                 <div class="form-group">
+                  <label for="">Mapping Zahir</label>
+                  <input name="mapping_zahir" type="text" class="form-control" value="{{$cust->mapping_zahir}}" required>
+                </div>
+                <div class="form-group">
                   <label for="">Customer Code</label>
                   <input name="code" type="text" class="form-control" value="{{$cust->code}}" required>
                 </div>

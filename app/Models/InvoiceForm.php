@@ -20,12 +20,18 @@ class InvoiceForm extends Model
         'ves_id',
         'i_e',
         'disc_date',
-        'done'
+        'done',
+        'old_inv'
     ];
 
     public function doOnline()
     {
         return $this->belongsTo(DOonline::class, 'do_id', 'id');
+    }
+
+    public function oldInv()
+    {
+        return $this->belongsTo(InvoiceImport::class, 'do_id', 'id');
     }
 
     public function Kapal()

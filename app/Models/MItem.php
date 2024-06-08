@@ -17,5 +17,6 @@ class MItem extends Model
         'kode',
         'count_by',
         'size',
+        'massa',
     ];
 }
