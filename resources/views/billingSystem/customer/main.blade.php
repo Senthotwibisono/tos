@@ -49,6 +49,7 @@
                     <th>no</th>
                     <th>Customer No</th>
                     <th>Customer Name</th>
+                    <th>Mapping Zahir</th>
                     <th>Phone</th>
                     <th>Fax</th>
                     <th>Address</th>
@@ -61,6 +62,7 @@
                     <tr>
                         <td>{{$loop->iteration}}</td>
                         <td>{{$cust->code}}</td>
+                        <td>{{$cust->mapping_zahir}}</td>
                         <td>{{$cust->name}}</td>
                         <td>{{$cust->phone}}</td>
                         <td>{{$cust->fax}}</td>

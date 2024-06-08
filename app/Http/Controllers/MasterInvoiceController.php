@@ -33,6 +33,7 @@ class MasterInvoiceController extends Controller
             'kode'=>$request->kode,
             'count_by'=>$request->count_by,
             'size'=>$request->size,
+            'massa'=>$request->massa,
         ]);
 
         return redirect()->back()->with('success', 'Data Berhasil di Upload');
@@ -139,6 +140,7 @@ class MasterInvoiceController extends Controller
                 'master_item_id'=>$id,
                 'master_item_name'=>$mItem->name,
                 'kode'=>$mItem->kode,
+                'massa'=>$mItem->massa,
             ]);
         }
         return redirect()->back()->with('success', 'Data Berhasil di Perbaharui');
@@ -157,6 +159,7 @@ class MasterInvoiceController extends Controller
                 'master_item_id'=>$id,
                 'master_item_name'=>$mItem->name,
                 'kode'=>$mItem->kode,
+                'massa'=>$mItem->massa,
             ]);
         }
         return redirect()->back()->with('success', 'Data Berhasil di Perbaharui');

@@ -24,6 +24,10 @@
                   <input name="name" type="text" class="form-control" placeholder="Customer Name" required>
                 </div>
                 <div class="form-group">
+                  <label for="">Mapping Zahir</label>
+                  <input name="mapping_zahir" type="text" class="form-control" placeholder="Customer Name" required>
+                </div>
+                <div class="form-group">
                   <label for="">Customer Code</label>
                   <input name="code" type="text" class="form-control" placeholder="Customer Code" required>
                 </div>

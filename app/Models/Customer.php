@@ -14,6 +14,7 @@ class Customer extends Model
 
     protected $fillable = [
         'name',
+        'mapping_zahir',
         'code',
         'alamat',
         'npwp',

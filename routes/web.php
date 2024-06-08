@@ -963,8 +963,16 @@ Route::get('/invoice/report-extend', [InvoiceExtend::class, 'ReportExcel'])->nam
 
 // Extend
 Route::get('/billing/import/extendIndex', [InvoiceExtend::class, 'index'])->name('index-extend');
+Route::get('/billing/import/extendIndexForm', [InvoiceExtend::class, 'ListForm'])->name('listForm-extend');
 Route::get('/billing/import/extendForm', [InvoiceExtend::class, 'form'])->name('extendForm');
-Route::get('/billing/import/extendPreinvoice', [InvoiceExtend::class, 'preinvoice'])->name('extendPreinvoice');
+Route::get('/billing/import/extend-editForm/{id?}', [InvoiceExtend::class, 'EditForm']);
+Route::post('/billing/import/extend-updateFormImport', [InvoiceExtend::class, 'updateFormImport'])->name('updateFormImportExtend');
+Route::delete('/billing/import/extend-deleteInvoice/{id?}', [InvoiceExtend::class, 'extendInvoiceDelete'])->name('extendInvoiceDelete');
+
+// 
+Route::post('/billing/import/extendPost', [InvoiceExtend::class, 'postForm'])->name('extendPostForm');
+// 
+Route::get('/billing/import/extendPreinvoice/{id?}', [InvoiceExtend::class, 'preinvoice'])->name('extendPreinvoice');
 Route::post('/billing/import/extendCreate', [InvoiceExtend::class, 'post'])->name('extendCreate');
 Route::get('/extend/pay-button{id?}', [InvoiceExtend::class, 'payExtend'])->name('payExtend');
 Route::post('/invoice/extend-payFullExtend', [InvoiceExtend::class, 'payFull'])->name('payFullExtend');

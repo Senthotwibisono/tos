@@ -170,180 +170,33 @@
           <div class="row mt-3">
               <div class="col-md-12">
                   <h3>INVOICE SUMMARY</h3>
-                  @if($invoice->ctr_20 != null)
-                  <span>Container <strong>20</strong></span>
-                  <table class="table table-striped">
-                      <thead>
-                        <tr class="line">
-                          <th>Keterangan</th>
-                          <th>Jumlah</th>
-                          <th>Hari</th>
-                          <th>Tarif Satuan</th>
-                          <th>Amount</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        @if($invoice->m1 != '0')
-                       <tr>
-                        <td>Massa 1</td>
-                        <td>{{$invoice->ctr_20}}</td>
-                        <td>{{$invoice->m1}}</td>
-                        <td>{{($invoice->m1_20 / $invoice->ctr_20) / $invoice->m1}}</td>
-                        <td>{{$invoice->m1_20}} </td>
-                       </tr>
-                       @endif
-                       @if($invoice->m2 != '0')
-                       <tr>
-                       <td>Massa 2</td>
-                        <td>{{$invoice->ctr_20}}</td>
-                        <td>{{$invoice->m2}}</td>
-                        <td>{{($invoice->m2_20 / $invoice->ctr_20 / $invoice->m2)}}</td>
-                        <td>{{$invoice->m2_20}} </td>
-                       </tr>
-                       @endif
-                       @if($invoice->m3 != '0')
-                       <tr>
-                       <td>Massa 3</td>
-                        <td>{{$invoice->ctr_20}}</td>
-                        <td>{{$invoice->m3}}</td>
-                        <td>{{($invoice->m3_20 / $invoice->ctr_20) / $invoice->m3}}</td>
-                        <td>{{$invoice->m3_20}} </td>
-                       </tr>
-                       @endif
-                      </tbody>
-                    </table>
-                  @endif
-                  <br>
-                  @if($invoice->ctr_21 != null)
-                  <span>Container <strong>21</strong></span>
-                  <table class="table table-striped">
-                      <thead>
-                        <tr class="line">
-                          <th>Keterangan</th>
-                          <th>Jumlah</th>
-                          <th>Hari</th>
-                          <th>Tarif Satuan</th>
-                          <th>Amount</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        @if($invoice->m1 != '0')
-                       <tr>
-                        <td>Massa 1</td>
-                        <td>{{$invoice->ctr_21}}</td>
-                        <td>{{$invoice->m1}}</td>
-                        <td>{{($invoice->m1_21 / $invoice->ctr_21) / $invoice->m1}}</td>
-                        <td>{{$invoice->m1_21}} </td>
-                       </tr>
-                       @endif
-                       @if($invoice->m2 != '0')
-                       <tr>
-                       <td>Massa 2</td>
-                        <td>{{$invoice->ctr_21}}</td>
-                        <td>{{$invoice->m2}}</td>
-                        <td>{{($invoice->m2_21 / $invoice->ctr_21) / $invoice->m2}}</td>
-                        <td>{{$invoice->m2_21}} </td>
-                       </tr>
-                       @endif
-                       @if($invoice->m3 != '0')
-                       <tr>
-                       <td>Massa 3</td>
-                        <td>{{$invoice->ctr_21}}</td>
-                        <td>{{$invoice->m3}}</td>
-                        <td>{{($invoice->m3_21 / $invoice->ctr_21) / $invoice->m3}}</td>
-                        <td>{{$invoice->m3_21}} </td>
-                       </tr>
-                       @endif
-                      </tbody>
-                    </table>
-                  @endif
-                  <br>
-                  @if($invoice->ctr_40 != null)
-                  <span>Container <strong>40</strong></span>
-                  <table class="table table-striped">
-                      <thead>
-                        <tr class="line">
-                          <th>Keterangan</th>
-                          <th>Jumlah</th>
-                          <th>Hari</th>
-                          <th>Tarif Satuan</th>
-                          <th>Amount</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        @if($invoice->m1 != '0')
-                       <tr>
-                        <td>Massa 1</td>
-                        <td>{{$invoice->ctr_40}}</td>
-                        <td>{{$invoice->m1}}</td>
-                        <td>{{($invoice->m1_40 / $invoice->ctr_40) / $invoice->m1}}</td>
-                        <td>{{$invoice->m1_40}} </td>
-                       </tr>
-                       @endif
-                       @if($invoice->m2 != '0')
-                       <tr>
-                       <td>Massa 2</td>
-                        <td>{{$invoice->ctr_40}}</td>
-                        <td>{{$invoice->m2}}</td>
-                        <td>{{($invoice->m2_40 / $invoice->ctr_40) / $invoice->m2}}</td>
-                        <td>{{$invoice->m2_40}} </td>
-                       </tr>
-                       @endif
-                       @if($invoice->m3 != '0')
-                       <tr>
-                       <td>Massa 3</td>
-                        <td>{{$invoice->ctr_40}}</td>
-                        <td>{{$invoice->m3}}</td>
-                        <td>{{($invoice->m3_40 / $invoice->ctr_40) / $invoice->m3}}</td>
-                        <td>{{$invoice->m3_40}} </td>
-                       </tr>
-                       @endif
-                      </tbody>
-                    </table>
-                  @endif
-                  @if($invoice->ctr_42 != null)
-                  <span>Container <strong>42</strong></span>
-                  <table class="table table-striped">
-                      <thead>
-                        <tr class="line">
-                          <th>Keterangan</th>
-                          <th>Jumlah</th>
-                          <th>Hari</th>
-                          <th>Tarif Satuan</th>
-                          <th>Amount</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        @if($invoice->m1 != '0')
-                       <tr>
-                        <td>Massa 1</td>
-                        <td>{{$invoice->ctr_42}}</td>
-                        <td>{{$invoice->m1}}</td>
-                        <td>{{($invoice->m1_42 / $invoice->ctr_42) / $invoice->m1}}</td>
-                        <td>{{$invoice->m1_42}} </td>
-                       </tr>
-                       @endif
-                       @if($invoice->m2 != '0')
-                       <tr>
-                       <td>Massa 2</td>
-                        <td>{{$invoice->ctr_42}}</td>
-                        <td>{{$invoice->m2}}</td>
-                        <td>{{($invoice->m2_42 / $invoice->ctr_42) / $invoice->m2}}</td>
-                        <td>{{$invoice->m2_42}} </td>
-                       </tr>
-                       @endif
-                       @if($invoice->m3 != '0')
-                       <tr>
-                       <td>Massa 3</td>
-                        <td>{{$invoice->ctr_42}}</td>
-                        <td>{{$invoice->m3}}</td>
-                        <td>{{($invoice->m3_42 / $invoice->ctr_42) / $invoice->m3}}</td>
-                        <td>{{$invoice->m3_42}} </td>
-                       </tr>
-                       @endif
-                      </tbody>
-                    </table>
-                  @endif
+                  @foreach ($invGroup as $ukuran => $details)
+                    <span>Container <strong>{{$ukuran}}</strong></span>
+                       <table class="table table-striped">
+                         <thead>
+                           <tr class="line">
+                             <!-- <td><strong>#</strong></td> -->
+                             <td class="text-right"><strong>Keterangan</strong></td>
+                             <td class="text-right"><strong>Jumlah Container</strong></td>
+                             <td class="text-right"><strong>Hari</strong></td>
+                             <td class="text-right"><strong>Tarif Satuan</strong></td>
+                             <td class="text-right"><strong>Amount</strong></td>
+                           </tr>
+                         </thead>
+                         <tbody>
+                         @foreach ($details as $detail)
+                         <tr>
+                             <td class="text-right">{{ $detail->master_item_name }}</td>
+                             <td class="text-right">{{ $detail->jumlah }}</td>
+                             <td class="text-right">{{ $detail->jumlah_hari }}</td>
+                             <td class="text-right">{{ $detail->tarif }}</td>
+                             <td class="text-right">{{ $detail->total }}</td>
+                         </tr>
+                         @endforeach
+                         </tbody>
+                     </table>
+                     @endforeach
+            </div>
             </div>
           </div>
           <div class="row p-3">

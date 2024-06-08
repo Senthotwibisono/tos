@@ -19,5 +19,6 @@ class OSDetail extends Model
         'master_item_id',
         'master_item_name',
         'kode',
+        'massa',
     ];
 }

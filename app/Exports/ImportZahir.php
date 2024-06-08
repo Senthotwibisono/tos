@@ -50,6 +50,12 @@ class ImportZahir implements FromCollection, WithMapping, WithHeadings, ShouldAu
             $item = $data->jumlah;
         }
 
+        $expiredDate = Carbon::parse($data->order_date);
+        // Add 30 days to the expired date
+        $expiredDate->addDays(30);
+        // Format the new date in the desired format (d/m/Y)
+        $formattedExpiredDate = $expiredDate->format('d/m/Y');
+
         return [
             date("d/m/Y", strtotime($data->order_date)),
            $data->inv_no,
@@ -69,7 +75,7 @@ class ImportZahir implements FromCollection, WithMapping, WithHeadings, ShouldAu
            $data->total,
            '',
            'VAT',
-           date("d/m/Y", strtotime($data->expired_date)),
+           $formattedExpiredDate,
            '',
            'Head Quarter',
            '',
