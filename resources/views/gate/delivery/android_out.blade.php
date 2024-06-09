@@ -85,6 +85,12 @@
                             </div>
                         </div>
                         <div class="col-12">
+                          <div class="form-group">
+                            <label for="first-name-vertical">Operator/MLO</label>
+                            <input type="text" id="opr" class="form-control" name="ctr_opr" readonly>
+                          </div>
+                        </div>
+                        <div class="col-12">
                             <div class="form-group">
                                 <label for="first-name-vertical">Truck Number</label>
                                 <input type="text" id="tayo" class="form-control" name="truck_no" required>
@@ -231,6 +237,7 @@
 
                         $('#container_no').val(response.container_no);
                         $('#job').val(response.job);
+                        $('#opr').val(response.operator);
                         $('#invoice').val(response.invoice);
                     },
                     error: function(data) {

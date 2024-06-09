@@ -116,6 +116,8 @@ class MasterInvoiceController extends Controller
             'name'=>$request->name,
             'ie'=>$request->ie,
             'order'=>$request->order,
+            'return_yn'=>$request->return_yn,
+            'depo_return'=>$request->depo_return,
         ]);
         $osd = OSDetail::where('os_id', $os->id)->get();
             foreach ($osd as $detail) {

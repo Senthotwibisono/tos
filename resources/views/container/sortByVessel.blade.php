@@ -145,8 +145,13 @@
                                 <label for="">Operator</label>
                                 <input type="text" name="ctr_opr" class="form-control" value="{{isset($_GET['ctr_opr']) ? $_GET['ctr_opr'] : ''}}">
                             </div>
+                            <div class="col-2">
+                                <label for="">Container No</label>
+                                <input type="text" name="container_no" class="form-control" value="{{isset($_GET['container_no']) ? $_GET['container_no'] : ''}}">
+                            </div>
                             <div class="col-sm-3">
                                 <button type="submit" class="btn btn-primary mt-4">Search</button>
+                                <a href="/container/sortByVes/{{$id}}" class="btn btn-secondary mt-4">Clear</a>
                             </div>
                         </div>
                     </form>

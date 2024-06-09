@@ -120,7 +120,7 @@
             <div class="col-6">
               <div class="form-group">
                 <label for="first-name-vertical">Type</label>
-                <input type="text" id="type" class="form-control" name="ctr_type" required>
+                <input type="text" id="type" class="form-control" name="ctr_type" readonly>
               </div>
             </div>
             <div class="col-6">
@@ -134,9 +134,14 @@
             </div>
             <div class="col-6">
               <div class="form-group">
+                <label for="first-name-vertical">Operator/MLO</label>
+                <input type="text" id="opr" class="form-control" name="ctr_opr" readonly>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">
                 <label for="first-name-vertical">Truck Number</label>
                 <input type="text" id="tayo" class="form-control" name="truck_no" required>
-                <input type="text" id="service" class="form-control" name="truck_no" readonly>
               </div>
             </div>
             
@@ -483,6 +488,7 @@
             $('#size').val(response.data.ctr_size);
             $('#stat').val(response.data.ctr_status);
             $('#tp').val(response.data.ctr_type);
+            $('#opr').val(response.data.ctr_opr);
             $('#sz').val(response.data.ctr_size);
             $('#st').val(response.data.ctr_status);
             $('#vessel').val(response.data.ves_name);

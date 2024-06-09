@@ -37,6 +37,8 @@ class MasterTarifController extends Controller
             'name'=>$request->name,
             'ie'=>$request->ie,
             'order'=>$request->order,
+            'return_yn' => $request->return_yn,
+            'depo_return' => $request->depo_return,
         ]);
 
         return redirect()->back()->with('success', 'Service ordered successfully.');

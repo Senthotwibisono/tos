@@ -741,6 +741,7 @@ class InvoiceExportController extends Controller
         $item = Item::where('container_key', $contItem->container_key)->first();
         $item->update([
             'selected_do'=>'Y',
+            'os_id'=>$form->os_id,
         ]);
        }
        return redirect()->route('billingExportMain')->with('success', 'Menunggu Pembayaran');
@@ -851,6 +852,7 @@ class InvoiceExportController extends Controller
             $item = Item::where('container_key', $cont->container_key)->first();
             $item->update([
                 'selected_do'=>'N',
+                'os_id'=>null,
             ]);
             $cont->delete();
         }

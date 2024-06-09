@@ -877,6 +877,7 @@ class ImportController extends Controller
         $item = Item::where('container_key', $contItem->container_key)->first();
         $item->update([
             'selected_do'=>'Y',
+            'os_id'=>$form->os_id,
         ]);
        }
        return redirect()->route('billinImportgMain')->with('success', 'Menunggu Pembayaran');
@@ -1753,6 +1754,7 @@ private function getNextJob($lastJobNo)
             $item = Item::where('container_key', $cont->container_key)->first();
             $item->update([
                 'selected_do'=>'N',
+                'os_id'=>null,
             ]);
             $cont->delete();
         }

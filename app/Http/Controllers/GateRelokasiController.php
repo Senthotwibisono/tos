@@ -38,15 +38,8 @@ class GateRelokasiController extends Controller
 
     public function data_container(Request $request)
     {
-        // $container_key = $request->container_key;
-        // $name = Item::where('container_key', $container_key)->first();
-
-        // if ($name) {
-        //     return response()->json(['container_no' => $name->container_no, 'job' => $name->job_no, 'invoice' => $name->invoice_no]);
-        // }
-        // return response()->json(['container_no' => 'data tidak ditemukan', 'job' => 'data tidak ditemukan', 'invoice' => 'data tidak ditemukan']);
        $key = $request->container_key;
-       $item = Item::where('container_key', $key)->first();
+       $item = Item::with('service')->where('container_key', $key)->first();
        if ($item) {
         return response()->json([
             'success' => true,

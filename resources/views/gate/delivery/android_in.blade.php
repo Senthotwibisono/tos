@@ -114,11 +114,17 @@
                 </div>
               </div>
             </div>
-            <div class="col-12">
+            <div class="col-6">
               <div class="form-group">
                 <label for="first-name-vertical">Invoice Number</label>
                 <input type="text" id="invoice" class="form-control" name="invoice_no" readonly>
                 <input type="hidden" value="{{ $currentDateTimeString }}" name="truck_in_date" class="form-control" readonly>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="first-name-vertical">Operator/MLO</label>
+                <input type="text" id="opr" class="form-control" name="ctr_opr" readonly>
               </div>
             </div>
             <div class="col-12">
@@ -324,6 +330,7 @@
             console.log(response);
             $('#contKey').val(response.data.container_key);
             $('#container_no').val(response.data.container_no);
+            $('#opr').val(response.data.ctr_opr);
             $('#job').val(response.data.job_no);
             $('#invoice').val(response.data.invoice_no);
             $('#orderservice').val(response.data.order_service);

@@ -128,9 +128,9 @@ class Gato extends Controller
         $name = Item::where('container_key', $container_key)->first();
 
         if ($name) {
-            return response()->json(['container_no' => $name->container_no, 'job' => $name->job_no, 'invoice' => $name->invoice_no]);
+            return response()->json(['container_no' => $name->container_no, 'job' => $name->job_no, 'invoice' => $name->invoice_no, 'operator' => $name->ctr_opr]);
         }
-        return response()->json(['container_no' => 'data tidak ditemukan', 'job' => 'data tidak ditemukan', 'invoice' => 'data tidak ditemukan']);
+        return response()->json(['container_no' => 'data tidak ditemukan', 'job' => 'data tidak ditemukan', 'invoice' => 'data tidak ditemukan', 'operator' => 'data tidak ditemukan']); 
     }
 
     public function gato_del(Request $request)

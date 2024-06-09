@@ -82,6 +82,7 @@ class Coparn implements ToCollection, WithHeadingRow
                     'ctr_active_yn' => 'Y',
                     'selected_do'=>'N',
                     'booking_no'=>trim($row['booking_no']),
+                    'chilled_temp'=>trim($row['temperature']),
 
 
                 ];

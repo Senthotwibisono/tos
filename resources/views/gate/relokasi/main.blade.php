@@ -96,13 +96,28 @@
           </div>
           <div class="col-3">
             <label for="">Order Service</label>
-            <input type="text" class="form-control" id="orderservice" required>
+            <input type="text" class="form-control" id="orderservice" readonly>
             <input type="hidden" class="form-control" id="orderserviceCode">
           </div>
           <div class="col-3">
             <label for="">Dok BC</label>
-            <input type="text" class="form-control" id="dok">
+            <input type="text" class="form-control" id="dok" readonly> 
             <input type="hidden" class="form-control" id="jenisDok">
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-4">
+            <h6>Depo Tujuan</h6>
+          </div>
+          <div class="col-1">
+            :
+          </div>
+          <div class="col-3">
+            <input type="text" class="form-control" id="depo" readonly>
+          </div>
+          <div class="col-3">
+            <input type="text" class="form-control" id="opr" readonly>
           </div>
         </div>
       </div>
@@ -132,17 +147,7 @@
             <tr>
               <td>{{$loop->iteration}}</td>
               <td>{{$itm->container_no}}</td>
-              <td>
-                @if($itm->order_service === 'SP2IKS')
-                SP2 Kapal Sandar Icon (MT Balik IKS / MKB)
-                @endif
-                @if($itm->order_service === 'SP2RELOKASI')
-                SP2 Relokasi Pelindo
-                @endif
-                @if($itm->order_service === 'SPPSRELOKASI')
-                SPPS (Relokasi Pelindo - ICON)
-                @endif
-              </td>
+              <td>{{$itm->service->name}}</td>
             </tr>
             @endforeach
           </tbody>
@@ -255,6 +260,8 @@
               $('#job').val(response.data.job_no);
               $('#invoice').val(response.data.invoice_no);
               $('#orderservice').val(response.data.order_service);
+              $('#opr').val(response.data.ctr_opr);
+              $('#depo').val(response.data.service.depo_return);
 
             },
             error: function(data) {

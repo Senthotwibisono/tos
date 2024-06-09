@@ -40,11 +40,34 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-2">
+                </div>
+                <div class="row mb-3">
+                    <div class="col sm-3">
                         <div class="form-group">
-                            <label for="action">Action</label>
-                            <div>
-                                <button class="btn btn-outline-success" id="updateButton" type="button">Update</button>
+                            <label for="ie">Return</label>
+                            <select name="return_yn" class="form-select js-example-basic-multiple">
+                                <option value="Y" {{ $orderService->return_yn == 'Y' ? 'selected' : '' }}>Yes</option>
+                                <option value="N" {{ $orderService->return_yn == 'N' ? 'selected' : '' }}>No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col sm-3">
+                        <div class="form-group">
+                            <label for="ie">Depo Return</label>
+                            <select name="depo_return" class="form-select js-example-basic-multiple">
+                                <option value="N" {{ $orderService->depo_return == 'N' ? 'selected' : '' }}>No Return</option>
+                                <option value="IKS" {{ $orderService->depo_return == 'IKS' ? 'selected' : '' }}>IKS</option>
+                                <option value="MKB" {{ $orderService->depo_return == 'MKB' ? 'selected' : '' }}>MKB</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col sm-3">
+                        <div class="col-2">
+                            <div class="form-group">
+                                <label for="action">Action</label>
+                                <div>
+                                    <button class="btn btn-outline-success" id="updateButton" type="button">Update</button>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -117,6 +117,7 @@ class item extends Model
         'selected_do',
         'booking_no',
         'alat_yard',
+        'os_id',
     ];
 
     public function job()
@@ -130,7 +131,10 @@ class item extends Model
                 ->where('activity', 'PLC')
                 ->orderBy('created_at', 'desc');
     }
-
+    public function service()
+    {
+        return $this->belongsTo(OrderService::class, 'os_id', 'id');
+    }
     public function CtrInv()
     {
         return $this->hasOne(ContainerInvoice::class, 'container_key');

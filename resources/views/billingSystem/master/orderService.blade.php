@@ -59,26 +59,58 @@
             <form action="{{ route('orderService')}}" method="post">
                 @csrf
                 <div class="modal-body">
-                    <label>Order Service Name </label>
-                    <div class="form-group">
-                        <input type="text" placeholder="" name="name" class="form-control">
+                        <div class="col sm-3">
+                            <label>Order Service Name </label>
+                            <div class="form-group">
+                                <input type="text" placeholder="" name="name" class="form-control">
+                            </div>
+                        </div>
+                    <div class="row mb-3">
+                        <div class="col sm-3">
+                            <label>Type </label>
+                            <div class="form-group">
+                                <select class="form-select js-example-basic-single" name="ie" id="" style="width: 100%;">
+                                <option disabeled selected value>Pilih Satu !!</option>
+                                    <option value="I">Import</option>
+                                    <option value="E">Export</option>
+                                    <option value="X">Extend</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col sm-3">
+                            <label>Order </label>
+                            <div class="form-group">
+                                <select class="form-select js-example-basic-single" name="order" id="" style="width: 100%;">
+                                    <option disabeled selected value>Pilih Satu !!</option>
+                                    <option value="SP2">SP2/RC</option>
+                                    <option value="SPPS">SPPS</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                    <label>Type </label>
-                    <div class="form-group">
-                        <select class="form-select js-example-basic-single" name="ie" id="">
-                        <option disabeled selected value>Pilih Atu !!</option>
-                            <option value="I">Import</option>
-                            <option value="E">Export</option>
-                            <option value="X">Extend</option>
-                        </select>
-                    </div>
-                    <label>Order </label>
-                    <div class="form-group">
-                        <select class="form-select js-example-basic-single" name="order" id="">
-                            <option disabeled selected value>Pilih Atu !!</option>
-                            <option value="SP2">SP2/RC</option>
-                            <option value="SPPS">SPPS</option>
-                        </select>
+                    <hr>
+                    <div class="row mb-3">
+                        <div class="col sm-3">
+                            <label>Return </label>
+                            <div class="form-group">
+                                <select class="form-select js-example-basic-single" name="return_yn" id="" style="width: 100%;">
+                                    <option disabeled selected value>Pilih Satu !!</option>
+                                    <option value="Y">Yes</option>
+                                    <option value="N">No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col sm-3">
+                            <label>Depo Return </label>
+                            <div class="form-group">
+                                <select class="form-select js-example-basic-single" name="depo_return" id="" style="width: 100%;">
+                                    <option disabeled selected value>Pilih Satu !!</option>
+                                    <option value="N">No Return</option>
+                                    <option value="IKS">IKS</option>
+                                    <option value="MKB">MKB</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">

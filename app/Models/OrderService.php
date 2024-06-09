@@ -16,6 +16,8 @@ class OrderService extends Model
         'name',
         'ie',
         'order',
+        'return_yn',
+        'depo_return',
         // 'dsk/osk',
         // 'osk/os',
     ];

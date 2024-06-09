@@ -83,6 +83,9 @@ class ContainerController extends Controller
       if ($request->ctr_intern_status) {
         $query->where('ctr_intern_status', $request->ctr_intern_status);
       }
+      if ($request->container_no) {
+        $query->where('container_no', 'like', '%' . $request->container_no . '%');
+      }
   
       $data['containers'] = $query->get();
 
@@ -131,6 +134,7 @@ class ContainerController extends Controller
           'ctr_code'=>$iso->iso_code,
           'ctr_size'=>$iso->iso_size,
           'ctr_type'=>$iso->iso_type,
+          'chilled_temp'=>$request->chilled_temp,
         ]);
         return redirect()->back()->with('success', 'Data Berhasil di Update');
       }else {
@@ -178,6 +182,9 @@ class ContainerController extends Controller
 
       if ($request->ctr_type) {
         $query->where('ctr_type', 'like', '%' . $request->ctr_type . '%');
+      }
+      if ($request->container_no) {
+        $query->where('container_no', 'like', '%' . $request->container_no . '%');
       }
 
       if ($request->ctr_size) {

@@ -79,6 +79,14 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="">Temperature</label>
+                            <input type="text" class="form-control" name="chilled_temp" value="{{$cont->chilled_temp}}">
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="card-footer">
                 <div class="row mt-5">
