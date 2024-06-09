@@ -1,4 +1,4 @@
-<table class="table table-bordered" >
+<table class="table table-bordered mb-0">
                         <thead>
                             <tr>
                                 <th>Container No</th>

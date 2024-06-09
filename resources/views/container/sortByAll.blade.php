@@ -192,7 +192,10 @@
                             </div>
                         </div>
                     </form>
+                    <br>
+                    <div class="table-responsive">
                     @include('container.detail.tableAll', $containers)
+                    </div>
                     <div>
                     {{ $containers->links('pagination::bootstrap-5') }}
                     </div>

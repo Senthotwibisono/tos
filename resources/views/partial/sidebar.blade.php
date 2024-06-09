@@ -54,6 +54,9 @@
             <li class="submenu-item @if(Request::is('planning/realisasi-bongkar')) active @endif">
                 <a href="/planning/realisasi-bongkar">Realisasi Bongkar</a>
             </li>
+            <li class="submenu-item @if(Request::is('planning/indexVessel')) active @endif">
+                <a href="/planning/indexVessel">Realisasi Muat</a>
+            </li>
             <!-- <li class="submenu-item ">
                         <a href="form-element-checkbox.html">Bay Plan Export</a>
                     </li>

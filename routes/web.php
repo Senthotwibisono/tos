@@ -56,8 +56,8 @@ use App\Http\Controllers\ShiftingController;
 use App\Http\Controllers\ZahirController;
 use App\Http\Controllers\MasterInvoiceController;
 use App\Http\Controllers\ContainerController;
+use App\Http\Controllers\RealisasiMuatController;
 use App\Exports\ContainersReport;
-use Maatwebsite\Excel\Facades\Excel;
 
 /*
 |--------------------------------------------------------------------------
@@ -1066,3 +1066,7 @@ Route::get('/container/indexReportAll', [ContainerController::class, 'indexConta
 Route::get('/container/sortByAll/export', [ContainerController::class, 'ExportAll'])->name('export-container-all');
 
 
+// Realisasi Muat
+Route::get('/planning/indexVessel', [RealisasiMuatController::class, 'index'])->name('realisasi-muat-main');
+Route::get('/planning/detail/realisasiMuat/{id?}', [RealisasiMuatController::class, 'listMuat'])->name('realisasi-muat-listMuat');
+Route::get('/planning/detail/realisasiMuat/excel/{id?}', [RealisasiMuatController::class, 'Excel'])->name('realisasi-muat-Excel');
