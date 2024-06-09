@@ -56,6 +56,6 @@ class ContainersReportAll implements FromView
         }
 
         $containers = $query->get();
-        return view('container.detail.table', ['containers' => $containers]);
+        return view('container.detail.tableAll', ['containers' => $containers]);
     }
 }

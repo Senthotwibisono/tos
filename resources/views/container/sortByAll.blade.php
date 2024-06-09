@@ -1,6 +1,6 @@
 @extends('partial.main')
 @section('custom_styles')
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" />
 @endsection
 @section('content')
 
@@ -192,7 +192,10 @@
                             </div>
                         </div>
                     </form>
-                    @include('container.detail.table', $containers)
+                    @include('container.detail.tableAll', $containers)
+                    <div>
+                    {{ $containers->links('pagination::bootstrap-5') }}
+                    </div>
                 </div>
                 <div class="card-footer">
                 <a href="{{ route('export-container-all', request()->query()) }}" class="btn btn-success float-end">Export to Excel</a>
