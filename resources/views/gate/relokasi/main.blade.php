@@ -147,7 +147,7 @@
             <tr>
               <td>{{$loop->iteration}}</td>
               <td>{{$itm->container_no}}</td>
-              <td>{{$itm->service->name}}</td>
+              <td>{{$itm->service->name ?? ''}}</td>
             </tr>
             @endforeach
           </tbody>
