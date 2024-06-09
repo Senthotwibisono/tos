@@ -22,7 +22,7 @@ class RealisasiMuat implements FromView
 
     public function view(): View
     {
-        $query = Item::where('ves_id', $this->id)->where('ctr_i_e_t', '=', 'E');
+        $query = Item::where('ves_id', $this->id)->where('ctr_i_e_t', '=', 'E')->where('ctr_intern_status', '=', '56');
 
         $kapal = VVoyage::where('ves_id', $this->id)->first();
         $containers = $query->get();

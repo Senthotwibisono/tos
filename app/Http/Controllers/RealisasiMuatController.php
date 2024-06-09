@@ -30,9 +30,9 @@ class RealisasiMuatController extends Controller
         $kapal = Kapal::where('ves_id', $id)->first();
         $data['title'] = "Realisasi Muat Kapal ".$kapal->ves_name." - ".$kapal->voy_out;
         $data['kapal'] = $kapal;
-        $data['jumlahCont'] = Item::where('ves_id', $id)->where('ctr_i_e_t', '=', 'E')->count();
+        $data['jumlahCont'] = Item::where('ves_id', $id)->where('ctr_i_e_t', '=', 'E')->where('ctr_intern_status', '=', '56')->count();
 
-        $data['containers'] = Item::where('ves_id', $id)->where('ctr_i_e_t', '=', 'E')->get();
+        $data['containers'] = Item::where('ves_id', $id)->where('ctr_i_e_t', '=', 'E')->where('ctr_intern_status', '=', '56')->get();
 
         return view('realisasiMuat.detail', $data);
     }

@@ -203,7 +203,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <div class="table-section bill-tbl w-100 mt-10">
+                <div class="table-section table-responsive bill-tbl w-100 mt-10">
                     @include('realisasiMuat.table', $containers)
                 </div>
             </div>
