@@ -425,14 +425,14 @@
 
     <!-- Report -->
 
-    <li class="sidebar-item has-sub @if(Request::is('reports/*')) active @endif">
+    <li class="sidebar-item has-sub @if(Request::is('reports/*') || Request::is('container/*')) active @endif">
         <a href="#" class='sidebar-link'>
             <i class="fa-solid fa-circle-info"></i>
             <span>Report and Information</span>
         </a>
-        <ul class="submenu @if(Request::is('reports/*')) active @endif">
-            <li class="submenu-item @if(Request::is('reports/hist')) active @endif">
-                <a href="/reports/hist">History Container</a>
+        <ul class="submenu @if(Request::is('reports/*') || Request::is('container/*')) active @endif">
+            <li class="submenu-item @if(Request::is('reports/hist') || Request::is('container/indexReport')) active @endif">
+                <a href="{{ route('container-report-main')}}">History Container</a>
             </li>
             <li class="submenu-item @if(Request::is('reports/equipment')) active @endif">
                 <a href="/reports/equipment">Equipment Report</a>

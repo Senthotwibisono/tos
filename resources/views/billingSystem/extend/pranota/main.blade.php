@@ -14,59 +14,80 @@
 
 
 <style>
-  body {
-    margin-top: 20px;
-    background: #eee;
-  }
+  @page {
+        size: 11in 9.5in;
+        margin: 0;
+    }
 
-  .invoice {
-    padding: 30px;
-  }
+    body {
+        margin: 0;
+        padding: 0;
+        background: #eee;
+        font-family: Arial, sans-serif;
+        font-size: 10px; /* Reduced from 12px */
+    }
 
-  .invoice h2 {
-    margin-top: 0px;
-    line-height: 0.8em;
-  }
+    .container {
+        width: 100%;
+        max-width: 950px;
+        margin: 0 auto;
+        padding: 20px; /* Reduced from 30px */
+        background: #fff;
+    }
 
-  .invoice .small {
-    font-weight: 300;
-  }
+    .invoice-title h2, .invoice-title .small {
+        display: inline-block;
+        font-size: 14px; /* Reduced from default size */
+    }
 
-  .invoice hr {
-    margin-top: 10px;
-    border-color: #ddd;
-  }
+    .invoice hr {
+        margin-top: 10px;
+        border-color: #ddd;
+    }
 
-  .invoice .table tr.line {
-    border-bottom: 1px solid #ccc;
-  }
+    .invoice .table {
+        width: 100%;
+        margin-bottom: 15px; /* Reduced from 20px */
+    }
 
-  .invoice .table td {
-    border: none;
-  }
+    .invoice .table th, .invoice .table td {
+        padding: 6px; /* Reduced from 8px */
+        border-bottom: 1px solid #ddd;
+        font-size: 10px; /* Reduced from default size */
+    }
 
-  .invoice .identity {
-    margin-top: 10px;
-    font-size: 1.1em;
-    font-weight: 300;
-  }
+    .invoice .table th {
+        background: #f5f5f5;
+    }
 
-  .invoice .identity strong {
-    font-weight: 600;
-  }
+    .invoice .identity {
+        margin-top: 10px;
+        font-size: 10px; /* Reduced from 1.1em */
+        font-weight: 300;
+    }
 
+    .invoice .identity strong {
+        font-weight: 600;
+    }
 
-  .grid {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          background: #fff;
-          color: #666666;
-          border-radius: 2px;
-          margin-bottom: 25px;
-          box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
-        }
+    .grid {
+        padding: 15px; /* Reduced from 20px */
+        margin-bottom: 20px; /* Reduced from 25px */
+        border-radius: 2px;
+        box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .text-right {
+        text-align: right;
+    }
+
+    .mt-3 {
+        margin-top: 0.5rem; /* Reduced from 1rem */
+    }
+
+    .p-3 {
+        padding: 0.5rem; /* Reduced from 1rem */
+    }
 </style>
 
 <div class="container">
@@ -212,12 +233,10 @@
               <p>Terbilang <strong>"{{$terbilang}} Rupiah"</strong></p>
             </div>
             <div class="col-12">
-              <h4>Note : </h4>
-              <p><strong>1. Pembayaran secara penuh sesuai nilai invoice. Biaya lainnya diluar tanggung jawab kami.</strong></p>
-              <p><strong>2. Complain Invoice Maksimal 3 (tiga) hari setelah invoice diterima.</strong></p>
-              <p><strong>3. Invoice dianggap lunas jika pembayaran masuk ke rekening yang telah diinfokan di invoice ini.</strong></p>
-              <p><strong>4. Due date dihitung dari ATD. </strong></p>
-              <p><strong>5. Tidak Menerima pembayaran dalam bentuk tunai.</strong></p>
+            <h6>Note : </h6>
+              <p><strong>1. Pembayaran secara penuh sesuai nilai invoice. Biaya lainnya diluar tanggung jawab kami. 2. Complain Invoice Maksimal 3 (tiga) hari setelah invoice diterima. 3. Invoice dianggap lunas jika pembayaran masuk ke rekening yang telah diinfokan di invoice ini.
+                4. Due date dihitung dari ATD. 5. Tidak Menerima pembayaran dalam bentuk tunai.</strong></p>
+            </div>
             </div>
           </div>
         </div>

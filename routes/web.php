@@ -55,8 +55,9 @@ use App\Http\Controllers\StevadooringController;
 use App\Http\Controllers\ShiftingController;
 use App\Http\Controllers\ZahirController;
 use App\Http\Controllers\MasterInvoiceController;
-
-
+use App\Http\Controllers\ContainerController;
+use App\Exports\ContainersReport;
+use Maatwebsite\Excel\Facades\Excel;
 
 /*
 |--------------------------------------------------------------------------
@@ -1053,3 +1054,15 @@ Route::get('/invoice/master/tarif-modalMT', [MasterInvoiceController::class, 'mo
 Route::get('/invoice/master/tarif-import-detail-{id}', [MasterInvoiceController::class, 'indexMTimportDetail'])->name('invoice-master-tarifImport-detail');
 Route::get('/invoice/master/tarif-export-detail-{id}', [MasterInvoiceController::class, 'indexMTexportDetail'])->name('invoice-master-tarifExport-detail');
 Route::post('/invoice/master/tairfDetail', [MasterInvoiceController::class, 'tarifDetail'])->name('invoice-master-tarifDetail');
+
+// newReport
+Route::get('/container/indexReport', [ContainerController::class, 'indexHistory'])->name('container-report-main');
+Route::get('/container/sortByVes/{id?}', [ContainerController::class, 'indexSortVes'])->name('container-report-vessel');
+Route::get('/container/history/{id?}', [ContainerController::class, 'history'])->name('container-report-history');
+Route::get('/container/edit-container/{id?}', [ContainerController::class, 'edit'])->name('container-edit');
+Route::post('/container/update-container', [ContainerController::class, 'update'])->name('container-update');
+Route::get('/container/sortByVes/export/{id?}', [ContainerController::class, 'Export']);
+Route::get('/container/indexReportAll', [ContainerController::class, 'indexContainerAll'])->name('container-report-all');
+Route::get('/container/sortByAll/export', [ContainerController::class, 'ExportAll'])->name('export-container-all');
+
+

@@ -123,4 +123,16 @@ class item extends Model
     {
         return $this->hasMany(Job::class, 'container_key', );
     }
+
+    public function PLC()
+    {
+        return $this->hasOne(ActAlat::class, 'container_key')
+                ->where('activity', 'PLC')
+                ->orderBy('created_at', 'desc');
+    }
+
+    public function CtrInv()
+    {
+        return $this->hasOne(ContainerInvoice::class, 'container_key');
+    }
 }

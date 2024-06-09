@@ -24,4 +24,9 @@ class ContainerInvoice extends Model
         'ctr_intern_status',
         'gross',
     ];
+
+    public function Form()
+    {
+        return $this->belongsTo(InvoiceForm::class, 'form_id');
+    }
 }
