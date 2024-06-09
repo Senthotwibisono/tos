@@ -65,7 +65,7 @@ class ImportZahir implements FromCollection, WithMapping, WithHeadings, ShouldAu
            '',
            $data->master_item_name,
            '',
-           $status,
+           '',
            '',
            '',
            '',
