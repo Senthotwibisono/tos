@@ -62,7 +62,7 @@ class GateRelokasiController extends Controller
         if ($item) {
             $service = $item->order_service;
             // SP2 BALIK IKS
-            if ($service === 'SP2IKS') {
+            if ($request->depo_return != null) {
                 $item->update([
                     'ctr_intern_status' => 14,
                     'ctr_status' => 'MTY',

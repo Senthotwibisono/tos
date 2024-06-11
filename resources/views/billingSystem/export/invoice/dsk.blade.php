@@ -15,7 +15,7 @@
 
 <style>
   @page {
-        size: 11in 9.5in;
+        size: 9.5in 11in;
         margin: 0;
     }
 
@@ -163,7 +163,7 @@
 
             </div>
           </div>
-          <div class="row">
+          <!-- <div class="row">
             <div class="col-12">
               <h3>CONTAINER SUMMARY</h3>
               <table class="table table-striped">
@@ -187,7 +187,7 @@
                 </tbody>
               </table>
             </div>
-          </div>
+          </div> -->
           <div class="row mt-3">
               <div class="col-md-12">
                   <h3>PRANOTA SUMMARY</h3>

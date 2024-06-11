@@ -57,7 +57,7 @@ class InvoiceExtend extends Controller
 
         $tumpuk = ImportDetail::where('count_by', 'T')->get();
         $invIds = $tumpuk->pluck('inv_id');
-        $data['oldInv'] = InvoiceImport::whereIn('id', $invIds)->where('lunas', '=', 'Y')->get();
+        $data['oldInv'] = InvoiceImport::whereIn('id', $invIds)->where('lunas', '=', 'Y')->where('inv_type', '=', 'DS')->get();
         $data['customer'] = Customer::get();
         $data['now'] = Carbon::now();
         $data['OrderService'] = OS::where('ie', '=', 'X')->get();
@@ -72,7 +72,7 @@ class InvoiceExtend extends Controller
 
         $tumpuk = ImportDetail::where('count_by', 'T')->get();
         $invIds = $tumpuk->pluck('inv_id');
-        $data['oldInv'] = InvoiceImport::whereIn('id', $invIds)->where('lunas', '=', 'Y')->get();
+        $data['oldInv'] = InvoiceImport::whereIn('id', $invIds)->where('lunas', '=', 'Y')->where('inv_type', '=', 'DS')->get();
         $data['customer'] = Customer::get();
         $data['now'] = Carbon::now();
         $data['OrderService'] = OS::where('ie', '=', 'X')->get();
@@ -903,6 +903,10 @@ class InvoiceExtend extends Controller
     {
         $data['title'] = 'Job Number';
         $data['inv'] = Extend::where('id', $id)->first();
+        $data['form'] = Form::where('id', $data['inv']->form_id)->first();
+        date_default_timezone_set('Asia/Jakarta');
+        $data['now'] = Carbon::now();
+        $data['formattedDate'] = $data['now']->format('l, d-m-Y');
         $data['job'] = JobExtend::where('inv_id', $id)->get();
         $data['cont'] = Item::get();
         foreach ($data['job'] as $jb) {

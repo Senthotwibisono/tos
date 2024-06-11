@@ -169,6 +169,7 @@
       var data = {
         'container_key': $('#container').val(),  
         'truck_no': $('#truck').val(),
+        'depo_return': $('#depo').val(),
 
 
 

@@ -11,54 +11,105 @@
   <link rel="shortcut icon" href="{{asset('logo/icon.png')}}" type="image/x-icon">
   <link rel="shortcut icon" href="{{asset('logo/icon.png')}}" type="image/png">
   <style>
-    .section {
-      padding-top: 5%;
+     body{
+        font-family: 'Roboto Condensed', sans-serif;
     }
-
-    .card {
-      margin-bottom: 20px;
-    }
-
-    .card-body {
-      padding: 15px;
-    }
-
-    .row {
-      display: flex;
-      flex-wrap: wrap;
-      margin-right: -15px;
-      margin-left: -15px;
-    }
-
-    .col-6 {
-      flex: 0 0 50%;
-      max-width: 50%;
-      padding-right: 15px;
-      padding-left: 15px;
-    }
-
-    .text-center {
-      text-align: center;
-    }
-
     .img {
       width: 100%;
-      max-width: 50%;
+      max-width: 100%;
       height: auto;
     }
 
-    h5 {
-      margin-top: 10px;
-      margin-bottom: 10px;
-      font-size: 14px;
-      font-weight: bold;
-    }
+    .page-break {
+                page-break-before: always;
+            }
 
-    h6 {
-      margin-top: 10px;
-      margin-bottom: 10px;
-      font-size: 12px;
-      font-weight: bold;
+            .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            padding: 5px;
+            font-size: 12px;
+            background-color: #f9f9f9;
+            border-top: 1px solid #ddd;
+        }
+    .m-0{
+        margin: 0px;
+    }
+    .p-0{
+        padding: 0px;
+    }
+    .pt-5{
+        padding-top:5px;
+    }
+    .mt-10{
+        margin-top:10px;
+    }
+    .text-center{
+        text-align:center !important;
+    }
+    .w-100{
+        width: 100%;
+    }
+    .w-50{
+        width:50%;   
+    }
+    .w-85{
+        width:85%;   
+    }
+    .w-15{
+        width:15%;   
+    }
+    .logo img{
+        width:45px;
+        height:45px;
+        padding-top:30px;
+    }
+    .logo span{
+        margin-left:8px;
+        top:19px;
+        position: absolute;
+        font-weight: bold;
+        font-size:25px;
+    }
+    .gray-color{
+        color:#5D5D5D;
+    }
+    .text-bold{
+        font-weight: bold;
+    }
+    .border{
+        border:1px solid black;
+    }
+    table tr,th,td{
+        border: 1px solid #d2d2d2;
+        border-collapse:collapse;
+        padding:7px 8px;
+    }
+    table tr th{
+        background: #F4F4F4;
+        font-size:15px;
+    }
+    table tr td{
+        font-size:13px;
+    }
+    table{
+        border-collapse:collapse;
+    }
+    .box-text p{
+        line-height:10px;
+    }
+    .float-left{
+        float:left;
+    }
+    .total-part{
+        font-size:16px;
+        line-height:12px;
+    }
+    .total-right p{
+        padding-right:20px;
     }
   </style>
 
@@ -68,19 +119,17 @@
 <body>
   @foreach($cont as $ct)
   @if($ct->container_key == $jb->container_key)
-  <div class="section">
+  <!-- <div class="section">
 
     <div class="row">
-      <!-- LEFT SIDE  -->
       <div class="card">
         <div class="card-body">
           <div class="row">
 
             <div class="col-6">
               <div class="text-center">
-                <img src="/logo/ICON2.png" class="img" alt="">
+                
                 <br>
-          <!-- Taruh Qr Qode Disini -->
                 {{$qrcodes[$jb->id]}}
                 <br>
                 <br>
@@ -99,7 +148,6 @@
               </div>
 
             </div>
-            <!-- RIGHT SIDE -->
             <div class="col-6">
               <div class="text-center">
                 <h6>EQUIPMENT INTERCHANGE RECEIPT (EIR)</h6>
@@ -113,7 +161,7 @@
       </div>
     </div>
 
-  </div>
+  </div> -->
   <section class="row">
     <div class="col-12">
 
@@ -122,55 +170,147 @@
           <div class="row">
 
             <div class="col-6 text-center">
-              <h3 class="bold">DEPO INDO KONTAINER SARANA PONTIANAK</h3>
+              <h4><strong>DEPO INDO KONTAINER SARANA PONTIANAK</strong></h4>
             </div>
-            <div class="col-6 text-center">
-              <h5 class="lead">No. Nota : {{$inv->proforma_no}} </h5>
-              <h5 class="lead">No. Invoice : {{$inv->inv_no}}</h5>
-              <h5 class="lead">No. Job : {{$jb->job_no}}</h5>
+            <div class="col-2 text-left">
+            <img src="/logo/ICON2.png" class="img" alt="">
+            </div>
+            <div class="col-4">
+                <div class="row">
+                  <div class="col-5">
+                    <h5 class="lead">No. Invoice </h5>
+                    <h5 class="lead">No. Nota  </h5>
+                    <h5 class="lead">No. Job </h5>
+                  </div>
+                  <div class="col-6">
+                    <h5 class="lead">: {{$inv->inv_no}}</h5>
+                    <h5 class="lead">: {{$inv->proforma_no}} </h5>
+                    <h5 class="lead">: {{$jb->job_no}}</h5>
+                  </div>
+              </div>
             </div>
           </div>
           <div class="row">
-            <div class="col-12 text-center py-5">
-              <h3 class="bold">SURAT PENYERAHAN PETIKEMAS (SP2)</h3>
+            <div class="col-12  py-5">
+              <div class="row">
+                <div class="col-8 text-center">
+                  <h3 class="bold">
+                    @if($form->service->order == "SP2")
+                      SURAT PENYERAHAN PETIKEMAS (SP2)</h3>
+                    @elseif($form->service->order == "SPPS")
+                      SURAT PENARIKAN PETIKEMAS STRIPPING (SPPS)
+                    @else
+                      Perpanjangan
+                    @endif
+                </div>
+                <div class="col-3 text-center">
+                   {{$qrcodes[$jb->id]}}
+                </div>
+              </div>
             </div>
-            <div class="col-5" style="margin-left: 50px;">
-              <h5 class="lead">No. Petikemas : {{$ct->container_no}}</h5>
-              <h5 class="lead">Ukuran / Statu : {{$ct->ctr_size}}</h5>
-              <h5 class="lead">Ex. Kapal / Voyage : {{$ct->ves_name}}--{{$ct->voy_no}}</h5>
-              <h5 class="lead">Agen : {{$ct->agent}}</h5>
-              <h5 class="lead">Lokasi dilapangan :{{$ct->yard_block}} / {{$ct->yard_slot}} / {{$ct->yard_row}} / {{$ct->yard_tier}}</h5>
-              <h5 class="lead">Penerima / Consignee : </h5>
-              <h5 class="lead">Tujuan : {{$ct->disch_port}}</h5>
-              <h5 class="lead">Remark : </h5>
-              <h5 class="lead">No. Kendaraan : </h5>
+            <div class="row">
+              <div class="col-4" style="margin-left: 100px;">
+                  <div class="row">
+                    <div class="col-6">
+                      <h5 class="lead">No. Petikemas</h5>
+                      <h5 class="lead">Ukuran / Status </h5>
+                      <h5 class="lead">Ex. Kapal / Voyage </h5>
+                      <h5 class="lead">Agen </h5>
+                      <h5 class="lead">Lokasi dilapangan</h5>
+                      <h5 class="lead">Tujuan </h5>
+                      <h5 class="lead">No. Kendaraan </h5>
+                    </div>
+                    <div class="col-6">
+                      <h5 class="lead">: {{$ct->container_no}}</h5>
+                      <h5 class="lead">: {{$ct->ctr_size}}</h5>
+                      <h5 class="lead">: {{$ct->ves_name}}--{{$ct->voy_no}}</h5>
+                      <h5 class="lead">: {{$ct->agent}}</h5>
+                      <h5 class="lead">: {{$ct->yard_block}} / {{$ct->yard_slot}} / {{$ct->yard_row}} / {{$ct->yard_tier}}</h5>
+                      <h5 class="lead">: {{$ct->disch_port}}</h5>
+                      <h5 class="lead">: </h5>
+                    </div>
+                  </div>
+                </div>
+                <!-- Commit Update -->
+                <div class="col-5" style="margin-left: 100px;">
+                  <style>
+                    .rectangle {
+                      display: inline-block;
+                      width: 30px;
+                      height: 30px;
+                      border: 2px solid #000;
+                      /* Set the border style with a black color */
+                      /* margin-left: 10px; */
+                      background: transparent;
+                      /* Make the background transparent */
+                    }
+                  </style>
+                  <div class="row">
+                    <div class="col-6">
+                      <h5 class="lead">Cek </h5>
+                      <h5 class="lead">O/H. O/W. Temp</h5>
+                      <h5 class="lead">Tgl. Tiba</h5>
+                      <h5 class="lead">No. B/L</h5>
+                      <h5 class="lead">No. D.O</h5>
+                      <h5 class="lead">Pembayaran dari Tgl.</h5>
+                      <h5 class="lead">s/d Tgl.</h5>
+                    </div>
+                    <div class="col-6">
+                      <h5 class="lead"><span class="rectangle"></span></h5>
+                      <h5 class="lead">:  {{$ct->over_height}} // {{$ct->over_weight}}</h5>
+                      <h5 class="lead">:  {{$ct->disc_date}}</h5>
+                      <h5 class="lead">:  {{$form->doOnline->bl_no}}</h5>
+                      <h5 class="lead">:  {{$form->doOnline->do_no}}</h5>
+                      <h5 class="lead">:  {{$inv->order_at}}</h5>
+                      <h5 class="lead">:  {{$jb->active_to}}</h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <!-- Commit Update -->
-            <div class="col-5" style="margin-left: 100px;">
-              <style>
-                .rectangle {
-                  display: inline-block;
-                  width: 30px;
-                  height: 30px;
-                  border: 2px solid #000;
-                  /* Set the border style with a black color */
-                  /* margin-left: 10px; */
-                  background: transparent;
-                  /* Make the background transparent */
-                }
-              </style>
-              <h5 class="lead">Cek <span class="rectangle"></span></h5>
-              <h5 class="lead">O/H. O/W. Temp : {{$ct->over_height}} // {{$ct->over_weight}}</h5>
-              <h5 class="lead">Tgl. Tiba : {{$ct->disc_date}}</h5>
-              <h5 class="lead">No. B/L : </h5>
-              <h5 class="lead">No. D.O : {{$inv->do_no}}</h5>
-              <h5 class="lead">Pembayaran dari Tgl. :{{$inv->order_at}}</h5>
-              <h5 class="lead">s/d Tgl. : {{$jb->active_to}}</h5>
-
-
+            <br>
+            <div class="row">
+              <div class="col-6">
+                <div class="row">
+                  <div class="col-6 text-center">
+                    <p>Petugas Lapangan</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="row">
+                  <div class="col-6 text-center">
+                    <div class="col-12 text-left">
+                    <p><strong>Pontianak, {{$formattedDate}}</strong></p>
+                    <p>PT. INDO KONTAINER SARANA</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="row pt-5">
+            <br>
+            <br>
+            <br>
+            <br>
+            <div class="row">
+              <div class="col-6">
+                <div class="row">
+                  <div class="col-6 text-center">
+                   <hr>
+                   (Nama Jelas)
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="row">
+                  <div class="col-6 text-center">
+                  <hr>
+                  (Nama Jelas)
+                  </div>
+                </div>
+              </div>
+            </div>
+          <!-- <div class="row pt-5">
             <div class="col-5" style="margin-left: 50px;">
               <h5 class="bold">PETUGAS LAPANGAN</h5>
               <br>
@@ -223,14 +363,15 @@
 
             </div>
           </div>
-        </div>
+        </div> -->
 
       </div>
     </div>
     </div>
   </section>
   @endif
-@endforeach
+  @endforeach
+  <div class="page-break"></div>
 </body>
 @endforeach
 

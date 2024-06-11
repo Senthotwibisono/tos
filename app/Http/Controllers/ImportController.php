@@ -1812,6 +1812,10 @@ private function getNextJob($lastJobNo)
     {
         $data['title'] = 'Job Number';
         $data['inv'] = InvoiceImport::where('id', $id)->first();
+        $data['form'] = Form::where('id', $data['inv']->form_id)->first();
+        date_default_timezone_set('Asia/Jakarta');
+        $data['now'] = Carbon::now();
+        $data['formattedDate'] = $data['now']->format('l, d-m-Y');
         if ($data['inv']->extend == 'Y') {
             return back()->with('error', 'Job Telah Di Perbarui, Silahkan Cek Menu Extend');
         }
