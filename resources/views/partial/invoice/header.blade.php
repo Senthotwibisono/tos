@@ -46,3 +46,6 @@
     overflow: hidden;
   }
 </style>
+@if(View::hasSection('custom_styles'))
+@yield('custom_styles')
+@endif

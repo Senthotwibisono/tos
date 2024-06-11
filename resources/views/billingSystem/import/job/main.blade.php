@@ -259,8 +259,8 @@
                       <h5 class="lead"><span class="rectangle"></span></h5>
                       <h5 class="lead">:  {{$ct->over_height}} // {{$ct->over_weight}}</h5>
                       <h5 class="lead">:  {{$ct->disc_date}}</h5>
-                      <h5 class="lead">:  {{$form->doOnline->bl_no}}</h5>
-                      <h5 class="lead">:  {{$form->doOnline->do_no}}</h5>
+                      <h5 class="lead">:  {{$form->doOnline->bl_no ?? ''}}</h5>
+                      <h5 class="lead">:  {{$form->doOnline->do_no ?? ''}}</h5>
                       <h5 class="lead">:  {{$inv->order_at}}</h5>
                       <h5 class="lead">:  {{$jb->active_to}}</h5>
                     </div>
@@ -310,6 +310,56 @@
                 </div>
               </div>
             </div>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br>
+            <div class="row mt-4">
+            <div class="col-4">
+              
+              <p class="bold">PENERIMA : </p>
+              <br>
+              <br>
+              <br>
+              <hr>
+              <p><i>(Nama Jelas)</i></p>
+
+            </div>
+            <div class="col-4 text-center pt-5">
+              <img src="/images/GATE.png" class="img" style="width: 100% !important; max-width:100% !important;" alt="">
+            </div>
+            <div class="col-4">
+
+              <p class="bold">PETUGAS PINTU : </p>
+              <br>
+              <br>
+              <br>
+              <hr>
+              <p><i>(Nama Jelas)</i></p>
+
+            </div>
+          </div>
           <!-- <div class="row pt-5">
             <div class="col-5" style="margin-left: 50px;">
               <h5 class="bold">PETUGAS LAPANGAN</h5>
@@ -335,34 +385,7 @@
               <img src="/images/container.png" class="img" style="width: 100% !important; max-width:100% !important;" alt="">
             </div>
           </div>
-          <div class="row mt-4">
-            <div class="col-4">
-              <h5 class="bold">Seal Nomor : </h5>
-              <h4 class="bold">KETERANGAN TAMBAHAN : </h4>
-              <br>
-              <br>
-              <br>
-              <br>
-              <p class="bold">PENERIMA : </p>
-              <br>
-              <br>
-              <br>
-              <p><i>(Nama Jelas)</i></p>
-
-            </div>
-            <div class="col-4 text-center pt-5">
-              <img src="/images/GATE.png" class="img" style="width: 100% !important; max-width:100% !important;" alt="">
-            </div>
-            <div class="col-4" style="padding-top : 150px;">
-
-              <p class="bold">PETUGAS PINTU : </p>
-              <br>
-              <br>
-              <br>
-              <p><i>(Nama Jelas)</i></p>
-
-            </div>
-          </div>
+          
         </div> -->
 
       </div>

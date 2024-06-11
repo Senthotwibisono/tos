@@ -210,7 +210,40 @@ class MasterTarifController extends Controller
         return redirect('/billing/dock-DO')->with('success', 'Data berhasil diimpor.');
     }
 
+    public function deleteDo(Request $request)
+    {
+        $do = DOonline::where('id', $request->id)->first();
+        if ($do) {
+            $do->delete();
+            return redirect()->back()->with('success', 'Data Berhasil di Hapus.');
+        }else {
+            return redirect()->back()->with('error', 'Something Wrong, Call the Admin.');
+        }
+    }
 
+    public function doEdit($id)
+    {
+        $do = DOonline::where('id', $id)->first();
+        $data['title'] = "Edit DO ".$do->do_no;
+        $data['do'] = $do;
+        return view('billingSystem.do.edit', $data);
+    }
+
+    public function doUpdate(Request $request)
+    {
+        $do = DOonline::where('id', $request->id)->first();
+        if ($do) {
+            $do->update([
+                'do_no'=>$request->do_no,
+                'container_no'=>$request->container_no,
+                'bl_no'=>$request->bl_no,
+                'expired'=>$request->expired,
+            ]);
+            return redirect()->back()->with('success', 'Data Berhasil di Update.');
+        }else {
+            return redirect()->back()->with('error', 'Something Wrong, Call the Admin.');
+        }
+    }
 
 
 
