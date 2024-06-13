@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
-use App\Http\Models\VVoyage;
 
 class item extends Model
 {
@@ -13,11 +12,6 @@ class item extends Model
     protected $table = 'item';
     public $timestamps = false;
     protected $primaryKey = 'container_key';
-   
-    public function VVoyage()
-    {
-        return $this->belongsTo(VVoyage::class, 'ves_id');
-    }
 
     protected $fillable = [
         'container_key',
@@ -134,6 +128,10 @@ class item extends Model
     public function service()
     {
         return $this->belongsTo(OrderService::class, 'os_id', 'id');
+    }
+    public function Kapal()
+    {
+        return $this->belongsTo(VVoyage::class, 'ves_id');
     }
     public function CtrInv()
     {

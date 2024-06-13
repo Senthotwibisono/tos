@@ -899,6 +899,9 @@ Route::get('/billing/coparn/upload-single', [CoparnController::class, 'uploadSin
 Route::get('/billing/coparn/get-vessel', [CoparnController::class, 'getVesselData'])->name('getVesselData');
 Route::post('/billing/coparn/postFile', [CoparnController::class, 'storeData'])->name('storeData');
 Route::post('/billing/coparn/postSingleCoparn', [CoparnController::class, 'storeDataSingle'])->name('storeDataSingle');
+Route::get('/billing/coparn/edit-{id?}', [CoparnController::class, 'editCoparn'])->name('editCoparn');
+Route::post('/billing/coparn/update', [CoparnController::class, 'updateCoparn'])->name('updateCoparn');
+
 
 // invoice Export
 Route::get('/billing/export/delivey-system', [InvoiceExportController::class, 'billingMain'])->name('billingExportMain');

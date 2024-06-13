@@ -61,61 +61,65 @@ class GateRelokasiController extends Controller
 
         if ($item) {
             $service = $item->order_service;
-            // SP2 BALIK IKS
-            if ($request->depo_return != null) {
-                $item->update([
-                    'ctr_intern_status' => 14,
-                    'ctr_status' => 'MTY',
-                    'ctr_active_yn' => 'Y',
-                    'truck_no' => $request->truck_no,
-                ]);
-                
-
-                    return response()->json([
-                        'success' => true,
-                        'message' => 'Silahkan Menuju Bagian Placement',
-                        'data'    => $item,
+            if ($item->ves_id == "PELINDO") {
+                if ($service === 'SPPS') {
+                    $item->update([
+                        'ctr_intern_status' => 12,
+                        'order_service' => $request->order_service,
+                        'no_dok' => $request->no_dok,
+                        'jenis_dok' => $request->jenis_dok,
+                        'truck_no' => $request->truck_no,
+                        'job_no' => $request->job_no,
+                        'invoice_no' => $request->invoice_no,
                     ]);
-               
-
-                // SPPS RELOKASI
-            } elseif ($service === 'SPPSRELOKASI') {
-                $item->update([
-                    'ctr_intern_status' => 12,
-                    'order_service' => $request->order_service,
-                    'no_dok' => $request->no_dok,
-                    'jenis_dok' => $request->jenis_dok,
-                    'truck_no' => $request->truck_no,
-                    'job_no' => $request->job_no,
-                    'invoice_no' => $request->invoice_no,
-                ]);
-              
-
-                    return response()->json([
-                        'success' => true,
-                        'message' => 'Silahkan Menuju Bagian Placement',
-                        'data'    => $item,
+                  
+    
+                        return response()->json([
+                            'success' => true,
+                            'message' => 'Silahkan Menuju Bagian Placement',
+                            'data'    => $item,
+                        ]);
+    
+                    // SP2 RELOKASI
+                } elseif ($service === 'SP2') {
+                    $item->update([
+                        'ctr_intern_status' => 13,
+                        'order_service' => $request->order_service,
+                        'no_dok' => $request->no_dok,
+                        'jenis_dok' => $request->jenis_dok,
+                        'truck_no' => $request->truck_no,
+                        'job_no' => $request->job_no,
+                        'invoice_no' => $request->invoice_no,
                     ]);
-
-                // SP2 RELOKASI
-            } elseif ($service === 'SP2RELOKASI') {
-                $item->update([
-                    'ctr_intern_status' => 13,
-                    'order_service' => $request->order_service,
-                    'no_dok' => $request->no_dok,
-                    'jenis_dok' => $request->jenis_dok,
-                    'truck_no' => $request->truck_no,
-                    'job_no' => $request->job_no,
-                    'invoice_no' => $request->invoice_no,
-                ]);
-
-                    return response()->json([
-                        'success' => true,
-                        'message' => 'Silahkan Menuju Bagian Placement',
-                        'data'    => $item,
+    
+                        return response()->json([
+                            'success' => true,
+                            'message' => 'Silahkan Menuju Bagian Placement',
+                            'data'    => $item,
+                        ]);
+                  
+                }
+            }else {
+                if ($request->depo_return != null) {
+                    $item->update([
+                        'ctr_intern_status' => 14,
+                        'ctr_status' => 'MTY',
+                        'ctr_active_yn' => 'Y',
+                        'truck_no' => $request->truck_no,
                     ]);
-              
+                    
+    
+                        return response()->json([
+                            'success' => true,
+                            'message' => 'Silahkan Menuju Bagian Placement',
+                            'data'    => $item,
+                        ]);
+                   
+    
+                    // SPPS RELOKASI
+                } 
             }
+            
         }else {
             return response()->json([
                 'success' => false,
