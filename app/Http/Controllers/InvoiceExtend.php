@@ -57,7 +57,7 @@ class InvoiceExtend extends Controller
 
         $tumpuk = ImportDetail::where('count_by', 'T')->get();
         $invIds = $tumpuk->pluck('inv_id');
-        $data['oldInv'] = InvoiceImport::whereIn('id', $invIds)->where('lunas', '=', 'Y')->where('inv_type', '=', 'DS')->get();
+        $data['oldInv'] = InvoiceImport::where('lunas', '=', 'Y')->get();
         $data['customer'] = Customer::get();
         $data['now'] = Carbon::now();
         $data['OrderService'] = OS::where('ie', '=', 'X')->get();
@@ -72,7 +72,7 @@ class InvoiceExtend extends Controller
 
         $tumpuk = ImportDetail::where('count_by', 'T')->get();
         $invIds = $tumpuk->pluck('inv_id');
-        $data['oldInv'] = InvoiceImport::whereIn('id', $invIds)->where('lunas', '=', 'Y')->where('inv_type', '=', 'DS')->get();
+        $data['oldInv'] = InvoiceImport::where('lunas', '=', 'Y')->get();
         $data['customer'] = Customer::get();
         $data['now'] = Carbon::now();
         $data['OrderService'] = OS::where('ie', '=', 'X')->get();
@@ -478,7 +478,7 @@ class InvoiceExtend extends Controller
 
         $oldInv = InvoiceImport::where('id', $form->do_id)->first();
         $cust = Customer::where('id', $request->cust_id)->first();
-        $invoiceNo = $oldInv->inv_type . '-' . $this->getNextInvoiceExtend();
+        $invoiceNo = 'DS-' . $this->getNextInvoiceExtend();
         $extend = Extend::create([
             'form_id'=>$form->id,
             'proforma_no'=>$oldInv->proforma_no,
@@ -594,7 +594,7 @@ class InvoiceExtend extends Controller
         $oldInv = InvoiceImport::where('id', $request->inv_id)->first();
         $cont = "["."". $request->contKey_Selected . "" ."]";
         $cust = Customer::where('id', $request->cust_id)->first();
-        $invoiceNo = $oldInv->inv_type . '-' . $this->getNextInvoiceExtend();
+        $invoiceNo = 'DS-' . $this->getNextInvoiceExtend();
         $itemtArray = json_decode($cont);
         $item = Item::where('container_key', $itemtArray)->get();
         $extend = Extend::create([
@@ -883,7 +883,7 @@ class InvoiceExtend extends Controller
     {
         $data['title'] = "Invoice";
         $data['invoice'] = Extend::where('id', $id)->first();
-
+        $data['form'] = Form::where('id', $data['invoice']->form_id)->first();
         $data['item'] = Container::where('form_id', $data['invoice']->form_id)->orderBy('ctr_size', 'asc')->get();
         $invDetail = Detail::where('inv_id', $id)->whereNot('count_by', '=', 'O')->orderBy('count_by', 'asc')->orderBy('kode', 'asc')->get();
         $data['invGroup'] = $invDetail->groupBy('ukuran');

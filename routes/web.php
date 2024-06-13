@@ -851,7 +851,7 @@ Route::post('/billing/customer/update', [MasterTarifController::class, 'updateCu
 
 Route::get('/billing/dock-DO', [MasterTarifController::class, 'doMain'])->name('doMain');
 Route::post('/billing/dock-DO/upload', [MasterTarifController::class, 'doUpload'])->name('doUpload');
-Route::post('/billing/dock-DO/upload', [MasterTarifController::class, 'deleteDo'])->name('deleteDo');
+Route::post('/billing/dock-DO/delete', [MasterTarifController::class, 'deleteDo'])->name('deleteDo');
 Route::get('/edit/doOnline/{id?}', [MasterTarifController::class, 'doEdit'])->name('doEdit');
 Route::post('/update/doOnline/{id?}', [MasterTarifController::class, 'doUpdate'])->name('doUpdate');
 

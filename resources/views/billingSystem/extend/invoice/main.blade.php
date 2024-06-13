@@ -14,79 +14,95 @@
 
 
 <style>
-  @page {
-        size: 11in 9.5in;
-        margin: 0;
-    }
-
-    body {
+ body{
+        font-family: 'Roboto Condensed', sans-serif;
         margin: 0;
         padding: 0;
-        background: #eee;
-        font-family: Arial, sans-serif;
-        font-size: 10px; /* Reduced from 12px */
+    }
+    .img {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
     }
 
-    .container {
+    .page-break {
+                page-break-before: always;
+            }
+    .m-0{
+        margin: 0px;
+    }
+    .p-0{
+        padding: 0px;
+    }
+    .pt-5{
+        padding-top:5px;
+    }
+    .mt-10{
+        margin-top:10px;
+    }
+    .text-center{
+        text-align:center !important;
+    }
+    .w-100{
         width: 100%;
-        max-width: 950px;
-        margin: 0 auto;
-        padding: 20px; /* Reduced from 30px */
-        background: #fff;
     }
-
-    .invoice-title h2, .invoice-title .small {
-        display: inline-block;
-        font-size: 14px; /* Reduced from default size */
+    .w-50{
+        width:50%;   
     }
-
-    .invoice hr {
-        margin-top: 10px;
-        border-color: #ddd;
+    .w-85{
+        width:85%;   
     }
-
-    .invoice .table {
-        width: 100%;
-        margin-bottom: 15px; /* Reduced from 20px */
+    .w-15{
+        width:15%;   
     }
-
-    .invoice .table th, .invoice .table td {
-        padding: 6px; /* Reduced from 8px */
-        border-bottom: 1px solid #ddd;
-        font-size: 10px; /* Reduced from default size */
+    .logo img{
+        width:45px;
+        height:45px;
+        padding-top:30px;
     }
-
-    .invoice .table th {
-        background: #f5f5f5;
+    .logo span{
+        margin-left:8px;
+        top:19px;
+        position: absolute;
+        font-weight: bold;
+        font-size:25px;
     }
-
-    .invoice .identity {
-        margin-top: 10px;
-        font-size: 10px; /* Reduced from 1.1em */
-        font-weight: 300;
+    .gray-color{
+        color:#5D5D5D;
     }
-
-    .invoice .identity strong {
-        font-weight: 600;
+    .text-bold{
+        font-weight: bold;
     }
-
-    .grid {
-        padding: 15px; /* Reduced from 20px */
-        margin-bottom: 20px; /* Reduced from 25px */
-        border-radius: 2px;
-        box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
+    .border{
+        border:1px solid black;
     }
-
-    .text-right {
-        text-align: right;
+    table tr,th,td{
+        border: 1px solid #d2d2d2;
+        border-collapse:collapse;
+        padding:7px 8px;
     }
-
-    .mt-3 {
-        margin-top: 0.5rem; /* Reduced from 1rem */
+    table tr th{
+        background: #F4F4F4;
+        font-size:15px;
     }
-
-    .p-3 {
-        padding: 0.5rem; /* Reduced from 1rem */
+    table tr td{
+        font-size:13px;
+    }
+    table{
+        border-collapse:collapse;
+    }
+    .box-text p{
+        line-height:10px;
+    }
+    .float-left{
+        float:left;
+    }
+    .total-part{
+        font-size:16px;
+        line-height:12px;
+    }
+    .total-right p{
+        padding-right:20px;
     }
 </style>
 
@@ -152,18 +168,32 @@
               </div>
               <div class="col-xs-12 col-12">
                 <address>
+                  <strong>Active To:</strong><br>
+                  {{$invoice->expired_date}}
+                </address>
+              </div>
+              <div class="col-xs-12 col-12">
+                <address>
                   <strong>Metode Pembayaran</strong><br>
-                  Nama Bank : <strong>Bank Central Asia (BCA)</strong> <br>
+                  Nama Bank : <strong>MANDIRI</strong> <br>
                   Pemilik Rekening :  <strong>PT. INDO KONTAINER SARANA</strong><br>
-                  Kode Bank : <strong>014</strong><br>
-                  Nomor Rekening : <strong>0295197531</strong><br>
+                  Kode Bank : <strong>008</strong><br>
+                  Nomor Rekening : <strong>1460002771975</strong><br>
+                  <!-- h.elaine@gmail.com<br> -->
+                </address>
+                <address>
+                  <strong>Veesel</strong><br>
+                  Ves Name : <strong>{{$form->Kapal->ves_name}}</strong> <br>
+                  Voy No :  <strong>{{$form->Kapal->voy_in}}</strong><br>
+                  Arrival Date : <strong>{{$form->Kapal->arrival_date}}</strong><br>
+                  Departure Date : <strong>{{$form->Kapal->deparature_date}}</strong><br>
                   <!-- h.elaine@gmail.com<br> -->
                 </address>
               </div>
 
             </div>
           </div>
-          <div class="row">
+          <!-- <div class="row">
             <div class="col-12">
               <h3>CONTAINER SUMMARY</h3>
               <table class="table table-striped">
@@ -187,7 +217,7 @@
                 </tbody>
               </table>
             </div>
-          </div>
+          </div> -->
           <div class="row mt-3">
               <div class="col-md-12">
                   <h3>INVOICE SUMMARY</h3>

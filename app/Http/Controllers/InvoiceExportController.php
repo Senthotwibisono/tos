@@ -1027,6 +1027,7 @@ class InvoiceExportController extends Controller
         $data['title'] = "Invoice";
 
         $data['invoice'] = InvoiceExport::where('id', $id)->first();
+        $data['form'] = Form::where('id', $data['invoice']->form_id)->first();
         $data['contInvoice'] = Container::where('form_id', $data['invoice']->form_id)->orderBy('ctr_size', 'asc')->get();
         $invDetail = Detail::where('inv_id', $id)->whereNot('count_by', '=', 'O')->orderBy('count_by', 'asc')->orderBy('kode', 'asc')->get();
         $data['invGroup'] = $invDetail->groupBy('ukuran');
@@ -1045,7 +1046,7 @@ class InvoiceExportController extends Controller
         $data['title'] = "Invoice";
 
         $data['invoice'] = InvoiceExport::where('id', $id)->first();
-
+        $data['form'] = Form::where('id', $data['invoice']->form_id)->first();
         $data['contInvoice'] = Container::where('form_id', $data['invoice']->form_id)->orderBy('ctr_size', 'asc')->get();
         $invDetail = Detail::where('inv_id', $id)->whereNot('count_by', '=', 'O')->orderBy('count_by', 'asc')->orderBy('kode', 'asc')->get();
         $data['invGroup'] = $invDetail->groupBy('ukuran');
