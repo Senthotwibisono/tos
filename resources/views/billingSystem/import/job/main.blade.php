@@ -23,18 +23,6 @@
     .page-break {
                 page-break-before: always;
             }
-
-            .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            padding: 5px;
-            font-size: 12px;
-            background-color: #f9f9f9;
-            border-top: 1px solid #ddd;
-        }
     .m-0{
         margin: 0px;
     }
@@ -277,7 +265,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-6">
+              <div class="col-6 text-right">
                 <div class="row">
                   <div class="col-6 text-center">
                     <div class="col-12 text-left">
@@ -310,9 +298,6 @@
                 </div>
               </div>
             </div>
-              <br>
-              <br>
-              <br>
               <br>
               <br>
               <br>
