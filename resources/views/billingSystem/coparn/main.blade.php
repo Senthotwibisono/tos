@@ -55,6 +55,7 @@
                     <th>Container No</th>
                     <th>Booking No</th>
                     <th>Vessel</th>
+                    <th>Edit</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -64,6 +65,9 @@
                     <td>{{$cont->container_no}}</td>
                     <td>{{$cont->booking_no}}</td>
                     <td>{{$cont->ves_name}}</td>
+                    <td>
+                      <a href="/billing/coparn/edit-{{$cont->container_key}}" class="btn btn-warning"><i class="fa fa-pencil"></i></a>
+                    </td>
                 </tr>
                 @endforeach
                 </tbody>
