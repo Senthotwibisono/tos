@@ -9,6 +9,7 @@ use App\Models\Yard;
 use App\Models\RO;
 use App\Models\RO_Gate;
 use App\Models\RO_Realisasi;
+use App\Models\OrderService;
 use Auth;
 
 use Illuminate\Http\Request;
@@ -126,11 +127,21 @@ class Gato extends Controller
     {
         $container_key = $request->container_key;
         $name = Item::where('container_key', $container_key)->first();
+        $os = OrderService::where('id', $name->os_id)->first();
+        // var_dump($name);
+        // die;
+        if ($os->return_yn == "Y") {
+            $return = "MT Kembali";
+            $depo = $os->depo_return;
+        }else {
+            $return = "MT Tidak Kembali";
+            $depo = "MT Tidak Kembali";
+        }
 
         if ($name) {
-            return response()->json(['container_no' => $name->container_no, 'job' => $name->job_no, 'invoice' => $name->invoice_no, 'operator' => $name->ctr_opr]);
+            return response()->json(['container_no' => $name->container_no, 'job' => $name->job_no, 'invoice' => $name->invoice_no, 'operator' => $name->ctr_opr, 'return'=>$return, 'depo'=>$depo]);
         }
-        return response()->json(['container_no' => 'data tidak ditemukan', 'job' => 'data tidak ditemukan', 'invoice' => 'data tidak ditemukan', 'operator' => 'data tidak ditemukan']); 
+        return response()->json(['container_no' => 'data tidak ditemukan', 'job' => 'data tidak ditemukan', 'invoice' => 'data tidak ditemukan', 'operator' => 'data tidak ditemukan', 'return' => 'data tidak ditemukan', 'depo' => 'data tidak ditemukan']); 
     }
 
     public function gato_del(Request $request)

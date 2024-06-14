@@ -91,6 +91,22 @@
                           </div>
                         </div>
                         <div class="col-12">
+                          <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="">Return</label>
+                                    <input type="text" class="form-control" readonly id="return">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="">Depo Return</label>
+                                    <input type="text" class="form-control" readonly id="depo">
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12">
                             <div class="form-group">
                                 <label for="first-name-vertical">Truck Number</label>
                                 <input type="text" id="tayo" class="form-control" name="truck_no" required>
@@ -236,6 +252,8 @@
                         $('#job').val(response.job);
                         $('#opr').val(response.operator);
                         $('#invoice').val(response.invoice);
+                        $('#return').val(response.return);
+                        $('#depo').val(response.depo);
                     },
                     error: function(data) {
                         console.log('error:', data);

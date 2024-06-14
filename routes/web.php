@@ -773,6 +773,7 @@ Route::get('/edi/detail-container-{ves_id}', [EdiController::class, 'get_cont'])
 // Docs
 // ro
 Route::get('/docs/dokumen/ro', [DocsController::class, 'index_ro']);
+Route::get('/docs/dokumen/ro-android', [DocsController::class, 'Androidindex_ro']);
 Route::get('/docs/dokumen/ro/detail-{ro_no}', [DocsController::class, 'container_ro']);
 Route::post('/docs/ro-pdf', [DocsController::class, 'pdf_ro'])->name('pdf.ro');
 Route::post('/docs/update-ro', [DocsController::class, 'update_ro']);
