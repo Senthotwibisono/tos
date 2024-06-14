@@ -20,7 +20,7 @@
         <div class="card" id="load_ini">
             <div class="card-header">
                 <button class="btn icon icon-left btn-outline-info text-danger" data-bs-toggle="modal" data-bs-target="#success">
-                    <i class="fa fa-truck" aria-hidden="true"></i>Gate Out
+                <i class="fa fa-truck" aria-hidden="true"></i>Gate Out
             </div>
             <div class="card-body">
                 <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
@@ -91,6 +91,22 @@
                           </div>
                         </div>
                         <div class="col-12">
+                          <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="">Return</label>
+                                    <input type="text" class="form-control" readonly id="return">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="">Depo Return</label>
+                                    <input type="text" class="form-control" readonly id="depo">
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-12">
                             <div class="form-group">
                                 <label for="first-name-vertical">Truck Number</label>
                                 <input type="text" id="tayo" class="form-control" name="truck_no" required>
@@ -108,11 +124,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-light-secondary d-block d-sm-none" data-bs-dismiss="modal"> <i class="bx bx-x"></i>Close</button>
-                <button type="submit" class="btn btn-success ml-1 d-block d-sm-none update_status"><i class="bx bx-check"></i>Confirm</button>
-
-                <button type="button" class="btn btn-light-secondary d-none d-sm-block" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i>Close</button>
-                <button type="submit" class="btn btn-success ml-1 d-none d-sm-block update_status"><i class="bx bx-check d-block d-sm-none"></i>Confirm</button>
+                <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i><span class="d-none d-sm-block">Close</span></button>
+                <button type="submit" class="btn btn-success ml-1 update_status"><i class="bx bx-check d-block d-sm-none"></i><span class="d-none d-sm-block">Confirm</span></button>
             </div>
         </div>
     </div>
@@ -170,7 +183,7 @@
         }).then((result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
-
+                
                 $.ajax({
                     type: 'POST',
                     url: '/gato-del',
@@ -178,7 +191,6 @@
                     cache: false,
                     dataType: 'json',
                     success: function(response) {
-                        Swal.fire('Saved!', '', 'success')
                         console.log(response);
                         if (response.success) {
                             Swal.fire('Saved!', '', 'success')
@@ -189,23 +201,24 @@
                         } else {
                             Swal.fire('Error', response.message, 'error');
                         }
+                       
                     },
                     error: function(response) {
-                        var errors = response.responseJSON.errors;
-                        if (errors) {
-                            var errorMessage = '';
-                            $.each(errors, function(key, value) {
-                                errorMessage += value[0] + '<br>';
-                            });
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Validation Error',
-                                html: errorMessage,
-                            });
-                        } else {
-                            console.log('error:', response);
-                        }
-                    },
+                    var errors = response.responseJSON.errors;
+                    if (errors) {
+                        var errorMessage = '';
+                        $.each(errors, function(key, value) {
+                            errorMessage += value[0] + '<br>';
+                        });
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Validation Error',
+                            html: errorMessage,
+                        });
+                    } else {
+                        console.log('error:', response);
+                    }
+                },
                 });
 
             } else if (result.isDenied) {
@@ -239,6 +252,8 @@
                         $('#job').val(response.job);
                         $('#opr').val(response.operator);
                         $('#invoice').val(response.invoice);
+                        $('#return').val(response.return);
+                        $('#depo').val(response.depo);
                     },
                     error: function(data) {
                         console.log('error:', data);

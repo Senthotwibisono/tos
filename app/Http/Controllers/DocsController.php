@@ -33,6 +33,17 @@ class DocsController extends Controller
         return view('docs.dokumen.ro', compact('title', 'ro', 'vessel_voyage', 'port'));
     }
 
+    public function Androidindex_ro()
+    {
+        $title = 'Dokumen R.O';
+
+        $ro = RO::orderBy('created_at', 'desc')->get();
+        $vessel_voyage = VVoyage::whereDate('deparature_date', '>=', now())->get();
+        $port = Port::all();
+
+        return view('docs.dokumen.androidRo', compact('title', 'ro', 'vessel_voyage', 'port'));
+    }
+
     public function pdf_ro(Request $request)
     {
         $file = $request->file('file');

@@ -94,6 +94,8 @@
                                         <lottie-player src="https://lottie.host/cb74262b-92a5-488b-8e47-d12410b5fcd6/lZ1GfrbXOQ.json" background="#FFFFFF" speed="1" width="150" height="150" loop autoplay></lottie-player>
                                         <a href="/stuffing/gate-out-stuffing-android" class="btn btn-danger rounded-pill">Gate Out Stuffing</a>
                                     </div>
+                                    <!-- <hr>
+                                    <a href="/docs/dokumen/ro-android" class="btn btn-primary rounded-pill">Dokumen RO</a> -->
                                 </div>
                             </div>
                         </div>

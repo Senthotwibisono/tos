@@ -151,7 +151,7 @@ class InvoiceExportController extends Controller
             ]);
         }
         $cont = Item::where('ro_no', $RoNo)
-        ->whereIn('ctr_intern_status', ['04', '06', '53'])
+        ->whereIn('ctr_intern_status', ['04', '06', '53', '56'])
         ->where('selected_do', 'N')
         ->get();
             

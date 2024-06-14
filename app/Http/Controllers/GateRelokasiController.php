@@ -31,7 +31,7 @@ class GateRelokasiController extends Controller
     {
         $title = 'Gate Rlokasi';
         $item = Item::whereIn('ctr_intern_status',  ['09', '11', '15'])->get();
-        $item_confirmed = Item::whereiN('ctr_intern_status',  ['12', '13'])->get();
+        $item_confirmed = Item::whereiN('ctr_intern_status',  ['12', '13', '14'])->get();
 
         return view('gate.relokasi.android', compact('item', 'title', 'item_confirmed'));
     }
