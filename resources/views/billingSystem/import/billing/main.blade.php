@@ -46,6 +46,247 @@
   </section>
 
   
+  <section class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title">Tabel Data Billing Delivery (Belum Bayar)</h4>
+            <p>Rekap Data Billing</p>
+          </div>
+          <div class="card-body">
+            <!-- <form action="{{ route('report-invoice-import')}}" method="GET" enctype="multipart/form-data">
+              <div class="row">
+
+                <div class="col-4">s
+                  <div class="form-group">
+                    <label>Pick Start Date Range</label>
+
+                    <input type="date" name="start" class="form-control" required>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-group">
+                    <label>Pick End Date Range</label>
+
+                    <input type="date" name="end" class="form-control" required>
+
+                  </div>
+                </div>
+                <div class="col-4 mt-4">
+                  <button class="btn btn-primary" type="submit"><i class=" fa fa-file"></i> Export Active Invoice to Excel</button>
+                </div>
+              </div>
+            </form> -->
+
+            <div class="row">
+
+              <div class="col-12">
+                <table class="dataTable-wrapperIMP dataTable-loading no-footer sortable searchable fixed-columns" id="tableImp">
+                  <thead>
+                    <tr>
+                      <th>Proforma No</th>
+                      <th>Customer</th>
+                      <th>Order Service</th>
+                      <th>Tipe Invoice</th>
+                      <th>Dibuat Pada</th>
+                      <th>Status</th>
+                      <th>Pranota</th>
+                      <th>Invoice</th>
+                      <th>Job</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  @foreach($unPaids as $inv)
+                    <tr>
+                      <td>{{$inv->proforma_no}}</td>
+                      <td>{{$inv->cust_name}}</td>
+                      <td>{{$inv->os_name}}</td>
+                      <td>{{$inv->inv_type}}</td>
+                      <td>{{$inv->order_at}}</td>
+                      @if($inv->lunas == "N")
+                      <td>
+                      <span class="badge bg-danger text-white">Not Paid</span>
+                      </td>
+                      @elseif($inv->lunas == "P")
+                      <td>
+                      <span class="badge bg-warning text-white">Piutang</span>
+                      </td>
+                      @else
+                      <td>
+                      <span class="badge bg-success text-white">Paid</span>
+                      </td>
+                      @endif
+                      <td>
+                        @if($inv->inv_type == 'DSK')
+                      <a type="button" href="/pranota/import-DSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
+                        @else
+                      <a type="button" href="/pranota/import-DS{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
+                        @endif
+                      </td>
+                      @if($inv->lunas == "N")
+                      <td>
+                      <button type="button" href="/invoice/import-DSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white" disabled><i class="fa fa-dollar"></i></button>
+                      </td>
+                      <td>
+                      <button type="button" href="/invoice/job/import-{{$inv->id}}" target="_blank" class="btn btn-sm btn-info text-white" disabeled><i class="fa fa-ship"></i></button>
+                      </td>
+                      @else
+                      <td>
+                      @if($inv->inv_type == 'DSK')
+                      <a type="button" href="/invoice/import-DSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
+                      @else  
+                      <a type="button" href="/invoice/import-DS{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
+                      @endif
+                      </td>
+                      <td>
+                      <a type="button" href="/invoice/job/import-{{$inv->id}}" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
+                      </td>
+                      @endif
+                      <td>
+                        <div class="row">
+
+                          <div class="col-5">
+                            <button type="button" id="pay" data-id="{{$inv->id}}" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>
+                          </div>
+                          @if($inv->lunas == "N")
+                          <div class="col-5">
+                            <button type="button" data-id="{{$inv->form_id}}" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>
+                          </div>
+                          @endif
+                        </div>
+                      </td> <!-- Tambahkan aksi sesuai kebutuhan -->
+                    </tr>
+                   @endforeach
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title">Tabel Data Billing Delivery (Piutang)</h4>
+            <p>Rekap Data Billing</p>
+          </div>
+          <div class="card-body">
+            <!-- <form action="{{ route('report-invoice-import')}}" method="GET" enctype="multipart/form-data">
+              <div class="row">
+
+                <div class="col-4">s
+                  <div class="form-group">
+                    <label>Pick Start Date Range</label>
+
+                    <input type="date" name="start" class="form-control" required>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-group">
+                    <label>Pick End Date Range</label>
+
+                    <input type="date" name="end" class="form-control" required>
+
+                  </div>
+                </div>
+                <div class="col-4 mt-4">
+                  <button class="btn btn-primary" type="submit"><i class=" fa fa-file"></i> Export Active Invoice to Excel</button>
+                </div>
+              </div>
+            </form> -->
+
+            <div class="row">
+
+              <div class="col-12">
+                <table class="dataTable-wrapperIMP dataTable-loading no-footer sortable searchable fixed-columns" id="tableImp">
+                  <thead>
+                    <tr>
+                      <th>Proforma No</th>
+                      <th>Customer</th>
+                      <th>Order Service</th>
+                      <th>Tipe Invoice</th>
+                      <th>Dibuat Pada</th>
+                      <th>Status</th>
+                      <th>Pranota</th>
+                      <th>Invoice</th>
+                      <th>Job</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  @foreach($piutangs as $inv)
+                    <tr>
+                      <td>{{$inv->proforma_no}}</td>
+                      <td>{{$inv->cust_name}}</td>
+                      <td>{{$inv->os_name}}</td>
+                      <td>{{$inv->inv_type}}</td>
+                      <td>{{$inv->order_at}}</td>
+                      @if($inv->lunas == "N")
+                      <td>
+                      <span class="badge bg-danger text-white">Not Paid</span>
+                      </td>
+                      @elseif($inv->lunas == "P")
+                      <td>
+                      <span class="badge bg-warning text-white">Piutang</span>
+                      </td>
+                      @else
+                      <td>
+                      <span class="badge bg-success text-white">Paid</span>
+                      </td>
+                      @endif
+                      <td>
+                        @if($inv->inv_type == 'DSK')
+                      <a type="button" href="/pranota/import-DSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
+                        @else
+                      <a type="button" href="/pranota/import-DS{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
+                        @endif
+                      </td>
+                      @if($inv->lunas == "N")
+                      <td>
+                      <button type="button" href="/invoice/import-DSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white" disabled><i class="fa fa-dollar"></i></button>
+                      </td>
+                      <td>
+                      <button type="button" href="/invoice/job/import-{{$inv->id}}" target="_blank" class="btn btn-sm btn-info text-white" disabeled><i class="fa fa-ship"></i></button>
+                      </td>
+                      @else
+                      <td>
+                      @if($inv->inv_type == 'DSK')
+                      <a type="button" href="/invoice/import-DSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
+                      @else  
+                      <a type="button" href="/invoice/import-DS{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
+                      @endif
+                      </td>
+                      <td>
+                      <a type="button" href="/invoice/job/import-{{$inv->id}}" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
+                      </td>
+                      @endif
+                      <td>
+                        <div class="row">
+
+                          <div class="col-5">
+                            <button type="button" id="pay" data-id="{{$inv->id}}" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>
+                          </div>
+                          @if($inv->lunas == "N")
+                          <div class="col-5">
+                            <button type="button" data-id="{{$inv->form_id}}" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>
+                          </div>
+                          @endif
+                        </div>
+                      </td> <!-- Tambahkan aksi sesuai kebutuhan -->
+                    </tr>
+                   @endforeach
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
   @foreach($service as $os)
     <section class="row">

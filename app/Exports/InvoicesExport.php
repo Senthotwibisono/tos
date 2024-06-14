@@ -71,7 +71,8 @@ class InvoicesExport implements FromCollection, WithMapping, WithHeadings, Shoul
             $invoice->total,
             '0',
             $pajak,
-            $grand,         
+            $grand,  
+            $status      
         ];
     }
 
@@ -92,6 +93,7 @@ class InvoicesExport implements FromCollection, WithMapping, WithHeadings, Shoul
             'Discount',
             'PPN',
             'Total',
+            'Status'
         ];
     }
 }

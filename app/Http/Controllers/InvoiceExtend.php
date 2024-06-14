@@ -39,6 +39,8 @@ class InvoiceExtend extends Controller
         $data['title'] = 'Delivery Extend';
         $data['service'] = OS::where('ie', '=' , 'X')->orderBy('id', 'asc')->get();
         $data['invoice'] = Extend::orderBy('order_at', 'asc')->get();
+        $data['unPaids'] = Extend::whereNot('form_id', '=', '')->where('lunas', '=', 'N')->orderBy('order_at', 'asc')->get();
+        $data['piutangs'] = Extend::whereNot('form_id', '=', '')->where('lunas', '=', 'P')->orderBy('order_at', 'asc')->get();
         return view('billingSystem.extend.billing.main', $data);
     }
 

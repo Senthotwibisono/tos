@@ -50,6 +50,8 @@ class ImportZahir implements FromCollection, WithMapping, WithHeadings, ShouldAu
             $item = $data->jumlah;
         }
 
+        $keterangan = "By. ". $data->master_item_name. ' ' . $data->jumlah . 'x' . $data->ukuran . '('. $data->customer->name .', PT)';
+
         $expiredDate = Carbon::parse($data->order_date);
         // Add 30 days to the expired date
         $expiredDate->addDays(30);
@@ -63,7 +65,7 @@ class ImportZahir implements FromCollection, WithMapping, WithHeadings, ShouldAu
            'Head Quarter',
            'Head Quarter',
            '',
-           $data->master_item_name,
+           $keterangan,
            '',
            '',
            '',

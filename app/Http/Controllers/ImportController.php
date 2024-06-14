@@ -59,6 +59,8 @@ class ImportController extends Controller
         $data['title'] = "Delivery Billing System";
         $data['invoice'] = InvoiceImport::whereNot('form_id', '=', '')->orderBy('order_at', 'asc')->orderBy('lunas', 'asc')->get();
         $data['service'] = OS::where('ie', '=' , 'I')->orderBy('id', 'asc')->get();
+        $data['unPaids'] = InvoiceImport::whereNot('form_id', '=', '')->where('lunas', '=', 'N')->orderBy('order_at', 'asc')->get();
+        $data['piutangs'] = InvoiceImport::whereNot('form_id', '=', '')->where('lunas', '=', 'P')->orderBy('order_at', 'asc')->get();
 
         return view('billingSystem.import.billing.main', $data);
     }
