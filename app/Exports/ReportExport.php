@@ -73,7 +73,8 @@ class ReportExport implements FromCollection, WithMapping, WithHeadings, ShouldA
             $invoice->total,
             '0',
             $pajak,
-            $grand,         
+            $grand,
+            $status         
         ];
     }
 
@@ -94,6 +95,7 @@ class ReportExport implements FromCollection, WithMapping, WithHeadings, ShouldA
             'Discount',
             'PPN',
             'Total',
+            'Status'
         ];
     }
 }

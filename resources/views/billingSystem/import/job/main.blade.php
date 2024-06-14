@@ -212,7 +212,7 @@
                       <h5 class="lead">: {{$ct->container_no}}</h5>
                       <h5 class="lead">: {{$ct->ctr_size}}</h5>
                       <h5 class="lead">: {{$ct->ves_name}}--{{$ct->voy_no}}</h5>
-                      <h5 class="lead">: {{$ct->agent}}</h5>
+                      <h5 class="lead">: {{$ct->Kapal->agent}}</h5>
                       <h5 class="lead">: {{$ct->yard_block}} / {{$ct->yard_slot}} / {{$ct->yard_row}} / {{$ct->yard_tier}}</h5>
                       <h5 class="lead">: {{$ct->disch_port}}</h5>
                       <h5 class="lead">: </h5>

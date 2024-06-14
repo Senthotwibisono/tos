@@ -37,6 +37,8 @@ class InvoiceExportController extends Controller
         $data['invoice'] = InvoiceExport::orderBy('order_at', 'asc')->orderBy('lunas', 'asc')->get();
 
         $data['service'] = OS::where('ie', '=' , 'E')->orderBy('id', 'asc')->get();
+        $data['unPaids'] = InvoiceExport::whereNot('form_id', '=', '')->where('lunas', '=', 'N')->orderBy('order_at', 'asc')->get();
+        $data['piutangs'] = InvoiceExport::whereNot('form_id', '=', '')->where('lunas', '=', 'P')->orderBy('order_at', 'asc')->get();
 
         return view('billingSystem.export.billing.main', $data);
     }
@@ -1067,7 +1069,11 @@ class InvoiceExportController extends Controller
     {
         $data['title'] = 'Job Number';
         $data['inv'] = InvoiceExport::where('id', $id)->first();
+        $data['form'] = Form::where('id', $data['inv']->form_id)->first();
         $data['job'] = JobExport::where('inv_id', $id)->get();
+        date_default_timezone_set('Asia/Jakarta');
+        $data['now'] = Carbon::now();
+        $data['formattedDate'] = $data['now']->format('l, d-m-Y');
         $singleJob =  JobExport::where('inv_id', $id)->first();
         $kapal = VVoyage::where('ves_id', $singleJob->ves_id)->first();
        

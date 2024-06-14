@@ -138,7 +138,7 @@
               <h5 class="lead">No. Petikemas : {{$ct->container_no}}</h5>
               <h5 class="lead">Ukuran / Statu : {{$ct->ctr_size}}</h5>
               <h5 class="lead">Ex. Kapal / Voyage : {{$ct->ves_name}}--{{$ct->voy_no}}</h5>
-              <h5 class="lead">Agen : {{$ct->agent}}</h5>
+              <h5 class="lead">Agen : {{$ct->Kapal->agent}}</h5>
               <h5 class="lead">Lokasi dilapangan :{{$ct->yard_block}} / {{$ct->yard_slot}} / {{$ct->yard_row}} / {{$ct->yard_tier}}</h5>
               <h5 class="lead">Penerima / Consignee : </h5>
               <h5 class="lead">Tujuan : {{$ct->disch_port}}</h5>

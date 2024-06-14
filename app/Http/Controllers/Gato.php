@@ -50,7 +50,7 @@ class Gato extends Controller
             $formattedData[] = [
                 'container_no' => $tem->container_no,
                 'truck_no' => $tem->truck_no,
-                'truck_out_date' => $diff . ' yang lalu',
+                'truck_out_date' => $tem->truck_out_date,
                 'container_key' => $tem->container_key
             ];
         }
@@ -93,7 +93,7 @@ class Gato extends Controller
             $formattedData[] = [
                 'container_no' => $tem->container_no,
                 'truck_no' => $tem->truck_no,
-                'truck_out_date' => $diff . ' yang lalu',
+                'truck_out_date' => $tem->truck_out_date,
                 'container_key' => $tem->container_key
             ];
         }
