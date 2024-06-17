@@ -28,7 +28,7 @@
       <div class="card-body">
         <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
           <thead>
-          <tr>
+            <tr>
               <th>Container No</th>
               <th>Size</th>
               <th>Type</th>
@@ -74,43 +74,53 @@
         <div class="form-body" id="place_cont">
           <div class="row">
             <div class="col-12">
+                <div class="form-group">
+                    <label for="first-name-vertical">Choose Vessel</label>
+                    <select class="choices form-select" id="id_kapal" name="ves_id" required>
+                        <option value="">Select Vessel</option>
+                        @foreach($vessel_voyage as $voy)
+                        <option value="{{$voy->ves_id}}">{{$voy->ves_name}}--{{$voy->voy_out}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                {{ csrf_field()}}
+            </div>
+            <div class="col-12">
               <div class="form-group">
                 <label for="first-name-vertical">Choose Container Number</label>
-                <select class="choices form-select" id="key" name="container_key" required>
+                <select id="container_key" name="container_key" class="form-control" style="font-size: 16px; width: 75%;" required>
                   <option disabled selected value="">Select Container</option>
-                  @foreach($contGati as $gati)
-                  <option value="{{$gati->container_key}}">{{$gati->container_no}}</option>
-                  @endforeach
                 </select>
                 <input type="hidden" id="container_no" class="form-control" name="container_no">
+                <input type="hidden" id="contKey" class="form-control" name="container_key">
               </div>
               {{ csrf_field()}}
             </div>
             <div class="col-12">
               <div class="row">
                 <div class="col-6">
-                  <div class="form-group">
-                    <label for="first-name-vertical">Job Number</label>
-                    <input type="text" id="job" class="form-control" name="job_no" readonly>
-                  </div>
+                    <div class="form-group">
+                      <label for="first-name-vertical">Job Number</label>
+                      <input type="text" id="job" class="form-control" name="job_no" readonly>
+                    </div>
                 </div>
                 <div class="col-6">
-                  <div class="form-group">
-                    <label for="first-name-vertical">Order Service</label>
-                    <input type="text" id="orderservice" class="form-control" readonly>
-                  </div>
+                    <div class="form-group">
+                      <label for="first-name-vertical">Order Service</label>
+                      <input type="text" id="orderservice" class="form-control"  readonly>
+                    </div>
                 </div>
                 <div class="col-6">
-                  <div class="form-group">
-                    <label for="first-name-vertical">Dok</label>
-                    <input type="text" id="dok" class="form-control" readonly>
-                  </div>
+                    <div class="form-group">
+                      <label for="first-name-vertical">Dok</label>
+                      <input type="text" id="dok" class="form-control"  readonly>
+                    </div>
                 </div>
                 <div class="col-6">
-                  <div class="form-group">
-                    <label for="first-name-vertical">Jenis Dok</label>
-                    <input type="text" id="jenisDok" class="form-control" readonly>
-                  </div>
+                    <div class="form-group">
+                      <label for="first-name-vertical">Jenis Dok</label>
+                      <input type="text" id="jenisDok" class="form-control"  readonly>
+                    </div>
                 </div>
               </div>
             </div>
@@ -145,14 +155,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
-          <i class="bx bx-x d-none d-sm-block"></i>
-          <span class="d-sm-none">Close</span>
-        </button>
-        <button type="submit" class="btn btn-success ml-1 update_status">
-          <i class="bx bx-check d-none d-sm-block"></i>
-          <span class="d-sm-none">Confirm</span>
-        </button>
+        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i><span class="d-none d-sm-block">Close</span></button>
+        <button type="submit" class="btn btn-success ml-1 update_status"><i class="bx bx-check d-block d-sm-none"></i><span class="d-none d-sm-block">Confirm</span></button>
       </div>
     </div>
   </div>
@@ -161,47 +165,43 @@
 
 <!-- edit truck -->
 <div class="modal fade text-left" id="edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel130" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-info">
-        <h5 class="modal-title white" id="myModalLabel130">Info Modal</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <i data-feather="x"></i>
-        </button>
-      </div>
-      <div class="modal-body">
-        <!-- content -->
-        <div class="col-12">
-          <div class="form-group">
-            <label for="">Container</label>
-            <input type="text" class="form-control" id="cont" disabled>
-            <input type="hidden" class="form-control" id="contKey">
-          </div>
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title white" id="myModalLabel130">Info Modal</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <form action="/gati-del/update-truck" method="post">
+                  @csrf
+                
+                <div class="modal-body">
+                    <!-- content -->
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="">Container</label>
+                        <input type="text" class="form-control" id="cont" disabled>
+                        <input type="hidden" class="form-control" name="container_key" id="contKey">
+                      </div>
+                    </div>
+                    <br>
+                    <div class="col-12">
+                      <div class="form-group">
+                        <label for="">Truck</label>
+                        <input type="text" id="nomor_truck" name="truck_no" class="form-control">
+                      </div>
+                    </div>
+                    <!-- end content -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i><span class="d-none d-sm-block">Close</span></button>
+                    <button type="submit" class="btn btn-info ml-1 edit-truck" data-bs-dismiss="modal"><i class="bx bx-check d-block d-sm-none"></i><span class="d-none d-sm-block">Accept</span></button>
+                </div>
+                </form>
+            </div>
         </div>
-        <br>
-        <div class="col-12">
-          <div class="form-group">
-            <label for="">Truck</label>
-            <input type="text" id="nomor_truck" class="form-control">
-          </div>
-        </div>
-        <!-- end content -->
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-light-secondary d-block d-sm-none" data-bs-dismiss="modal">
-          <i class="bx bx-x"></i>
-          Close
-        </button>
-        <button type="button" class="btn btn-info ml-1 edit-truck d-block d-sm-none">
-          <i class="bx bx-check"></i>
-          Accept
-        </button>
-
-
-      </div>
     </div>
-  </div>
-</div>
 </div>
 @endsection
 @section('custom_js')
@@ -218,7 +218,7 @@
   });
   $(document).on('click', '.update_status', function(e) {
     e.preventDefault();
-    var container_key = $('#key').val();
+    var container_key = $('#contKey').val();
     var container_no = $('#container_no').val();
     var invoice_no = $('#invoice').val();
     var job_no = $('#job').val();
@@ -235,13 +235,12 @@
         return;
         }
     var data = {
-      'container_key': $('#key').val(),
+      'container_key': $('#contKey').val(),
       'container_no': $('#container_no').val(),
       'truck_no': $('#tayo').val(),
       'truck_in_date': $('#datein').val(),
       'order_service': $('#orderserviceCode').val(),
       'invoice_no': $('#invoice').val(),
-      'job_no': $('#job').val(),
       'jno_dok': $('#dok').val(),
       'jenis_dok': $('#jenisDok').val(),
 
@@ -273,15 +272,15 @@
           dataType: 'json',
           success: function(response) {
             console.log(response);
-            if (response.success) {
-              Swal.fire('Saved!', '', 'success')
-                .then(() => {
-                  // Memuat ulang halaman setelah berhasil menyimpan data
-                  window.location.reload();
-                });
-            } else {
-              Swal.fire('Error', response.message, 'error');
-            }
+                        if (response.success) {
+                            Swal.fire('Saved!', '', 'success')
+                            .then(() => {
+                            // Memuat ulang halaman setelah berhasil menyimpan data
+                            window.location.reload();
+                        });
+                        } else {
+                            Swal.fire('Error', response.message, 'error');
+                        }
           },
           error: function(response) {
             var errors = response.responseJSON.errors;
@@ -318,7 +317,7 @@
       }
     });
     $(document).ready(function() {
-      $('#key').on('change', function() {
+      $('#container_key').on('change', function() {
         let id = $(this).val();
         $.ajax({
           type: 'POST',
@@ -365,39 +364,40 @@
 </script>
 <script>
   $(function() {
-    $.ajaxSetup({
+   $.ajaxSetup({
       headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
       }
-    });
+   });
 
-    $(document).on('click', '.edit', function() {
+   $(document).on('click', '.edit', function() {
       let id = $(this).data('id');
       $.ajax({
-        type: 'GET',
-        url: '/gati-del/edit-' + id,
-        cache: false,
-        data: {
-          container_key: id
-        },
-        dataType: 'json',
-        success: function(response) {
-          console.log(response);
-          $('#edit').modal('show');
-          $('#edit #cont').val(response.data.container_no);
-          $('#edit #contKey').val(response.data.container_key);
-
-
-        },
-        error: function(data) {
-          console.log('error:', data);
-        }
+         type: 'GET',
+         url: '/gati-del/edit-' + id,
+         cache: false,
+         data: {
+            container_key: id
+         },
+         dataType: 'json',
+         success: function(response) {
+            console.log(response);
+            $('#edit').modal('show');
+            $('#edit #cont').val(response.data.container_no);
+            $('#edit #contKey').val(response.data.container_key);
+        
+        
+         },
+         error: function(data) {
+            console.log('error:', data);
+         }
       });
-    });
-  });
+   });
+});
+
 </script>
 
-<script>
+<!-- <script>
   $(document).on('click', '.edit-truck', function(e) {
     e.preventDefault();
     var container_key = $('#contKey').val();
@@ -405,7 +405,7 @@
     var data = {
       'container_key': $('#contKey').val(),
       'truck': $('#nomor_truck').val(),
-
+      
 
 
     }
@@ -423,7 +423,6 @@
       confirmButtonColor: '#3085d6',
       confirmButtonText: 'Confirm',
     }).then((result) => {
-      /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
 
 
@@ -435,15 +434,14 @@
           dataType: 'json',
           success: function(response) {
             console.log(response);
-            if (response.success) {
-              Swal.fire('Saved!', '', 'success')
-                .then(() => {
-                  // Memuat ulang halaman setelah berhasil menyimpan data
-                  window.location.reload();
-                });
-            } else {
-              console.log('error:', response);
-            }
+                        if (response.success) {
+                            Swal.fire('Saved!', '', 'success')
+                            .then(() => {
+                            window.location.reload();
+                        });
+                        } else {
+                          console.log('error:', response);
+                        }
           },
           error: function(response) {
             var errors = response.responseJSON.errors;
@@ -471,6 +469,50 @@
     })
 
   });
-</script>
+</script> -->
 
+<script>
+     $(function() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $(function() {
+        const selectContainer = new Choices(document.querySelector('#container_key'), {
+            // Opsi dan pengaturan Choices.js sesuai kebutuhan
+        });
+
+        $("#id_kapal").change(function() {
+            let ves_id = $('#id_kapal').val();
+
+            $.ajax({
+                type: 'POST',
+                url: '/get-con-gatiDel',
+                data: {
+                    ves_id: ves_id
+                },
+                cache: false,
+
+                success: function(msg) {
+                    let res = msg;
+                    var len = res.length;
+                    var choicesArray = []; // Array untuk menyimpan pilihan-pilihan baru
+                    for (let i = 0; i < len; i++) {
+                        let id = res[i].value;
+                        let nama = res[i].text;
+                        choicesArray.push({ value: id, label: nama }); // Tambahkan pilihan baru ke dalam array
+                    }
+                    selectContainer.clearChoices(); // Hapus pilihan-pilihan saat ini
+                    selectContainer.setChoices(choicesArray, 'value', 'label', false); // Atur pilihan-pilihan baru
+                },
+                error: function(data) {
+                    console.log('error:', data)
+                },
+            });
+        });
+    });
+});
+</script>
 @endsection

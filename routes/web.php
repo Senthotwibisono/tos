@@ -652,6 +652,7 @@ Route::get('/generate-pdf-bongkar', [ReportCont::class, 'generatePDF_bongkar'])-
 Route::post('/upload', [EdiController::class, 'upload'])->name('upload.submit');
 
 Route::post('/get-con-disch', [DischargeController::class, 'get_cont']);
+Route::post('/get-con-gatiDel', [Gati::class, 'get_cont']);
 
 //Reports
 // Disch

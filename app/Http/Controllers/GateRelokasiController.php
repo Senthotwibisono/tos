@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\Item;
+use App\Models\OrderService;
 use Carbon\Carbon;
 use App\Models\User;
 use GuzzleHttp\Client;
@@ -21,8 +22,8 @@ class GateRelokasiController extends Controller
     public function index()
     {
         $title = 'Gate Rlokasi';
-        $item = Item::whereIn('ctr_intern_status',  ['09', '11', '15'])->get();
-        $item_confirmed = Item::whereiN('ctr_intern_status',  ['12', '13', '14'])->get();
+        $item = Item::whereIn('ctr_intern_status', ['09', '11', '15'])->orWhere(function($query) {$query->where('ctr_intern_status', '49')->whereHas('service', function($query) {$query->where('return_yn', 'Y');});})->get();
+        $item_confirmed = Item::whereIn('ctr_intern_status',  ['12', '13', '14'])->get();
 
       
         return view('gate.relokasi.main', compact('item', 'title', 'item_confirmed'));
@@ -30,8 +31,8 @@ class GateRelokasiController extends Controller
     public function android()
     {
         $title = 'Gate Rlokasi';
-        $item = Item::whereIn('ctr_intern_status',  ['09', '11', '15'])->get();
-        $item_confirmed = Item::whereiN('ctr_intern_status',  ['12', '13', '14'])->get();
+        $item = Item::whereIn('ctr_intern_status', ['09', '11', '15'])->orWhere(function($query) {$query->where('ctr_intern_status', '49')->whereHas('service', function($query) {$query->where('return_yn', 'Y');});})->get();
+        $item_confirmed = Item::whereIn('ctr_intern_status',  ['12', '13', '14'])->get();
 
         return view('gate.relokasi.android', compact('item', 'title', 'item_confirmed'));
     }

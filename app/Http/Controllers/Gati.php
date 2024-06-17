@@ -12,6 +12,7 @@ use App\Models\RO;
 use App\Models\RO_Gate;
 use App\Models\RO_Realisasi;
 use App\Models\JobExtend;
+use App\Models\VVoyage;
 
 use Auth;
 use Illuminate\Http\Request;
@@ -77,7 +78,7 @@ class Gati extends Controller
         $yard_tier = Yard::distinct('yard_tier')->pluck('yard_tier');
         $currentDateTime = Carbon::now();
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
-
+        $data['vessel_voyage'] = VVoyage::orderBy('deparature_date', 'desc')->get();
       
         $data['contGati'] = Item::whereIn('ctr_intern_status', ['03', '04', '11'])->whereNotNull('job_no')->get();
 
@@ -137,6 +138,8 @@ class Gati extends Controller
         $yard_tier = Yard::distinct('yard_tier')->pluck('yard_tier');
         $currentDateTime = Carbon::now();
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
+        $data['vessel_voyage'] = VVoyage::orderBy('deparature_date', 'desc')->get();
+
 
         $data['contGati'] = Item::whereIn('ctr_intern_status', ['03', '04', '11'])->whereNotNull('job_no')->get();
 
@@ -574,24 +577,37 @@ class Gati extends Controller
 
     public function update_truck(Request $request)
     {
-        $key = $request->container_key;
-        $item = Item::where('container_key', $key)->first();
+        $item = Item::where('container_key', $request->container_key)->first();
+        // dd($item);
 
         if ($item) {
             $item->update([
-                'truck_no' => $request->truck,
+                'truck_no' => $request->truck_no,
             ]);
-            return response()->json([
-                'success' => true,
-                'message' => 'Updated successfully!',
-                'data' => $item,
-            ]);
+            return redirect()->back()->with('success', 'Data Berhasil di Update');
         } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Something went wrong!!',
-
-            ]);
+            return redirect()->back()->with('error', 'Data Tidak Ditemukan');
         }
     }
+
+    public function get_cont(request $request)
+  {
+    $ves_id = $request->ves_id;
+    $container_key = Item::where('ves_id', $ves_id)->whereNot('container_no', '')->where('ctr_intern_status', '=', '03')->whereNotNull('job_no')->get();
+
+    $option = [];
+
+    if ($container_key->isEmpty()) {
+      // Return empty response when no containers are found
+      return response()->json($option);
+    }
+    foreach ($container_key as $kode) {
+      // echo "<option value='$kode->container_key'>$kode->container_no</option>";
+      $option[] = [
+        'value' => $kode->container_key,
+        'text' => $kode->container_no,
+      ];
+    }
+    return response()->json($option);
+  }
 }
