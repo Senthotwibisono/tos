@@ -181,19 +181,36 @@ class Gati extends Controller
         $item = Item::where('container_key', $container_key)->first();
         $job = $item->job_no;
         if (substr($job, 0, 4) === 'JOBP') {
-            $cek_expired = JobExtend::where('job_no', $job)->where('active_to', '<=', $request->truck_in_date)->exists();
+            $cek_expired = JobExtend::where('job_no', $job)->first();
         } elseif (substr($job, 0, 3) === 'JOB') {
-            $cek_expired = Job::where('job_no', $job)->where('active_to', '<=', $request->truck_in_date)->exists();
+            $cek_expired = Job::where('job_no', $job)->first();
         }
 
-        if ($item->ctr_i_e_t == 'I') {
-            if ($cek_expired) {
+        // var_dump($cek_expired);
+        // die;
+
+        if ($cek_expired) {
+            // Konversi tanggal ke format Y-m-d untuk mengabaikan waktu
+            $active_to_date = \Carbon\Carbon::parse($cek_expired->active_to)->format('Y-m-d');
+            $truck_in_date = \Carbon\Carbon::parse($request->truck_in_date)->format('Y-m-d');
+        
+            if ($active_to_date < $truck_in_date) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Sudah melewati expired !!',
+                    'data' => $cek_expired,
                 ]);
             }
         }
+        // if ($item->ctr_i_e_t == 'I') {
+        //     if ($cek_expired) {
+        //         return response()->json([
+        //             'success' => false,
+        //             'message' => 'Sudah melewati expired !!',
+        //             'data'=>$cek_expired,
+        //         ]);
+        //     }
+        // }
         
       
 
