@@ -57,6 +57,7 @@ use App\Http\Controllers\ZahirController;
 use App\Http\Controllers\MasterInvoiceController;
 use App\Http\Controllers\ContainerController;
 use App\Http\Controllers\RealisasiMuatController;
+use App\Http\Controllers\GateCheckingController;
 use App\Exports\ContainersReport;
 
 /*
@@ -1078,3 +1079,6 @@ Route::get('/container/sortByAll/export', [ContainerController::class, 'ExportAl
 Route::get('/planning/indexVessel', [RealisasiMuatController::class, 'index'])->name('realisasi-muat-main');
 Route::get('/planning/detail/realisasiMuat/{id?}', [RealisasiMuatController::class, 'listMuat'])->name('realisasi-muat-listMuat');
 Route::get('/planning/detail/realisasiMuat/excel/{id?}', [RealisasiMuatController::class, 'Excel'])->name('realisasi-muat-Excel');
+
+Route::get('/gate/checking-', [GateCheckingController::class, 'Main']);
+Route::get('/gate/checking-perpanjangan-', [GateCheckingController::class, 'MainPerpanjangan']);

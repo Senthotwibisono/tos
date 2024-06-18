@@ -155,6 +155,12 @@
                 <input type="text" id="tayo" class="form-control" name="truck_no" required>
               </div>
             </div>
+            <div class="col-12">
+              <div class="form-group">
+                <label for="first-name-vertical">Truck In Date</label>
+                <input type="datetime-local" value="{{ $currentDateTimeString }}" id="datein" name="truck_in_date" class="form-control">
+              </div>
+            </div>
             
           <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Lihat Data Transaksi</button>
                <div class="collapse" id="collapseExample">
@@ -269,12 +275,12 @@
                           <fieldset>                        
                               <div class="input-group">
                                       <div class="col-12">
-                                      <label for="first-name-vertical">Date In</label>
+                                      <!-- <label for="first-name-vertical">Date In</label> -->
                                        <input type="hidden" id="user" class="form-control" value="{{ Auth::user()->name }}" name="user_id" placeholder="" required>
                                       </div>
                               </div>
                               <div class="input-group">    
-                                  <input type="datetime-local" value="{{ $currentDateTimeString }}" id="datein" name="truck_in_date" class="form-control" readonly>
+                                 
                                   <input type="hidden"  id="id" name="id" class="form-control" readonly>
                               </div>
                           </fieldset>

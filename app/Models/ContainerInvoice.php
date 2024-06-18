@@ -29,4 +29,8 @@ class ContainerInvoice extends Model
     {
         return $this->belongsTo(InvoiceForm::class, 'form_id');
     }
+    public function Kapal()
+    {
+        return $this->belongsTo(VVoyage::class, 'ves_id');
+    }
 }

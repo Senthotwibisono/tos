@@ -1136,8 +1136,17 @@ class InvoiceExportController extends Controller
       $os = $request->os_id;
       $startDate = $request->start;
       $endDate = $request->end;
-      $invoice = Detail::where('os_id', $os)->whereDate('order_date', '>=', $startDate)->whereDate('order_date', '<=', $endDate)->orderBy('order_date', 'asc')->get();
-        $fileName = 'ReportInvoiceExport-'.$os.'-'. $startDate . $endDate .'.xlsx';
+      $invoiceQuery = Detail::where('os_id', $os)
+      ->whereDate('order_date', '>=', $startDate)
+      ->whereDate('order_date', '<=', $endDate);
+
+        // Cek apakah checkbox 'inv_type' ada dalam request dan tidak kosong
+        if ($request->has('inv_type') && !empty($request->inv_type)) {
+            // Tambahkan filter berdasarkan 'inv_type'
+            $invoiceQuery->whereIn('inv_type', $request->inv_type);
+        }
+    
+        $invoice = $invoiceQuery->orderBy('order_date', 'asc')->get();        $fileName = 'ReportInvoiceExport-'.$os.'-'. $startDate . $endDate .'.xlsx';
       return Excel::download(new ReportExport($invoice), $fileName);
     }
 }

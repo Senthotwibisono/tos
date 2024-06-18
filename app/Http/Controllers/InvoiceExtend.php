@@ -112,7 +112,8 @@ class InvoiceExtend extends Controller
     public function postForm(Request $request)
     {
         $oldInv = InvoiceImport::where('id', $request->inv_id)->first();
-        $oldExpired = $oldInv->expired_date;
+        $oldExpired = $oldInv->last_expired_date;
+        // dd($oldInv, $oldExpired);
         $expired = $request->exp_date;
 
         if ($oldExpired >= $expired) {
@@ -159,7 +160,8 @@ class InvoiceExtend extends Controller
 
         $newContainer = $request->container_key;
         $oldInv = InvoiceImport::where('id', $request->inv_id)->first();
-        $oldExpired = $oldInv->expired_date;
+        $oldExpired = $oldInv->last_expired_date;
+        // dd($oldInv, $oldExpired);
         $expired = $request->exp_date;
 
         if ($oldExpired >= $expired) {
@@ -217,14 +219,35 @@ class InvoiceExtend extends Controller
         $interval = $start->diff($end);
         $jumlahHari = $interval->days;
         // dd($jumlahHari);
+        $oldInv = InvoiceImport::where('id', $form->do_id)->first();
 
-        if ($jumlahHari > 5) {
-            $m2 = 5;
-            $m3 = $jumlahHari -5;
-        }elseif ($jumlahHari <= 5 ) {
-            $m2 = $jumlahHari;
-            $m3 = 0;
+
+        if ($oldInv->massa3 == null) {
+            if ($oldInv->massa2 == null) {
+                if ($jumlahHari > 5) {
+                    $m2 = 5;
+                    $m3 = $jumlahHari - 5;
+                } else {
+                    $m2 = $jumlahHari;
+                    $m3 = 0;
+                }
+            } elseif ($oldInv->massa2 < 5) {
+                if ($jumlahHari > 5) {
+                    $m2 = min(5 - $oldInv->massa2, $jumlahHari);
+                    $m3 = $jumlahHari - $m2;
+                } else {
+                    $m2 = min(5 - $oldInv->massa2, $jumlahHari);
+                    $m3 = 0;
+                }
+            } else {
+                $m2 = 0;
+                $m3 = $jumlahHari;
+            }
+        }else {
+            $m2 = 0;
+            $m3 = $jumlahHari;
         }
+       
         // dd($m2, $m3);
 
         $groupedBySize = $cont->groupBy('ctr_size');
@@ -290,172 +313,6 @@ class InvoiceExtend extends Controller
         return view('billingSystem.extend.form.pre-invoice', compact('form'), $data)->with('success', 'Silahkan Melanjutkan Proses');
     }
 
-    public function Oldpreinvoice($id)
-    {
-        $data['title'] = 'Pre Invoice Exrtend';
-        $data['customer'] = Customer::where('id', $request->customer)->first();
-        $oldInv = InvoiceImport::where('id', $request->inv_id)->first();
-        $oldService = OS::where('id', $oldInv->os_id)->first();
-        // dd($oldService);
-        if ($oldService->order == 'SP2') {
-            $newOS = OS::where('ie', '=', 'X')->where('name', '=', 'Perpanjangan Penumpukan SP2')->first();
-        }else {
-            $newOS = OS::where('ie', '=', 'X')->where('name', '=', 'Perpanjangan Penumpukan SPPS')->first();
-        }
-        $tarif20 = MT::where('os_id', $newOS->id)->where('ctr_size', '=', '20')->first();
-        $tarifCont20 = MTDetail::where('master_tarif_id', $tarif20->id)->first();
-        
-        // dd($tarif);
-        $oldExpired = $oldInv->expired_date;
-        $expired = $request->exp_date;
-
-        if ($oldExpired >= $expired) {
-            return back()->with('error', 'Expired date tidak lebih besar dari expired date sebelumnya');
-        }
-        else {
-        //    $cont = str_replace(['[', ']', '"'], '', $oldInv->container_key);
-        //    $contItem = explode(",", $cont);
-        $data['selectedCont'] = $request->container_key;
-           $data['item'] = Item::whereIn('container_key', $request->container_key)->orderBy('ctr_size', 'asc')->get();
-            
-           $oldExp = Carbon::parse($oldExpired);
-           $expDate = Carbon::parse($expired);
-           $interval = $oldExp->diff($expDate);
-           $jumlahHari = $interval->days;
-
-           $oldm1 = $oldInv->massa1;
-           $oldm2 = $oldInv->massa2;
-           $oldm3 = $oldInv->massa3;
-
-           if ($oldm1 >= '5') {
-            $data['newM1'] = '0';
-            $sisaHari1 = $jumlahHari - $data['newM1'];
-           }else {
-            $data['newM1'] = 5 - $oldm1;
-            $sisaHari1 = $jumlahHari - $data['newM1'];
-           }
-
-           if ($sisaHari1 >= '5') {
-            if ($oldm2 >= '5') {
-                $data['newM2'] = '0';
-                $sisaHari2 = $jumlahHari - $data['newM2'];
-            }elseif ($oldm2 == '0') {
-                $data['newM2'] = '5';
-                $sisaHari2 = $jumlahHari - $data['newM2'];
-            }else {
-                $data['newM2'] = 5 - $oldm2;
-                $sisaHari2 = $jumlahHari - $data['newM2'];
-            }
-           }else {
-            if ($oldm2 == '0') {
-                $data['newM2'] = $sisaHari1;
-                $sisaHari2 = '0';
-            }elseif ($oldm2 >= '0') {
-                $maxM2 = 5 - $oldm2;
-                if ($sisaHari1 <= $maxM2) {
-                    $data['newM2'] = $sisaHari1;
-                    $sisaHari2 = '0';
-                }else {
-                    $data['newM2'] = $maxM2;
-                    $sisaHari2 = $sisaHari1 - $maxM2;
-                }
-            }
-           }
-
-           if ($sisaHari2 > 0) {
-            $data['newM3'] = $sisaHari2;
-           }else {
-            $data['newM3'] = '0';
-           }
-
-        //    jumlah Cont
-        $ctr_20  = $data['item']->where('ctr_size', '20')->count();
-        if ($ctr_20) {
-            $data['tarif20'] = MT::where('os_id', $oldInv->os_id)->where('ctr_size', '20')->first();
-            // dd($data['tarif20']);
-              // tarif 20
-            if ($data['newM1'] == '0') {
-                $m1_20 = '0';
-            }else {
-                $m1_20 = 0 * $ctr_20 * $data['newM1'];
-            }
-
-            $m2_20 = 54000 * $ctr_20  * $data['newM2'];
-            // dd($ctr_20, $data['newM2']);
-            $m3_20 = 81000 * $ctr_20  * $data['newM3'];
-        }else {
-            $m1_20 = '0';
-            $m2_20 = '0';
-            $m3_20 = '0';
-        }
-
-        $ctr_21  = $data['item']->where('ctr_size', '21')->count();
-        if ($ctr_21) {
-            $data['tarif21'] = MT::where('os_id', $oldInv->os_id)->where('ctr_size', '21')->first();
-             // tarif 21
-        if ($data['newM1'] == '0') {
-            $m1_21 = '0';
-        }else {
-            $m1_21 = 0 * $ctr_21 * $data['newM1'];
-        }
-
-        $m2_21 = 124000 * $ctr_21 * $data['newM2'];
-        $m3_21 = 186000 * $ctr_21 * $data['newM3'];
-        }else {
-            $m1_21 = '0';
-            $m2_21 = '0';
-            $m3_21 = '0';
-        }
-        
-        $ctr_40  =$data['item']->where('ctr_size', '40')->count();
-        if ($ctr_40) {
-            $data['tarif40'] = MT::where('os_id', $oldInv->os_id)->where('ctr_size', '40')->first();
-            if ($data['newM1'] == '0') {
-                $m1_40 = '0';
-            }else {
-                $m1_40 = 0 * $ctr_40 * $data['newM1']; 
-            }
-    
-            $m2_40 = 108000 * $ctr_40 * $data['newM2'];
-            $m3_40 = 162000 * $ctr_40 * $data['newM3'];
-        }else {
-            $m1_40 = '0';
-            $m2_40 = '0';
-            $m3_40 = '0';
-        }
-        $ctr_42  = $data['item']->where('ctr_size', '42')->count();
-        if ($ctr_42) {
-            # code...
-            $data['tarif42'] = MT::where('os_id', $oldInv->os_id)->where('ctr_size', '42')->first();
-               // tarif 42
-             if ($data['newM1'] == '0') {
-                $m1_42 = '0';
-            }else {
-                $m1_42 = 0 * $ctr_42 * $data['newM1'];
-            }
-        
-            $m2_42 = 248000 * $ctr_42 * $data['newM2'];
-            $m3_42 = 248000 * $ctr_42 * $data['newM3'];
-        }else {
-            $m1_42 = '0';
-            $m2_42 = '0';
-            $m3_42 = '0';
-        }
-           
-        $tarif = MT::where('os_id', $oldInv->os_id)->first();
-        $tarifAdmin = MTDetail::where('master_tarif_id', $tarif->id)->where('count_by', '=', 'O')->first();
-        $admin = $tarifAdmin->tarif;
-        $pajak = $tarif->pajak;
-        $total = $m1_20 + $m2_20 + $m3_20 + $m1_21 + $m2_21 + $m3_21 + $m1_40 + $m2_40 + $m3_40 + $m1_42 + $m2_42 + $m3_42;
-        
-        $sum = $total + $admin;
-        $pajakTot = ($sum * $pajak)/100;
-        $grandTotal = $sum + $pajakTot;
-        return view('billingSystem.extend.form.pre-invoice', compact('pajakTot', 'admin', 'total', 'grandTotal','m1_20', 'm2_20', 'm3_20', 'm1_21', 'm2_21', 'm3_21', 'm1_40', 'm2_40', 'm3_40', 'm1_42', 'm2_42', 'm3_42', 'ctr_20', 'ctr_21', 'ctr_40', 'ctr_42', 'expired', 'oldInv', 'jumlahHari'), $data)->with('success', 'Silahkan Melanjutkan Proses');
-
-        }
-    }
-
     public function post(Request $request)
     {
         $data['title'] = "Pre Invoice Delivery Extend";
@@ -468,21 +325,45 @@ class InvoiceExtend extends Controller
         $end = Carbon::parse($form->expired_date);
         $interval = $start->diff($end);
         $jumlahHari = $interval->days;
-        // dd($jumlahHari);
-
-        if ($jumlahHari > 5) {
-            $m2 = 5;
-            $m3 = $jumlahHari -5;
-        }elseif ($jumlahHari <= 5 ) {
-            $m2 = $jumlahHari;
-            $m3 = 0;
-        }
 
         $oldInv = InvoiceImport::where('id', $form->do_id)->first();
+
+        if ($oldInv->massa3 == null) {
+            if ($oldInv->massa2 == null) {
+                if ($jumlahHari > 5) {
+                    $m2 = 5;
+                    $m3 = $jumlahHari - 5;
+                } else {
+                    $m2 = $jumlahHari;
+                    $m3 = 0;
+                }
+            } elseif ($oldInv->massa2 < 5) {
+                if ($jumlahHari > 5) {
+                    $m2 = min(5 - $oldInv->massa2, $jumlahHari);
+                    $m3 = $jumlahHari - $m2;
+                } else {
+                    $m2 = min(5 - $oldInv->massa2, $jumlahHari);
+                    $m3 = 0;
+                }
+            } else {
+                $m2 = 0;
+                $m3 = $jumlahHari;
+            }
+        }else {
+            $m2 = 0;
+            $m3 = $jumlahHari;
+        }
+
+        $massa2 = $m2;
+        $massa3 = $m3; 
+
+       
         $cust = Customer::where('id', $request->cust_id)->first();
         $invoiceNo = 'DS-' . $this->getNextInvoiceExtend();
         $extend = Extend::create([
             'form_id'=>$form->id,
+            'm2' => $massa2,
+            'm3' => $massa3,
             'proforma_no'=>$oldInv->proforma_no,
             'inv_id'=>$oldInv->id,
             'inv_no'=>$invoiceNo,
@@ -493,8 +374,6 @@ class InvoiceExtend extends Controller
             'alamat'=>$form->customer->alamat,
             'os_id'=>$form->os_id,
             'os_name'=>$form->service->name,
-            'm2'=>$m3,
-            'm3'=>$m3,
             'admin'=>$request->admin,
             'total'=>$request->total,
             'pajak'=>$request->pajak,
@@ -504,6 +383,12 @@ class InvoiceExtend extends Controller
             'expired_date'=>$request->expired_date,
             'order_by'=> Auth::user()->name,
             'order_at'=> Carbon::now(),
+        ]);
+        
+        $oldInv->update([
+            'last_expired_date'=>$request->expired_date,
+            'massa2'=>$massa2,
+            'massa3'=>$massa3,
         ]);
         
 
@@ -589,6 +474,9 @@ class InvoiceExtend extends Controller
                 ]);
             } 
         }
+        $form->update([
+            'done'=>'Y',
+           ]);
         return redirect()->route('index-extend')->with('success', 'Data Berhasil Di Simpan');
     }
     public function Oldpost(Request $request)

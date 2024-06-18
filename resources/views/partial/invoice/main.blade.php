@@ -170,7 +170,7 @@ new simpleDatatables.DataTable('#table2');
     $('.js-example-basic-single').select2();
     $('.js-example-basic-multiple').select2();
     flatpickr('#expired', {
-      "minDate": new Date()
+      "minDate": null
     });
     flatpickr('#doexpired', {
       "minDate": new Date()

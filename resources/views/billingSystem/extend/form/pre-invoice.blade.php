@@ -110,7 +110,7 @@
               <div class="col-12">
                 <div class="card">
                   <div class="card-body">
-                    <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns display ">
+                    <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns display" id="table1">
                       <thead>
                         <tr>
                           <th>Keterangan</th>

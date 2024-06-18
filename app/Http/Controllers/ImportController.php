@@ -593,7 +593,8 @@ class ImportController extends Controller
         $expDate = Carbon::parse($form->expired_date);
         $expDate->addDay(2);
         $interval = $discDate->diff($expDate);
-        $jumlahHari = $interval->days;
+        $sumInterval = $interval->days;
+        $jumlahHari = $sumInterval - 1;
         $cont = Container::where('form_id', $form->id)->get();
         $groupedBySize = $cont->groupBy('ctr_size');
         $ctrGroup = $groupedBySize->map(function ($sizeGroup) {
@@ -623,6 +624,7 @@ class ImportController extends Controller
             'massa1'=>$jumlahHari,
             'lunas'=>'N',
             'expired_date'=>$form->expired_date,
+            'last_expired_date'=>$form->expired_date,
             'disc_date' => $form->disc_date,
             'do_no'=>$form->doOnline->do_no,
             'total'=>$request->totalDSK,
@@ -763,6 +765,7 @@ class ImportController extends Controller
             'grand_total'=>$request->grandTotalDS,
             'order_by'=> Auth::user()->name,
             'order_at'=> Carbon::now(),
+            'last_expired_date'=>$form->expired_date,
             
         ]);
         $admin = 0;
@@ -1984,11 +1987,23 @@ private function getNextJob($lastJobNo)
     // Report
     public function ReportExcel(Request $request)
     {
-      $os = $request->os_id;
-      $startDate = $request->start;
-      $endDate = $request->end;
-      $invoice = Detail::where('os_id', $os)->whereDate('order_date', '>=', $startDate)->whereDate('order_date', '<=', $endDate)->orderBy('order_date', 'asc')->get();
-        $fileName = 'ReportInvoiceImport-'.$os.'-'. $startDate . $endDate .'.xlsx';
+        $os = $request->os_id;
+        $startDate = $request->start;
+        $endDate = $request->end;
+        $invoiceQuery = Detail::where('os_id', $os)
+            ->whereDate('order_date', '>=', $startDate)
+            ->whereDate('order_date', '<=', $endDate);
+    
+        // Cek apakah checkbox 'inv_type' ada dalam request dan tidak kosong
+        if ($request->has('inv_type') && !empty($request->inv_type)) {
+            // Tambahkan filter berdasarkan 'inv_type'
+            $invoiceQuery->whereIn('inv_type', $request->inv_type);
+        }
+    
+        $invoice = $invoiceQuery->orderBy('order_date', 'asc')->get();
+    
+        $fileName = 'ReportInvoiceImport-' . $os . '-' . $startDate . '-' . $endDate . '.xlsx';
+        return Excel::download(new InvoicesExport($invoice), $fileName);
       return Excel::download(new InvoicesExport($invoice), $fileName);
     }
 }

@@ -146,7 +146,7 @@
             <div class="col-12">
               <div class="form-group">
                 <label for="first-name-vertical">Date In</label>
-                <input type="datetime-local" value="{{ $currentDateTimeString }}" id="datein" name="truck_in_date" class="form-control" readonly>
+                <input type="datetime-local" value="{{ $currentDateTimeString }}" id="datein" name="truck_in_date" class="form-control">
               </div>
             </div>
 

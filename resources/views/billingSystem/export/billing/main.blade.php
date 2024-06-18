@@ -117,43 +117,36 @@
                       </td>
                       @endif
                       <td>
-                        @if($inv->inv_type == 'DSK')
-                      <a type="button" href="/pranota/import-DSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
+                        @if($inv->inv_type == 'OSK')
+                      <a type="button" href="/pranota/export-OSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
                         @else
-                      <a type="button" href="/pranota/import-DS{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
+                      <a type="button" href="/pranota/export-OS{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
                         @endif
                       </td>
                       @if($inv->lunas == "N")
                       <td>
-                      <button type="button" href="/invoice/import-DSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white" disabled><i class="fa fa-dollar"></i></button>
+                      <button type="button" href="/invoice/export-OSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white" disabled><i class="fa fa-dollar"></i></button>
                       </td>
                       <td>
                       <button type="button" href="/invoice/job/import-{{$inv->id}}" target="_blank" class="btn btn-sm btn-info text-white" disabeled><i class="fa fa-ship"></i></button>
                       </td>
                       @else
                       <td>
-                      @if($inv->inv_type == 'DSK')
-                      <a type="button" href="/invoice/import-DSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
+                      @if($inv->inv_type == 'OSK')
+                      <a type="button" href="/invoice/export-OSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
                       @else  
-                      <a type="button" href="/invoice/import-DS{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
+                      <a type="button" href="/invoice/export-OS{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
                       @endif
                       </td>
                       <td>
-                      <a type="button" href="/invoice/job/import-{{$inv->id}}" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
+                      <a type="button" href="/invoice/job/export-{{$inv->id}}" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
                       </td>
                       @endif
                       <td>
-                        <div class="row">
-
-                          <div class="col-5">
-                            <button type="button" id="pay" data-id="{{$inv->id}}" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>
-                          </div>
-                          @if($inv->lunas == "N")
-                          <div class="col-5">
-                            <button type="button" data-id="{{$inv->form_id}}" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>
-                          </div>
-                          @endif
-                        </div>
+                      <button type="button" id="pay" data-id="{{$inv->id}}" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>
+                      @if($inv->lunas == "N")
+                      <button type="button" data-id="{{$inv->form_id}}" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>
+                      @endif
                       </td> <!-- Tambahkan aksi sesuai kebutuhan -->
                     </tr>
                    @endforeach
@@ -238,43 +231,36 @@
                       </td>
                       @endif
                       <td>
-                        @if($inv->inv_type == 'DSK')
-                      <a type="button" href="/pranota/import-DSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
+                        @if($inv->inv_type == 'OSK')
+                      <a type="button" href="/pranota/export-OSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
                         @else
-                      <a type="button" href="/pranota/import-DS{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
+                      <a type="button" href="/pranota/export-OS{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
                         @endif
                       </td>
                       @if($inv->lunas == "N")
                       <td>
-                      <button type="button" href="/invoice/import-DSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white" disabled><i class="fa fa-dollar"></i></button>
+                      <button type="button" href="/invoice/export-OSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white" disabled><i class="fa fa-dollar"></i></button>
                       </td>
                       <td>
                       <button type="button" href="/invoice/job/import-{{$inv->id}}" target="_blank" class="btn btn-sm btn-info text-white" disabeled><i class="fa fa-ship"></i></button>
                       </td>
                       @else
                       <td>
-                      @if($inv->inv_type == 'DSK')
-                      <a type="button" href="/invoice/import-DSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
+                      @if($inv->inv_type == 'OSK')
+                      <a type="button" href="/invoice/export-OSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
                       @else  
-                      <a type="button" href="/invoice/import-DS{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
+                      <a type="button" href="/invoice/export-OS{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
                       @endif
                       </td>
                       <td>
-                      <a type="button" href="/invoice/job/import-{{$inv->id}}" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
+                      <a type="button" href="/invoice/job/export-{{$inv->id}}" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
                       </td>
                       @endif
                       <td>
-                        <div class="row">
-
-                          <div class="col-5">
-                            <button type="button" id="pay" data-id="{{$inv->id}}" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>
-                          </div>
-                          @if($inv->lunas == "N")
-                          <div class="col-5">
-                            <button type="button" data-id="{{$inv->form_id}}" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>
-                          </div>
-                          @endif
-                        </div>
+                      <button type="button" id="pay" data-id="{{$inv->id}}" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>
+                      @if($inv->lunas == "N")
+                      <button type="button" data-id="{{$inv->form_id}}" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>
+                      @endif
                       </td> <!-- Tambahkan aksi sesuai kebutuhan -->
                     </tr>
                    @endforeach
@@ -300,23 +286,42 @@
               @CSRF
               <div class="row">
 
-                <div class="col-4">
+                <div class="col-sm-3">
                   <div class="form-group">
                     <label>Pick Start Date Range</label>
-                    <!-- <input name="start" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired"> -->
-                    <input type="date" name="start" class="form-control" required>
+                    <input name="start" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
+                    <!-- <input type="date" name="start" class="form-control" required> -->
                   </div>
                 </div>
-                <div class="col-4">
+                <div class="col-sm-3">
                   <div class="form-group">
                     <label>Pick End Date Range</label>
-                    <!-- <input name="end" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired"> -->
-                    <input type="date" name="end" class="form-control" required>
+                    <input name="end" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
+                    <!-- <input type="date" name="end" class="form-control" required> -->
                     <input type="hidden" name="os_id" value="{{$os->id}}">
 
                   </div>
                 </div>
-                <div class="col-4 mt-4">
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label for="">Invoice Type</label>
+                     <div class="row">
+                        <div class="col-6">
+                          <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" name="inv_type[]" value="OSK" id="checkbox-dsk">
+                            <label class="form-check-label" for="checkbox-dsk">OSK</label>
+                          </div>
+                        </div>
+                        <div class="col-6">
+                          <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" name="inv_type[]" value="OS" id="checkbox-ds">
+                            <label class="form-check-label" for="checkbox-ds">OS</label>
+                          </div>
+                        </div>
+                     </div>
+                  </div>
+                </div>
+                <div class="col-sm-3 mt-4">
                   <button class="btn btn-primary" type="submit"><i class=" fa fa-file"></i> Export Active Invoice to Excel</button>
                 </div>
               </div>

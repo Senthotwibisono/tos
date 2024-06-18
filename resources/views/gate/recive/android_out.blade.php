@@ -80,7 +80,7 @@
                         <div class="col-12">
                             <div class="form-group">
                                 <label for="first-name-vertical">Date out</label>
-                                <input type="datetime-local" value="{{ $currentDateTimeString }}" id="dateout" name="truck_out_date" class="form-control" readonly>
+                                <input type="datetime-local" value="{{ $currentDateTimeString }}" id="dateout" name="truck_out_date" class="form-control" >
                             </div>
                         </div>
 

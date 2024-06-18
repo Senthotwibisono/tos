@@ -98,7 +98,7 @@
                   </thead>
                   <tbody>
                   @foreach($unPaids as $inv)
-                    <tr>
+                  <tr>
                       <td>{{$inv->proforma_no}}</td>
                       <td>{{$inv->cust_name}}</td>
                       <td>{{$inv->os_name}}</td>
@@ -118,11 +118,7 @@
                       </td>
                       @endif
                       <td>
-                        @if($inv->inv_type == 'DSK')
-                      <a type="button" href="/pranota/import-DSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
-                        @else
-                      <a type="button" href="/pranota/import-DS{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
-                        @endif
+                      <a type="button" href="/pranota/extend-{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
                       </td>
                       @if($inv->lunas == "N")
                       <td>
@@ -133,27 +129,22 @@
                       </td>
                       @else
                       <td>
-                      @if($inv->inv_type == 'DSK')
-                      <a type="button" href="/invoice/import-DSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                      @else  
-                      <a type="button" href="/invoice/import-DS{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                      @endif
+                      <a type="button" href="/invoice/extend-{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
                       </td>
                       <td>
-                      <a type="button" href="/invoice/job/import-{{$inv->id}}" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
+                      <a type="button" href="/invoice/job/extend-{{$inv->id}}" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
                       </td>
                       @endif
                       <td>
                         <div class="row">
-
-                          <div class="col-5">
+                          <div class="col-3">
                             <button type="button" id="pay" data-id="{{$inv->id}}" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>
                           </div>
-                          @if($inv->lunas == "N")
+                        @if($inv->lunas == "N")
                           <div class="col-5">
                             <button type="button" data-id="{{$inv->form_id}}" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>
                           </div>
-                          @endif
+                        @endif
                         </div>
                       </td> <!-- Tambahkan aksi sesuai kebutuhan -->
                     </tr>
@@ -219,7 +210,7 @@
                   </thead>
                   <tbody>
                   @foreach($piutangs as $inv)
-                    <tr>
+                  <tr>
                       <td>{{$inv->proforma_no}}</td>
                       <td>{{$inv->cust_name}}</td>
                       <td>{{$inv->os_name}}</td>
@@ -239,11 +230,7 @@
                       </td>
                       @endif
                       <td>
-                        @if($inv->inv_type == 'DSK')
-                      <a type="button" href="/pranota/import-DSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
-                        @else
-                      <a type="button" href="/pranota/import-DS{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
-                        @endif
+                      <a type="button" href="/pranota/extend-{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
                       </td>
                       @if($inv->lunas == "N")
                       <td>
@@ -254,27 +241,22 @@
                       </td>
                       @else
                       <td>
-                      @if($inv->inv_type == 'DSK')
-                      <a type="button" href="/invoice/import-DSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                      @else  
-                      <a type="button" href="/invoice/import-DS{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                      @endif
+                      <a type="button" href="/invoice/extend-{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
                       </td>
                       <td>
-                      <a type="button" href="/invoice/job/import-{{$inv->id}}" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
+                      <a type="button" href="/invoice/job/extend-{{$inv->id}}" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
                       </td>
                       @endif
                       <td>
                         <div class="row">
-
-                          <div class="col-5">
+                          <div class="col-3">
                             <button type="button" id="pay" data-id="{{$inv->id}}" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>
                           </div>
-                          @if($inv->lunas == "N")
+                        @if($inv->lunas == "N")
                           <div class="col-5">
                             <button type="button" data-id="{{$inv->form_id}}" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>
                           </div>
-                          @endif
+                        @endif
                         </div>
                       </td> <!-- Tambahkan aksi sesuai kebutuhan -->
                     </tr>

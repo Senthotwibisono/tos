@@ -24,4 +24,13 @@ class ContainerExtend extends Model
         'ctr_intern_status',
         'gross',
     ];
+
+    public function Form()
+    {
+        return $this->belongsTo(InvoiceForm::class, 'form_id');
+    }
+    public function Kapal()
+    {
+        return $this->belongsTo(VVoyage::class, 'ves_id');
+    }
 }
