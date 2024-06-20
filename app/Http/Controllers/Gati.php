@@ -291,7 +291,7 @@ class Gati extends Controller
             $formattedData[] = [
                 'container_no' => $tem->container_no,
                 'truck_no' => $tem->truck_no,
-                'truck_in_date' => $diff . ' yang lalu',
+                'truck_in_date' => $tem->truck_in_date,
                 'container_key' => $tem->container_key
             ];
         }
@@ -337,7 +337,7 @@ class Gati extends Controller
             $formattedData[] = [
                 'container_no' => $tem->container_no,
                 'truck_no' => $tem->truck_no,
-                'truck_in_date' => $diff . ' yang lalu',
+                'truck_in_date' => $tem->truck_in_date,
                 'container_key' => $tem->container_key
             ];
         }

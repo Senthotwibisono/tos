@@ -140,6 +140,8 @@
               <th>No</th>
               <th>Container No</th>
               <th>Order Service</th>
+              <th>Truck No</th>
+              <th>Truck in Date</th>
             </tr>
           </thead>
           <tbody>
@@ -148,6 +150,8 @@
               <td>{{$loop->iteration}}</td>
               <td>{{$itm->container_no}}</td>
               <td>{{$itm->service->name ?? '' }}</td>
+              <td>{{$itm->truck_no}}</td>
+              <td>{{$itm->truck_in_date}}</td>
             </tr>
             @endforeach
           </tbody>

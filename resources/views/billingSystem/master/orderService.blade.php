@@ -84,6 +84,8 @@
                                     <option disabeled selected value>Pilih Satu !!</option>
                                     <option value="SP2">SP2/RC</option>
                                     <option value="SPPS">SPPS</option>
+                                    <option value="MTI">MT Kapal Icon</option>
+                                    <option value="MTK">MT Kapal Luar</option>
                                 </select>
                             </div>
                         </div>

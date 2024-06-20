@@ -51,6 +51,7 @@ class ImportZahir implements FromCollection, WithMapping, WithHeadings, ShouldAu
         }
 
         $keterangan = "By. ". $data->master_item_name. ' ' . $data->jumlah . 'x' . $data->ukuran . '('. $data->customer->name .', PT)';
+        $note = $data->Form->Kapal->ves_code . ' V.' . $data->Form->Kapal->voy_in . '/' . $data->Form->Kapal->voy_out . '/' . $data->Form->Kapal->no_ppk;
 
         $expiredDate = Carbon::parse($data->order_date);
         // Add 30 days to the expired date
@@ -80,8 +81,8 @@ class ImportZahir implements FromCollection, WithMapping, WithHeadings, ShouldAu
            $formattedExpiredDate,
            '',
            'Head Quarter',
-           '',
-           '',
+           '0',
+           $note,
            '',
            'IDR',
            '1',

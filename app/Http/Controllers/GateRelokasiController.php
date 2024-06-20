@@ -22,8 +22,15 @@ class GateRelokasiController extends Controller
     public function index()
     {
         $title = 'Gate Rlokasi';
-        $item = Item::whereIn('ctr_intern_status', ['09', '11', '15'])->orWhere(function($query) {$query->where('ctr_intern_status', '49')->whereHas('service', function($query) {$query->where('return_yn', 'Y');});})->get();
-        $item_confirmed = Item::whereIn('ctr_intern_status',  ['12', '13', '14'])->get();
+        $item = Item::whereIn('ctr_intern_status', ['11', '15'])
+        ->orWhere(function($query) {
+            $query->whereiN('ctr_intern_status', ['09', '49'])
+                  ->whereHas('service', function($query) {
+                      $query->where('return_yn', 'Y')
+                            ->whereNotIn('order', ['MTI', 'MTK']);
+                  });
+        })->get();
+            $item_confirmed = Item::whereIn('ctr_intern_status',  ['12', '13', '14'])->get();
 
       
         return view('gate.relokasi.main', compact('item', 'title', 'item_confirmed'));
@@ -31,8 +38,15 @@ class GateRelokasiController extends Controller
     public function android()
     {
         $title = 'Gate Rlokasi';
-        $item = Item::whereIn('ctr_intern_status', ['09', '11', '15'])->orWhere(function($query) {$query->where('ctr_intern_status', '49')->whereHas('service', function($query) {$query->where('return_yn', 'Y');});})->get();
-        $item_confirmed = Item::whereIn('ctr_intern_status',  ['12', '13', '14'])->get();
+        $item = Item::whereIn('ctr_intern_status', ['11', '15'])
+        ->orWhere(function($query) {
+            $query->whereIn('ctr_intern_status', ['09', '49'])
+                  ->whereHas('service', function($query) {
+                      $query->where('return_yn', 'Y')
+                            ->whereNotIn('order', ['MTI', 'MTK']);
+                  });
+        })->get();
+            $item_confirmed = Item::whereIn('ctr_intern_status',  ['12', '13', '14'])->get();
 
         return view('gate.relokasi.android', compact('item', 'title', 'item_confirmed'));
     }
@@ -59,6 +73,7 @@ class GateRelokasiController extends Controller
     {
         $container_key = $request->container_key;
         $item = Item::where('container_key', $container_key)->first();
+        $now = Carbon::now();
 
         if ($item) {
             $service = $item->order_service;
@@ -72,6 +87,7 @@ class GateRelokasiController extends Controller
                         'truck_no' => $request->truck_no,
                         'job_no' => $request->job_no,
                         'invoice_no' => $request->invoice_no,
+                        'truck_in_date'=>$now,
                     ]);
                   
     
@@ -91,6 +107,7 @@ class GateRelokasiController extends Controller
                         'truck_no' => $request->truck_no,
                         'job_no' => $request->job_no,
                         'invoice_no' => $request->invoice_no,
+                        'truck_in_date'=>$now,
                     ]);
     
                         return response()->json([
@@ -107,6 +124,7 @@ class GateRelokasiController extends Controller
                         'ctr_status' => 'MTY',
                         'ctr_active_yn' => 'Y',
                         'truck_no' => $request->truck_no,
+                        'truck_in_date'=>$now,
                     ]);
                     
     

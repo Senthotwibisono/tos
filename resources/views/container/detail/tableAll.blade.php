@@ -18,8 +18,10 @@
                                 <th>Yard Position</th>
                                 <th>Placement Date</th>
                                 <th>Truck No</th>
-                                <th>Gate In</th>
-                                <th>Gate Out</th>
+                                <th>Gate In Delivery</th>
+                                <th>Gate Out Delivery</th>
+                                <th>Gate In Reciving</th>
+                                <th>Gate Out Reciving</th>
                                 <th>Customer</th>
                                 <th>History</th>
                                 <th>action</th>
@@ -63,8 +65,20 @@
                                 <td>{{$item->yard_block}}{{$item->yard_slot}}{{$item->yard_row}}{{$item->yard_tier}}</td>
                                 <td>{{$item->PLC->created_at ?? '' }}</td>
                                 <td>{{$item->truck_no}}</td>
+                                @if($item->ctr_i_e_t == "I")
                                 <td>{{$item->truck_in_date}}</td>
                                 <td>{{$item->truck_out_date}}</td>
+                                @else
+                                <td> </td>
+                                <td> </td>
+                                @endif
+                                @if($item->ctr_i_e_t == "E")
+                                <td>{{$item->truck_in_date}}</td>
+                                <td>{{$item->truck_out_date}}</td>
+                                @else
+                                <td> </td>
+                                <td> </td>
+                                @endif
                                 <td>{{$item->CtrInv->Form->customer->name ?? ''}}</td>
                                 <td>
                                     <a href="javascript:void(0)" onclick="openWindow('/container/history/{{$item->container_key}}')" class="btn btn-sm btn-info"><i class="fa fa-eye"></i></a>

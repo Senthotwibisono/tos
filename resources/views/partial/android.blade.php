@@ -83,6 +83,38 @@
             window.history.back();
         }
     </script>
+     @if (\Session::has('success'))
+  <script type="text/javascript">
+    // Add CSRF token to the headers
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+    var successMessage = "{!! \Session::get('success') !!}";
+
+    if (successMessage) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: successMessage,
+      }).then(function() {
+        // Make an AJAX request to unset session variable
+        $.ajax({
+          url: "{{ route('unset-session', ['key' => 'success']) }}",
+          type: 'POST',
+          success: function(response) {
+            console.log('Success session unset');
+            // {{logger('Success session unset')}} -> call func logger in helper
+          },
+          error: function(error) {
+            console.log('Error unsetting session', error);
+          }
+        });
+      });
+    }
+  </script>
+  @endif
 </body>
 
 </html>

@@ -328,7 +328,7 @@ class InvoiceExportController extends Controller
         $singleCont = Item::whereIn('container_key', $contSelect)->first();
         $os = OS::where('id', $request->order_service)->first();
         if ($os->order == 'SPPS') {
-            $kapal = $request->ves_id;
+            $kapal = $singleCont->ves_id;
             if ($kapal == 'PELINDO') {
                $ves = (object)[
                 'ves_id'=>'PELINDO',
@@ -342,11 +342,19 @@ class InvoiceExportController extends Controller
                    ];
             }
         }else {
-            $vessel = VVoyage::where('ves_id', $singleCont->ves_id)->first();
-            $ves = (object)[
-                'ves_id'=>$vessel->ves_id,
-                'ves_name'=>$vessel->ves_name
+            $kapal = $singleCont->ves_id;
+            if ($kapal == 'PELINDO') {
+               $ves = (object)[
+                'ves_id'=>'PELINDO',
+                'ves_name'=>'PELINDO'
                ];
+            }else {
+                $vessel = VVoyage::where('ves_id', $kapal)->first();
+                $ves = (object)[
+                    'ves_id'=>$vessel->ves_id,
+                    'ves_name'=>$vessel->ves_name
+                   ];
+            }
         }
         
         $invoice = Form::create([

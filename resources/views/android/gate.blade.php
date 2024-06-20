@@ -197,16 +197,39 @@
 
         <div class="card mt-5">
             <div class="card-header">
-                <h4 class="card-title">Gate MT Balik IKS/MKB & Relokasi Pelindo</h4>
+                <h4 class="card-title">Gate Container Empty</h4>
             </div>
             <div class="card-body">
                 <div class="buttons">
                     <div class="child">
-                        <div style="width: 300px;">
-                            <div style="width: 300px;">
-                                <div style="float: left; margin-right: 20px;">
-                                    <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_oqt1izjh.json" background="#FFFFFF" speed="1" width="100" height="100" loop autoplay></lottie-player>
-                                    <a href="/delivery/balik-relokasi-android" class="btn btn-success rounded-pill">Open</a>
+                        <div class="row mb-3">
+                            <div class="col-sm-4">
+                                <p><strong>Gate MT Balik IKS/MKB</strong></p>
+                                <div style="width: 300px;">
+                                    <div style="float: left; margin-right: 20px;">
+                                        <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_oqt1izjh.json" background="#FFFFFF" speed="1" width="100" height="100" loop autoplay></lottie-player>
+                                        <a href="/delivery/balik-relokasi-android" class="btn btn-success rounded-pill">Open</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <p><strong>Gate In Ambil Empty</strong></p>
+                                <div style="width: 300px;">
+                                    <div style="float: left; margin-right: 20px;">
+                                        <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_oqt1izjh.json" background="#FFFFFF" speed="1" width="100" height="100" loop autoplay></lottie-player>
+                                        <a href="/gate/gate-in/MT" class="btn btn-success rounded-pill">Open</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <p><strong>Gate Out Ambil Empty</strong></p>
+                                <div style="width: 300px;">
+                                    <div style="float: left; margin-right: 20px;">
+                                        <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_oqt1izjh.json" background="#FFFFFF" speed="1" width="100" height="100" loop autoplay></lottie-player>
+                                        <a href="/gate/gate-out/MT" class="btn btn-success rounded-pill">Open</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>

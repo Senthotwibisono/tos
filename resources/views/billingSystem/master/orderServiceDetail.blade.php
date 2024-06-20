@@ -37,6 +37,8 @@
                             <select name="order" class="form-select js-example-basic-multiple">
                                 <option value="SP2" {{ $orderService->order == 'SP2' ? 'selected' : '' }}>SP2</option>
                                 <option value="SPPS" {{ $orderService->order == 'SPPS' ? 'selected' : '' }}>SPPS</option>
+                                <option value="MTI" {{ $orderService->order == 'MTI' ? 'selected' : '' }}>MT Kapal Icon</option>
+                                <option value="MTK" {{ $orderService->order == 'MTK' ? 'selected' : '' }}>MT Kapal Luar</option>
                             </select>
                         </div>
                     </div>

@@ -63,16 +63,23 @@ class LoadController extends Controller
     // }
 
     $data['loaded'] = Item::where('ctr_i_e_t', '=', 'E')->where('ctr_intern_status', '=', '56')->get();
-    $items = Item::where('ctr_i_e_t', '=', 'E' )->where(function ($query) {
-          $query->where('ctr_intern_status', '=', 51)
-              ->orWhere('ctr_intern_status', '=', 53);
-        })->where(function ($query) {
-            $query->where('ctr_intern_status', '=', '08')
-                  ->where(function ($query) {
-                      $query->where('mty_type', '=', '01')
-                            ->orWhere('mty_type', '=', '02');
-                  });
-        })->get();
+    $items = Item::where('ctr_i_e_t', '=', 'E')
+    ->where(function ($query) {
+        $query->where('ctr_intern_status', '=', 51)
+            ->orWhere('ctr_intern_status', '=', 53);
+    })->orWhere(function ($query) {
+        $query->where('ctr_intern_status', '=', '08')
+            ->where(function ($query) {
+                $query->where('mty_type', '=', '01')
+                    ->orWhere('mty_type', '=', '02');
+            });
+    })->orWhere(function ($query) {
+        $query->where('ctr_intern_status', '=', '49')
+            ->whereHas('service', function ($query) {
+                $query->where('order', '=', 'MTI');
+            });
+    })->get();
+
     $users = User::all();
     $data["active"] = "discharge";
     $data["subactive"] = "confirm";
@@ -124,7 +131,23 @@ class LoadController extends Controller
     //   ];
     // }
     $data['loaded'] = Item::where('ctr_i_e_t', '=', 'E')->where('ctr_intern_status', '=', '56')->get();
-    $items = Item::where('ctr_intern_status', '=', [51, 53])->get();
+    $items = Item::where('ctr_i_e_t', '=', 'E')
+    ->where(function ($query) {
+        $query->where('ctr_intern_status', '=', 51)
+            ->orWhere('ctr_intern_status', '=', 53);
+    })->orWhere(function ($query) {
+        $query->where('ctr_intern_status', '=', '08')
+            ->where(function ($query) {
+                $query->where('mty_type', '=', '01')
+                    ->orWhere('mty_type', '=', '02');
+            });
+    })->orWhere(function ($query) {
+        $query->where('ctr_intern_status', '=', '49')
+            ->whereHas('service', function ($query) {
+                $query->where('order', '=', 'MTI');
+            });
+    })->get();
+
     $users = User::all();
     $data["active"] = "discharge";
     $data["subactive"] = "confirm";
@@ -231,6 +254,14 @@ class LoadController extends Controller
             'voy_no'=>$item->voy_no,
             'activity' =>'LOAD',
         ]);
+        $oldItem = Item::where('container_no', $item->container_no)->where('ctr_intern_status', '=', '04')->first();
+        if ($oldItem) {
+            $oldItem->update([
+                'ctr_intern_status'=>'09',
+                'ctr_active_yn'=> 'N',
+                'os_id'=>null,
+            ]);
+        }
         Item::where('container_key', $container_key)->update([
           'bay_slot' => $request->bay_slot,
           'bay_row' => $request->bay_row,

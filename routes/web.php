@@ -58,6 +58,7 @@ use App\Http\Controllers\MasterInvoiceController;
 use App\Http\Controllers\ContainerController;
 use App\Http\Controllers\RealisasiMuatController;
 use App\Http\Controllers\GateCheckingController;
+use App\Http\Controllers\GateMTcontroller;
 use App\Exports\ContainersReport;
 
 /*
@@ -1082,3 +1083,10 @@ Route::get('/planning/detail/realisasiMuat/excel/{id?}', [RealisasiMuatControlle
 
 Route::get('/gate/checking-', [GateCheckingController::class, 'Main']);
 Route::get('/gate/checking-perpanjangan-', [GateCheckingController::class, 'MainPerpanjangan']);
+
+// Gate MT
+Route::get('/gate/gate-in/MT', [GateMTcontroller::class, 'IndexIn']);
+Route::post('/gate/gate-in/MT-confirm', [GateMTcontroller::class, 'ConfirmIn'])->name('confirmInGateMT');
+Route::get('/gate/gate-out/MT', [GateMTcontroller::class, 'IndexOut']);
+Route::post('/gate/gate-out/MT-confirm', [GateMTcontroller::class, 'ConfirmOut'])->name('confirmOutGateMT');
+
