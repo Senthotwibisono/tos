@@ -47,18 +47,18 @@ class ReportExtend implements FromCollection, WithMapping, WithHeadings, ShouldA
 
         $no = $this->invoices->search($invoice) + 1;
 
-        $containerKeys = json_decode($invoice->container_key, true);
-
-        $containerNos = [];
-        foreach ($containerKeys as $key) {
-            $keysArray = explode(',', $key); // Pisahkan string menjadi array
-            foreach ($keysArray as $key) {
-                $containers = Item::where('container_key', $key)->pluck('container_no')->toArray();
-                $containerNos = array_merge($containerNos, $containers);
-            }
+        $namaKapal = $invoice->Form->Kapal->ves_name ?? 'N/A';
+        $voyKapal = $invoice->Form->Kapal->voy_out ?? 'N/A';
+        $kapal = $namaKapal . '/' . $voyKapal;
+        $no = $this->invoices->search($invoice) + 1;
+        if ($invoice->jumlah_hari != 0) {
+            $item = $invoice->jumlah_hari;
+        }else {
+            $item = $invoice->jumlah;
         }
-        $containerNoStr = implode(', ', $containerNos);
 
+        $pajak = ($invoice->total * 11) /100;
+        $grand = $pajak + $invoice->total;
         return [
             $no,
             $invoice->order_date,
@@ -73,9 +73,8 @@ class ReportExtend implements FromCollection, WithMapping, WithHeadings, ShouldA
             $invoice->total,
             '0',
             $pajak,
-            $grand,  
-            $status
-            
+            $grand,
+            $status         
         ];
     }
 
