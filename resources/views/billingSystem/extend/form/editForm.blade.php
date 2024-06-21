@@ -91,6 +91,7 @@
                 @endforeach
             </select>
             </div>
+            <input type="text" id="tipe" name="tipe" value="{{$form->tipe}}">
           </div>
           <div class="row mt-5">
             <div class="col-12 text-right">
@@ -164,6 +165,7 @@ $(function(){
                                         selected: 'selected'
                                     }));
                                 });
+                                $('#tipe').val(response.tipe);
                             });
                         } else {
                             Swal.fire({

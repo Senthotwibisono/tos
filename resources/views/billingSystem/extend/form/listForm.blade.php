@@ -34,7 +34,7 @@
                   <tr>
                     <th>#</th>
                     <th>Customer</th>
-                    <th>Las Invoice No</th>
+                    <th>Last Invoice No</th>
                     <th>Order Service</th>
                     <th>Expired Date</th>
                     <th>Action</th>
@@ -45,7 +45,7 @@
                   <tr>
                     <td>{{$loop->iteration}}</td>
                     <td>{{$form->customer->name}}</td>
-                    <td>{{$form->oldInv->inv_no}}</td>
+                    <td>{{$form->oldInv->inv_no ?? ''}}</td>
                     <td>{{$form->service->name}}</td>
                     <td>{{$form->expired_date}}</td>
                     <td>

@@ -60,6 +60,8 @@ class InvoiceExtend extends Controller
         $tumpuk = ImportDetail::where('count_by', 'T')->get();
         $invIds = $tumpuk->pluck('inv_id');
         $data['oldInv'] = InvoiceImport::where('lunas', '=', 'Y')->get();
+        $extendInv = Extend::where('lunas', 'Y')->get();
+        $data['oldInv'] = $data['oldInv']->merge($extendInv);
         $data['customer'] = Customer::get();
         $data['now'] = Carbon::now();
         $data['OrderService'] = OS::where('ie', '=', 'X')->get();
@@ -75,6 +77,8 @@ class InvoiceExtend extends Controller
         $tumpuk = ImportDetail::where('count_by', 'T')->get();
         $invIds = $tumpuk->pluck('inv_id');
         $data['oldInv'] = InvoiceImport::where('lunas', '=', 'Y')->get();
+        $extendInv = Extend::where('lunas', 'Y')->get();
+        $data['oldInv'] = $data['oldInv']->merge($extendInv);
         $data['customer'] = Customer::get();
         $data['now'] = Carbon::now();
         $data['OrderService'] = OS::where('ie', '=', 'X')->get();
@@ -86,6 +90,12 @@ class InvoiceExtend extends Controller
     {
         $id = $request->id;
         $inv = InvoiceImport::where('id', $id)->first();
+        if (is_null($inv)) {
+            $inv = Extend::where('id', $id)->first();
+            $tipe = 'P';
+        }else {
+            $tipe = 'I';
+        }
 
         if ($inv) {
            
@@ -99,6 +109,7 @@ class InvoiceExtend extends Controller
                     'message' => 'updated successfully!',
                     'data'    => $inv,
                     'cont' => $cont,
+                    'tipe'=>$tipe
                 ]);
             }
         } else {
@@ -112,7 +123,11 @@ class InvoiceExtend extends Controller
     public function postForm(Request $request)
     {
         $oldInv = InvoiceImport::where('id', $request->inv_id)->first();
-        $oldExpired = $oldInv->last_expired_date;
+        if (is_null($oldInv)) {
+            $oldInv = Extend::where('id', $request->inv_id)->first();
+        }
+        $oldForm = Form::where('id', $oldInv->form_id)->first();
+        $oldExpired = $oldForm->expired_date;
         // dd($oldInv, $oldExpired);
         $expired = $request->exp_date;
 
@@ -133,6 +148,7 @@ class InvoiceExtend extends Controller
             'i_e'=>'X',
             'disc_date'=>$oldExpired,
             'done'=>'N',
+            'tipe'=>$request->tipe,
         ]);
 
        
@@ -160,8 +176,11 @@ class InvoiceExtend extends Controller
 
         $newContainer = $request->container_key;
         $oldInv = InvoiceImport::where('id', $request->inv_id)->first();
-        $oldExpired = $oldInv->last_expired_date;
-        // dd($oldInv, $oldExpired);
+        if (is_null($oldInv)) {
+            $oldInv = Extend::where('id', $request->inv_id)->first();
+        }
+        $oldForm = Form::where('id', $oldInv->form_id)->first();
+        $oldExpired = $oldForm->expired_date;
         $expired = $request->exp_date;
 
         if ($oldExpired >= $expired) {
@@ -185,6 +204,7 @@ class InvoiceExtend extends Controller
             'i_e'=>'X',
             'disc_date'=>$oldExpired,
             'done'=>'N',
+            'tipe'=>$request->tipe,
         ]);
         foreach ($newContainer as $cont) {
             $item = Item::where('container_key', $cont)->first();
@@ -219,11 +239,17 @@ class InvoiceExtend extends Controller
         $interval = $start->diff($end);
         $jumlahHari = $interval->days;
         // dd($jumlahHari);
-        $oldInv = InvoiceImport::where('id', $form->do_id)->first();
+        if ($form->tipe == 'I') {
+            $oldInv = InvoiceImport::where('id', $form->do_id)->first();
+        }else {
+            $oldInv = Extend::where('id', $form->do_id)->first();
+        }
+        // dd($form, $oldInv);
+        $oldForm = Form::where('id', $oldInv->form_id)->first();
 
 
-        if ($oldInv->massa3 == null) {
-            if ($oldInv->massa2 == null) {
+        if ($oldForm->massa3 == null) {
+            if ($oldForm->massa2 == null) {
                 if ($jumlahHari > 5) {
                     $m2 = 5;
                     $m3 = $jumlahHari - 5;
@@ -231,12 +257,12 @@ class InvoiceExtend extends Controller
                     $m2 = $jumlahHari;
                     $m3 = 0;
                 }
-            } elseif ($oldInv->massa2 < 5) {
+            } elseif ($oldForm->massa2 < 5) {
                 if ($jumlahHari > 5) {
-                    $m2 = min(5 - $oldInv->massa2, $jumlahHari);
+                    $m2 = min(5 - $oldForm->massa2, $jumlahHari);
                     $m3 = $jumlahHari - $m2;
                 } else {
-                    $m2 = min(5 - $oldInv->massa2, $jumlahHari);
+                    $m2 = min(5 - $oldForm->massa2, $jumlahHari);
                     $m3 = 0;
                 }
             } else {
@@ -326,10 +352,15 @@ class InvoiceExtend extends Controller
         $interval = $start->diff($end);
         $jumlahHari = $interval->days;
 
-        $oldInv = InvoiceImport::where('id', $form->do_id)->first();
+        if ($form->tipe == 'I') {
+            $oldInv = InvoiceImport::where('id', $form->do_id)->first();
+        }else {
+            $oldInv = Extend::where('id', $form->do_id)->first();
+        }
+        $oldForm = Form::where('id', $oldInv->form_id)->first();
 
-        if ($oldInv->massa3 == null) {
-            if ($oldInv->massa2 == null) {
+        if ($oldForm->massa3 == null) {
+            if ($oldForm->massa2 == null) {
                 if ($jumlahHari > 5) {
                     $m2 = 5;
                     $m3 = $jumlahHari - 5;
@@ -337,12 +368,12 @@ class InvoiceExtend extends Controller
                     $m2 = $jumlahHari;
                     $m3 = 0;
                 }
-            } elseif ($oldInv->massa2 < 5) {
+            } elseif ($oldForm->massa2 < 5) {
                 if ($jumlahHari > 5) {
-                    $m2 = min(5 - $oldInv->massa2, $jumlahHari);
+                    $m2 = min(5 - $oldForm->massa2, $jumlahHari);
                     $m3 = $jumlahHari - $m2;
                 } else {
-                    $m2 = min(5 - $oldInv->massa2, $jumlahHari);
+                    $m2 = min(5 - $oldForm->massa2, $jumlahHari);
                     $m3 = 0;
                 }
             } else {
@@ -360,11 +391,12 @@ class InvoiceExtend extends Controller
        
         $cust = Customer::where('id', $request->cust_id)->first();
         $invoiceNo = 'DS-' . $this->getNextInvoiceExtend();
+        $nextProformaNumber = $this->getNextProformaNumber();
         $extend = Extend::create([
             'form_id'=>$form->id,
             'm2' => $massa2,
             'm3' => $massa3,
-            'proforma_no'=>$oldInv->proforma_no,
+            'proforma_no'=>$nextProformaNumber,
             'inv_id'=>$oldInv->id,
             'inv_no'=>$invoiceNo,
             'cust_id'=>$form->cust_id,
@@ -385,11 +417,10 @@ class InvoiceExtend extends Controller
             'order_at'=> Carbon::now(),
         ]);
         
-        // $oldInv->update([
-        //     'last_expired_date'=>$request->expired_date,
-        //     'massa2'=>$massa2,
-        //     'massa3'=>$massa3,
-        // ]);
+        $form->update([
+            'massa2'=>$massa2,
+            'massa3'=>$massa3,
+        ]);
         
 
         $groupedBySize = $cont->groupBy('ctr_size');
@@ -478,161 +509,6 @@ class InvoiceExtend extends Controller
             'done'=>'Y',
            ]);
         return redirect()->route('index-extend')->with('success', 'Data Berhasil Di Simpan');
-    }
-    public function Oldpost(Request $request)
-    {
-        $oldInv = InvoiceImport::where('id', $request->inv_id)->first();
-        $cont = "["."". $request->contKey_Selected . "" ."]";
-        $cust = Customer::where('id', $request->cust_id)->first();
-        $invoiceNo = 'DS-' . $this->getNextInvoiceExtend();
-        $itemtArray = json_decode($cont);
-        $item = Item::where('container_key', $itemtArray)->get();
-        $extend = Extend::create([
-            'proforma_no'=>$oldInv->proforma_no,
-            'inv_id'=>$oldInv->id,
-            'inv_no'=>$invoiceNo,
-            'cust_id'=>$cust->id,
-            'cust_name'=>$cust->name,
-            'fax'=>$cust->fax,
-            'npwp'=>$cust->npwp,
-            'alamat'=>$cust->alamat,
-            'os_id'=>$oldInv->os_id,
-            'os_name'=>$oldInv->os_name,
-            'container_key'=>"["."". $request->contKey_Selected . "" ."]",
-            'm1'=>$request->m1,
-            'm2'=>$request->m2,
-            'm3'=>$request->m3,
-            'ctr_20'=>$request->ctr_20,
-            'ctr_40'=>$request->ctr_40,
-            'ctr_21'=>$request->ctr_21,
-            'ctr_42'=>$request->ctr_42,
-            'm1_20'=>$request->m1_20,
-            'm2_20'=>$request->m2_20,
-            'm3_20'=>$request->m3_20,
-            'm1_21'=>$request->m1_21,
-            'm2_21'=>$request->m2_21,
-            'm3_21'=>$request->m3_21,
-            'm1_40'=>$request->m1_40,
-            'm2_40'=>$request->m2_40,
-            'm3_40'=>$request->m3_40,
-            'm1_42'=>$request->m1_42,
-            'm2_42'=>$request->m2_42,
-            'm3_42'=>$request->m3_42,
-            'admin'=>$request->admin,
-            'total'=>$request->total,
-            'pajak'=>$request->pajak,
-            'grand_total'=>$request->grand_total,
-            'order_by'=>$request->order_by,
-            'lunas'=> "N",
-            'expired_date'=>$request->expired_date,
-            'order_by'=> Auth::user()->name,
-            'order_at'=> Carbon::now(),
-        ]);
-
-        if ($extend->os_id = '1' || $extend->os_id = '2' || $extend->os_id = '5' || $extend->os_id = '16')  {
-            $kode = "PPSP2-";
-        }else {
-            $kode = "PPSPS-";
-        }
-        if ($extend->ctr_20 != null) {
-            $detail20 = Detail::create([
-                'inv_id'=>$extend->id,
-                'inv_no'=>$extend->inv_no,
-                'inv_type'=>'XTD',
-                'keterangan'=>'Invoice Extend',
-                'detail'=> $kode.'20',
-                'ukuran'=>'20',
-                'jumlah'=>$extend->ctr_20,
-                'satuan'=>'unit',
-                'harga'=>$extend->lolo_mty_20,
-                'expired_date'=>$extend->expired_date,
-                'order_date'=>$extend->order_at,
-                'lunas'=>$extend->lunas,
-                'cust_id'=>$extend->cust_name,
-                'cust_name'=>$extend->cust_id
-            ]);
-        }
-        if ($extend->ctr_21 != null) {
-            $detail21 = Detail::create([
-                'inv_id'=>$extend->id,
-                'inv_no'=>$extend->inv_no,
-                'inv_type'=>'XTD',
-                'keterangan'=>'Invoice Extend',
-                'detail'=> $kode.'21',
-                'ukuran'=>'21',
-                'jumlah'=>$extend->ctr_21,
-                'satuan'=>'unit',
-                'harga'=>$extend->lolo_mty_21,
-                'expired_date'=>$extend->expired_date,
-                'order_date'=>$extend->order_at,
-                'lunas'=>$extend->lunas,
-                'cust_id'=>$extend->cust_name,
-                'cust_name'=>$extend->cust_id
-            ]);
-        }
-        if ($extend->ctr_40 != null) {
-            $detail40 = Detail::create([
-                'inv_id'=>$extend->id,
-                'inv_no'=>$extend->inv_no,
-                'inv_type'=>'XTD',
-                'keterangan'=>'Invoice Extend',
-                'detail'=> $kode.'40',
-                'ukuran'=>'40',
-                'jumlah'=>$extend->ctr_40,
-                'satuan'=>'unit',
-                'harga'=>$extend->lolo_mty_40,
-                'expired_date'=>$extend->expired_date,
-                'order_date'=>$extend->order_at,
-                'lunas'=>$extend->lunas,
-                'cust_id'=>$extend->cust_name,
-                'cust_name'=>$extend->cust_id
-            ]);
-        }
-        if ($extend->ctr_42 != null) {
-            $detail42 = Detail::create([
-                'inv_id'=>$extend->id,
-                'inv_no'=>$extend->inv_no,
-                'inv_type'=>'XTD',
-                'keterangan'=>'Invoice Extend',
-                'detail'=> $kode.'42',
-                'ukuran'=>'42',
-                'jumlah'=>$extend->ctr_42,
-                'satuan'=>'unit',
-                'harga'=>$extend->lolo_mty_42,
-                'expired_date'=>$extend->expired_date,
-                'order_date'=>$extend->order_at,
-                'lunas'=>$extend->lunas,
-                'cust_id'=>$extend->cust_name,
-                'cust_name'=>$extend->cust_id
-            ]);
-        }
-        // $contArray = explode(',', $cont[0]);
-        // dd($contArray, $cont);
-        $contArray = json_decode($cont);
-            foreach ($contArray as $idCont) {
-                $selectCont = Item::where('container_key', $idCont)->get();
-                
-                foreach ($selectCont as $item) {
-                    $item->update([
-                        'selected_do' => 'Y'
-                    ]);
-
-                    $lastJobNo = JobExtend::orderBy('id', 'desc')->value('job_no');
-                    $jobNo = $this->getNextJob($lastJobNo);
-                        $job = JobExtend::create([
-                            'inv_id'=>$extend->id,
-                            'job_no'=>$jobNo,
-                            'os_id'=>$extend->os_id,
-                            'os_name'=>$extend->os_name,
-                            'cust_id'=>$extend->cust_id,
-                            'active_to'=>$extend->expired_date,
-                            'container_key'=>$item->container_key,
-                            'container_no'=>$item->container_no,
-                            'ves_id'=>$item->ves_id,
-                        ]);
-                }
-            }
-        return redirect()->route('index-extend')->with('success', 'Invoice Berhasil Di Buat');
     }
 
     public function payExtend($id)
@@ -842,6 +718,28 @@ class InvoiceExtend extends Controller
         return $result;
     }
 
+    private function getNextProformaNumber()
+    {
+        // Mendapatkan nomor proforma terakhir
+        $latestProforma = Extend::orderBy('proforma_no', 'desc')->first();
+    
+        // Jika tidak ada proforma sebelumnya, kembalikan nomor proforma awal
+        if (!$latestProforma) {
+            return 'P0000001';
+        }
+    
+        // Mendapatkan nomor urut proforma terakhir
+        $lastProformaNumber = $latestProforma->proforma_no;
+    
+        // Mengekstrak angka dari nomor proforma terakhir
+        $lastNumber = (int)substr($lastProformaNumber, 1);
+    
+        // Menambahkan 1 ke nomor proforma terakhir
+        $nextNumber = $lastNumber + 1;
+    
+        // Menghasilkan nomor proforma berikutnya dengan format yang benar
+        return 'P' . str_pad($nextNumber, 7, '0', STR_PAD_LEFT);
+    }
 
 private function getNextInvoiceExtend()
 {

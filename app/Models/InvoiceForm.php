@@ -21,7 +21,9 @@ class InvoiceForm extends Model
         'i_e',
         'disc_date',
         'done',
-        'old_inv'
+        'massa2',
+        'massa3',
+        'tipe'
     ];
 
     public function doOnline()
@@ -31,7 +33,13 @@ class InvoiceForm extends Model
 
     public function oldInv()
     {
-        return $this->belongsTo(InvoiceImport::class, 'do_id', 'id');
+        if ($this->tipe === 'P') {
+            // If 'tipe' is 'P', use the Extend class
+            return $this->belongsTo(Extend::class, 'do_id', 'id');
+        } else {
+            // Otherwise, use the InvoiceImport class
+            return $this->belongsTo(InvoiceImport::class, 'do_id', 'id');
+        }
     }
 
     public function Kapal()

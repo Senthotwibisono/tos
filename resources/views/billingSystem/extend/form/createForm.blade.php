@@ -87,6 +87,7 @@
               <option disabeled selected value>Pilih Container !</option>
             </select>
             </div>
+            <input type="hidden" id="tipe" name="tipe">
           </div>
           <div class="row mt-5">
             <div class="col-12 text-right">
@@ -160,6 +161,7 @@ $(function(){
                                         selected: 'selected'
                                     }));
                                 });
+                                $('#tipe').val(response.tipe);
                             });
                         } else {
                             Swal.fire({
