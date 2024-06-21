@@ -385,11 +385,11 @@ class InvoiceExtend extends Controller
             'order_at'=> Carbon::now(),
         ]);
         
-        $oldInv->update([
-            'last_expired_date'=>$request->expired_date,
-            'massa2'=>$massa2,
-            'massa3'=>$massa3,
-        ]);
+        // $oldInv->update([
+        //     'last_expired_date'=>$request->expired_date,
+        //     'massa2'=>$massa2,
+        //     'massa3'=>$massa3,
+        // ]);
         
 
         $groupedBySize = $cont->groupBy('ctr_size');
