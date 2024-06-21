@@ -75,7 +75,7 @@ class ImportZahir implements FromCollection, WithMapping, WithHeadings, ShouldAu
            $data->kode,
            $item,
            $data->satuan,
-           $data->total,
+           $data->tarif,
            '',
            'VAT',
            $formattedExpiredDate,
