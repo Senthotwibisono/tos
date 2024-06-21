@@ -118,13 +118,12 @@
               <div class="col-xs-12 col-12">
                 <address>
                   <strong>Billed To:</strong><br>
-                  Customer Name : {{$invoice->cust_name}}
+                  Customer Name : {{$invoice->customer->name}}
                   <br>
-                  Fax : {{$invoice->fax}}
+                  Fax : {{$invoice->customer->fax}}
                   <br>
-                  Address : {{$invoice->alamat}}
+                  Address : {{$invoice->customer->alamat}}
                   <br>
-                </address>
               </div>
               <div class="col-xs-12 col-12">
                 <address>

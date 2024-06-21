@@ -93,4 +93,8 @@ class InvoiceImport extends Model
         'do_no',
         'last_expired_date',
     ];
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'cust_id', 'id');
+    }
 }

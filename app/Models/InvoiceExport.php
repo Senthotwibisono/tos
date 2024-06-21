@@ -97,4 +97,9 @@ class InvoiceExport extends Model
         'expired_date',
         'booking_no'
     ];
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'cust_id', 'id');
+    }
 }

@@ -103,9 +103,12 @@
               <div class="col-6">
                 <address>
                   <strong>Billed To:</strong><br>
-                  Customer Name: {{$invoice->cust_name}}<br>
-                  Fax: {{$invoice->fax}}<br>
-                  Address: {{$invoice->alamat}}<br>
+                  Customer Name : {{$invoice->customer->name}}
+                  <br>
+                  Fax : {{$invoice->customer->fax}}
+                  <br>
+                  Address : {{$invoice->customer->alamat}}
+                  <br>
                 </address>
                 <address>
                   <strong>Tipe Invoice:</strong><br> DS

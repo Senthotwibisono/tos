@@ -60,4 +60,9 @@ class Extend extends Model
         'lunas_at',
         'expired_date',
     ];
+    
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'cust_id', 'id');
+    }
 }
