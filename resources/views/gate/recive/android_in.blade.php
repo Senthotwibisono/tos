@@ -149,6 +149,21 @@
                 <input type="text" id="opr" class="form-control" name="ctr_opr" readonly>
               </div>
             </div>
+
+            <div class="col-6">
+              <div class="form-group">
+                <label for="first-name-vertical">Vessel</label>
+                <input type="text" id="vessel" name="ves_name" class="form-control" readonly>
+              </div>
+            </div>
+
+            <div class="col-6">
+              <div class="form-group">
+                <label for="first-name-vertical">Voyage</label>
+                <input type="text" id="voy" name="voy_no"class="form-control" readonly>
+              </div>
+            </div>
+            
             <div class="col-12">
               <div class="form-group">
                 <label for="first-name-vertical">Truck Number</label>
