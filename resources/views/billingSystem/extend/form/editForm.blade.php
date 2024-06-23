@@ -75,9 +75,10 @@
               <select name="inv_id"  class="js-example-basic-single form-control" id="invId" style="height: 150%;">
                 <option disabeled selected value>Pilih Satu !</option>
                @foreach($oldInv as $inv)
-                <option value="{{$inv->id}}"{{$form->do_id == $inv->id ? 'selected' : ''}}>{{$inv->inv_no}}</option>
+                <option value="{{$inv->form_id}}"{{$form->id == $inv->form_id ? 'selected' : ''}}>{{$inv->inv_no}}</option>
                @endforeach
               </select>
+              <input type="hidden" name="inv_no" id="inv_no">
             </div>
             <br>
             <hr>
@@ -139,11 +140,13 @@ $(function(){
 
             $('#invId'). on('change', function(){
                 let id = $('#invId').val();
+         
 
                 $.ajax({
                     type: 'get',
                     url: "{{ route('getContToExtend')}}",
                     data : {id : id,
+                     
                             },
                     cache: false,
                     

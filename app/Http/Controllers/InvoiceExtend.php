@@ -59,9 +59,16 @@ class InvoiceExtend extends Controller
 
         $tumpuk = ImportDetail::where('count_by', 'T')->get();
         $invIds = $tumpuk->pluck('inv_id');
-        $data['oldInv'] = InvoiceImport::where('lunas', '=', 'Y')->get();
-        $extendInv = Extend::where('lunas', 'Y')->get();
-        $data['oldInv'] = $data['oldInv']->merge($extendInv);
+        $invoiceImport = InvoiceImport::whereNot('form_id', '=' , '')->where('lunas', '=', 'Y')->get();
+    
+        // Retrieve invoices from Extend where 'lunas' is 'Y'
+        $extendInv = Extend::where('lunas', '=', 'Y')->get();
+    
+        // Merge the collections
+        $mergedInvoices = $invoiceImport->merge($extendInv);
+    
+        // Pass the merged collection to the view or further processing
+        $data['oldInv'] = $mergedInvoices;
         $data['customer'] = Customer::get();
         $data['now'] = Carbon::now();
         $data['OrderService'] = OS::where('ie', '=', 'X')->get();
@@ -76,9 +83,16 @@ class InvoiceExtend extends Controller
 
         $tumpuk = ImportDetail::where('count_by', 'T')->get();
         $invIds = $tumpuk->pluck('inv_id');
-        $data['oldInv'] = InvoiceImport::where('lunas', '=', 'Y')->get();
-        $extendInv = Extend::where('lunas', 'Y')->get();
-        $data['oldInv'] = $data['oldInv']->merge($extendInv);
+        $invoiceImport = InvoiceImport::whereNot('form_id',  '=' , '')->where('lunas', '=', 'Y')->get();
+    
+        // Retrieve invoices from Extend where 'lunas' is 'Y'
+        $extendInv = Extend::where('lunas', '=', 'Y')->get();
+    
+        // Merge the collections
+        $mergedInvoices = $invoiceImport->merge($extendInv);
+    
+        // Pass the merged collection to the view or further processing
+        $data['oldInv'] = $mergedInvoices;
         $data['customer'] = Customer::get();
         $data['now'] = Carbon::now();
         $data['OrderService'] = OS::where('ie', '=', 'X')->get();
@@ -89,19 +103,22 @@ class InvoiceExtend extends Controller
     public function contData(Request $request)
     {
         $id = $request->id;
-        $inv = InvoiceImport::where('id', $id)->first();
+        
+        $inv = InvoiceImport::where('form_id', $id)->first();
         if (is_null($inv)) {
-            $inv = Extend::where('id', $id)->first();
-            $tipe = 'P';
+            $inv = Extend::where('form_id', $id)->first();
+           $tipe = 'P';
         }else {
             $tipe = 'I';
         }
 
+        // var_dump($inv, $id);
+        // die();
+
         if ($inv) {
            
                 $cont = Container::where('form_id', $inv->form_id)->get();
-                // var_dump($invCont, $cont);
-                // die;       
+                  
            
             if (!$cont->isEmpty()) {
                 return response()->json([
@@ -109,7 +126,8 @@ class InvoiceExtend extends Controller
                     'message' => 'updated successfully!',
                     'data'    => $inv,
                     'cont' => $cont,
-                    'tipe'=>$tipe
+                    'tipe' =>$tipe,
+             
                 ]);
             }
         } else {
@@ -122,11 +140,11 @@ class InvoiceExtend extends Controller
 
     public function postForm(Request $request)
     {
-        $oldInv = InvoiceImport::where('id', $request->inv_id)->first();
+        $oldInv = InvoiceImport::where('form_id', $request->inv_id)->first();
         if (is_null($oldInv)) {
-            $oldInv = Extend::where('id', $request->inv_id)->first();
+            $oldInv = Extend::where('form_id', $request->inv_id)->first();
         }
-        $oldForm = Form::where('id', $oldInv->form_id)->first();
+        $oldForm = Form::where('id', $request->inv_id)->first();
         $oldExpired = $oldForm->expired_date;
         // dd($oldInv, $oldExpired);
         $expired = $request->exp_date;
@@ -143,7 +161,7 @@ class InvoiceExtend extends Controller
             'expired_date'=>$request->exp_date,
             'os_id'=>$request->order_service,
             'cust_id'=>$request->customer,
-            'do_id'=>$request->inv_id,
+            'do_id'=>$oldInv->id,
             'ves_id'=> $singleCont->ves_id,
             'i_e'=>'X',
             'disc_date'=>$oldExpired,
@@ -179,7 +197,7 @@ class InvoiceExtend extends Controller
         if (is_null($oldInv)) {
             $oldInv = Extend::where('id', $request->inv_id)->first();
         }
-        $oldForm = Form::where('id', $oldInv->form_id)->first();
+        $oldForm = Form::where('id', $request->inv_id)->first();
         $oldExpired = $oldForm->expired_date;
         $expired = $request->exp_date;
 
@@ -199,7 +217,7 @@ class InvoiceExtend extends Controller
             'expired_date'=>$request->exp_date,
             'os_id'=>$request->order_service,
             'cust_id'=>$request->customer,
-            'do_id'=>$request->inv_id,
+            'do_id'=>$oldInv->id,
             'ves_id'=> $singleCont->ves_id,
             'i_e'=>'X',
             'disc_date'=>$oldExpired,
@@ -336,7 +354,7 @@ class InvoiceExtend extends Controller
         $data['results'] = $results;
         // dd($results);
         
-        return view('billingSystem.extend.form.pre-invoice', compact('form'), $data)->with('success', 'Silahkan Melanjutkan Proses');
+        return view('billingSystem.extend.form.pre-invoice', compact('form', 'oldInv'), $data)->with('success', 'Silahkan Melanjutkan Proses');
     }
 
     public function post(Request $request)
