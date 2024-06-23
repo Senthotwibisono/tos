@@ -21,7 +21,9 @@ class BatalMuatController extends Controller
     {
         $data['title']= 'Batal Muat';
         $data['item'] = Item::where('ctr_i_e_t', '=', 'E')->whereNot('ctr_intern_status', '=', '56')->get();
-        $data['canceled'] = BatalMuat::where('ctr_action', null)->get();
+        $data['canceled'] = BatalMuat::where('ctr_action', null)->whereIn('container_key', function($query) {
+            $query->select('container_key')->from('Item');
+        })->get();
         $data['vessel'] = VVoyage::where('clossing_date','>=', Carbon::now())->get();
 
         return view('batal-muat.main', $data);
@@ -118,7 +120,9 @@ class BatalMuatController extends Controller
     public function indexReport()
     {
         $data['title'] = 'Report Batal Muat';
-        $data['batalMuat'] = BatalMuat::orderBy('last_update', 'desc')->get();
+        $data['batalMuat'] = BatalMuat::whereIn('container_key', function($query) {
+            $query->select('container_key')->from('Item');
+        })->orderBy('last_update', 'desc')->get();
 
         return view('reports.batal-muat.index', $data);
     }

@@ -1074,7 +1074,10 @@ Route::post('/container/update-container', [ContainerController::class, 'update'
 Route::get('/container/sortByVes/export/{id?}', [ContainerController::class, 'Export']);
 Route::get('/container/indexReportAll', [ContainerController::class, 'indexContainerAll'])->name('container-report-all');
 Route::get('/container/sortByAll/export', [ContainerController::class, 'ExportAll'])->name('export-container-all');
-
+  //Android 
+  Route::get('/container/indexReportAndroid', [ContainerController::class, 'indexHistoryAndroid'])->name('container-report-main-android');
+  Route::get('/container/indexReportAllAndroid', [ContainerController::class, 'indexContainerAllAndroid'])->name('container-report-all-android');
+  Route::get('/container/sortByVes-android/{id?}', [ContainerController::class, 'indexSortVesAndroid'])->name('container-report-vessel-android');
 
 // Realisasi Muat
 Route::get('/planning/indexVessel', [RealisasiMuatController::class, 'index'])->name('realisasi-muat-main');
