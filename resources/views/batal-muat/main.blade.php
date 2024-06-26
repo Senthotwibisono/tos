@@ -117,7 +117,7 @@
                                 <select  name="ves_id" id="vesStuffing" class="choices form-select" style="height: 150%;">
                                     <option value="" disabled selected>Pilih Salah Satu</option>
                                     @foreach($vessel as $ves)
-                                        <option value="{{$ves->ves_id}}">{{$ves->ves_id}} || {{$ves->ves_name}}</option>
+                                        <option value="{{$ves->ves_id}}">{{$ves->ves_name}} || {{$ves->voy_out}}</option>
                                     @endforeach
                                 </select>
                                </div>
