@@ -63,6 +63,8 @@
                         <td>Gate Out Delivery (Sudah Meninggalkan Lapangan)</td>
                     @elseif($cont->cont->ctr_intern_status == '56')
                         <td>Sudah di Kapal Baru</td>
+                    @else
+                        <td> </td>
                     @endif
 
                     @if($cont->ctr_action == "OUT")

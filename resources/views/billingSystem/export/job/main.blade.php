@@ -184,12 +184,15 @@
                 <div class="col-8 text-center">
                   <h3 class="bold">
                     @if($form->service->order == "SP2")
-                      Kartu Export (Reciving Card)</h3>
+                      Kartu Export (Reciving Card)
                     @elseif($form->service->order == "SPPS")
                       SURAT PENARIKAN PETIKEMAS STRIPPING (STUFFING)
+                    @elseif($form->service->order == "MTK")
+                      Reciving MT
                     @else
-                      Perpanjangan
+                      Reciving Full
                     @endif
+                    </h3>
                 </div>
                 <div class="col-3 text-center">
                    {{$qrcodes[$jb->id]}}

@@ -48,7 +48,7 @@
                     <div class="tab-pane fade show active" id="import" role="tabpanel" aria-labelledby="list-sunday-list">
                         <div class="col-12 border">
                             <div class="card-body">
-                                <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
+                            <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
                                     <thead>
                                         <tr>
                                             <th>Container No</th>
@@ -61,16 +61,16 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($formattedData as $d)
-                                        @if($d['ctr_intern_status'] === '03' && ($d['order_service'] != 'sp2icon' || $d['order_service'] != 'sp2icon') && $d['ctr_status'] != 'mty' )
+                                        @foreach($confirmed as $d)
+                                        @if($d->ctr_intern_status === '03' && ($d->order_service != 'sp2icon' || $d->order_service != 'sp2icon') && $d->ctr_status != 'mty' )
                                         <tr>
-                                            <td>{{$d['container_no']}}</td>
-                                            <td>{{$d['ctr_type']}}</td>
-                                            <td>{{$d['yard_block']}}</td>
-                                            <td>{{$d['yard_slot']}}</td>
-                                            <td>{{$d['yard_row']}}</td>
-                                            <td>{{$d['yard_tier']}}</td>
-                                            <td>{{$d['update_time']}}</td>
+                                            <td>{{$d->container_no}}</td>
+                                            <td>{{$d->ctr_type}}</td>
+                                            <td>{{$d->yard_block}}</td>
+                                            <td>{{$d->yard_slot}}</td>
+                                            <td>{{$d->yard_row}}</td>
+                                            <td>{{$d->yard_tier}}</td>
+                                            <td>{{$d->update_time}}</td>
                                         </tr>
                                         @endif
                                         @endforeach
@@ -96,16 +96,16 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($formattedData as $d)
-                                        @if($d['ctr_intern_status'] === '51' || $d['ctr_intern_status'] === '53')
+                                        @foreach($confirmed as $d)
+                                        @if($d->ctr_intern_status === '51' || $d->ctr_intern_status === '53')
                                         <tr>
-                                            <td>{{$d['container_no']}}</td>
-                                            <td>{{$d['ctr_type']}}</td>
-                                            <td>{{$d['yard_block']}}</td>
-                                            <td>{{$d['yard_slot']}}</td>
-                                            <td>{{$d['yard_row']}}</td>
-                                            <td>{{$d['yard_tier']}}</td>
-                                            <td>{{$d['update_time']}}</td>
+                                            <td>{{$d->container_no}}</td>
+                                            <td>{{$d->ctr_type}}</td>
+                                            <td>{{$d->yard_block}}</td>
+                                            <td>{{$d->yard_slot}}</td>
+                                            <td>{{$d->yard_row}}</td>
+                                            <td>{{$d->yard_tier}}</td>
+                                            <td>{{$d->update_time}}</td>
                                         </tr>
                                         @endif
                                         @endforeach
@@ -131,16 +131,16 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($formattedData as $d)
-                                        @if($d['ctr_intern_status'] === '03' && ($d['order_service'] === 'sp2icon' || $d['order_service'] === 'sppsrelokasipelindo') )
+                                        @foreach($confirmed as $d)
+                                        @if($d->ctr_intern_status === '03' && ($d->order_service === 'sp2icon' || $d->order_service === 'sppsrelokasipelindo') )
                                         <tr>
-                                            <td>{{$d['container_no']}}</td>
-                                            <td>{{$d['ctr_type']}}</td>
-                                            <td>{{$d['yard_block']}}</td>
-                                            <td>{{$d['yard_slot']}}</td>
-                                            <td>{{$d['yard_row']}}</td>
-                                            <td>{{$d['yard_tier']}}</td>
-                                            <td>{{$d['update_time']}}</td>
+                                            <td>{{$d->container_no}}</td>
+                                            <td>{{$d->ctr_type}}</td>
+                                            <td>{{$d->yard_block}}</td>
+                                            <td>{{$d->yard_slot}}</td>
+                                            <td>{{$d->yard_row}}</td>
+                                            <td>{{$d->yard_tier}}</td>
+                                            <td>{{$d->update_time}}</td>
                                         </tr>
                                         @endif
                                         @endforeach
@@ -165,16 +165,16 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach($formattedData as $d)
-                                        @if($d['ctr_intern_status'] === '04' && $d['ctr_status'] === 'MTY' )
+                                    @foreach($confirmed as $d)
+                                        @if($d->ctr_intern_status === '04' && $d->ctr_status === 'MTY' )
                                         <tr>
-                                            <td>{{$d['container_no']}}</td>
-                                            <td>{{$d['ctr_type']}}</td>
-                                            <td>{{$d['yard_block']}}</td>
-                                            <td>{{$d['yard_slot']}}</td>
-                                            <td>{{$d['yard_row']}}</td>
-                                            <td>{{$d['yard_tier']}}</td>
-                                            <td>{{$d['update_time']}}</td>
+                                            <td>{{$d->container_no}}</td>
+                                            <td>{{$d->ctr_type}}</td>
+                                            <td>{{$d->yard_block}}</td>
+                                            <td>{{$d->yard_slot}}</td>
+                                            <td>{{$d->yard_row}}</td>
+                                            <td>{{$d->yard_tier}}</td>
+                                            <td>{{$d->update_time}}</td>
                                             <td><button type="button" class="btn btn-outline-success changed-to-exp-mty" data-bs-toggle="modal" data-id="{{$d['container_key']}}">Change</button></td>
                                         </tr>
                                         @endif

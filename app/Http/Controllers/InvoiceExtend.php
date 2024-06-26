@@ -483,7 +483,7 @@ class InvoiceExtend extends Controller
                                     'jumlah_hari'=>$hari,
                                     'master_item_id'=>$detail->master_item_id,
                                     'master_item_name'=>$detail->master_item_name,
-                                    'kode'=>$detail->kode,
+                                    'kode'=>$detail->kode.$size,
                                     'tarif'=>$tarifDetail->tarif,
                                     'total'=>$hargaT,
                                     'form_id'=>$form->id,

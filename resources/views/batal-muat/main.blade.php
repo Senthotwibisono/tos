@@ -41,6 +41,8 @@
                         <td>Gate In Reciving</td>
                     @elseif($cont->cont->ctr_intern_status == '53')
                         <td>Yard at Blok <strong>{{$cont->cont->yard_block}}</strong> Slot <strong>{{$cont->cont->yard_slot}}</strong> Row <strong>{{$cont->cont->yard_row}}</strong> Tier <strong>{{$cont->cont->yard_tier}}</strong></td>
+                    @else
+                        <td> </td>
                     @endif
                     <td><button class="btn btn-outline-success Action" data-id="{{$cont->id}}">Action</button></td>
                 </tr>

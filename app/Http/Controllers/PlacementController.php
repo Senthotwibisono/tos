@@ -32,39 +32,7 @@ class PlacementController extends Controller
         $formattedData = [];
         $data = [];
 
-        foreach ($confirmed as $tem) {
-            $now = Carbon::now();
-            $updatedAt = Carbon::parse($tem->update_time);
-
-            // Perhitungan selisih waktu
-            $diff = $updatedAt->diffForHumans($now);
-
-            // Jika selisih waktu kurang dari 1 hari, maka tampilkan format jam
-            if ($updatedAt->diffInDays($now) < 1) {
-                $diff = $updatedAt->diffForHumans($now, true);
-                $diff = str_replace(['hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
-            } else {
-                // Jika selisih waktu lebih dari 1 hari, maka tampilkan format hari dan jam
-                $diff = $updatedAt->diffForHumans($now, true);
-                $diff = str_replace(['days', 'day', 'hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['hari', 'hari', 'jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
-            }
-
-            $formattedData[] = [
-                'container_key' => $tem->container_key,
-                'container_no' => $tem->container_no,
-                'ctr_type' => $tem->ctr_type,
-                'ctr_status' => $tem->ctr_status,
-                'yard_block' => $tem->yard_block,
-                'yard_slot' => $tem->yard_slot,
-                'yard_row' => $tem->yard_row,
-                'yard_tier' => $tem->yard_tier,
-                'update_time' => $tem->update_time,
-                'container_key' => $tem->container_key,
-                'ctr_intern_status' => $tem->ctr_intern_status,
-                'order_service' => $tem->order_service,
-
-            ];
-        }
+        
         $items = Item::whereIn('ctr_intern_status', [02, 03, 04, 12, 50, 51, 13, 14])->get();
         $users = User::all();
         $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
@@ -90,39 +58,6 @@ class PlacementController extends Controller
         $formattedData = [];
         $data = [];
 
-        foreach ($confirmed as $tem) {
-            $now = Carbon::now();
-            $updatedAt = Carbon::parse($tem->update_time);
-
-            // Perhitungan selisih waktu
-            $diff = $updatedAt->diffForHumans($now);
-
-            // Jika selisih waktu kurang dari 1 hari, maka tampilkan format jam
-            if ($updatedAt->diffInDays($now) < 1) {
-                $diff = $updatedAt->diffForHumans($now, true);
-                $diff = str_replace(['hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
-            } else {
-                // Jika selisih waktu lebih dari 1 hari, maka tampilkan format hari dan jam
-                $diff = $updatedAt->diffForHumans($now, true);
-                $diff = str_replace(['days', 'day', 'hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['hari', 'hari', 'jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
-            }
-
-            $formattedData[] = [
-                'container_key' => $tem->container_key,
-                'container_no' => $tem->container_no,
-                'ctr_type' => $tem->ctr_type,
-                'ctr_status' => $tem->ctr_status,
-                'yard_block' => $tem->yard_block,
-                'yard_slot' => $tem->yard_slot,
-                'yard_row' => $tem->yard_row,
-                'yard_tier' => $tem->yard_tier,
-                'update_time' => $tem->update_time,
-                'container_key' => $tem->container_key,
-                'ctr_intern_status' => $tem->ctr_intern_status,
-                'order_service' => $tem->order_service,
-
-            ];
-        }
         $items = Item::whereIn('ctr_intern_status', [02, 03, 04, 12, 50, 51, 13, 14])->get();
         $users = User::all();
         $yard_block = Yard::distinct('yard_block')->pluck('yard_block');

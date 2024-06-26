@@ -44,11 +44,17 @@ class ImportZahir implements FromCollection, WithMapping, WithHeadings, ShouldAu
                 break;
         }
 
-        if ($data->jumlah_hari != 0) {
-            $item = $data->jumlah_hari;
+        if ($data->count_by == 'T') {
+            if ($data->jumlah_hari == 0 || $data->jumlah_hari == null) {
+                $item = '0';
+            }else {
+                $item = $data->jumlah_hari * $data->jumlah;
+            }
         }else {
             $item = $data->jumlah;
         }
+
+        
 
         $keterangan = "By. ". $data->master_item_name. ' ' . $data->jumlah . 'x' . $data->ukuran . '('. $data->customer->name .', PT)';
         $note = $data->Form->Kapal->ves_code . ' V.' . $data->Form->Kapal->voy_in . '/' . $data->Form->Kapal->voy_out . '/' . $data->Form->Kapal->no_ppk;

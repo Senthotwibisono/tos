@@ -132,7 +132,13 @@
           </div>
           <div class="row">
             <div class="col-12 text-center py-5">
-              <h3 class="bold">SURAT PENYERAHAN PETIKEMAS (SP2)</h3>
+              <h3 class="bold">
+                    @if($form->service->order == "SP2")
+                      PERPANJANGAN SURAT PENYERAHAN PETIKEMAS (SP2)
+                    @elseif($form->service->order == "SPPS")
+                      PERPANJANGAN SURAT PENARIKAN PETIKEMAS STRIPPING (SPPS)
+                    @endif
+              </h3>
             </div>
             <div class="col-5" style="margin-left: 50px;">
               <h5 class="lead">No. Petikemas : {{$ct->container_no}}</h5>
