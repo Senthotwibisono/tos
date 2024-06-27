@@ -33,7 +33,6 @@ class PlacementController extends Controller
         $data = [];
 
         
-        $items = Item::whereIn('ctr_intern_status', [02, 03, 04, 12, 50, 51, 13, 14])->get();
         $users = User::all();
         $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
         $yard_slot = Yard::distinct('yard_slot')->pluck('yard_slot');
@@ -48,7 +47,7 @@ class PlacementController extends Controller
         $data['supir'] = Operator::where('role', '=', 'truck')->get();
         $vessel = VVoyage::whereDate('etd_date', '>=', now())->get();
         $vessel_voyage = VVoyage::orderBy('deparature_date', 'desc')->get();
-        return view('yard.place.main', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'alat', 'vessel', 'vessel_voyage'), $data);
+        return view('yard.place.main', compact('confirmed', 'formattedData', 'title',  'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'alat', 'vessel', 'vessel_voyage'), $data);
     }
 
     public function android()
@@ -58,7 +57,7 @@ class PlacementController extends Controller
         $formattedData = [];
         $data = [];
 
-        $items = Item::whereIn('ctr_intern_status', [02, 03, 04, 12, 50, 51, 13, 14])->get();
+        
         $users = User::all();
         $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
         $yard_slot = Yard::distinct('yard_slot')->pluck('yard_slot');
@@ -66,16 +65,14 @@ class PlacementController extends Controller
         $yard_tier = Yard::distinct('yard_tier')->pluck('yard_tier');
         $currentDateTime = Carbon::now();
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
-        $data["active"] = "yard";
-        $data["subactive"] = "placement";
+
         $alat = MasterAlat::where('category', '=', 'Yard')->get();
         $data['truck'] = MasterAlat::where('category', '=', 'Truck')->get();
         $data['operator'] = Operator::where('role', '=', 'yard')->get();
         $data['supir'] = Operator::where('role', '=', 'truck')->get();
         $vessel = VVoyage::whereDate('etd_date', '>=', now())->get();
         $vessel_voyage = VVoyage::orderBy('deparature_date', 'desc')->get();
-
-        return view('yard.place.android-yard', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'alat', 'vessel', 'vessel_voyage'), $data);
+        return view('yard.place.android', compact('confirmed', 'formattedData', 'title',  'users', 'currentDateTimeString', 'yard_block', 'yard_slot', 'yard_row', 'yard_tier', 'alat', 'vessel', 'vessel_voyage'), $data);
     }
 
 

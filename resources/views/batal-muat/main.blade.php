@@ -37,7 +37,7 @@
                     <td>{{$cont->old_ves_name}} || {{$cont->old_voy_no}}</td>
                     @if($cont->cont->ctr_intern_status == '49')
                         <td>Belum Masuk IKS</td>
-                    @elseif($cont->cont->ctr_intern_status == '51')
+                    @elseif($cont->cont->ctr_intern_status == '51' || $cont->cont->ctr_intern_status == '50')
                         <td>Gate In Reciving</td>
                     @elseif($cont->cont->ctr_intern_status == '53')
                         <td>Yard at Blok <strong>{{$cont->cont->yard_block}}</strong> Slot <strong>{{$cont->cont->yard_slot}}</strong> Row <strong>{{$cont->cont->yard_row}}</strong> Tier <strong>{{$cont->cont->yard_tier}}</strong></td>

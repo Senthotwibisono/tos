@@ -48,7 +48,7 @@
                     <div class="tab-pane fade show active" id="import" role="tabpanel" aria-labelledby="list-sunday-list">
                         <div class="col-12 border">
                             <div class="card-body">
-                            <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
+                                <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
                                     <thead>
                                         <tr>
                                             <th>Container No</th>
@@ -201,20 +201,33 @@
                 <!-- form -->
                 <div class="form-body" id="place_cont">
                     <div class="row">
+
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="first-name-vertical">Choose Vessel</label>
+                                <select class="choices form-select" id="id_kapal" name="ves_id" required>
+                                    <option value="">Select Vessel</option>
+                                    @foreach($vessel_voyage as $voy)
+                                    <option value="{{$voy->ves_id}}">{{$voy->ves_name}}--{{$voy->voy_out}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            {{ csrf_field()}}
+
+                        </div>
                         <div class="col-12">
                             <div class="form-group">
                                 <label for="first-name-vertical">Choose Container Number</label>
-                                <select class="choices form-select" id="key" name="container_key" required>
-                                    <option value="">Select Container</option>
-                                    @foreach($items as $data)
-                                    <option value="{{$data->container_key}}">{{$data->container_no}}</option>
-                                    @endforeach
+                                <br>
+                                <select id="key" class="form-control" style="font-size: 16px; width: 75%;">
+                                    <!-- Existing options or a default placeholder option -->
+                                    <option value="">Select a container</option>
                                 </select>
-                                <input type="hidden" id="container_no" class="form-control" name="container_no">
-                                <input type="hidden" id="container_key" class="form-control" name="container_key">
                             </div>
                             {{ csrf_field()}}
+
                         </div>
+
                         <div class="col-12">
                             <div class="form-group">
                                 <label for="first-name-vertical">Alat</label>
@@ -591,23 +604,23 @@ function toggleYardSelect(displayValue) {
         return;
         }
 
-        if (!supir) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Validation Error',
-            text: 'Supir Belum Diisi, cek kembali Ya !!',
-        });
-        return;
-        }
+        // if (!supir) {
+        // Swal.fire({
+        //     icon: 'error',
+        //     title: 'Validation Error',
+        //     text: 'Supir Belum Diisi, cek kembali Ya !!',
+        // });
+        // return;
+        // }
 
-        if (!truck) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Validation Error',
-            text: 'Truck Belum Diisi, cek kembali Ya !!',
-        });
-        return;
-        }
+        // if (!truck) {
+        // Swal.fire({
+        //     icon: 'error',
+        //     title: 'Validation Error',
+        //     text: 'Truck Belum Diisi, cek kembali Ya !!',
+        // });
+        // return;
+        // }
         var data = {
             'container_key': $('#key').val(),
             'container_no': $('#container_no').val(),
@@ -911,6 +924,50 @@ function toggleYardSelect(displayValue) {
 
     });
 
+});
+</script>
+<script>
+     $(function() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $(function() {
+        const selectContainer = new Choices(document.querySelector('#key'), {
+            // Opsi dan pengaturan Choices.js sesuai kebutuhan
+        });
+
+        $("#id_kapal").change(function() {
+            let ves_id = $('#id_kapal').val();
+
+            $.ajax({
+                type: 'POST',
+                url: '/get-con-plc',
+                data: {
+                    ves_id: ves_id
+                },
+                cache: false,
+
+                success: function(msg) {
+                    let res = msg;
+                    var len = res.length;
+                    var choicesArray = []; // Array untuk menyimpan pilihan-pilihan baru
+                    for (let i = 0; i < len; i++) {
+                        let id = res[i].value;
+                        let nama = res[i].text;
+                        choicesArray.push({ value: id, label: nama }); // Tambahkan pilihan baru ke dalam array
+                    }
+                    selectContainer.clearChoices(); // Hapus pilihan-pilihan saat ini
+                    selectContainer.setChoices(choicesArray, 'value', 'label', false); // Atur pilihan-pilihan baru
+                },
+                error: function(data) {
+                    console.log('error:', data)
+                },
+            });
+        });
+    });
 });
 </script>
 
