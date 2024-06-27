@@ -82,9 +82,9 @@ class InvoiceExport extends Model
         'sewa_crane_42',
         'cargo_dooring_42',
         'paket_stuffing_42',
-
         'extend',
         'total',
+        'discount',
         'pajak',
         'grand_total',
         'order_by',

@@ -51,6 +51,7 @@
                         </h1>
                         <h4 class="text-white">Total Amount :</h4>
                         <h4 class="text-white">Admin :</h4>
+                        <h4 class="text-white">Discount {{ number_format($form->discount_dsk, 2) }}%  :</h4>
                         <h4 class="text-white">Tax 11%      :</h4>
                         <h4 class="text-white">Grand Total  :</h4>
                     </div>
@@ -59,6 +60,8 @@
                         <h4 class="text-white"> Rp. {{number_format($totalDSK, 0, ',', '.')}}</h4>
                         <input type="hidden" name="totalDSK" value="{{$totalDSK}}">
                         <h4 class="text-white"> Rp. {{number_format($adminDSK, 0, ',', '.')}}</h4>
+                        <h4 class="text-white"> Rp. {{number_format($discountDSK, 0, ',', '.')}}</h4>
+                        <input type="hidden" name="discountDSK" value="{{$discountDSK}}">
                         <h4 class="text-white">Rp. {{number_format($pajakDSK, 0, ',', '.')}}</h4>
                         <input type="hidden" name="pajakDSK" value="{{$pajakDSK}}">
                         <h4 class="color:#ff5265;">Rp. {{number_format($grandTotalDSK, 0, ',', '.')}} </h4>

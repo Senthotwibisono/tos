@@ -75,7 +75,7 @@
               <select name="inv_id"  class="js-example-basic-single form-control" id="invId" style="height: 150%;">
                 <option disabeled selected value>Pilih Satu !</option>
                @foreach($oldInv as $inv)
-                <option value="{{$inv->form_id}}"{{$form->id == $inv->form_id ? 'selected' : ''}}>{{$inv->inv_no}}</option>
+                <option value="{{$inv->form_id}}"{{$form->do_id == $inv->id ? 'selected' : ''}}>{{$inv->inv_no}}</option>
                @endforeach
               </select>
               <input type="hidden" name="inv_no" id="inv_no">
@@ -92,7 +92,15 @@
                 @endforeach
             </select>
             </div>
-            <input type="text" id="tipe" name="tipe" value="{{$form->tipe}}">
+            <input type="hidden" id="tipe" name="tipe" value="{{$form->tipe}}">
+          </div>
+          <div class="row mt-5">
+          <h5>Discount</h5>
+          <p>Di Isi dengan Persen (%)</p>
+            <div class="col-sm-3">
+              <label for="">Discount</label>
+              <input type="number" class="form-control" value='{{$form->discount_ds}}' name="discount_ds">
+            </div>
           </div>
           <div class="row mt-5">
             <div class="col-12 text-right">

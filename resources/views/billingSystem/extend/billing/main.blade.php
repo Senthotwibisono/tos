@@ -112,9 +112,13 @@
                       <td>
                       <span class="badge bg-warning text-white">Piutang</span>
                       </td>
-                      @else
+                     @elseif($inv->lunas == "Y")
                       <td>
                       <span class="badge bg-success text-white">Paid</span>
+                      </td>
+                      @else
+                      <td>
+                      <span class="badge bg-danger text-white">Canceled</span>
                       </td>
                       @endif
                       <td>
@@ -224,9 +228,13 @@
                       <td>
                       <span class="badge bg-warning text-white">Piutang</span>
                       </td>
-                      @else
+                     @elseif($inv->lunas == "Y")
                       <td>
                       <span class="badge bg-success text-white">Paid</span>
+                      </td>
+                      @else
+                      <td>
+                      <span class="badge bg-danger text-white">Canceled</span>
                       </td>
                       @endif
                       <td>
@@ -340,9 +348,13 @@
                       <td>
                       <span class="badge bg-warning text-white">Piutang</span>
                       </td>
-                      @else
+                     @elseif($inv->lunas == "Y")
                       <td>
                       <span class="badge bg-success text-white">Paid</span>
+                      </td>
+                      @else
+                      <td>
+                      <span class="badge bg-danger text-white">Canceled</span>
                       </td>
                       @endif
                       <td>
@@ -423,6 +435,9 @@
           </button>
           <button id="piutang" type="button" class="btn btn-warning ml-1 piutang" >
             Piutang This Invoices
+          </button>
+          <button id="cancel" type="button" class="btn btn-danger ml-1 cancel" >
+            Canceled This Invoices
           </button>
         </div>
       </form>
@@ -632,6 +647,72 @@ $(document).ready(function() {
         $.ajax({
           type: 'POST',
           url: '/invoice/extend-piutangExtend',
+          data: data,
+          cache: false,
+          dataType: 'json',
+          success: function(response) {
+            console.log(response);
+                        if (response.success) {
+                            Swal.fire('Saved!', '', 'success')
+                            .then(() => {
+                            // Memuat ulang halaman setelah berhasil menyimpan data
+                            window.location.reload();
+                        });
+                        } else {
+                            Swal.fire('Error', response.message, 'error');
+                        }
+          },
+          error: function(response) {
+            var errors = response.responseJSON.errors;
+            if (errors) {
+              var errorMessage = '';
+              $.each(errors, function(key, value) {
+                errorMessage += value[0] + '<br>';
+              });
+              Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                html: errorMessage,
+              });
+            } else {
+              console.log('error:', response);
+            }
+          },
+        });
+      } else if (result.isDenied) {
+        Swal.fire('Changes are not saved', '', 'info');
+      }
+    });
+  });
+</script>
+
+<script>
+  $(document).on('click', '.cancel', function(e) {
+    e.preventDefault();
+
+    var data = {
+      'inv_id': $('#idInvoice').val(),
+   
+    }
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+    Swal.fire({
+      icon: 'question',
+      title: 'Do you want to save the changes?',
+      showDenyButton: false,
+      showCancelButton: true,
+      confirmButtonText: 'Save',
+      denyButtonText: `Don't save`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+
+
+        $.ajax({
+          type: 'POST',
+          url: '/invoice/extend-cancelExtend',
           data: data,
           cache: false,
           dataType: 'json',

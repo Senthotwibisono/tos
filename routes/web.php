@@ -886,6 +886,7 @@ Route::get('/invoice/job/import-{id?}', [ImportController::class, 'JobInvoice'])
 Route::get('/import/pay-button{id?}', [ImportController::class, 'payImport'])->name('payImport');
 Route::post('/invoice/import-payFull', [ImportController::class, 'payFullImport'])->name('payFullImport');
 Route::post('/invoice/import-piutang', [ImportController::class, 'piutangImport'])->name('piutangImport');
+Route::post('/invoice/import-cancel', [ImportController::class, 'deliveryInvoiceCancel'])->name('deliveryInvoiceCancel');
 
 
 
@@ -928,6 +929,7 @@ Route::get('/pranota/export-OS{id?}', [InvoiceExportController::class, 'PranotaE
 Route::get('/export/pay-button{id?}', [InvoiceExportController::class, 'payExport'])->name('payExport');
 Route::post('/invoice/export-payFull', [InvoiceExportController::class, 'payFullExport'])->name('payFullExport');
 Route::post('/invoice/export-piutang', [InvoiceExportController::class, 'piutangExport'])->name('piutangExport');
+Route::post('/invoice/export-cancel', [InvoiceExportController::class, 'recivingInvoiceCancel'])->name('recivingInvoiceCancel');
 
 
 Route::get('/invoice/export-OSK{id?}', [InvoiceExportController::class, 'InvoiceExportOSK'])->name('InvoiceExportOSK');
@@ -987,7 +989,8 @@ Route::get('/billing/import/extendPreinvoice/{id?}', [InvoiceExtend::class, 'pre
 Route::post('/billing/import/extendCreate', [InvoiceExtend::class, 'post'])->name('extendCreate');
 Route::get('/extend/pay-button{id?}', [InvoiceExtend::class, 'payExtend'])->name('payExtend');
 Route::post('/invoice/extend-payFullExtend', [InvoiceExtend::class, 'payFull'])->name('payFullExtend');
-Route::post('/invoice/extend-piutangExtend', [InvoiceExtend::class, 'piutang'])->name('piutangExtend');
+Route::post('/invoice/extend-payFullExtend', [InvoiceExtend::class, 'payFull'])->name('payFullExtend');
+Route::post('/invoice/extend-cancelExtend', [InvoiceExtend::class, 'extendInvoiceCancel'])->name('extendInvoiceCancel');
 Route::get('/pranota/extend-{id?}', [InvoiceExtend::class, 'PranotaExtend']);
 Route::get('/invoice/extend-{id?}', [InvoiceExtend::class, 'InvoiceExtend']);
 Route::get('/invoice/job/extend-{id?}', [InvoiceExtend::class, 'JobExtend']);

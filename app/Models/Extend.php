@@ -59,6 +59,7 @@ class Extend extends Model
         'lunas',
         'lunas_at',
         'expired_date',
+        'discount',
     ];
     
     public function customer()

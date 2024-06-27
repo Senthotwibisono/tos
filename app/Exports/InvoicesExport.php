@@ -40,6 +40,9 @@ class InvoicesExport implements FromCollection, WithMapping, WithHeadings, Shoul
             case 'P':
                 $status = 'Piutang';
                 break;
+            case 'C':
+                $status = 'Canceled';
+                break;
             default:
                 $status = 'Unknown';
                 break;

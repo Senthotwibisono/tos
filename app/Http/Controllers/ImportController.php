@@ -618,7 +618,7 @@ class ImportController extends Controller
         $invoiceDSK = InvoiceImport::create([
             'inv_type'=>'DSK',
             'form_id'=>$form->id,
-            'inv_no' =>$invoiceNo,
+           
             'proforma_no'=>$nextProformaNumber,
             'cust_id'=>$form->cust_id,
             'cust_name'=>$form->customer->name,
@@ -634,6 +634,7 @@ class ImportController extends Controller
             'disc_date' => $form->disc_date,
             'do_no'=>$form->doOnline->do_no,
             'total'=>$request->totalDSK,
+            'discount'=>$request->discountDSK,
             'pajak'=>$request->pajakDSK,
             'grand_total'=>$request->grandTotalDSK,
             'order_by'=> Auth::user()->name,
@@ -752,7 +753,7 @@ class ImportController extends Controller
         $invoiceDS = InvoiceImport::create([
             'inv_type'=>'DS',
             'form_id'=>$form->id,
-            'inv_no' =>$invoiceNo,
+           
             'proforma_no'=>$nextProformaNumber,
             'cust_id'=>$form->cust_id,
             'cust_name'=>$form->customer->name,
@@ -767,6 +768,7 @@ class ImportController extends Controller
             'disc_date' => $form->disc_date,
             'do_no'=>$form->doOnline->do_no,
             'total'=>$request->totalDS,
+            'discount'=>$request->discountDS,
             'pajak'=>$request->pajakDS,
             'grand_total'=>$request->grandTotalDS,
             'order_by'=> Auth::user()->name,
@@ -896,724 +898,7 @@ class ImportController extends Controller
     }
 
 
-    // public function InvoiceImport(Request $request)
-    // {
-    //     $os = $request->os_id;
-    //     $cont = $request->container_key;
-    //     $item = Item::whereIn('container_key', $cont)->get();
-    //     $do = DOonline::where('id', $request->do_id)->first();
-       
-
-    //     if (!empty($item)) {
-    //         if ($os == 1 || $os == 16 || $os == 2) {
-    //             $nextProformaNumber = $this->getNextProformaNumber();
-    //             $invoiceNo = $this->getNextInvoiceDSK();
-              
-
-    //             $dsk = InvoiceImport::create([
-    //                 'inv_type'=>'DSK',
-    //                 'inv_no' =>$invoiceNo,
-    //                 'proforma_no'=>$nextProformaNumber,
-    //                 'cust_id'=>$request->cust_id,
-    //                 'cust_name'=>$request->cust_name,
-    //                 'fax'=>$request->fax,
-    //                 'npwp'=>$request->npwp,
-    //                 'alamat'=>$request->alamat,
-    //                 'os_id'=>$request->os_id,
-    //                 'os_name'=>$request->os_name,
-    //                 'container_key'=>json_encode($request->container_key),
-    //                 'massa1'=>$request->massa1,
-    //                 'massa2'=>$request->massa2,
-    //                 'massa3'=>$request->massa3,
-    //                 'extend'=>$request->extend,
-    //                 'total'=>$request->totalDSK,
-    //                 'pajak'=>$request->pajakDSK,
-    //                 'grand_total'=>$request->grand_totalDSK,
-    //                 'order_by'=> Auth::user()->name,
-    //                 'order_at'=> Carbon::now(),
-    //                 'lunas'=>'N',
-    //                 'expired_date'=>$request->expired_date,
-    //                 'disc_date' => $request->discDate,
-    //                 'do_no'=>$do->do_no,
-                    
-    //                 'ctr_20' => $request->ctr_20,
-    //                 'ctr_40' => $request->ctr_40,
-    //                 'ctr_21' => $request->ctr_21,
-    //                 'ctr_42' => $request->ctr_42,
-    //                 'm1_20' => $request->m1_20,
-    //                 'm2_20' => $request->m2_20,
-    //                 'm3_20' => $request->m3_20,
-    //                 'lolo_full_20' => $request->lolo_full_20,
-    //                 'pass_truck_keluar_20' => $request->pass_truck_keluar_20,
-    //                 'm1_21' => $request->m1_21,
-    //                 'm2_21' => $request->m2_21,
-    //                 'm3_21' => $request->m3_21,
-    //                 'lolo_full_21' => $request->lolo_full_21,
-    //                 'pass_truck_keluar_21' => $request->pass_truck_keluar_21,
-    //                 'm1_40' => $request->m1_40,
-    //                 'm2_40' => $request->m2_40,
-    //                 'm3_40' => $request->m3_40,
-    //                 'lolo_full_40' => $request->lolo_full_40,
-    //                 'pass_truck_keluar_40' => $request->pass_truck_keluar_40,
-    //                 'm1_42' => $request->m1_42,
-    //                 'm2_42' => $request->m2_42,
-    //                 'm3_42' => $request->m3_42,
-    //                 'lolo_full_42' => $request->lolo_full_42,
-    //                 'pass_truck_keluar_42' => $request->pass_truck_keluar_42,
-    //             ]);
-
-    //             if ($dsk->ctr_20 != null) {
-    //                 // LOLO
-    //                 $lon20 = Detail::create([
-    //                     'inv_id'=>$dsk->id,
-    //                     'inv_no'=>$dsk->inv_no,
-    //                     'inv_type'=>$dsk->inv_type,
-    //                     'keterangan'=>$dsk->os_name,
-    //                     'detail'=>'LIFTONFL20',
-    //                     'ukuran'=>'20',
-    //                     'jumlah'=>$dsk->ctr_20,
-    //                     'satuan'=>'unit',
-    //                     'harga'=>$dsk->lolo_full_20,
-    //                     'expired_date'=>$dsk->expired_date,
-    //                     'order_date'=>$dsk->order_date,
-    //                     'lunas'=>$dsk->lunas,
-    //                     'cust_id'=>$dsk->cust_name,
-    //                     'cust_name'=>$dsk->cust_id
-    //                 ]);
-
-    //                 $penumpukan20 = Detail::create([
-    //                     'inv_id'=>$dsk->id,
-    //                     'inv_no'=>$dsk->inv_no,
-    //                     'inv_type'=>$dsk->inv_type,
-    //                     'keterangan'=>$dsk->os_name,
-    //                     'detail'=>'TUMPUKFL20',
-    //                     'ukuran'=>'20',
-    //                     'jumlah'=>$dsk->ctr_20,
-    //                     'satuan'=>'unit',
-    //                     'harga'=>$dsk->m1_20,
-    //                     'expired_date'=>$dsk->expired_date,
-    //                     'order_date'=>$dsk->order_date,
-    //                     'lunas'=>$dsk->lunas,
-    //                     'cust_id'=>$dsk->cust_name,
-    //                     'cust_name'=>$dsk->cust_id
-    //                 ]);
-                    
-    //             }
-    //             if ($dsk->ctr_21 != null) {
-    //                 // LOLO
-    //                 $lon21 = Detail::create([
-    //                     'inv_id'=>$dsk->id,
-    //                     'inv_no'=>$dsk->inv_no,
-    //                     'inv_type'=>$dsk->inv_type,
-    //                     'keterangan'=>$dsk->os_name,
-    //                     'detail'=>'LIFTONFL21',
-    //                     'ukuran'=>'21',
-    //                     'jumlah'=>$dsk->ctr_21,
-    //                     'satuan'=>'unit',
-    //                     'harga'=>$dsk->lolo_full_21,
-    //                     'expired_date'=>$dsk->expired_date,
-    //                     'order_date'=>$dsk->order_date,
-    //                     'lunas'=>$dsk->lunas,
-    //                     'cust_id'=>$dsk->cust_name,
-    //                     'cust_name'=>$dsk->cust_id
-    //                 ]);
-
-    //                 $penumpukan21 = Detail::create([
-    //                     'inv_id'=>$dsk->id,
-    //                     'inv_no'=>$dsk->inv_no,
-    //                     'inv_type'=>$dsk->inv_type,
-    //                     'keterangan'=>$dsk->os_name,
-    //                     'detail'=>'TUMPUKFL21',
-    //                     'ukuran'=>'21',
-    //                     'jumlah'=>$dsk->ctr_21,
-    //                     'satuan'=>'unit',
-    //                     'harga'=>$dsk->m1_21,
-    //                     'expired_date'=>$dsk->expired_date,
-    //                     'order_date'=>$dsk->order_date,
-    //                     'lunas'=>$dsk->lunas,
-    //                     'cust_id'=>$dsk->cust_name,
-    //                     'cust_name'=>$dsk->cust_id
-    //                 ]);
-                    
-    //             }
-    //             if ($dsk->ctr_40 != null) {
-    //                 // LOLO
-    //                 $lon40 = Detail::create([
-    //                     'inv_id'=>$dsk->id,
-    //                     'inv_no'=>$dsk->inv_no,
-    //                     'inv_type'=>$dsk->inv_type,
-    //                     'keterangan'=>$dsk->os_name,
-    //                     'detail'=>'LIFTONFL40',
-    //                     'ukuran'=>'40',
-    //                     'jumlah'=>$dsk->ctr_40,
-    //                     'satuan'=>'unit',
-    //                     'harga'=>$dsk->lolo_full_40,
-    //                     'expired_date'=>$dsk->expired_date,
-    //                     'order_date'=>$dsk->order_date,
-    //                     'lunas'=>$dsk->lunas,
-    //                     'cust_id'=>$dsk->cust_name,
-    //                     'cust_name'=>$dsk->cust_id
-    //                 ]);
-
-    //                 $penumpukan40 = Detail::create([
-    //                     'inv_id'=>$dsk->id,
-    //                     'inv_no'=>$dsk->inv_no,
-    //                     'inv_type'=>$dsk->inv_type,
-    //                     'keterangan'=>$dsk->os_name,
-    //                     'detail'=>'TUMPUKFL40',
-    //                     'ukuran'=>'40',
-    //                     'jumlah'=>$dsk->ctr_40,
-    //                     'satuan'=>'unit',
-    //                     'harga'=>$dsk->m1_40,
-    //                     'expired_date'=>$dsk->expired_date,
-    //                     'order_date'=>$dsk->order_date,
-    //                     'lunas'=>$dsk->lunas,
-    //                     'cust_id'=>$dsk->cust_name,
-    //                     'cust_name'=>$dsk->cust_id
-    //                 ]);
-                    
-    //             }
-    //             if ($dsk->ctr_42 != null) {
-    //                 // LOLO
-    //                 $lon42 = Detail::create([
-    //                     'inv_id'=>$dsk->id,
-    //                     'inv_no'=>$dsk->inv_no,
-    //                     'inv_type'=>$dsk->inv_type,
-    //                     'keterangan'=>$dsk->os_name,
-    //                     'detail'=>'LIFTONFL42',
-    //                     'ukuran'=>'42',
-    //                     'jumlah'=>$dsk->ctr_42,
-    //                     'satuan'=>'unit',
-    //                     'harga'=>$dsk->lolo_full_42,
-    //                     'expired_date'=>$dsk->expired_date,
-    //                     'order_date'=>$dsk->order_date,
-    //                     'lunas'=>$dsk->lunas,
-    //                     'cust_id'=>$dsk->cust_name,
-    //                     'cust_name'=>$dsk->cust_id
-    //                 ]);
-
-    //                 $penumpukan42 = Detail::create([
-    //                     'inv_id'=>$dsk->id,
-    //                     'inv_no'=>$dsk->inv_no,
-    //                     'inv_type'=>$dsk->inv_type,
-    //                     'keterangan'=>$dsk->os_name,
-    //                     'detail'=>'TUMPUKFL42',
-    //                     'ukuran'=>'42',
-    //                     'jumlah'=>$dsk->ctr_42,
-    //                     'satuan'=>'unit',
-    //                     'harga'=>$dsk->m1_42,
-    //                     'expired_date'=>$dsk->expired_date,
-    //                     'order_date'=>$dsk->order_date,
-    //                     'lunas'=>$dsk->lunas,
-    //                     'cust_id'=>$dsk->cust_name,
-    //                     'cust_name'=>$dsk->cust_id
-    //                 ]);
-                    
-    //             }
-    //         }elseif ($os == 3) {
-    //             $nextProformaNumber = $this->getNextProformaNumber();
-    //             $invoiceNo = $this->getNextInvoiceDSK();
-              
-
-    //             $dsk = InvoiceImport::create([
-    //                 'inv_type'=>'DSK',
-    //                 'inv_no' =>$invoiceNo,
-    //                 'proforma_no'=>$nextProformaNumber,
-    //                 'cust_id'=>$request->cust_id,
-    //                 'cust_name'=>$request->cust_name,
-    //                 'fax'=>$request->fax,
-    //                 'npwp'=>$request->npwp,
-    //                 'alamat'=>$request->alamat,
-    //                 'os_id'=>$request->os_id,
-    //                 'os_name'=>$request->os_name,
-    //                 'container_key'=>json_encode($request->container_key),
-    //                 'massa1'=>$request->massa1,
-    //                 'massa2'=>$request->massa2,
-    //                 'massa3'=>$request->massa3,
-    //                 'extend'=>$request->extend,
-    //                 'total'=>$request->totalDSK,
-    //                 'pajak'=>$request->pajakDSK,
-    //                 'grand_total'=>$request->grand_totalDSK,
-    //                 'order_by'=> Auth::user()->name,
-    //                 'order_at'=> Carbon::now(),
-    //                 'lunas'=>'N',
-    //                 'expired_date'=>$request->expired_date,
-    //                 'disc_date' => $request->discDate,
-    //                 'do_no'=>$do->do_no,
-                    
-    //                 'ctr_20' => $request->ctr_20,
-    //                 'ctr_40' => $request->ctr_40,
-    //                 'ctr_21' => $request->ctr_21,
-    //                 'ctr_42' => $request->ctr_42,
-    //                 'pass_truck_keluar_20' => $request->pass_truck_keluar_20,
-    //                 'pass_truck_masuk_20' => $request->pass_truck_masuk_20,
-    //                 'pass_truck_keluar_21' => $request->pass_truck_keluar_21,
-    //                 'pass_truck_masuk_21' => $request->pass_truck_masuk_21,
-    //                 'pass_truck_keluar_40' => $request->pass_truck_keluar_40,
-    //                 'pass_truck_masuk_40' => $request->pass_truck_masuk_40,
-    //                 'pass_truck_keluar_42' => $request->pass_truck_keluar_42,
-    //                 'pass_truck_masuk_42' => $request->pass_truck_masuk_42,
-    //             ]);
-    //             $totalCont = $dsk->ctr_20 + $dsk->ctr_21 + $dsk->ctr_40 + $dsk->ctr_42;
-    //             $totalPasstruck = $dsk->pass_truck_masuk_20 + $dsk->pass_truck_masuk_21 + $dsk->pass_truck_masuk_40 + $dsk->pass_truck_masuk_42 + $dsk->pass_truck_keluar_20 + $dsk->pass_truck_keluar_21 + $dsk->pass_truck_keluar_40 + $dsk->pass_truck_keluar_42;
-    //             $passTruckMasukOS3 = Detail::create([
-    //                 'inv_id'=>$dsk->id,
-    //                 'inv_no'=>$dsk->inv_no,
-    //                 'inv_type'=>$dsk->inv_type,
-    //                 'keterangan'=>$dsk->os_name,
-    //                 'detail'=>'PASSTRUCK',
-    //                 'ukuran'=> null,
-    //                 'jumlah'=>$totalCont,
-    //                 'satuan'=>'unit',
-    //                 'harga'=>$totalPasstruck,
-    //                 'expired_date'=>$dsk->expired_date,
-    //                 'order_date'=>$dsk->order_date,
-    //                 'lunas'=>$dsk->lunas,
-    //                 'cust_id'=>$dsk->cust_name,
-    //                 'cust_name'=>$dsk->cust_id
-    //             ]);
-    //         }
-
-    //         if ($os == 1 || $os == 16 || $os == 3) {
-    //             $proformaDS = $dsk->proforma_no;
-    //         }else {
-    //             $nextProformaNumberDS = $this->getNextProformaNumber();
-    //             $proformaDS = $nextProformaNumberDS;
-    //         }
-
-    //         if ($os != 2) {
-    //             if ($os != 1 || $os != 5) {
-    //                 $massa1inv = $request->massa1;
-    //                 $massa2inv = $request->massa2;
-    //                 $massa3inv = $request->massa3;
-    //             }else {
-    //                 $massa1inv = null;
-    //                 $massa2inv = null;
-    //                 $massa3inv = null;
-    //             }     
-    //             $invoiceNo = $this->getNextInvoiceDS();
-    //             if ($os == 1 || $os == 5 || $os == 16) {
-    //                 $ds = InvoiceImport::create([
-    //                     'inv_type'=>'DS',
-    //                     'inv_no'=>$invoiceNo,
-    //                     'proforma_no'=>$proformaDS,
-    //                     'cust_id'=>$request->cust_id,
-    //                     'cust_name'=>$request->cust_name,
-    //                     'fax'=>$request->fax,
-    //                     'npwp'=>$request->npwp,
-    //                     'alamat'=>$request->alamat,
-    //                     'os_id'=>$request->os_id,
-    //                     'os_name'=>$request->os_name,
-    //                     'container_key'=>json_encode($request->container_key),
-    //                     'massa1'=>$request->massa1,
-    //                     'massa2'=>$request->massa2,
-    //                     'massa3'=>$request->massa3,
-    //                     'extend'=>$request->extend,
-    //                     'total'=>$request->total,
-    //                     'pajak'=>$request->pajak,
-    //                     'grand_total'=>$request->grand_total,
-    //                     'order_by'=> Auth::user()->name,
-    //                     'order_at'=> Carbon::now(),
-    //                     'lunas'=>'N',
-    //                     'expired_date'=>$request->expired_date,
-    //                     'disc_date' => $request->discDate,
-    //                     'do_no'=>$do->do_no,
     
-    //                     'ctr_20' => $request->ctr_20,
-    //                     'ctr_40' => $request->ctr_40,
-    //                     'ctr_21' => $request->ctr_21,
-    //                     'ctr_42' => $request->ctr_42,
-                      
-    //                     'lolo_empty_20' => $request->lolo_empty_20,
-    //                     'pass_truck_masuk_20' => $request->pass_truck_masuk_20,
-                     
-    //                     'lolo_empty_21' => $request->lolo_empty_21,
-    //                     'pass_truck_masuk_21' => $request->pass_truck_masuk_21,
-                       
-    //                     'lolo_empty_40' => $request->lolo_empty_40,
-    //                     'pass_truck_masuk_40' => $request->pass_truck_masuk_40,
-    //                     'paket_stripping_40' => $request->paket_stripping_40,
-    //                     'pemindahan_petikemas_40' => $request->pemindahan_petikemas_40,
-                        
-    //                     'lolo_empty_42' => $request->lolo_empty_42,
-    //                     'pass_truck_masuk_42' => $request->pass_truck_masuk_42,
-    
-    //                 ]);
-
-    //                 // detail
-    //                 // LOLO
-    //                 if ($ds->ctr_20 != null) {
-    //                     $lof20 = Detail::create([
-    //                         'inv_id'=>$ds->id,
-    //                         'inv_no'=>$ds->inv_no,
-    //                         'inv_type'=>$ds->inv_type,
-    //                         'keterangan'=>$ds->os_name,
-    //                         'detail'=>'LIFTOFMT20',
-    //                         'ukuran'=>'20',
-    //                         'jumlah'=>$ds->ctr_20,
-    //                         'satuan'=>'unit',
-    //                         'harga'=>$ds->lolo_mty_20,
-    //                         'expired_date'=>$ds->expired_date,
-    //                         'order_date'=>$ds->order_date,
-    //                         'lunas'=>$ds->lunas,
-    //                         'cust_id'=>$ds->cust_name,
-    //                         'cust_name'=>$ds->cust_id
-    //                     ]);
-    //                 }
-    //                 if ($ds->ctr_21 != null) {
-    //                     $lof21 = Detail::create([
-    //                         'inv_id'=>$ds->id,
-    //                         'inv_no'=>$ds->inv_no,
-    //                         'inv_type'=>$ds->inv_type,
-    //                         'keterangan'=>$ds->os_name,
-    //                         'detail'=>'LIFTOFMT21',
-    //                         'ukuran'=>'21',
-    //                         'jumlah'=>$ds->ctr_21,
-    //                         'satuan'=>'unit',
-    //                         'harga'=>$ds->lolo_mty_21,
-    //                         'expired_date'=>$ds->expired_date,
-    //                         'order_date'=>$ds->order_date,
-    //                         'lunas'=>$ds->lunas,
-    //                         'cust_id'=>$ds->cust_name,
-    //                         'cust_name'=>$ds->cust_id
-    //                     ]);
-    //                 }
-    //                 if ($ds->ctr_40 != null) {
-    //                     $lof40 = Detail::create([
-    //                         'inv_id'=>$ds->id,
-    //                         'inv_no'=>$ds->inv_no,
-    //                         'inv_type'=>$ds->inv_type,
-    //                         'keterangan'=>$ds->os_name,
-    //                         'detail'=>'LIFTOFMT40',
-    //                         'ukuran'=>'40',
-    //                         'jumlah'=>$ds->ctr_40,
-    //                         'satuan'=>'unit',
-    //                         'harga'=>$ds->lolo_mty_40,
-    //                         'expired_date'=>$ds->expired_date,
-    //                         'order_date'=>$ds->order_date,
-    //                         'lunas'=>$ds->lunas,
-    //                         'cust_id'=>$ds->cust_name,
-    //                         'cust_name'=>$ds->cust_id
-    //                     ]);
-    //                 }
-    //                 if ($ds->ctr_42 != null) {
-    //                     $lof42 = Detail::create([
-    //                         'inv_id'=>$ds->id,
-    //                         'inv_no'=>$ds->inv_no,
-    //                         'inv_type'=>$ds->inv_type,
-    //                         'keterangan'=>$ds->os_name,
-    //                         'detail'=>'LIFTOFMT42',
-    //                         'ukuran'=>'42',
-    //                         'jumlah'=>$ds->ctr_42,
-    //                         'satuan'=>'unit',
-    //                         'harga'=>$ds->lolo_mty_42,
-    //                         'expired_date'=>$ds->expired_date,
-    //                         'order_date'=>$ds->order_date,
-    //                         'lunas'=>$ds->lunas,
-    //                         'cust_id'=>$ds->cust_name,
-    //                         'cust_name'=>$ds->cust_id
-    //                     ]);
-    //                 }
-    //                 $admin = Detail::create([
-    //                         'inv_id'=>$ds->id,
-    //                         'inv_no'=>$ds->inv_no,
-    //                         'inv_type'=>$ds->inv_type,
-    //                         'keterangan'=>$ds->os_name,
-    //                         'detail'=>'ADMINISTRASI',
-    //                         'ukuran'=>null,
-    //                         'jumlah'=> 1,
-    //                         'satuan'=>'unit',
-    //                         'harga'=>2000,
-    //                         'expired_date'=>$ds->expired_date,
-    //                         'order_date'=>$ds->order_date,
-    //                         'lunas'=>$ds->lunas,
-    //                         'cust_id'=>$ds->cust_name,
-    //                         'cust_name'=>$ds->cust_id
-    //                 ]);
-    //                 $jmlhCont = $ds->ctr_20 + $ds->ctr_21 + $ds->ctr_40 + $ds->ctr_42;
-    //                 $jmlhTarifPasstruck = $ds->passtruck_masuk_20 + $ds->passtruck_masuk_21 + $ds->passtruck_masuk_40 + $ds->passtruck_masuk_42;
-    //                 $passTruck = Detail::create([
-    //                     'inv_id'=>$ds->id,
-    //                     'inv_no'=>$ds->inv_no,
-    //                     'inv_type'=>$ds->inv_type,
-    //                     'keterangan'=>$ds->os_name,
-    //                     'detail'=>'PASSTRUCK',
-    //                     'ukuran'=>null,
-    //                     'jumlah'=> $jmlhCont,
-    //                     'satuan'=>'unit',
-    //                     'harga'=>$jmlhTarifPasstruck,
-    //                     'expired_date'=>$ds->expired_date,
-    //                     'order_date'=>$ds->order_date,
-    //                     'lunas'=>$ds->lunas,
-    //                     'cust_id'=>$ds->cust_name,
-    //                     'cust_name'=>$ds->cust_id
-    //                 ]);
-    //             }
-    //             if ($os == 3) {
-    //                 $ds = InvoiceImport::create([
-    //                     'inv_type'=>'DS',
-    //                     'inv_no'=>$invoiceNo,
-    //                     'proforma_no'=>$proformaDS,
-    //                     'cust_id'=>$request->cust_id,
-    //                     'cust_name'=>$request->cust_name,
-    //                     'fax'=>$request->fax,
-    //                     'npwp'=>$request->npwp,
-    //                     'alamat'=>$request->alamat,
-    //                     'os_id'=>$request->os_id,
-    //                     'os_name'=>$request->os_name,
-    //                     'container_key'=>json_encode($request->container_key),
-    //                     'massa1'=>$request->massa1,
-    //                     'massa2'=>$request->massa2,
-    //                     'massa3'=>$request->massa3,
-    //                     'extend'=>$request->extend,
-    //                     'total'=>$request->total,
-    //                     'pajak'=>$request->pajak,
-    //                     'grand_total'=>$request->grand_total,
-    //                     'order_by'=> Auth::user()->name,
-    //                     'order_at'=> Carbon::now(),
-    //                     'lunas'=>'N',
-    //                     'expired_date'=>$request->expired_date,
-    //                     'disc_date' => $request->discDate,
-    //                     'do_no'=>$do->do_no,
-    
-    //                     'ctr_20' => $request->ctr_20,
-    //                     'ctr_40' => $request->ctr_40,
-    //                     'ctr_21' => $request->ctr_21,
-    //                     'ctr_42' => $request->ctr_42,
-
-    //                     'm1_20' => $request->m1_20,
-    //                     'm2_20' => $request->m2_20,
-    //                     'm3_20' => $request->m3_20,
-    //                     'lolo_empty_20' => $request->lolo_empty_20,
-    //                     'paket_stripping_20' => $request->paket_stripping_20,
-    //                     'pemindahan_petikemas_20' => $request->pemindahan_petikemas_20,
-                     
-    //                     'm1_21' => $request->m1_21,
-    //                     'm2_21' => $request->m2_21,
-    //                     'm3_21' => $request->m3_21,
-    //                     'lolo_empty_21' => $request->lolo_empty_21,
-    //                     'paket_stripping_21' => $request->paket_stripping_21,
-    //                     'pemindahan_petikemas_21' => $request->pemindahan_petikemas_21,
-                       
-    //                     'm1_40' => $request->m1_40,
-    //                     'm2_40' => $request->m2_40,
-    //                     'm3_40' => $request->m3_40,
-    //                     'lolo_empty_40' => $request->lolo_empty_40,
-    //                     'paket_stripping_40' => $request->paket_stripping_40,
-    //                     'pemindahan_petikemas_40' => $request->pemindahan_petikemas_40,
-                        
-    //                     'm1_42' => $request->m1_42,
-    //                     'm2_42' => $request->m2_42,
-    //                     'm3_42' => $request->m3_42,
-    //                     'lolo_empty_42' => $request->lolo_empty_42,
-    //                     'paket_stripping_42' => $request->paket_stripping_42,
-    //                     'pemindahan_petikemas_42' => $request->pemindahan_petikemas_42,
-    
-    //                 ]);
-
-    //                 if ($ds->ctr_20 != null) {
-    //                     $strip20 = Detail::create([
-    //                         'inv_id'=>$ds->id,
-    //                         'inv_no'=>$ds->inv_no,
-    //                         'inv_type'=>$ds->inv_type,
-    //                         'keterangan'=>$ds->os_name,
-    //                         'detail'=>'LIFTOFMT20',
-    //                         'ukuran'=>'20',
-    //                         'jumlah'=>$ds->ctr_20,
-    //                         'satuan'=>'unit',
-    //                         'harga'=>$ds->paket_stripping_20,
-    //                         'expired_date'=>$ds->expired_date,
-    //                         'order_date'=>$ds->order_date,
-    //                         'lunas'=>$ds->lunas,
-    //                         'cust_id'=>$ds->cust_name,
-    //                         'cust_name'=>$ds->cust_id
-    //                     ]);
-    //                     $penumpukan20 = Detail::create([
-    //                         'inv_id'=>$ds->id,
-    //                         'inv_no'=>$ds->inv_no,
-    //                         'inv_type'=>$ds->inv_type,
-    //                         'keterangan'=>$ds->os_name,
-    //                         'detail'=>'TUMPUKFL20',
-    //                         'ukuran'=>'20',
-    //                         'jumlah'=>$ds->ctr_20,
-    //                         'satuan'=>'unit',
-    //                         'harga'=>$ds->m1_20,
-    //                         'expired_date'=>$ds->expired_date,
-    //                         'order_date'=>$ds->order_date,
-    //                         'lunas'=>$ds->lunas,
-    //                         'cust_id'=>$ds->cust_name,
-    //                         'cust_name'=>$ds->cust_id
-    //                     ]);
-    //                 }
-    //                 if ($ds->ctr_21 != null) {
-    //                     $strip21 = Detail::create([
-    //                         'inv_id'=>$ds->id,
-    //                         'inv_no'=>$ds->inv_no,
-    //                         'inv_type'=>$ds->inv_type,
-    //                         'keterangan'=>$ds->os_name,
-    //                         'detail'=>'LIFTOFMT21',
-    //                         'ukuran'=>'21',
-    //                         'jumlah'=>$ds->ctr_21,
-    //                         'satuan'=>'unit',
-    //                         'harga'=>$ds->paket_stripping_21,
-    //                         'expired_date'=>$ds->expired_date,
-    //                         'order_date'=>$ds->order_date,
-    //                         'lunas'=>$ds->lunas,
-    //                         'cust_id'=>$ds->cust_name,
-    //                         'cust_name'=>$ds->cust_id
-    //                     ]);
-    //                     $penumpukan21 = Detail::create([
-    //                         'inv_id'=>$ds->id,
-    //                         'inv_no'=>$ds->inv_no,
-    //                         'inv_type'=>$ds->inv_type,
-    //                         'keterangan'=>$ds->os_name,
-    //                         'detail'=>'TUMPUKFL21',
-    //                         'ukuran'=>'21',
-    //                         'jumlah'=>$ds->ctr_21,
-    //                         'satuan'=>'unit',
-    //                         'harga'=>$ds->m1_21,
-    //                         'expired_date'=>$ds->expired_date,
-    //                         'order_date'=>$ds->order_date,
-    //                         'lunas'=>$ds->lunas,
-    //                         'cust_id'=>$ds->cust_name,
-    //                         'cust_name'=>$ds->cust_id
-    //                     ]);
-    //                 }
-    //                 if ($ds->ctr_40 != null) {
-    //                     $strip40 = Detail::create([
-    //                         'inv_id'=>$ds->id,
-    //                         'inv_no'=>$ds->inv_no,
-    //                         'inv_type'=>$ds->inv_type,
-    //                         'keterangan'=>$ds->os_name,
-    //                         'detail'=>'LIFTOFMT40',
-    //                         'ukuran'=>'40',
-    //                         'jumlah'=>$ds->ctr_40,
-    //                         'satuan'=>'unit',
-    //                         'harga'=>$ds->paket_stripping_40,
-    //                         'expired_date'=>$ds->expired_date,
-    //                         'order_date'=>$ds->order_date,
-    //                         'lunas'=>$ds->lunas,
-    //                         'cust_id'=>$ds->cust_name,
-    //                         'cust_name'=>$ds->cust_id
-    //                     ]);
-    //                     $penumpukan40 = Detail::create([
-    //                         'inv_id'=>$ds->id,
-    //                         'inv_no'=>$ds->inv_no,
-    //                         'inv_type'=>$ds->inv_type,
-    //                         'keterangan'=>$ds->os_name,
-    //                         'detail'=>'TUMPUKFL40',
-    //                         'ukuran'=>'40',
-    //                         'jumlah'=>$ds->ctr_40,
-    //                         'satuan'=>'unit',
-    //                         'harga'=>$ds->m1_40,
-    //                         'expired_date'=>$ds->expired_date,
-    //                         'order_date'=>$ds->order_date,
-    //                         'lunas'=>$ds->lunas,
-    //                         'cust_id'=>$ds->cust_name,
-    //                         'cust_name'=>$ds->cust_id
-    //                     ]);
-    //                 }
-    //                 if ($ds->ctr_42 != null) {
-    //                     $strip42 = Detail::create([
-    //                         'inv_id'=>$ds->id,
-    //                         'inv_no'=>$ds->inv_no,
-    //                         'inv_type'=>$ds->inv_type,
-    //                         'keterangan'=>$ds->os_name,
-    //                         'detail'=>'LIFTOFMT42',
-    //                         'ukuran'=>'42',
-    //                         'jumlah'=>$ds->ctr_42,
-    //                         'satuan'=>'unit',
-    //                         'harga'=>$ds->paket_stripping_42,
-    //                         'expired_date'=>$ds->expired_date,
-    //                         'order_date'=>$ds->order_date,
-    //                         'lunas'=>$ds->lunas,
-    //                         'cust_id'=>$ds->cust_name,
-    //                         'cust_name'=>$ds->cust_id
-    //                     ]);
-    //                     $penumpukan42 = Detail::create([
-    //                         'inv_id'=>$ds->id,
-    //                         'inv_no'=>$ds->inv_no,
-    //                         'inv_type'=>$ds->inv_type,
-    //                         'keterangan'=>$ds->os_name,
-    //                         'detail'=>'TUMPUKFL42',
-    //                         'ukuran'=>'42',
-    //                         'jumlah'=>$ds->ctr_42,
-    //                         'satuan'=>'unit',
-    //                         'harga'=>$ds->m1_42,
-    //                         'expired_date'=>$ds->expired_date,
-    //                         'order_date'=>$ds->order_date,
-    //                         'lunas'=>$ds->lunas,
-    //                         'cust_id'=>$ds->cust_name,
-    //                         'cust_name'=>$ds->cust_id
-    //                     ]);
-    //                 }
-    //                 $adminDetail = Detail::create([
-    //                         'inv_id'=>$ds->id,
-    //                         'inv_no'=>$ds->inv_no,
-    //                         'inv_type'=>$ds->inv_type,
-    //                         'keterangan'=>$ds->os_name,
-    //                         'detail'=>'ADMINISTRASI',
-    //                         'ukuran'=>null,
-    //                         'jumlah'=> 1,
-    //                         'satuan'=>'unit',
-    //                         'harga'=>2000,
-    //                         'expired_date'=>$ds->expired_date,
-    //                         'order_date'=>$ds->order_date,
-    //                         'lunas'=>$ds->lunas,
-    //                         'cust_id'=>$ds->cust_name,
-    //                         'cust_name'=>$ds->cust_id
-    //                 ]);
-    //             }
-    //         }
-
-    //         $contArray = explode(',', $cont[0]);
-
-    //         foreach ($contArray as $idCont) {
-    //             $selectCont = Item::where('container_key', $idCont)->get();
-
-    //             foreach ($selectCont as $item) {
-    //                 $item->update([
-    //                     'selected_do' => 'Y'
-    //                 ]);
-
-    //                 $lastJobNo = JobImport::orderBy('id', 'desc')->value('job_no');
-    //                 $jobNo = $this->getNextJob($lastJobNo);
-            
-    //                 if ($os == 1 || $os == 16 || $os == 2 || $os == 3) {
-    //                     $job = JobImport::create([
-    //                         'inv_id'=>$dsk->id,
-    //                         'job_no'=>$jobNo,
-    //                         'os_id'=>$request->os_id,
-    //                         'os_name'=>$request->os_name,
-    //                         'cust_id'=>$request->cust_id,
-    //                         'active_to'=>$dsk->expired_date,
-    //                         'container_key'=>$item->container_key,
-    //                         'container_no'=>$item->container_no,
-    //                         'ves_id'=>$item->ves_id,
-    //                     ]);
-    //                 }
-    //                 if ($os != 2) {
-    //                     $job = JobImport::create([
-    //                         'inv_id'=>$ds->id,
-    //                         'job_no'=>$jobNo,
-    //                         'os_id'=>$request->os_id,
-    //                         'os_name'=>$request->os_name,
-    //                         'cust_id'=>$request->cust_id,
-    //                         'active_to'=>$ds->expired_date,
-    //                         'container_key'=>$item->container_key,
-    //                         'container_no'=>$item->container_no,
-    //                         'ves_id'=>$item->ves_id,
-    //                     ]);
-    //                 }
-                   
-    //             }
-    //         }
-    //         return redirect()->route('billinImportgMain')->with('success', 'Menunggu Pembayaran');
-
-    //     } 
-
-       
-    // }
 
     private function getNextProformaNumber()
 {
@@ -1641,7 +926,7 @@ class ImportController extends Controller
 private function getNextInvoiceDSK()
 {
     // Mendapatkan nomor proforma terakhir
-    $latest = InvoiceImport::where('inv_type', 'DSK')->orderBy('order_at', 'desc')->first();
+    $latest = InvoiceImport::where('inv_type', 'DSK')->orderBy('inv_no', 'desc')->first();
     
     // Jika tidak ada proforma sebelumnya, kembalikan nomor proforma awal
     if (!$latest) {
@@ -1664,7 +949,7 @@ private function getNextInvoiceDSK()
 private function getNextInvoiceDS()
 {
     // Mendapatkan nomor proforma terakhir
-    $latest = InvoiceImport::where('inv_type', 'DS')->orderBy('order_at', 'desc')->first();
+    $latest = InvoiceImport::where('inv_type', 'DS')->orderBy('inv_no', 'desc')->first();
 
     // Jika tidak ada proforma sebelumnya, kembalikan nomor proforma awal
     if (!$latest) {
@@ -1710,7 +995,7 @@ private function getNextJob($lastJobNo)
         $data['title'] = "Pranota";
 
         $data['invoice'] = InvoiceImport::where('id', $id)->first();
-
+        $data['form'] = Form::where('id', $data['invoice']->form_id)->first();
         $data['contInvoice'] = Container::where('form_id', $data['invoice']->form_id)->orderBy('ctr_size', 'asc')->get();
         $invDetail = Detail::where('inv_id', $id)->whereNot('count_by', '=', 'O')->orderBy('count_by', 'asc')->orderBy('kode', 'asc')->get();
         $data['invGroup'] = $invDetail->groupBy('ukuran');
@@ -1731,7 +1016,7 @@ private function getNextJob($lastJobNo)
         $data['title'] = "Pranota";
 
         $data['invoice'] = InvoiceImport::where('id', $id)->first();
-
+        $data['form'] = Form::where('id', $data['invoice']->form_id)->first();
         $data['contInvoice'] = Container::where('form_id', $data['invoice']->form_id)->orderBy('ctr_size', 'asc')->get();
         $invDetail = Detail::where('inv_id', $id)->whereNot('count_by', '=', 'O')->orderBy('count_by', 'asc')->orderBy('kode', 'asc')->get();
         $data['invGroup'] = $invDetail->groupBy('ukuran');
@@ -1863,6 +1148,15 @@ private function getNextJob($lastJobNo)
         $id = $request->inv_id;
 
         $invoice = InvoiceImport::where('id', $id)->first();
+       if ($invoice->inv_no == null) {
+            if ($invoice->inv_type == 'DSK' ) {
+                $invoiceNo = $this->getNextInvoiceDSK();
+            }else {
+                $invoiceNo = $this->getNextInvoiceDS();
+            }
+       }else {
+         $invoiceNo = $invoice->inv_no;
+       }
         $containerInvoice = Container::where('form_id', $invoice->form_id)->get();
         $bigOS = OS::where('id', $invoice->os_id)->first();
         foreach ($containerInvoice as $cont) {
@@ -1884,7 +1178,7 @@ private function getNextJob($lastJobNo)
             }
             $item = Item::where('container_key', $cont->container_key)->first();
             $item->update([
-                'invoice_no'=>$invoice->inv_no,
+                'invoice_no'=>$invoiceNo,
                 'job_no' => $job->job_no,
                 'order_service' => $bigOS->order,
             ]);
@@ -1893,12 +1187,14 @@ private function getNextJob($lastJobNo)
         $details = Detail::where('inv_id', $id)->get();
         foreach ($details as $detail) {
             $detail->update([
-            'lunas'=>'Y'
+            'lunas'=>'Y',
+            'inv_no'=>$invoiceNo,
             ]);
         }
 
         $invoice->update([
             'lunas' => 'Y',
+            'inv_no'=>$invoiceNo,
             'lunas_at'=> Carbon::now(),
         ]);
 
@@ -1914,6 +1210,15 @@ private function getNextJob($lastJobNo)
         $id = $request->inv_id;
 
         $invoice = InvoiceImport::where('id', $id)->first();
+        if ($invoice->inv_no == null) {
+            if ($invoice->inv_type == 'DSK' ) {
+                $invoiceNo = $this->getNextInvoiceDSK();
+            }else {
+                $invoiceNo = $this->getNextInvoiceDS();
+            }
+       }else {
+         $invoiceNo = $invoice->inv_no;
+       }
         $containerInvoice = Container::where('form_id', $invoice->form_id)->get();
         $bigOS = OS::where('id', $invoice->os_id)->first();
         foreach ($containerInvoice as $cont) {
@@ -1932,7 +1237,7 @@ private function getNextJob($lastJobNo)
             ]);
             $item = Item::where('container_key', $cont->container_key)->first();
             $item->update([
-                'invoice_no'=>$invoice->inv_no,
+                'invoice_no'=>$invoiceNo,
                 'job_no' => $job->job_no,
                 'order_service' => $bigOS->order,
             ]);
@@ -1941,12 +1246,14 @@ private function getNextJob($lastJobNo)
         $details = Detail::where('inv_id', $id)->get();
         foreach ($details as $detail) {
             $detail->update([
-            'lunas'=>'P'
+            'lunas'=>'P',
+            'inv_no'=>$invoiceNo,
             ]);
         }
 
         $invoice->update([
             'lunas' => 'P',
+            'inv_no'=>$invoiceNo,
             'lunas_at'=> Carbon::now(),
         ]);
 
@@ -2011,5 +1318,48 @@ private function getNextJob($lastJobNo)
         $fileName = 'ReportInvoiceImport-' . $os . '-' . $startDate . '-' . $endDate . '.xlsx';
         return Excel::download(new InvoicesExport($invoice), $fileName);
       return Excel::download(new InvoicesExport($invoice), $fileName);
+    }
+
+    public function deliveryInvoiceCancel(Request $request)
+    {
+        $id = $request->inv_id;
+        $invoice = InvoiceImport::where('id', $id)->first();
+        // var_dump($invoice);
+        // die;
+        $invoice->update([
+            'lunas' => 'C',
+            'total'=> 0,
+            'discount'=> 0,
+            'pajak'=> 0,
+            'grand_total'=> 0,
+            
+        ]);
+
+        $details = Detail::where('inv_id', $id)->get();
+        foreach ($details as $detail) {
+            $detail->update([
+            'lunas'=>'C',
+            'jumlah'=>0,
+            'jumlah_hari'=> 0,
+            'tarif'=>0,
+            'total'=>0,
+            ]);
+        }
+
+        $containerInvoice = Container::where('form_id', $invoice->form_id)->get();
+        foreach ($containerInvoice as $cont) {
+            $item = Item::where('container_key', $cont->container_key)->first();
+            $item->update([
+                'selected_do'=>'N',
+                'os_id'=>null,
+                'job_no'=>null,
+                'invoice_no'=>null,
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Invoice Berhasil di Cancel!',
+        ]);
     }
 }

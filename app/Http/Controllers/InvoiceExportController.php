@@ -255,8 +255,9 @@ class InvoiceExportController extends Controller
             }
             $data['totalDSK'] = $resultsDSK->sum('harga');
             $data['resultsDSK'] = $resultsDSK;
-            $data['pajakDSK'] = ($data['totalDSK'] + $data['adminDSK']) * 11 / 100;
-            $data['grandTotalDSK'] = $data['totalDSK'] + $data['adminDSK'] + $data['pajakDSK'];
+            $data['discountDSK'] = ($data['totalDSK'] + $data['adminDSK']) * $form->discount_dsk / 100;
+            $data['pajakDSK'] = (($data['totalDSK'] + $data['adminDSK']) - $data['discountDSK']) * 11 / 100;
+            $data['grandTotalDSK'] = (($data['totalDSK'] + $data['adminDSK']) - $data['discountDSK']) + $data['pajakDSK'];
         }
 
         if ($data['ds'] == 'Y') {
@@ -314,8 +315,9 @@ class InvoiceExportController extends Controller
             }
             $data['totalDS'] = $resultsDS->sum('harga');
             $data['resultsDS'] = $resultsDS;
-            $data['pajakDS'] = ($data['totalDS'] + $data['adminDS']) * 11 / 100;
-            $data['grandTotalDS'] = $data['totalDS'] + $data['adminDS'] + $data['pajakDS'];
+            $data['discountDS'] = ($data['totalDS'] + $data['adminDS']) * $form->discount_ds / 100;
+            $data['pajakDS'] = (($data['totalDS'] + $data['adminDS']) - $data['discountDS']) * 11 / 100;
+            $data['grandTotalDS'] = (($data['totalDS'] + $data['adminDS']) - $data['discountDS']) + $data['pajakDS'];
         }
 
         // dd($osDSK, $service, $resultsDSK, $resultsDS);
@@ -366,6 +368,8 @@ class InvoiceExportController extends Controller
             'i_e'=>'E',
             'disc_date'=>Carbon::now(),
             'done'=>'N',
+            'discount_ds'=>$request->discount_ds,
+            'discount_dsk'=>$request->discount_dsk,
         ]);
 
        
@@ -433,6 +437,8 @@ class InvoiceExportController extends Controller
             'i_e'=>'E',
             'disc_date'=>Carbon::now(),
             'done'=>'N',
+            'discount_ds'=>$request->discount_ds,
+            'discount_dsk'=>$request->discount_dsk,
         ]);
         foreach ($newContainer as $cont) {
             $item = Item::where('container_key', $cont)->first();
@@ -483,7 +489,7 @@ class InvoiceExportController extends Controller
         $invoiceDSK = InvoiceExport::create([
             'inv_type'=>'OSK',
             'form_id'=>$form->id,
-            'inv_no' =>$invoiceNo,
+            
             'proforma_no'=>$nextProformaNumber,
             'cust_id'=>$form->cust_id,
             'cust_name'=>$form->customer->name,
@@ -498,6 +504,7 @@ class InvoiceExportController extends Controller
             'disc_date' => $form->disc_date,
             'booking_no'=>$form->do_id,
             'total'=>$request->totalDSK,
+            'discount'=>$request->discountDSK,
             'pajak'=>$request->pajakDSK,
             'grand_total'=>$request->grandTotalDSK,
             'order_by'=> Auth::user()->name,
@@ -526,7 +533,7 @@ class InvoiceExportController extends Controller
                             $hargaC = $tarifDetail->tarif * $containerCount;
                             $detailImport = Detail::create([
                              'inv_id'=>$invoiceDSK->id,
-                             'inv_no'=>$invoiceDSK->inv_no,
+                            
                              'inv_type'=>$invoiceDSK->inv_type,
                              'keterangan'=>$form->service->name,
                              'ukuran'=>$size,
@@ -552,7 +559,7 @@ class InvoiceExportController extends Controller
                             $hargaC = $tarifDetail->tarif * $containerCount;
                             $detailImport = Detail::create([
                              'inv_id'=>$invoiceDSK->id,
-                             'inv_no'=>$invoiceDSK->inv_no,
+                            
                              'inv_type'=>$invoiceDSK->inv_type,
                              'keterangan'=>$form->service->name,
                              'ukuran'=>$size,
@@ -631,6 +638,7 @@ class InvoiceExportController extends Controller
             'disc_date' => $form->disc_date,
             'booking_no'=>$form->do_id,
             'total'=>$request->totalDS,
+            'discount'=>$request->discountDS,
             'pajak'=>$request->pajakDS,
             'grand_total'=>$request->grandTotalDS,
             'order_by'=> Auth::user()->name,
@@ -762,7 +770,7 @@ class InvoiceExportController extends Controller
     private function getNextProformaNumber()
     {
         // Mendapatkan nomor proforma terakhir
-        $latestProforma = InvoiceExport::orderBy('order_at', 'desc')->first();
+        $latestProforma = InvoiceExport::orderBy('proforma_no', 'desc')->first();
     
         // Jika tidak ada proforma sebelumnya, kembalikan nomor proforma awal
         if (!$latestProforma) {
@@ -785,7 +793,7 @@ class InvoiceExportController extends Controller
     private function getNextInvoiceDSK()
     {
         // Mendapatkan nomor proforma terakhir
-        $latest = InvoiceExport::where('inv_type', 'OSK')->orderBy('proforma_no', 'desc')->first();
+        $latest = InvoiceExport::where('inv_type', 'OSK')->orderBy('inv_no', 'desc')->first();
     
         // Jika tidak ada proforma sebelumnya, kembalikan nomor proforma awal
         if (!$latest) {
@@ -808,7 +816,7 @@ class InvoiceExportController extends Controller
     private function getNextInvoiceDS()
     {
         // Mendapatkan nomor proforma terakhir
-        $latest = InvoiceExport::where('inv_type', 'OS')->orderBy('order_at', 'desc')->first();
+        $latest = InvoiceExport::where('inv_type', 'OS')->orderBy('inv_no', 'desc')->first();
     
         // Jika tidak ada proforma sebelumnya, kembalikan nomor proforma awal
         if (!$latest) {
@@ -879,7 +887,7 @@ class InvoiceExportController extends Controller
         $data['title'] = "Pranota";
 
         $data['invoice'] = InvoiceExport::where('id', $id)->first();
-
+        $data['form'] = Form::where('id', $data['invoice']->form_id)->first();
         $data['contInvoice'] = Container::where('form_id', $data['invoice']->form_id)->orderBy('ctr_size', 'asc')->get();
         $invDetail = Detail::where('inv_id', $id)->whereNot('count_by', '=', 'O')->orderBy('count_by', 'asc')->orderBy('kode', 'asc')->get();
         $data['invGroup'] = $invDetail->groupBy('ukuran');
@@ -900,7 +908,7 @@ class InvoiceExportController extends Controller
         $data['title'] = "Pranota";
 
         $data['invoice'] = InvoiceExport::where('id', $id)->first();
-
+        $data['form'] = Form::where('id', $data['invoice']->form_id)->first();
         $data['contInvoice'] = Container::where('form_id', $data['invoice']->form_id)->orderBy('ctr_size', 'asc')->get();
         $invDetail = Detail::where('inv_id', $id)->whereNot('count_by', '=', 'O')->orderBy('count_by', 'asc')->orderBy('kode', 'asc')->get();
         $data['invGroup'] = $invDetail->groupBy('ukuran');
@@ -934,6 +942,15 @@ class InvoiceExportController extends Controller
         $id = $request->inv_id;
 
         $invoice = InvoiceExport::where('id', $id)->first();
+        if ($invoice->inv_no == null) {
+            if ($invoice->inv_type == 'DSK' ) {
+                $invoiceNo = $this->getNextInvoiceDSK();
+            }else {
+                $invoiceNo = $this->getNextInvoiceDS();
+            }
+       }else {
+         $invoiceNo = $invoice->inv_no;
+       }
         $containerInvoice = Container::where('form_id', $invoice->form_id)->get();
         $bigOS = OS::where('id', $invoice->os_id)->first();
         foreach ($containerInvoice as $cont) {
@@ -955,7 +972,7 @@ class InvoiceExportController extends Controller
             }
             $item = Item::where('container_key', $cont->container_key)->first();
             $item->update([
-                'invoice_no'=>$invoice->inv_no,
+                'invoice_no'=>$invoiceNo,
                 'job_no' => $job->job_no,
                 'order_service' => $bigOS->order,
             ]);
@@ -964,12 +981,14 @@ class InvoiceExportController extends Controller
         $details = Detail::where('inv_id', $id)->get();
         foreach ($details as $detail) {
             $detail->update([
-            'lunas'=>'Y'
+            'lunas'=>'Y',
+            'inv_no'=>$invoiceNo,
             ]);
         }
 
         $invoice->update([
             'lunas' => 'Y',
+            'inv_no'=>$invoiceNo,
             'lunas_at'=> Carbon::now(),
         ]);
 
@@ -986,6 +1005,15 @@ class InvoiceExportController extends Controller
         $id = $request->inv_id;
 
         $invoice = InvoiceExport::where('id', $id)->first();
+        if ($invoice->inv_no == null) {
+            if ($invoice->inv_type == 'DSK' ) {
+                $invoiceNo = $this->getNextInvoiceDSK();
+            }else {
+                $invoiceNo = $this->getNextInvoiceDS();
+            }
+       }else {
+         $invoiceNo = $invoice->inv_no;
+       }
         $containerInvoice = Container::where('form_id', $invoice->form_id)->get();
         $bigOS = OS::where('id', $invoice->os_id)->first();
         foreach ($containerInvoice as $cont) {
@@ -1004,7 +1032,7 @@ class InvoiceExportController extends Controller
             ]);
             $item = Item::where('container_key', $cont->container_key)->first();
             $item->update([
-                'invoice_no'=>$invoice->inv_no,
+                'invoice_no'=>$invoiceNo,
                 'job_no' => $job->job_no,
                 'order_service' => $bigOS->order,
             ]);
@@ -1013,12 +1041,14 @@ class InvoiceExportController extends Controller
         $details = Detail::where('inv_id', $id)->get();
         foreach ($details as $detail) {
             $detail->update([
-            'lunas'=>'P'
+            'lunas'=>'P',
+            'inv_no'=>$invoiceNo,
             ]);
         }
 
         $invoice->update([
             'lunas' => 'P',
+            'inv_no'=>$invoiceNo,
             'lunas_at'=> Carbon::now(),
         ]);
 
@@ -1156,5 +1186,48 @@ class InvoiceExportController extends Controller
     
         $invoice = $invoiceQuery->orderBy('order_date', 'asc')->get();        $fileName = 'ReportInvoiceExport-'.$os.'-'. $startDate . $endDate .'.xlsx';
       return Excel::download(new ReportExport($invoice), $fileName);
+    }
+
+    public function recivingInvoiceCancel(Request $request)
+    {
+        $id = $request->inv_id;
+        $invoice = InvoiceExport::where('id', $id)->first();
+        // var_dump($invoice);
+        // die;
+        $invoice->update([
+            'lunas' => 'C',
+            'total'=> 0,
+            'discount'=> 0,
+            'pajak'=> 0,
+            'grand_total'=> 0,
+            
+        ]);
+
+        $details = Detail::where('inv_id', $id)->get();
+        foreach ($details as $detail) {
+            $detail->update([
+            'lunas'=>'C',
+            'jumlah'=>0,
+            'jumlah_hari'=> 0,
+            'tarif'=>0,
+            'total'=>0,
+            ]);
+        }
+
+        $containerInvoice = Container::where('form_id', $invoice->form_id)->get();
+        foreach ($containerInvoice as $cont) {
+            $item = Item::where('container_key', $cont->container_key)->first();
+            $item->update([
+                'selected_do'=>'N',
+                'os_id'=>null,
+                'job_no'=>null,
+                'invoice_no'=>null,
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Invoice Berhasil di Cancel!',
+        ]);
     }
 }

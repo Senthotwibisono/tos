@@ -39,6 +39,9 @@ class InvoiceStevadoring implements FromCollection, WithMapping, WithHeadings, S
             case 'P':
                 $status = 'Piutang';
                 break;
+            case 'C':
+                $status = 'Canceled';
+                break;
             default:
                 $status = 'Unknown';
                 break;

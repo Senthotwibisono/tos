@@ -149,6 +149,7 @@
                         </h1>
                         <h4 class="text-white">Total Amount :</h4>
                         <h4 class="text-white">Admin :</h4>
+                        <h4 class="text-white">Discount {{ number_format($form->discount_ds, 2) }}%  :</h4>
                         <h4 class="text-white">Tax 11%      :</h4>
                         <h4 class="text-white">Grand Total  :</h4>
                     </div>
@@ -158,6 +159,8 @@
                         <input type="hidden" name="total" value="{{$total}}">
                         <input type="hidden" name="admin" value="{{$admin}}">
                         <h4 class="text-white"> Rp. {{number_format($admin, 0, ',', '.')}} </h4>
+                        <h4 class="text-white"> Rp. {{number_format($discount, 0, ',', '.')}}</h4>
+                        <input type="hidden" name="discount" value="{{$discount}}">
                         <input type="hidden" name="pajak" value="{{$pajak}}">
                         <h4 class="text-white">Rp. {{number_format($pajak, 0, ',', '.')}}</h4>
                         <input type="hidden" name="grand_total" value="{{$grandTotal}}">

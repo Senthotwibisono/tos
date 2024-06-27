@@ -90,6 +90,15 @@
             </div>
             <input type="hidden" id="tipe" name="tipe">
           </div>
+
+          <div class="row mt-5">
+          <h5>Discount</h5>
+          <p>Di Isi dengan Persen (%)</p>
+            <div class="col-sm-3">
+              <label for="">Discount</label>
+              <input type="number" class="form-control" value='0' name="discount_ds">
+            </div>
+          </div>
           <div class="row mt-5">
             <div class="col-12 text-right">
             <button type="submit" class="btn btn-success">Submit</button>

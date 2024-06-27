@@ -40,6 +40,9 @@ class ReportExtend implements FromCollection, WithMapping, WithHeadings, ShouldA
             case 'P':
                 $status = 'Piutang';
                 break;
+            case 'C':
+                $status = 'Canceled';
+                break;
             default:
                 $status = 'Unknown';
                 break;

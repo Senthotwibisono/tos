@@ -167,6 +167,7 @@ class InvoiceExtend extends Controller
             'disc_date'=>$oldExpired,
             'done'=>'N',
             'tipe'=>$request->tipe,
+            'discount_ds'=>$request->discount_ds,
         ]);
 
        
@@ -193,9 +194,9 @@ class InvoiceExtend extends Controller
         $form = Form::where('id', $request->form_id)->first();
 
         $newContainer = $request->container_key;
-        $oldInv = InvoiceImport::where('id', $request->inv_id)->first();
+        $oldInv = InvoiceImport::where('form_id', $request->inv_id)->first();
         if (is_null($oldInv)) {
-            $oldInv = Extend::where('id', $request->inv_id)->first();
+            $oldInv = Extend::where('form_id', $request->inv_id)->first();
         }
         $oldForm = Form::where('id', $request->inv_id)->first();
         $oldExpired = $oldForm->expired_date;
@@ -223,6 +224,7 @@ class InvoiceExtend extends Controller
             'disc_date'=>$oldExpired,
             'done'=>'N',
             'tipe'=>$request->tipe,
+            'discount_ds'=>$request->discount_ds,
         ]);
         foreach ($newContainer as $cont) {
             $item = Item::where('container_key', $cont)->first();
@@ -345,10 +347,12 @@ class InvoiceExtend extends Controller
 
         $totalKotor = $results->sum('harga');
         $total = $totalKotor + $data['admin'];
-        $pajak = ($total * 11) / 100;
-        $grandTotal = $total + $pajak;
+        $discount = ($total * $form->discount_ds) / 100;
+        $pajak = (($total - $discount) * 11) / 100;
+        $grandTotal = ($total - $discount) + $pajak;
 
         $data['total'] = $total;
+        $data['discount'] = $discount;
         $data['pajak'] = $pajak;
         $data['grandTotal'] = $grandTotal;
         $data['results'] = $results;
@@ -416,7 +420,7 @@ class InvoiceExtend extends Controller
             'm3' => $massa3,
             'proforma_no'=>$nextProformaNumber,
             'inv_id'=>$oldInv->id,
-            'inv_no'=>$invoiceNo,
+           
             'cust_id'=>$form->cust_id,
             'cust_name'=>$form->customer->name,
             'fax'=>$form->customer->fax,
@@ -426,6 +430,7 @@ class InvoiceExtend extends Controller
             'os_name'=>$form->service->name,
             'admin'=>$request->admin,
             'total'=>$request->total,
+            'discount'=>$request->discount,
             'pajak'=>$request->pajak,
             'grand_total'=>$request->grand_total,
             'order_by'=>$request->order_by,
@@ -468,7 +473,7 @@ class InvoiceExtend extends Controller
                                 $hargaT = $tarifDetail->tarif * $containerCount * $hari;
                                 $results = Detail::create([
                                     'inv_id'=>$extend->id,
-                                    'inv_no'=>$extend->inv_no,
+                                   
                                     'inv_type'=>'XTD',
                                     'keterangan'=>$form->service->name,
                                     'ukuran'=>$size,
@@ -500,7 +505,7 @@ class InvoiceExtend extends Controller
             if ($singleTarifDetail) {
                 $single = Detail::create([
                         'inv_id'=>$extend->id,
-                        'inv_no'=>$extend->inv_no,
+                       
                         'inv_type'=>'XTD',
                         'keterangan'=>$form->service->name,
                         'ukuran'=> '0',
@@ -546,6 +551,11 @@ class InvoiceExtend extends Controller
         $id = $request->inv_id;
 
         $invoice = Extend::where('id', $id)->first();
+        if ($invoice->inv_no == null) {
+            $invoiceNo = $this->getNextInvoiceExtend();
+        }else {
+          $invoiceNo = $invoice->inv_no;
+        }
         $containerInvoice = Container::where('form_id', $invoice->form_id)->get();
         $bigOS = OS::where('id', $invoice->os_id)->first();
         foreach ($containerInvoice as $cont) {
@@ -567,7 +577,7 @@ class InvoiceExtend extends Controller
             }
             $item = Item::where('container_key', $cont->container_key)->first();
             $item->update([
-                'invoice_no'=>$invoice->inv_no,
+                'invoice_no'=>$invoiceNo,
                 'job_no' => $job->job_no,
                 'order_service' => $bigOS->order,
             ]);
@@ -576,12 +586,14 @@ class InvoiceExtend extends Controller
         $details = Detail::where('inv_id', $id)->get();
         foreach ($details as $detail) {
             $detail->update([
-            'lunas'=>'Y'
+            'lunas'=>'Y',
+            'inv_no'=>$invoiceNo,
             ]);
         }
 
         $invoice->update([
             'lunas' => 'Y',
+            'inv_no'=>$invoiceNo,
             'lunas_at'=> Carbon::now(),
         ]);
 
@@ -597,6 +609,11 @@ class InvoiceExtend extends Controller
         $id = $request->inv_id;
 
         $invoice = Extend::where('id', $id)->first();
+        if ($invoice->inv_no == null) {
+                $invoiceNo = $this->getNextInvoiceExtend();
+       }else {
+         $invoiceNo = $invoice->inv_no;
+       }
         $containerInvoice = Container::where('form_id', $invoice->form_id)->get();
         $bigOS = OS::where('id', $invoice->os_id)->first();
         foreach ($containerInvoice as $cont) {
@@ -618,7 +635,7 @@ class InvoiceExtend extends Controller
             }
             $item = Item::where('container_key', $cont->container_key)->first();
             $item->update([
-                'invoice_no'=>$invoice->inv_no,
+                'invoice_no'=>$invoiceNo,
                 'job_no' => $job->job_no,
                 'order_service' => $bigOS->order,
             ]);
@@ -627,12 +644,14 @@ class InvoiceExtend extends Controller
         $details = Detail::where('inv_id', $id)->get();
         foreach ($details as $detail) {
             $detail->update([
-            'lunas'=>'P'
+            'lunas'=>'P',
+            'inv_no'=>$invoiceNo,
             ]);
         }
 
         $invoice->update([
             'lunas' => 'P',
+            'inv_no'=>$invoiceNo,
         ]);
 
         return response()->json([
@@ -648,7 +667,7 @@ class InvoiceExtend extends Controller
         $data['title'] = "Pranota";
 
         $data['invoice'] = Extend::where('id', $id)->first();
-
+        $data['form'] = Form::where('id', $data['invoice']->form_id)->first();
         $data['item'] = Container::where('form_id', $data['invoice']->form_id)->orderBy('ctr_size', 'asc')->get();
         $invDetail = Detail::where('inv_id', $id)->whereNot('count_by', '=', 'O')->orderBy('count_by', 'asc')->orderBy('kode', 'asc')->get();
         $data['invGroup'] = $invDetail->groupBy('ukuran');
@@ -762,7 +781,7 @@ class InvoiceExtend extends Controller
 private function getNextInvoiceExtend()
 {
     // Mendapatkan nomor proforma terakhir
-    $latest = Extend::orderBy('order_at', 'desc')->first();
+    $latest = Extend::orderBy('inv_no', 'desc')->first();
 
     // Jika tidak ada proforma sebelumnya, kembalikan nomor proforma awal
     if (!$latest) {
@@ -809,7 +828,7 @@ public function ReportExcel(Request $request)
   return Excel::download(new ReportExtend($invoice), $fileName);
 }
 
-public function extendInvoiceDelete($id)
+    public function extendInvoiceDelete($id)    
     {
         $invoice = Extend::where('form_id', $id)->get();
         foreach ($invoice as $inv) {
@@ -824,9 +843,6 @@ public function extendInvoiceDelete($id)
         $containerInvoice = Container::where('form_id', $id)->get();
         foreach ($containerInvoice as $cont) {
             $item = Item::where('container_key', $cont->container_key)->first();
-            $item->update([
-                'selected_do'=>'N',
-            ]);
             $cont->delete();
         }
 
@@ -834,6 +850,40 @@ public function extendInvoiceDelete($id)
         $form->delete();
 
         return response()->json(['message' => 'Data berhasil dihapus.']);
+    }
+
+    public function extendInvoiceCancel(Request $request)    
+    {
+        $id = $request->inv_id;
+
+        $invoice = Extend::where('id', $id)->first();
+        
+            $invoice->update([
+                'lunas' => 'C',
+                'total'=> 0,
+                'discount'=> 0,
+                'pajak'=> 0,
+                'grand_total'=> 0,
+            ]);
+       
+
+        $invoiceDetail = Detail::where('form_id', $id)->get();
+        foreach ($invoiceDetail as $detail) {
+            $detail->update([
+                'lunas'=>'C',
+                'jumlah'=>0,
+                'jumlah_hari'=> 0,
+                'tarif'=>0,
+                'total'=>0,
+            ]);
+        }
+
+        $containerInvoice = Container::where('form_id', $id)->get();
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Invoice Berhasil di Cancel!',
+        ]);
     }
 }
 

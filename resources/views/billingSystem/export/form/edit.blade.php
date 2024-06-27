@@ -175,6 +175,24 @@
               </select>
             </div>
           </div>
+
+          <div class="row mt-5">
+          <h5>Discount</h5>
+          <p>Di Isi dengan Persen (%)</p>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label for="">Discount OSK</label>
+              <input type="number" class="form-control" value='{{$form->discount_dsk}}' name="discount_dsk">
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label for="">Discount OS</label>
+              <input type="number" class="form-control" value='{{$form->discount_ds}}' name="discount_ds">
+            </div>
+          </div>
+         </div>
+
           <div class="row mt-5">
             <div class="col-12">
               <h5>Beacukai Information</h5>
