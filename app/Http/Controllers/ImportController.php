@@ -122,6 +122,8 @@ class ImportController extends Controller
             'i_e'=>'I',
             'disc_date'=>$singleCont->disc_date,
             'done'=>'N',
+            'discount_ds'=>$request->discount_ds,
+            'discount_dsk'=>$request->discount_dsk,
         ]);
         foreach ($newContainer as $cont) {
             $item = Item::where('container_key', $cont)->first();
@@ -453,8 +455,9 @@ class ImportController extends Controller
             }
             $data['totalDSK'] = $resultsDSK->sum('harga');
             $data['resultsDSK'] = $resultsDSK;
-            $data['pajakDSK'] = ($data['totalDSK'] + $data['adminDSK']) * 11 / 100;
-            $data['grandTotalDSK'] = $data['totalDSK'] + $data['adminDSK'] + $data['pajakDSK'];
+            $data['discountDSK'] = ($data['totalDSK'] + $data['adminDSK']) * $form->discount_dsk / 100;
+            $data['pajakDSK'] = (($data['totalDSK'] + $data['adminDSK']) - $data['discountDSK']) * 11 / 100;
+            $data['grandTotalDSK'] = (($data['totalDSK'] + $data['adminDSK']) - $data['discountDSK']) + $data['pajakDSK'];
         }
 
         if ($data['ds'] == 'Y') {
@@ -512,8 +515,9 @@ class ImportController extends Controller
             }
             $data['totalDS'] = $resultsDS->sum('harga');
             $data['resultsDS'] = $resultsDS;
-            $data['pajakDS'] = ($data['totalDS'] + $data['adminDS']) * 11 / 100;
-            $data['grandTotalDS'] = $data['totalDS'] + $data['adminDS'] + $data['pajakDS'];
+            $data['discountDS'] = ($data['totalDS'] + $data['adminDS']) * $form->discount_ds / 100;
+            $data['pajakDS'] = (($data['totalDS'] + $data['adminDS']) - $data['discountDS']) * 11 / 100;
+            $data['grandTotalDS'] = (($data['totalDS'] + $data['adminDS']) - $data['discountDS']) + $data['pajakDS'];
         }
 
         // dd($osDSK, $service, $resultsDSK, $resultsDS);
@@ -544,6 +548,8 @@ class ImportController extends Controller
             'i_e'=>'I',
             'disc_date'=>$singleCont->disc_date,
             'done'=>'N',
+            'discount_ds'=>$request->discount_ds,
+            'discount_dsk'=>$request->discount_dsk,
         ]);
 
        

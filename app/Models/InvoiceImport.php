@@ -92,6 +92,7 @@ class InvoiceImport extends Model
         'expired_date',
         'do_no',
         'last_expired_date',
+        'discount',
     ];
     public function customer()
     {

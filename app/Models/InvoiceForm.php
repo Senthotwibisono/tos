@@ -23,7 +23,9 @@ class InvoiceForm extends Model
         'done',
         'massa2',
         'massa3',
-        'tipe'
+        'tipe',
+        'discount_ds',
+        'discount_dsk',
     ];
 
     public function doOnline()

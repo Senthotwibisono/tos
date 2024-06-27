@@ -51,6 +51,7 @@
                         </h1>
                         <h4 class="text-white">Total Amount :</h4>
                         <h4 class="text-white">Admin :</h4>
+                        <h4 class="text-white">Discount {{ number_format($form->discount_ds, 2) }}%  :</h4>
                         <h4 class="text-white">Tax 11%      :</h4>
                         <h4 class="text-white">Grand Total  :</h4>
                     </div>
@@ -58,6 +59,7 @@
                       <div class="col-6 mt-4" style="text-align:right;">
                         <h4 class="text-white"> Rp. {{number_format($totalDS, 0, ',', '.')}}</h4>
                         <h4 class="text-white"> Rp. {{number_format($adminDS, 0, ',', '.')}}</h4>
+                        <h4 class="text-white"> Rp. {{number_format($discountDS, 0, ',', '.')}}</h4>
                         <h4 class="text-white">Rp. {{number_format($pajakDS, 0, ',', '.')}}</h4>
                         <h4 class="color:#ff5265;">Rp. {{number_format($grandTotalDS, 0, ',', '.')}} </h4>
                         <input type="hidden" name="totalDS" value="{{$totalDS}}">
