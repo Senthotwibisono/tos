@@ -187,7 +187,7 @@
                       Kartu Export (Reciving Card)
                     @elseif($form->service->order == "SPPS")
                       SURAT PENARIKAN PETIKEMAS STRIPPING (STUFFING)
-                    @elseif($form->service->order == "MTK")
+                    @elseif($form->service->order == "MTK" || $form->service->order == "MTI")
                       Reciving MT
                     @else
                       Reciving Full
