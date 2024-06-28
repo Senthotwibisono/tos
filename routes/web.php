@@ -989,7 +989,7 @@ Route::get('/billing/import/extendPreinvoice/{id?}', [InvoiceExtend::class, 'pre
 Route::post('/billing/import/extendCreate', [InvoiceExtend::class, 'post'])->name('extendCreate');
 Route::get('/extend/pay-button{id?}', [InvoiceExtend::class, 'payExtend'])->name('payExtend');
 Route::post('/invoice/extend-payFullExtend', [InvoiceExtend::class, 'payFull'])->name('payFullExtend');
-Route::post('/invoice/extend-payFullExtend', [InvoiceExtend::class, 'payFull'])->name('payFullExtend');
+Route::post('/invoice/extend-piutangExtend', [InvoiceExtend::class, 'piutang'])->name('piutangFullExtend');
 Route::post('/invoice/extend-cancelExtend', [InvoiceExtend::class, 'extendInvoiceCancel'])->name('extendInvoiceCancel');
 Route::get('/pranota/extend-{id?}', [InvoiceExtend::class, 'PranotaExtend']);
 Route::get('/invoice/extend-{id?}', [InvoiceExtend::class, 'InvoiceExtend']);

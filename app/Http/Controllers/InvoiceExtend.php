@@ -62,7 +62,7 @@ class InvoiceExtend extends Controller
         $invoiceImport = InvoiceImport::whereNot('form_id', '=' , '')->where('lunas', '=', 'Y')->get();
     
         // Retrieve invoices from Extend where 'lunas' is 'Y'
-        $extendInv = Extend::where('lunas', '=', 'Y')->get();
+        $extendInv = Extend::whereNot('lunas', '=', 'N')->get();
     
         // Merge the collections
         $mergedInvoices = $invoiceImport->merge($extendInv);
@@ -86,7 +86,7 @@ class InvoiceExtend extends Controller
         $invoiceImport = InvoiceImport::whereNot('form_id',  '=' , '')->where('lunas', '=', 'Y')->get();
     
         // Retrieve invoices from Extend where 'lunas' is 'Y'
-        $extendInv = Extend::where('lunas', '=', 'Y')->get();
+        $extendInv = Extend::whereNot('lunas', '=', 'N')->get();
     
         // Merge the collections
         $mergedInvoices = $invoiceImport->merge($extendInv);
@@ -552,7 +552,7 @@ class InvoiceExtend extends Controller
 
         $invoice = Extend::where('id', $id)->first();
         if ($invoice->inv_no == null) {
-            $invoiceNo = $this->getNextInvoiceExtend();
+            $invoiceNo ='DS-' . $this->getNextInvoiceExtend();
         }else {
           $invoiceNo = $invoice->inv_no;
         }
@@ -610,7 +610,7 @@ class InvoiceExtend extends Controller
 
         $invoice = Extend::where('id', $id)->first();
         if ($invoice->inv_no == null) {
-                $invoiceNo = $this->getNextInvoiceExtend();
+                $invoiceNo = 'DS-' . $this->getNextInvoiceExtend();
        }else {
          $invoiceNo = $invoice->inv_no;
        }
