@@ -80,6 +80,7 @@ class InvoiceImport extends Model
 
         'extend',
         'total',
+        'admin',
         'pajak',
         'grand_total',
         'order_by',
@@ -97,5 +98,15 @@ class InvoiceImport extends Model
     public function customer()
     {
         return $this->belongsTo(Customer::class, 'cust_id', 'id');
+    }
+    
+    public function Form()
+    {
+        return $this->belongsTo(InvoiceForm::class, 'form_id', 'id');
+    }
+
+    public function service()
+    {
+        return $this->belongsTo(OrderService::class, 'os_id', 'id');
     }
 }

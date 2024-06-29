@@ -25,6 +25,8 @@ use App\Models\JobExtend;
 use App\Models\ExtendDetail as Detail;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ReportExtend;
+use App\Exports\ReportInvoice;
+
 
 class InvoiceExtend extends Controller
 {
@@ -710,7 +712,7 @@ class InvoiceExtend extends Controller
         date_default_timezone_set('Asia/Jakarta');
         $data['now'] = Carbon::now();
         $data['formattedDate'] = $data['now']->format('l, d-m-Y');
-        $data['job'] = JobExtend::where('inv_id', $id)->get();
+        $data['job'] = JobExtend::where('inv_id', $id)->paginate(10);
         $data['cont'] = Item::get();
         foreach ($data['job'] as $jb) {
             foreach ($data['cont'] as $ct) {
@@ -884,6 +886,26 @@ public function ReportExcel(Request $request)
             'success' => true,
             'message' => 'Invoice Berhasil di Cancel!',
         ]);
+    }
+
+    public function ReportExcelAll(Request $request)
+    {
+        $startDate = $request->start;
+        $endDate = $request->end;
+        $invoiceQuery = Extend::whereDate('order_at', '>=', $startDate)
+            ->whereDate('order_at', '<=', $endDate);
+    
+        // Cek apakah checkbox 'inv_type' ada dalam request dan tidak kosong
+        if ($request->has('inv_type') && !empty($request->inv_type)) {
+            // Tambahkan filter berdasarkan 'inv_type'
+            $invoiceQuery->whereIn('inv_type', $request->inv_type);
+        }
+    
+        $invoice = $invoiceQuery->orderBy('order_at', 'asc')->get();
+    
+        $fileName = 'ReportInvoiceExtend-' . $startDate . '-' . $endDate . '.xlsx';
+
+      return Excel::download(new ReportInvoice($invoice), $fileName);
     }
 }
 

@@ -969,9 +969,12 @@ Route::get('/laporan-batalMuat', [BatalMuatController::class, 'ReportPrint'])->n
 
 // Report Invoice
 Route::get('/invoice/report-import', [ImportController::class, 'ReportExcel'])->name('report-invoice-import');
+Route::get('/invoice/report-importAll', [ImportController::class, 'ReportImpiortAll'])->name('report-invoice-import-All');
 Route::get('/invoice/report-export', [InvoiceExportController::class, 'ReportExcel'])->name('report-invoice-export');
 
 Route::get('/invoice/report-extend', [InvoiceExtend::class, 'ReportExcel'])->name('report-invoice-extend');
+Route::get('/invoice/report-extend-all', [InvoiceExtend::class, 'ReportExcelAll'])->name('report-invoice-extend-All');
+Route::get('/invoice/report-export-all', [InvoiceExportController::class, 'ReportExcelAll'])->name('report-invoice-export-All');
 
 
 // Extend

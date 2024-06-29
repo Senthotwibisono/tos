@@ -42,6 +42,49 @@
           </div>
         </form>
       </div>
+      <div class="card-header">
+        <h4>Report Delivery</h4>
+        <form action="{{ route('report-invoice-import-All')}}" method="GET" enctype="multipart/form-data">
+          <div class="row">
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label>Pick Start Date Range</label>
+                <input name="start" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
+                <!-- <input type="date" name="start" class="form-control" required> -->
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label>Pick End Date Range</label>
+                <input name="end" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
+                <!-- <input type="date" name="end" class="form-control" required> -->
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label for="">Invoice Type</label>
+                 <div class="row">
+                    <div class="col-6">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="inv_type[]" value="DSK" id="checkbox-dsk">
+                        <label class="form-check-label" for="checkbox-dsk">DSK</label>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="inv_type[]" value="DS" id="checkbox-ds">
+                        <label class="form-check-label" for="checkbox-ds">DS</label>
+                      </div>
+                    </div>
+                 </div>
+              </div>
+            </div>
+            <div class="col-3 mt-4">
+              <button class="btn btn-primary" type="submit"><i class=" fa fa-file"></i> Export Active Invoice to Excel</button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </section>
 

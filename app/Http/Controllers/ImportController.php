@@ -21,6 +21,7 @@ use App\Models\MTDetail;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\InvoicesExport; // Assuming you create an export class
+use App\Exports\ReportInvoice; // Assuming you create an export class
 use App\Models\ImportDetail as Detail; // Assuming you create an export class
 
 
@@ -634,6 +635,7 @@ class ImportController extends Controller
             'disc_date' => $form->disc_date,
             'do_no'=>$form->doOnline->do_no,
             'total'=>$request->totalDSK,
+            'admin'=>$request->adminDSK,
             'discount'=>$request->discountDSK,
             'pajak'=>$request->pajakDSK,
             'grand_total'=>$request->grandTotalDSK,
@@ -768,6 +770,7 @@ class ImportController extends Controller
             'disc_date' => $form->disc_date,
             'do_no'=>$form->doOnline->do_no,
             'total'=>$request->totalDS,
+            'admin'=>$request->adminDS,
             'discount'=>$request->discountDS,
             'pajak'=>$request->pajakDS,
             'grand_total'=>$request->grandTotalDS,
@@ -1117,7 +1120,7 @@ private function getNextJob($lastJobNo)
         if ($data['inv']->extend == 'Y') {
             return back()->with('error', 'Job Telah Di Perbarui, Silahkan Cek Menu Extend');
         }
-        $data['job'] = JobImport::where('inv_id', $id)->get();
+        $data['job'] = JobImport::where('inv_id', $id)->paginate(10);
         $data['cont'] = Item::get();
         foreach ($data['job'] as $jb) {
             foreach ($data['cont'] as $ct) {
@@ -1316,9 +1319,30 @@ private function getNextJob($lastJobNo)
         $invoice = $invoiceQuery->orderBy('order_date', 'asc')->get();
     
         $fileName = 'ReportInvoiceImport-' . $os . '-' . $startDate . '-' . $endDate . '.xlsx';
-        return Excel::download(new InvoicesExport($invoice), $fileName);
+
       return Excel::download(new InvoicesExport($invoice), $fileName);
     }
+
+    public function ReportImpiortAll(Request $request)
+    {
+        $startDate = $request->start;
+        $endDate = $request->end;
+        $invoiceQuery = InvoiceImport::whereDate('order_at', '>=', $startDate)
+            ->whereDate('order_at', '<=', $endDate);
+    
+        // Cek apakah checkbox 'inv_type' ada dalam request dan tidak kosong
+        if ($request->has('inv_type') && !empty($request->inv_type)) {
+            // Tambahkan filter berdasarkan 'inv_type'
+            $invoiceQuery->whereIn('inv_type', $request->inv_type);
+        }
+    
+        $invoice = $invoiceQuery->orderBy('order_at', 'asc')->get();
+    
+        $fileName = 'ReportInvoiceImport-' . $startDate . '-' . $endDate . '.xlsx';
+
+      return Excel::download(new ReportInvoice($invoice), $fileName);
+    }
+
 
     public function deliveryInvoiceCancel(Request $request)
     {

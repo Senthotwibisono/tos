@@ -60,6 +60,7 @@
                         <h4 class="text-white"> Rp. {{number_format($totalDSK, 0, ',', '.')}}</h4>
                         <input type="hidden" name="totalDSK" value="{{$totalDSK}}">
                         <h4 class="text-white"> Rp. {{number_format($adminDSK, 0, ',', '.')}}</h4>
+                        <input type="hidden" name="adminDSK" value="{{$adminDSK}}">
                         <h4 class="text-white"> Rp. {{number_format($discountDSK, 0, ',', '.')}}</h4>
                         <input type="hidden" name="discountDSK" value="{{$discountDSK}}">
                         <h4 class="text-white">Rp. {{number_format($pajakDSK, 0, ',', '.')}}</h4>

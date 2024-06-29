@@ -20,6 +20,8 @@ use App\Models\JobExport;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ReportExport;
+use App\Exports\ReportInvoice; // Assuming you create an export class
+
 
 use Auth;
 use Carbon\Carbon;
@@ -504,6 +506,7 @@ class InvoiceExportController extends Controller
             'disc_date' => $form->disc_date,
             'booking_no'=>$form->do_id,
             'total'=>$request->totalDSK,
+            'admin'=>$request->adminDSK,
             'discount'=>$request->discountDSK,
             'pajak'=>$request->pajakDSK,
             'grand_total'=>$request->grandTotalDSK,
@@ -638,6 +641,7 @@ class InvoiceExportController extends Controller
             'disc_date' => $form->disc_date,
             'booking_no'=>$form->do_id,
             'total'=>$request->totalDS,
+            'admin'=>$request->adminDS,
             'discount'=>$request->discountDS,
             'pajak'=>$request->pajakDS,
             'grand_total'=>$request->grandTotalDS,
@@ -1108,7 +1112,7 @@ class InvoiceExportController extends Controller
         $data['title'] = 'Job Number';
         $data['inv'] = InvoiceExport::where('id', $id)->first();
         $data['form'] = Form::where('id', $data['inv']->form_id)->first();
-        $data['job'] = JobExport::where('inv_id', $id)->get();
+        $data['job'] = JobExport::where('inv_id', $id)->paginate(10);
         date_default_timezone_set('Asia/Jakarta');
         $data['now'] = Carbon::now();
         $data['formattedDate'] = $data['now']->format('l, d-m-Y');
@@ -1186,6 +1190,26 @@ class InvoiceExportController extends Controller
     
         $invoice = $invoiceQuery->orderBy('order_date', 'asc')->get();        $fileName = 'ReportInvoiceExport-'.$os.'-'. $startDate . $endDate .'.xlsx';
       return Excel::download(new ReportExport($invoice), $fileName);
+    }
+
+    public function ReportExcelAll(Request $request)
+    {
+        $startDate = $request->start;
+        $endDate = $request->end;
+        $invoiceQuery = InvoiceExport::whereDate('order_at', '>=', $startDate)
+            ->whereDate('order_at', '<=', $endDate);
+    
+        // Cek apakah checkbox 'inv_type' ada dalam request dan tidak kosong
+        if ($request->has('inv_type') && !empty($request->inv_type)) {
+            // Tambahkan filter berdasarkan 'inv_type'
+            $invoiceQuery->whereIn('inv_type', $request->inv_type);
+        }
+    
+        $invoice = $invoiceQuery->orderBy('order_at', 'asc')->get();
+    
+        $fileName = 'ReportInvoiceExport-' . $startDate . '-' . $endDate . '.xlsx';
+
+      return Excel::download(new ReportInvoice($invoice), $fileName);
     }
 
     public function recivingInvoiceCancel(Request $request)

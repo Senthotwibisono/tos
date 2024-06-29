@@ -239,5 +239,7 @@
 @endforeach
 </body>
 @endforeach
-
+<div class="">
+{{ $job->links('pagination::bootstrap-5') }}
+</div>
 </html>

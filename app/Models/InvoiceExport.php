@@ -84,6 +84,7 @@ class InvoiceExport extends Model
         'paket_stuffing_42',
         'extend',
         'total',
+        'admin',
         'discount',
         'pajak',
         'grand_total',
