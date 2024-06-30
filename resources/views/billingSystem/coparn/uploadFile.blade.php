@@ -86,7 +86,7 @@
             <div class="card-body">
               <div class="row">
                 <div class="col-12">
-                  <input id="storecoparn" type="file" name="file" class="dropify" data-height="270" data-max-file-size="3M" data-allowed-file-extensions="xls" />
+                  <input id="storecoparn" type="file" name="file" class="dropify" data-height="270" data-max-file-size="3M" data-allowed-file-extensions="xls xlsx" />
                 </div>
               </div>
               <div class="row mt-3">

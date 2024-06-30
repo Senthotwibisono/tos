@@ -121,7 +121,11 @@ class CoparnController extends Controller
 
     public function storeData(Request $request)
     {
-        $path = $request->file('file');
+        $file = $request->file('file');
+    // Determine the file extension
+    $extension = $file->getClientOriginalExtension();
+    // Get the real path of the uploaded file
+    $path = $file->getRealPath();
         $vesselVoyage = VVoyage::where('ves_id', $request->ves_id)->first();
         $ves_name = $vesselVoyage->ves_name;
         $voy_no = $vesselVoyage->voy_out;
@@ -137,7 +141,11 @@ class CoparnController extends Controller
         );
     
     
-            Excel::import($import, $path->getRealPath(),  null, 'Xls');
+        if (in_array($extension, ['xls', 'xlsx'])) {
+            Excel::import($import, $path, null, ucfirst($extension));
+        } else {
+            return redirect()->back()->with('error', 'Invalid file type.');
+        }
 
         return redirect('/billing/coparn')->with('success', 'Data berhasil diimpor.');
     }
