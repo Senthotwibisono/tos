@@ -40,7 +40,7 @@
                     </svg> Confirmed</button>
                     </div>
                     <div class="col-sm-3">
-                    <button class="btn icon icon-left btn-warning" data-bs-toggle="modal" data-bs-target="#">
+                    <button class="btn icon icon-left btn-warning" data-bs-toggle="modal" data-bs-target="#ctrMT">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit">
                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                         <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
@@ -532,11 +532,161 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i><span class="d-none d-sm-block">Close</span></button>
-            <button type="submit" class="btn btn-success ml-1 updateToExpMty"><i class="bx bx-check d-block d-sm-none"></i><span class="d-none d-sm-block">Confirm</span></button>
+            <button type="button" class="btn btn-success ml-1 updateToExpMty"><i class="bx bx-check d-block d-sm-none"></i><span class="d-none d-sm-block">Confirm</span></button>
           </div>
         </div>
       </div>
     </div>
+
+
+<div class="modal fade text-left" id="ctrMT" role="dialog" aria-labelledby="myModalLabel110" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title white" id="myModalLabel110">Placement Container MT</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <form action="/placementMT-Relokasi" method="post">
+                @csrf
+                <div class="modal-body">
+                    <div class="form-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="container_number">Choose Container Number</label>
+                                    <select class="form-control choices" name="container_key" style="font-size: 16px; width: 75%;">
+                                        <option disabled selected value>Select a container</option>
+                                        @foreach($containerMT as $item)
+                                            <option value="{{ $item->container_key }}">
+                                                {{ $item->container_no }} Ex.Kpl; {{ $item->ves_code }}-{{ $item->voy_no }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="alat">Alat</label>
+                                    <select class="choices form-select" name="alat" required>
+                                        <option value="">Pilih Alata</option>
+                                        @foreach($alat as $alt)
+                                            <option value="{{ $alt->id }}">{{ $alt->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="operator">Op Alat</label>
+                                    <select class="choices form-select" name="operator" required>
+                                        <option disabled selected value>Pilih Satu!</option>
+                                        @foreach($operator as $opr)
+                                            <option value="{{ $opr->id }}">{{ $opr->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="truck">Truck</label>
+                                            <select class="choices form-select" name="truck" required>
+                                                <option disabled selected value>Pilih Satu!</option>
+                                                @foreach($truck as $trc)
+                                                    <option value="{{ $trc->id }}">{{ $trc->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="supir">Supir</label>
+                                            <select name="supir" class="choices form-select" required>
+                                                <option disabled selected value>Pilih Satu!</option>
+                                                @foreach($supir as $spr)
+                                                    <option value="{{ $spr->id }}">{{ $spr->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h4>Yard Planning</h4>
+                            <div class="col-12" style="border:1px solid blue;">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="yard_block">Blok</label>
+                                            <select class="choices form-select" name="yard_block" required>
+                                                <option value="">-</option>
+                                                @foreach($yard_block as $block)
+                                                    <option value="{{ $block }}">{{ $block }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="yard_slot">Slot</label>
+                                            <select class="choices form-select" name="yard_slot" required>
+                                                <option value="">-</option>
+                                                @foreach($yard_slot as $slot)
+                                                    <option value="{{ $slot }}">{{ $slot }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="yard_row">Row</label>
+                                            <select class="choices form-select" name="yard_row" required>
+                                                <option value="">-</option>
+                                                @foreach($yard_row as $row)
+                                                    <option value="{{ $row }}">{{ $row }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="yard_tier">Tier</label>
+                                            <select class="choices form-select" name="yard_tier" required>
+                                                <option value="">-</option>
+                                                @foreach($yard_tier as $tier)
+                                                    <option value="{{ $tier }}">{{ $tier }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label for="user_id">Planner Place</label>
+                                    <input type="text" class="form-control" value="{{ Auth::user()->name }}" name="user_id" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                        <i class="bx bx-x d-block d-sm-none"></i>
+                        <span class="d-none d-sm-block">Close</span>
+                    </button>
+                    <button type="submit" class="btn btn-warning">
+                        <span class="d-none d-sm-block">Confirm</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
 
 @endsection
 @section('custom_js')

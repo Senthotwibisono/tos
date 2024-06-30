@@ -453,6 +453,7 @@ Route::get('/stuffing/android', [Stuffing::class, 'android']);
 
 Route::get('/yard/placement', [PlacementController::class, 'index']);
 Route::post('/placement', [PlacementController::class, 'place']);
+Route::post('/placementMT-Relokasi', [PlacementController::class, 'placeRelokasiMT']);
 Route::post('/dapet-tipe', [PlacementController::class, 'get_tipe']);
 Route::post('/container-tipe', [PlacementController::class, 'tipe_container']);
 Route::post('/placement/changedToMty-{container_key}', [PlacementController::class, 'change']);

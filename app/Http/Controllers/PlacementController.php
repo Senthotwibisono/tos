@@ -302,6 +302,108 @@ class PlacementController extends Controller
         }
     }
 
+    public function placeRelokasiMT(Request $request)
+{
+    $container_key = $request->container_key;
+    $item = Item::where('container_key', $container_key)->first();
+   
+    $yard_rowtier = Yard::where('yard_block', $request->yard_block)
+        ->where('yard_slot', $request->yard_slot)
+        ->where('yard_row', $request->yard_row)
+        ->where('yard_tier', $request->yard_tier)
+        ->first();
+
+        if ($yard_rowtier->container_key != null) {
+            return redirect()->back()->with('error', 'Yard Sudah Terisi!');
+        }
+    
+    if (empty($yard_rowtier->container_key)) {
+        $id_alat = $request->alat;
+        $alat = MasterAlat::where('id', $id_alat)->first();
+        $opr = Operator::where('id', $request->operator)->first();
+        $truck = MasterAlat::where('id', $request->truck)->first();
+        $supir = Operator::where('id', $request->supir)->first();
+
+        if ($item->ctr_intern_status == '14') {
+            $status = '04';
+            $keterangan = 'MT Balik';
+        }else {
+            $status = '03';
+            $keterangan = 'RELOKASI TO PLC';
+        }
+       
+
+        $item->update([
+            'yard_block' => $request->yard_block,
+            'yard_slot' => $request->yard_slot,
+            'yard_row' => $request->yard_row,
+            'yard_tier' => $request->yard_tier,
+            'ctr_intern_status' => $status,
+            'wharf_yard_oa' => $opr->name,
+            'alat_yard' => $alat->name,
+            'ht_no' => $truck->name ?? $item->ht_no ?? null,
+            'ht_driver' => $supir->name ?? $item->ht_driver ?? null,
+        ]);
+
+        ActAlat::create([
+            'id_alat' => $request->alat,
+            'category' => $alat->category,
+            'nama_alat' => $alat->name,
+            'operator_id' => $request->operator,
+            'operator' => $opr->name,
+            'container_key' => $request->container_key,
+            'container_no' => $item->container_no,
+            'activity' => 'PLC',
+        ]);
+
+        ActOper::create([
+            'alat_id' => $request->alat,
+            'alat_category' => $alat->category,
+            'alat_name' => $alat->name,
+            'operator_id' => $request->operator,
+            'operator_name' => $opr->name,
+            'container_key' => $item->container_key,
+            'container_no' => $item->container_no,
+            'ves_id' => $item->ves_id,
+            'ves_name' => $item->ves_name,
+            'voy_no' => $item->voy_no,
+            'activity' => 'PLC',
+        ]);
+
+        if (!empty($request->truck)) {
+            ActAlat::create([
+                'id_alat' => $request->truck,
+                'category' => $truck->category,
+                'nama_alat' => $truck->name,
+                'operator_id' => $request->supir,
+                'operator' => $supir->name,
+                'container_key' => $request->container_key,
+                'container_no' => $item->container_no,
+                'activity' => $keterangan,
+            ]);
+
+            ActOper::create([
+                'alat_id' => $request->truck,
+                'alat_category' => $truck->category,
+                'alat_name' => $truck->name,
+                'operator_id' => $request->supir,
+                'operator_name' => $supir->name,
+                'container_key' => $item->container_key,
+                'container_no' => $item->container_no,
+                'ves_id' => $item->ves_id,
+                'ves_name' => $item->ves_name,
+                'voy_no' => $item->voy_no,
+                'activity' => $keterangan,
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Data berhasil di update!');
+    } else {
+        return redirect()->back()->with('error', 'Terjadi kesalahan!');
+    }
+}
+
+
     public function change(Request $request)
     {
          // return response()->json(['container_no' => 'data tidak ditemukan', 'job' => 'data tidak ditemukan', 'invoice' => 'data tidak ditemukan']);
