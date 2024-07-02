@@ -45,7 +45,7 @@
 
       <div class="card-header">
       <h4>Report Delivery</h4>
-        <form action="{{ route('report-invoice-import-All')}}" method="GET" enctype="multipart/form-data">
+        <form action="{{ route('report-invoice-extend-All')}}" method="GET" enctype="multipart/form-data">
           <div class="row">
             <div class="col-sm-3">
               <div class="form-group">
@@ -67,14 +67,8 @@
                  <div class="row">
                     <div class="col-6">
                       <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" name="inv_type[]" value="DSK" id="checkbox-dsk">
-                        <label class="form-check-label" for="checkbox-dsk">DSK</label>
-                      </div>
-                    </div>
-                    <div class="col-6">
-                      <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" name="inv_type[]" value="DS" id="checkbox-ds">
-                        <label class="form-check-label" for="checkbox-ds">DS</label>
+                        <input class="form-check-input" type="checkbox" name="inv_type" value="XTD" id="checkbox-dsk" checked>
+                        <label class="form-check-label" for="checkbox-dsk">DS-P</label>
                       </div>
                     </div>
                  </div>

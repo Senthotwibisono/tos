@@ -61,7 +61,7 @@ class InvoiceExtend extends Controller
 
         $tumpuk = ImportDetail::where('count_by', 'T')->get();
         $invIds = $tumpuk->pluck('inv_id');
-        $invoiceImport = InvoiceImport::whereNot('form_id', '=' , '')->where('lunas', '=', 'Y')->get();
+        $invoiceImport = InvoiceImport::whereNot('form_id', '=' , '')->whereNot('lunas', '=', 'N')->get();
     
         // Retrieve invoices from Extend where 'lunas' is 'Y'
         $extendInv = Extend::whereNot('lunas', '=', 'N')->get();
@@ -85,7 +85,7 @@ class InvoiceExtend extends Controller
 
         $tumpuk = ImportDetail::where('count_by', 'T')->get();
         $invIds = $tumpuk->pluck('inv_id');
-        $invoiceImport = InvoiceImport::whereNot('form_id',  '=' , '')->where('lunas', '=', 'Y')->get();
+        $invoiceImport = InvoiceImport::whereNot('form_id',  '=' , '')->whereNot('lunas', '=', 'N')->get();
     
         // Retrieve invoices from Extend where 'lunas' is 'Y'
         $extendInv = Extend::whereNot('lunas', '=', 'N')->get();
@@ -895,13 +895,11 @@ public function ReportExcel(Request $request)
         $invoiceQuery = Extend::whereDate('order_at', '>=', $startDate)
             ->whereDate('order_at', '<=', $endDate);
     
-        // Cek apakah checkbox 'inv_type' ada dalam request dan tidak kosong
-        if ($request->has('inv_type') && !empty($request->inv_type)) {
-            // Tambahkan filter berdasarkan 'inv_type'
-            $invoiceQuery->whereIn('inv_type', $request->inv_type);
-        }
+        // if ($request->has('inv_type') && !empty($request->inv_type)) {
+        //     $invoiceQuery->where('inv_type', $request->inv_type);
+        // }
     
-        $invoice = $invoiceQuery->orderBy('order_at', 'asc')->get();
+        $invoice = $invoiceQuery->whereNot('lunas', '=', 'N')->orderBy('order_at', 'asc')->get();
     
         $fileName = 'ReportInvoiceExtend-' . $startDate . '-' . $endDate . '.xlsx';
 

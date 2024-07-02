@@ -1120,7 +1120,7 @@ private function getNextJob($lastJobNo)
         if ($data['inv']->extend == 'Y') {
             return back()->with('error', 'Job Telah Di Perbarui, Silahkan Cek Menu Extend');
         }
-        $data['job'] = JobImport::where('inv_id', $id)->paginate(10);
+        $data['job'] = JobImport::where('inv_id', $id)->paginate(5);
         $data['cont'] = Item::get();
         foreach ($data['job'] as $jb) {
             foreach ($data['cont'] as $ct) {
@@ -1336,7 +1336,7 @@ private function getNextJob($lastJobNo)
             $invoiceQuery->whereIn('inv_type', $request->inv_type);
         }
     
-        $invoice = $invoiceQuery->orderBy('order_at', 'asc')->get();
+        $invoice = $invoiceQuery->whereNot('lunas', '=', 'N')->orderBy('order_at', 'asc')->get();
     
         $fileName = 'ReportInvoiceImport-' . $startDate . '-' . $endDate . '.xlsx';
 

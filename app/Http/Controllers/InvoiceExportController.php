@@ -237,7 +237,7 @@ class InvoiceExportController extends Controller
                                     'ctr_status' => $status,
                                     'count_by' => 'T',
                                     'tarif' => $tarifDetail->tarif,
-                                    'jumlahHari' => $jumlahHari,
+                                    'jumlahHari' => 1,
                                     'containerCount' => $containerCount,
                                     'keterangan' => $tarifDetail->master_item_name,
                                     'harga' => $hargaT,
@@ -297,7 +297,7 @@ class InvoiceExportController extends Controller
                                     'ctr_status' => $status,
                                     'count_by' => 'T',
                                     'tarif' => $tarifDetail->tarif,
-                                    'jumlahHari' => $jumlahHari,
+                                    'jumlahHari' => 1,
                                     'containerCount' => $containerCount,
                                     'keterangan' => $tarifDetail->master_item_name,
                                     'harga' => $hargaT,
@@ -574,7 +574,7 @@ class InvoiceExportController extends Controller
                              'cust_id'=>$form->cust_id,
                              'cust_name'=>$form->customer->name,
                              'os_id'=>$form->os_id,
-                             'jumlah_hari'=>$jumlahHari,
+                             'jumlah_hari'=>1,
                              'master_item_id'=>$service->master_item_id,
                              'master_item_name'=>$service->master_item_name,
                              'kode'=>$kode,
@@ -710,7 +710,7 @@ class InvoiceExportController extends Controller
                              'cust_id'=>$form->cust_id,
                              'cust_name'=>$form->customer->name,
                              'os_id'=>$form->os_id,
-                             'jumlah_hari'=>$jumlahHari,
+                             'jumlah_hari'=>1,
                              'master_item_id'=>$service->master_item_id,
                              'master_item_name'=>$service->master_item_name,
                              'kode'=>$kode,
@@ -947,7 +947,7 @@ class InvoiceExportController extends Controller
 
         $invoice = InvoiceExport::where('id', $id)->first();
         if ($invoice->inv_no == null) {
-            if ($invoice->inv_type == 'DSK' ) {
+            if ($invoice->inv_type == 'OSK' ) {
                 $invoiceNo = $this->getNextInvoiceDSK();
             }else {
                 $invoiceNo = $this->getNextInvoiceDS();
@@ -1010,7 +1010,7 @@ class InvoiceExportController extends Controller
 
         $invoice = InvoiceExport::where('id', $id)->first();
         if ($invoice->inv_no == null) {
-            if ($invoice->inv_type == 'DSK' ) {
+            if ($invoice->inv_type == 'OSK' ) {
                 $invoiceNo = $this->getNextInvoiceDSK();
             }else {
                 $invoiceNo = $this->getNextInvoiceDS();
@@ -1112,7 +1112,7 @@ class InvoiceExportController extends Controller
         $data['title'] = 'Job Number';
         $data['inv'] = InvoiceExport::where('id', $id)->first();
         $data['form'] = Form::where('id', $data['inv']->form_id)->first();
-        $data['job'] = JobExport::where('inv_id', $id)->paginate(10);
+        $data['job'] = JobExport::where('inv_id', $id)->paginate(5);
         date_default_timezone_set('Asia/Jakarta');
         $data['now'] = Carbon::now();
         $data['formattedDate'] = $data['now']->format('l, d-m-Y');
@@ -1205,7 +1205,7 @@ class InvoiceExportController extends Controller
             $invoiceQuery->whereIn('inv_type', $request->inv_type);
         }
     
-        $invoice = $invoiceQuery->orderBy('order_at', 'asc')->get();
+        $invoice = $invoiceQuery->whereNot('lunas', '=', 'N')->orderBy('inv_no', 'asc')->get();
     
         $fileName = 'ReportInvoiceExport-' . $startDate . '-' . $endDate . '.xlsx';
 

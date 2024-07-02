@@ -154,6 +154,14 @@
                   Nomor Rekening : <strong>1460002771975</strong><br>
                   <!-- h.elaine@gmail.com<br> -->
                 </address>
+                <address>
+                  <strong>Veesel</strong><br>
+                  Ves Name : <strong>{{$form->Kapal->ves_name}}</strong> <br>
+                  Voy No :  <strong>{{$form->Kapal->voy_in}}</strong><br>
+                  Arrival Date : <strong>{{$form->Kapal->arrival_date}}</strong><br>
+                  Departure Date : <strong>{{$form->Kapal->deparature_date}}</strong><br>
+                  <!-- h.elaine@gmail.com<br> -->
+                </address>
               </div>
 
             </div>
