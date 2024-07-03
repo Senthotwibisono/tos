@@ -234,6 +234,7 @@ class StevadooringController extends Controller
     public function RBM_Detail($id)
     {
         $rbm = RBM::where('id', $id)->first();
+        $data['rbm'] = $rbm;
         $ves = VVoyage::where('ves_id', $rbm->ves_id)->first();
         
         $data['title'] = "Realisasi Bonglar Muat " . $ves->ves_name . " " . $ves->voy_out;

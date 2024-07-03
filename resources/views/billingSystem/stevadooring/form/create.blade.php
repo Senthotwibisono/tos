@@ -61,7 +61,7 @@
                 <div class="col-3">
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" name="tambat_tongkak" id="flexSwitchCheckDefault">
-                        <label class="form-check-label" for="flexSwitchCheckDefault">Jasa Tambat Tongkak</label>
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Jasa Tambat Tongkakng</label>
                     </div>
                 </div>
                 <div class="col-3">

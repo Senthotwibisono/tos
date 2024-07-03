@@ -76,7 +76,7 @@
             <div class="row">
                 <h4>Container Info</h4>
 
-                <div class="col-6">
+                <!-- <div class="col-6">
                     <div class="card">
                         <div class="card-header">
                             Container Import
@@ -86,13 +86,13 @@
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="">20 Empty</label>
-                                        <input type="text"  class="form-control" value="{{$ctr_20_mty_import}}" readonly>
+                                        <input type="text"  class="form-control" value="{{$rbm->ctr_20_mty_import}}" >
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="">20 Full</label>
-                                        <input type="text"  class="form-control" value="{{$ctr_20_fcl_import}}" readonly>
+                                        <input type="text"  class="form-control" value="{{$rbm->ctr_20_fcl_import}}" >
                                     </div>
                                 </div>
                             </div>
@@ -100,13 +100,13 @@
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="">21 Empty</label>
-                                        <input type="text"  class="form-control" value="{{$ctr_21_mty_import}}" readonly>
+                                        <input type="text"  class="form-control" value="{{$rbm->ctr_21_mty_import}}" >
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="">21 Full</label>
-                                        <input type="text"  class="form-control" value="{{$ctr_21_fcl_import}}" readonly>
+                                        <input type="text"  class="form-control" value="{{$rbm->ctr_21_fcl_import}}" >
                                     </div>
                                 </div>
                             </div>
@@ -114,13 +114,13 @@
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="">40 Empty</label>
-                                        <input type="text"  class="form-control" value="{{$ctr_40_mty_import}}" readonly>
+                                        <input type="text"  class="form-control" value="{{$rbm->ctr_40_mty_import}}" >
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="">40 Full</label>
-                                        <input type="text"  class="form-control" value="{{$ctr_40_fcl_import}}" readonly>
+                                        <input type="text"  class="form-control" value="{{$rbm->ctr_40_fcl_import}}" >
                                     </div>
                                 </div>
                             </div>
@@ -128,13 +128,13 @@
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="">42 Empty</label>
-                                        <input type="text"  class="form-control" value="{{$ctr_42_mty_import}}" readonly>
+                                        <input type="text"  class="form-control" value="{{$rbm->ctr_42_mty_import}}" >
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="">42 Full</label>
-                                        <input type="text"  class="form-control" value="{{$ctr_42_fcl_import}}" readonly>
+                                        <input type="text"  class="form-control" value="{{$rbm->ctr_42_fcl_import}}" >
                                     </div>
                                 </div>
                             </div>
@@ -152,13 +152,13 @@
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="">20 Empty</label>
-                                        <input type="text"  class="form-control" value="{{$ctr_20_mty_export}}" readonly>
+                                        <input type="text"  class="form-control" value="{{$rbm->ctr_20_mty_export}}" >
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="">20 Full</label>
-                                        <input type="text"  class="form-control" value="{{$ctr_20_fcl_export}}" readonly>
+                                        <input type="text"  class="form-control" value="{{$rbm->ctr_20_fcl_export}}" >
                                     </div>
                                 </div>
                             </div>
@@ -166,13 +166,13 @@
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="">21 Empty</label>
-                                        <input type="text"  class="form-control" value="{{$ctr_21_mty_export}}" readonly>
+                                        <input type="text"  class="form-control" value="{{$rbm->ctr_21_mty_export}}" >
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="">21 Full</label>
-                                        <input type="text"  class="form-control" value="{{$ctr_21_fcl_export}}" readonly>
+                                        <input type="text"  class="form-control" value="{{$rbm->ctr_21_fcl_export}}" >
                                     </div>
                                 </div>
                             </div>
@@ -180,13 +180,13 @@
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="">40 Empty</label>
-                                        <input type="text"  class="form-control" value="{{$ctr_40_mty_export}}" readonly>
+                                        <input type="text"  class="form-control" value="{{$rbm->ctr_40_mty_export}}" >
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="">40 Full</label>
-                                        <input type="text"  class="form-control" value="{{$ctr_40_fcl_export}}" readonly>
+                                        <input type="text"  class="form-control" value="{{$rbm->ctr_40_fcl_export}}" >
                                     </div>
                                 </div>
                             </div>
@@ -194,19 +194,19 @@
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="">42 Empty</label>
-                                        <input type="text"  class="form-control" value="{{$ctr_42_mty_export}}" readonly>
+                                        <input type="text"  class="form-control" value="{{$rbm->ctr_42_mty_export}}" >
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="">42 Full</label>
-                                        <input type="text"  class="form-control" value="{{$ctr_42_fcl_export}}" readonly>
+                                        <input type="text"  class="form-control" value="{{$rbm->ctr_42_fcl_export}}" >
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
                  <div class="card-footer">
                      <p>Total</p>
@@ -215,25 +215,25 @@
                          <div class="col-3">
                              <div class="form-group">
                                  <label for="">20</label>
-                                 <input type="text" class="form-control" name="ctr_20_fcl" value="{{$ctr_20_fcl}}" readonly>
+                                 <input type="text" class="form-control" name="ctr_20_fcl" value="{{$rbm->ctr_20_fcl}}" >
                              </div>
                          </div>
                          <div class="col-3">
                              <div class="form-group">
                                  <label for="">21</label>
-                                 <input type="text" class="form-control" name="ctr_21_fcl" value="{{$ctr_21_fcl}}" readonly>
+                                 <input type="text" class="form-control" name="ctr_21_fcl" value="{{$rbm->ctr_21_fcl}}" >
                              </div>
                          </div>
                          <div class="col-3">
                              <div class="form-group">
                                  <label for="">40</label>
-                                 <input type="text" class="form-control" name="ctr_40_fcl" value="{{$ctr_40_fcl}}" readonly>
+                                 <input type="text" class="form-control" name="ctr_40_fcl" value="{{$rbm->ctr_40_fcl}}" >
                              </div>
                          </div>
                          <div class="col-3">
                              <div class="form-group">
                                  <label for="">42</label>
-                                 <input type="text" class="form-control" name="ctr_42_fcl" value="{{$ctr_42_fcl}}" readonly>
+                                 <input type="text" class="form-control" name="ctr_42_fcl" value="{{$rbm->ctr_42_fcl}}" >
                              </div>
                          </div>
                      </div>
@@ -242,25 +242,25 @@
                          <div class="col-3">
                              <div class="form-group">
                                  <label for="">20</label>
-                                 <input type="text" class="form-control" name="ctr_20_mty" value="{{$ctr_20_mty}}" readonly>
+                                 <input type="text" class="form-control" name="ctr_20_mty" value="{{$rbm->ctr_20_mty}}" >
                              </div>
                          </div>
                          <div class="col-3">
                              <div class="form-group">
                                  <label for="">21</label>
-                                 <input type="text" class="form-control" name="ctr_21_mty" value="{{$ctr_21_mty}}" readonly>
+                                 <input type="text" class="form-control" name="ctr_21_mty" value="{{$rbm->ctr_21_mty}}" >
                              </div>
                          </div>
                          <div class="col-3">
                              <div class="form-group">
                                  <label for="">40</label>
-                                 <input type="text" class="form-control" name="ctr_40_mty" value="{{$ctr_40_mty}}" readonly>
+                                 <input type="text" class="form-control" name="ctr_40_mty" value="{{$rbm->ctr_40_mty}}" >
                              </div>
                          </div>
                          <div class="col-3">
                              <div class="form-group">
                                  <label for="">42</label>
-                                 <input type="text" class="form-control" name="ctr_42_mty" value="{{$ctr_42_mty}}" readonly>
+                                 <input type="text" class="form-control" name="ctr_42_mty" value="{{$rbm->ctr_42_mty}}" >
                              </div>
                          </div>
                      </div>
@@ -283,49 +283,49 @@
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">20 Full</label>
-                                                <input type="text" class="form-control" name="shift_20_fcl_d_l" value="{{$shift_20_fcl_d_l}}" readonly>
+                                                <input type="text" class="form-control" name="shift_20_fcl_d_l" value="{{$rbm->shift_20_fcl_d_l}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">20 Empty</label>
-                                                <input type="text" class="form-control" name="shift_20_mty_d_l" value="{{$shift_20_mty_d_l}}" readonly>
+                                                <input type="text" class="form-control" name="shift_20_mty_d_l" value="{{$rbm->shift_20_mty_d_l}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">21 Full</label>
-                                                <input type="text" class="form-control" name="shift_21_fcl_d_l" value="{{$shift_21_fcl_d_l}}" readonly>
+                                                <input type="text" class="form-control" name="shift_21_fcl_d_l" value="{{$rbm->shift_21_fcl_d_l}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">21 Empty</label>
-                                                <input type="text" class="form-control" name="shift_21_mty_d_l" value="{{$shift_21_mty_d_l}}" readonly>
+                                                <input type="text" class="form-control" name="shift_21_mty_d_l" value="{{$rbm->shift_21_mty_d_l}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">40 Full</label>
-                                                <input type="text" class="form-control" name="shift_40_fcl_d_l" value="{{$shift_40_fcl_d_l}}" readonly>
+                                                <input type="text" class="form-control" name="shift_40_fcl_d_l" value="{{$rbm->shift_40_fcl_d_l}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">40 Empty</label>
-                                                <input type="text" class="form-control" name="shift_40_mty_d_l" value="{{$shift_40_mty_d_l}}" readonly>
+                                                <input type="text" class="form-control" name="shift_40_mty_d_l" value="{{$rbm->shift_40_mty_d_l}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">42 Full</label>
-                                                <input type="text" class="form-control" name="shift_42_fcl_d_l" value="{{$shift_42_fcl_d_l}}" readonly>
+                                                <input type="text" class="form-control" name="shift_42_fcl_d_l" value="{{$rbm->shift_42_fcl_d_l}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">42 Empty</label>
-                                                <input type="text" class="form-control" name="shift_42_mty_d_l" value="{{$shift_42_mty_d_l}}" readonly>
+                                                <input type="text" class="form-control" name="shift_42_mty_d_l" value="{{$rbm->shift_42_mty_d_l}}" >
                                             </div>
                                         </div>
                                     </div>
@@ -337,49 +337,49 @@
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">20 Full</label>
-                                                <input type="text" class="form-control" name="shift_20_fcl_d" value="{{$shift_20_fcl_d}}" readonly>
+                                                <input type="text" class="form-control" name="shift_20_fcl_d" value="{{$rbm->shift_20_fcl_d}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">20 Empty</label>
-                                                <input type="text" class="form-control" name="shift_20_mty_d" value="{{$shift_20_mty_d}}" readonly>
+                                                <input type="text" class="form-control" name="shift_20_mty_d" value="{{$rbm->shift_20_mty_d}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">21 Full</label>
-                                                <input type="text" class="form-control" name="shift_21_fcl_d" value="{{$shift_21_fcl_d}}" readonly>
+                                                <input type="text" class="form-control" name="shift_21_fcl_d" value="{{$rbm->shift_21_fcl_d}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">21 Empty</label>
-                                                <input type="text" class="form-control" name="shift_21_mty_d" value="{{$shift_21_mty_d}}" readonly>
+                                                <input type="text" class="form-control" name="shift_21_mty_d" value="{{$rbm->shift_21_mty_d}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">40 Full</label>
-                                                <input type="text" class="form-control" name="shift_40_fcl_d" value="{{$shift_40_fcl_d}}" readonly>
+                                                <input type="text" class="form-control" name="shift_40_fcl_d" value="{{$rbm->shift_40_fcl_d}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">40 Empty</label>
-                                                <input type="text" class="form-control" name="shift_40_mty_d" value="{{$shift_40_mty_d}}" readonly>
+                                                <input type="text" class="form-control" name="shift_40_mty_d" value="{{$rbm->shift_40_mty_d}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">42 Full</label>
-                                                <input type="text" class="form-control" name="shift_42_fcl_d" value="{{$shift_42_fcl_d}}" readonly>
+                                                <input type="text" class="form-control" name="shift_42_fcl_d" value="{{$rbm->shift_42_fcl_d}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">42 Empty</label>
-                                                <input type="text" class="form-control" name="shift_42_mty_d" value="{{$shift_42_mty_d}}" readonly>
+                                                <input type="text" class="form-control" name="shift_42_mty_d" value="{{$rbm->shift_42_mty_d}}" >
                                             </div>
                                         </div>
                                     </div>
@@ -404,49 +404,49 @@
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">20 Full</label>
-                                                <input type="text" class="form-control" name="shift_20_fcl_k_l" value="{{$shift_20_fcl_k_l}}" readonly>
+                                                <input type="text" class="form-control" name="shift_20_fcl_k_l" value="{{$rbm->shift_20_fcl_k_l}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">20 Empty</label>
-                                                <input type="text" class="form-control" name="shift_20_mty_k_l" value="{{$shift_20_mty_k_l}}" readonly>
+                                                <input type="text" class="form-control" name="shift_20_mty_k_l" value="{{$rbm->shift_20_mty_k_l}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">21 Full</label>
-                                                <input type="text" class="form-control" name="shift_21_fcl_k_l" value="{{$shift_21_fcl_k_l}}" readonly>
+                                                <input type="text" class="form-control" name="shift_21_fcl_k_l" value="{{$rbm->shift_21_fcl_k_l}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">21 Empty</label>
-                                                <input type="text" class="form-control" name="shift_21_mty_k_l" value="{{$shift_21_mty_k_l}}" readonly>
+                                                <input type="text" class="form-control" name="shift_21_mty_k_l" value="{{$rbm->shift_21_mty_k_l}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">40 Full</label>
-                                                <input type="text" class="form-control" name="shift_40_fcl_k_l" value="{{$shift_40_fcl_k_l}}" readonly>
+                                                <input type="text" class="form-control" name="shift_40_fcl_k_l" value="{{$rbm->shift_40_fcl_k_l}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">40 Empty</label>
-                                                <input type="text" class="form-control" name="shift_40_mty_k_l" value="{{$shift_40_mty_k_l}}" readonly>
+                                                <input type="text" class="form-control" name="shift_40_mty_k_l" value="{{$rbm->shift_40_mty_k_l}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">42 Full</label>
-                                                <input type="text" class="form-control" name="shift_42_fcl_k_l" value="{{$shift_42_fcl_k_l}}" readonly>
+                                                <input type="text" class="form-control" name="shift_42_fcl_k_l" value="{{$rbm->shift_42_fcl_k_l}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">42 Empty</label>
-                                                <input type="text" class="form-control" name="shift_42_mty_k_l" value="{{$shift_42_mty_k_l}}" readonly>
+                                                <input type="text" class="form-control" name="shift_42_mty_k_l" value="{{$rbm->shift_42_mty_k_l}}" >
                                             </div>
                                         </div>
                                     </div>
@@ -458,49 +458,49 @@
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">20 Full</label>
-                                                <input type="text" class="form-control" name="shift_20_fcl_k" value="{{$shift_20_fcl_k}}" readonly>
+                                                <input type="text" class="form-control" name="shift_20_fcl_k" value="{{$rbm->shift_20_fcl_k}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">20 Empty</label>
-                                                <input type="text" class="form-control" name="shift_20_mty_k" value="{{$shift_20_mty_k}}" readonly>
+                                                <input type="text" class="form-control" name="shift_20_mty_k" value="{{$rbm->shift_20_mty_k}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">21 Full</label>
-                                                <input type="text" class="form-control" name="shift_21_fcl_k" value="{{$shift_21_fcl_k}}" readonly>
+                                                <input type="text" class="form-control" name="shift_21_fcl_k" value="{{$rbm->shift_21_fcl_k}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">21 Empty</label>
-                                                <input type="text" class="form-control" name="shift_21_mty_k" value="{{$shift_21_mty_k}}" readonly>
+                                                <input type="text" class="form-control" name="shift_21_mty_k" value="{{$rbm->shift_21_mty_k}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">40 Full</label>
-                                                <input type="text" class="form-control" name="shift_40_fcl_k" value="{{$shift_40_fcl_k}}" readonly>
+                                                <input type="text" class="form-control" name="shift_40_fcl_k" value="{{$rbm->shift_40_fcl_k}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">40 Empty</label>
-                                                <input type="text" class="form-control" name="shift_40_mty_k" value="{{$shift_40_mty_k}}" readonly>
+                                                <input type="text" class="form-control" name="shift_40_mty_k" value="{{$rbm->shift_40_mty_k}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">42 Full</label>
-                                                <input type="text" class="form-control" name="shift_42_fcl_k" value="{{$shift_42_fcl_k}}" readonly>
+                                                <input type="text" class="form-control" name="shift_42_fcl_k" value="{{$rbm->shift_42_fcl_k}}" >
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label for="">42 Empty</label>
-                                                <input type="text" class="form-control" name="shift_42_mty_k" value="{{$shift_42_mty_k}}" readonly>
+                                                <input type="text" class="form-control" name="shift_42_mty_k" value="{{$rbm->shift_42_mty_k}}" >
                                             </div>
                                         </div>
                                     </div>
@@ -523,7 +523,7 @@
                 </div>
                 <div class="col-3">
                     <div class="form-group">
-                        <label for="">Container Tambat Tongkak</label>
+                        <label for="">Container Tambat Tongkang</label>
                         <input type="number" class="form-control" name="ctr_tt" value="{{$rbm->ctr_tt}}" placeholder="isi dengan 0 jika kosong" required>
                     </div>
                 </div>

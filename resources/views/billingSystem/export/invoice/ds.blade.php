@@ -163,7 +163,7 @@
               <div class="col-xs-12 col-12">
                 <address>
                   <strong>Order Date:</strong><br>
-                  {{$invoice->order_at}}
+                  {{$invoice->invoice_date}}
                 </address>
               </div>
               <div class="col-xs-12 col-12">

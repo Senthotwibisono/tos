@@ -112,7 +112,7 @@
               <div class="col-xs-12 col-12">
                 <address>
                   <strong>Activity Include:</strong><br>
-                  @if($invoice->tambat_tongkak == 'Y') Tambat Tongkak, @endif 
+                  @if($invoice->tambat_tongkak == 'Y') Tambat Tongkang, @endif 
                   @if($invoice->tambat_kapal == 'Y') Tambat Kapal, @endif 
                   @if($invoice->stevadooring == 'Y') Stevadooring, @endif 
                   @if($invoice->shifting == 'Y') Shifting @endif 
@@ -196,7 +196,7 @@
               <div class="col-md-12">
                   <h3>PRANOTA SUMMARY</h3>
                 @if($invoice->tambat_tongkak == 'Y')
-                <h4>Jasa Tambat Tongkak</h4>
+                <h4>Jasa Tambat Tongkang</h4>
                 <table class="table table-striped">
                   <thead>
                     <tr>

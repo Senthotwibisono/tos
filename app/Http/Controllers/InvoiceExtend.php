@@ -553,6 +553,12 @@ class InvoiceExtend extends Controller
         $id = $request->inv_id;
 
         $invoice = Extend::where('id', $id)->first();
+        $invoice = InvoiceImport::where('id', $id)->first();
+        if ($invoice->invoice_date == null) {
+            $invDate = Carbon::now();
+        }else {
+            $invDate = $invoice->invoice_date;
+        }
         if ($invoice->inv_no == null) {
             $invoiceNo ='DS-' . $this->getNextInvoiceExtend();
         }else {
@@ -597,7 +603,7 @@ class InvoiceExtend extends Controller
             'lunas' => 'Y',
             'inv_no'=>$invoiceNo,
             'lunas_at'=> Carbon::now(),
-            'invoice_date'=> Carbon::now(),
+            'invoice_date'=> $invDate,
         ]);
 
         return response()->json([

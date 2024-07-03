@@ -1153,6 +1153,11 @@ private function getNextJob($lastJobNo)
         $id = $request->inv_id;
 
         $invoice = InvoiceImport::where('id', $id)->first();
+        if ($invoice->invoice_date == null) {
+            $invDate = Carbon::now();
+        }else {
+            $invDate = $invoice->invoice_date;
+        }
        if ($invoice->inv_no == null) {
             if ($invoice->inv_type == 'DSK' ) {
                 $invoiceNo = $this->getNextInvoiceDSK();
@@ -1201,7 +1206,7 @@ private function getNextJob($lastJobNo)
             'lunas' => 'Y',
             'inv_no'=>$invoiceNo,
             'lunas_at'=> Carbon::now(),
-            'invoice_date'=> Carbon::now(),
+            'invoice_date'=> $invDate,
         ]);
 
         return response()->json([

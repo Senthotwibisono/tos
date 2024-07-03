@@ -109,7 +109,7 @@
           </div>
           <div class="col-12">
           @if($inv->tambat_tongkak == 'Y')
-            <h4>Jasa Tambat Tongkak</h4>
+            <h4>Jasa Tambat Tongkang</h4>
             <table class="table table-striped">
               <thead>
                 <tr>
