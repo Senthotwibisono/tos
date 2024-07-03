@@ -899,7 +899,7 @@ public function ReportExcel(Request $request)
         //     $invoiceQuery->where('inv_type', $request->inv_type);
         // }
     
-        $invoice = $invoiceQuery->whereNot('lunas', '=', 'N')->orderBy('order_at', 'asc')->get();
+        $invoice = $invoiceQuery->whereNot('lunas', '=', 'N')->orderBy('inv_no', 'asc')->get();
     
         $fileName = 'ReportInvoiceExtend-' . $startDate . '-' . $endDate . '.xlsx';
 

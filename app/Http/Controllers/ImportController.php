@@ -1336,7 +1336,7 @@ private function getNextJob($lastJobNo)
             $invoiceQuery->whereIn('inv_type', $request->inv_type);
         }
     
-        $invoice = $invoiceQuery->whereNot('lunas', '=', 'N')->orderBy('order_at', 'asc')->get();
+        $invoice = $invoiceQuery->whereNot('lunas', '=', 'N')->orderBy('inv_no', 'asc')->get();
     
         $fileName = 'ReportInvoiceImport-' . $startDate . '-' . $endDate . '.xlsx';
 
