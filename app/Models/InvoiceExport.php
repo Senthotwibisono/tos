@@ -96,7 +96,8 @@ class InvoiceExport extends Model
         'lunas',
         'lunas_at',
         'expired_date',
-        'booking_no'
+        'booking_no',
+        'invoice_date',
     ];
 
     public function customer()

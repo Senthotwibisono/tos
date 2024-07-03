@@ -641,6 +641,7 @@ class ImportController extends Controller
             'grand_total'=>$request->grandTotalDSK,
             'order_by'=> Auth::user()->name,
             'order_at'=> Carbon::now(),
+            'invoice_date'=> Carbon::now(),
             
         ]);
         $admin = 0;
@@ -776,6 +777,7 @@ class ImportController extends Controller
             'grand_total'=>$request->grandTotalDS,
             'order_by'=> Auth::user()->name,
             'order_at'=> Carbon::now(),
+            'invoice_date'=> Carbon::now(),
             'last_expired_date'=>$form->expired_date,
             
         ]);
@@ -1199,6 +1201,7 @@ private function getNextJob($lastJobNo)
             'lunas' => 'Y',
             'inv_no'=>$invoiceNo,
             'lunas_at'=> Carbon::now(),
+            'invoice_date'=> Carbon::now(),
         ]);
 
         return response()->json([
@@ -1257,7 +1260,8 @@ private function getNextJob($lastJobNo)
         $invoice->update([
             'lunas' => 'P',
             'inv_no'=>$invoiceNo,
-            'lunas_at'=> Carbon::now(),
+            'piutang_at'=> Carbon::now(),
+            'invoice_date'=> Carbon::now(),
         ]);
 
         return response()->json([
@@ -1327,8 +1331,8 @@ private function getNextJob($lastJobNo)
     {
         $startDate = $request->start;
         $endDate = $request->end;
-        $invoiceQuery = InvoiceImport::whereDate('order_at', '>=', $startDate)
-            ->whereDate('order_at', '<=', $endDate);
+        $invoiceQuery = InvoiceImport::whereDate('invoice_date', '>=', $startDate)
+            ->whereDate('invoice_date', '<=', $endDate);
     
         // Cek apakah checkbox 'inv_type' ada dalam request dan tidak kosong
         if ($request->has('inv_type') && !empty($request->inv_type)) {

@@ -597,6 +597,7 @@ class InvoiceExtend extends Controller
             'lunas' => 'Y',
             'inv_no'=>$invoiceNo,
             'lunas_at'=> Carbon::now(),
+            'invoice_date'=> Carbon::now(),
         ]);
 
         return response()->json([
@@ -654,6 +655,8 @@ class InvoiceExtend extends Controller
         $invoice->update([
             'lunas' => 'P',
             'inv_no'=>$invoiceNo,
+            'piutang_at'=> Carbon::now(),
+            'invoice_date'=> Carbon::now(),
         ]);
 
         return response()->json([
@@ -892,8 +895,8 @@ public function ReportExcel(Request $request)
     {
         $startDate = $request->start;
         $endDate = $request->end;
-        $invoiceQuery = Extend::whereDate('order_at', '>=', $startDate)
-            ->whereDate('order_at', '<=', $endDate);
+        $invoiceQuery = Extend::whereDate('invoice_date', '>=', $startDate)
+            ->whereDate('invoice_date', '<=', $endDate);
     
         // if ($request->has('inv_type') && !empty($request->inv_type)) {
         //     $invoiceQuery->where('inv_type', $request->inv_type);
