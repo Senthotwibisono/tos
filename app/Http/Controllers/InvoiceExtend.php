@@ -553,7 +553,6 @@ class InvoiceExtend extends Controller
         $id = $request->inv_id;
 
         $invoice = Extend::where('id', $id)->first();
-        $invoice = InvoiceImport::where('id', $id)->first();
         if ($invoice->invoice_date == null) {
             $invDate = Carbon::now();
         }else {
