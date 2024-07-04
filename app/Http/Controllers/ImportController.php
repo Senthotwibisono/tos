@@ -641,7 +641,7 @@ class ImportController extends Controller
             'grand_total'=>$request->grandTotalDSK,
             'order_by'=> Auth::user()->name,
             'order_at'=> Carbon::now(),
-            'invoice_date'=> Carbon::now(),
+           
             
         ]);
         $admin = 0;
@@ -777,7 +777,7 @@ class ImportController extends Controller
             'grand_total'=>$request->grandTotalDS,
             'order_by'=> Auth::user()->name,
             'order_at'=> Carbon::now(),
-            'invoice_date'=> Carbon::now(),
+           
             'last_expired_date'=>$form->expired_date,
             
         ]);
@@ -1153,7 +1153,7 @@ private function getNextJob($lastJobNo)
         $id = $request->inv_id;
 
         $invoice = InvoiceImport::where('id', $id)->first();
-        if ($invoice->invoice_date == null) {
+        if ($invoice->lunas == 'N') {
             $invDate = Carbon::now();
         }else {
             $invDate = $invoice->invoice_date;

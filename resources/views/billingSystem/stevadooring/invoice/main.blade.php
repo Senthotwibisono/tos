@@ -132,11 +132,11 @@
               </div>
               <div class="col-xs-12 col-12">
                 <address>
-                  <strong>Metode Pembayaran</strong><br>
-                  Nama Bank : Bank Central Asia (BCA) <br>
-                  Pemilik Rekening :  PT. INDO KONTAINER SARANA<br>
-                  Kode Bank : 014<br>
-                  Nomor Rekening : 0295197531<br>
+                <strong>Metode Pembayaran</strong><br>
+                  Nama Bank : <strong>MANDIRI</strong> <br>
+                  Pemilik Rekening :  <strong>PT. INDO KONTAINER SARANA</strong><br>
+                  Kode Bank : <strong>008</strong><br>
+                  Nomor Rekening : <strong>1460002771975</strong><br>
                   <!-- h.elaine@gmail.com<br> -->
                 </address>
               </div>

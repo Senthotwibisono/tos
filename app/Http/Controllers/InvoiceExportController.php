@@ -512,7 +512,7 @@ class InvoiceExportController extends Controller
             'grand_total'=>$request->grandTotalDSK,
             'order_by'=> Auth::user()->name,
             'order_at'=> Carbon::now(),
-            'invoice_date'=> Carbon::now(),
+         
             
         ]);
         $admin = 0;
@@ -648,7 +648,7 @@ class InvoiceExportController extends Controller
             'grand_total'=>$request->grandTotalDS,
             'order_by'=> Auth::user()->name,
             'order_at'=> Carbon::now(),
-            'invoice_date'=> Carbon::now(),
+          
             
         ]);
         $admin = 0;
@@ -948,7 +948,7 @@ class InvoiceExportController extends Controller
         $id = $request->inv_id;
 
         $invoice = InvoiceExport::where('id', $id)->first();
-        if ($invoice->invoice_date == null) {
+        if ($invoice->lunas == 'N') {
             $invDate = Carbon::now();
         }else {
             $invDate = $invoice->invoice_date;

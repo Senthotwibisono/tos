@@ -553,7 +553,7 @@ class InvoiceExtend extends Controller
         $id = $request->inv_id;
 
         $invoice = Extend::where('id', $id)->first();
-        if ($invoice->invoice_date == null) {
+        if ($invoice->lunas == 'N') {
             $invDate = Carbon::now();
         }else {
             $invDate = $invoice->invoice_date;
