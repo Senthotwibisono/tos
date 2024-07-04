@@ -54,7 +54,7 @@ class ReportInvoice implements FromCollection, WithMapping, WithHeadings, Should
         
         return [
             $no,
-            $invoice->order_at,
+            $invoice->invoice_date,
             $invoice->proforma_no,
             $invoice->inv_no,
             $invoice->inv_type,
