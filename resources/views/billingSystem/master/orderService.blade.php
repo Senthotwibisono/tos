@@ -74,6 +74,7 @@
                                     <option value="I">Import</option>
                                     <option value="E">Export</option>
                                     <option value="X">Extend</option>
+                                    <option value="P">Plugging</option>
                                 </select>
                             </div>
                         </div>
@@ -86,6 +87,7 @@
                                     <option value="SPPS">SPPS</option>
                                     <option value="MTI">MT Kapal Icon</option>
                                     <option value="MTK">MT Kapal Luar</option>
+                                    <option value="N">None</option>
                                 </select>
                             </div>
                         </div>

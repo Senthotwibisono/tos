@@ -20,7 +20,7 @@ use App\Models\JobExport;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ReportExport;
-use App\Exports\ReportInvoice; // Assuming you create an export class
+use App\Exports\ReportInvoice;
 
 
 use Auth;
@@ -39,8 +39,12 @@ class InvoiceExportController extends Controller
         $data['invoice'] = InvoiceExport::orderBy('order_at', 'asc')->orderBy('lunas', 'asc')->get();
 
         $data['service'] = OS::where('ie', '=' , 'E')->orderBy('id', 'asc')->get();
-        $data['unPaids'] = InvoiceExport::whereNot('form_id', '=', '')->where('lunas', '=', 'N')->orderBy('order_at', 'asc')->get();
-        $data['piutangs'] = InvoiceExport::whereNot('form_id', '=', '')->where('lunas', '=', 'P')->orderBy('order_at', 'asc')->get();
+        $data['unPaids'] = InvoiceExport::whereHas('service', function ($query) {
+            $query->where('ie', '!=', 'P');
+        })->whereNot('form_id', '=', '')->where('lunas', '=', 'N')->orderBy('order_at', 'asc')->get();
+        $data['piutangs'] = InvoiceExport::whereHas('service', function ($query) {
+            $query->where('ie', '!=', 'P');
+        })->whereNot('form_id', '=', '')->where('lunas', '=', 'P')->orderBy('order_at', 'asc')->get();
 
         return view('billingSystem.export.billing.main', $data);
     }
@@ -1187,7 +1191,9 @@ class InvoiceExportController extends Controller
       $os = $request->os_id;
       $startDate = $request->start;
       $endDate = $request->end;
-      $invoiceQuery = Detail::where('os_id', $os)
+      $invoiceQuery = Detail::whereHas('service', function ($query) {
+        $query->where('ie', '=', 'P');
+    })->where('os_id', $os)
       ->whereDate('order_date', '>=', $startDate)
       ->whereDate('order_date', '<=', $endDate);
 
@@ -1214,7 +1220,9 @@ class InvoiceExportController extends Controller
             $invoiceQuery->whereIn('inv_type', $request->inv_type);
         }
     
-        $invoice = $invoiceQuery->whereNot('lunas', '=', 'N')->orderBy('inv_no', 'asc')->get();
+        $invoice = $invoiceQuery->whereHas('service', function ($query) {
+            $query->where('ie', '!=', 'P');
+        })->whereNot('lunas', '=', 'N')->orderBy('inv_no', 'asc')->get();
     
         $fileName = 'ReportInvoiceExport-' . $startDate . '-' . $endDate . '.xlsx';
 
@@ -1263,4 +1271,6 @@ class InvoiceExportController extends Controller
             'message' => 'Invoice Berhasil di Cancel!',
         ]);
     }
+
+    
 }

@@ -5,22 +5,22 @@
 
 <div class="page-heading">
   <h3><?= $title ?></h3>
-  <p>Management Data Billing Reciving</p>
+  <p>Management Data Billing Plugging</p>
 
 </div>
 <div class="page-content">
 
   <section class="row">
     <div class="col-12 mb-3">
-      <a href="{{ route('deliveryMenuExport')}}" type="button" class="btn btn-primary">
+      <a href="{{ route('plugging-form-index')}}" type="button" class="btn btn-primary">
         <i class="fa fa-folder"></i>
-        Reciving Form
+        Plugging Form
       </a>
     </div>
     <div class="card">
       <div class="card-header">
-        <h4>EXport to Zahir</h4>
-        <form action="{{ route('zahir-invoice-export')}}" method="GET" enctype="multipart/form-data">
+        <h4>Export to Zahir</h4>
+        <form action="{{ route('zahir-invoice-plugging')}}" method="GET" enctype="multipart/form-data">
           <div class="row">
             <div class="col-4">
               <div class="form-group">
@@ -43,8 +43,8 @@
         </form>
       </div>
       <div class="card-header">
-      <h4>Report Export</h4>
-        <form action="{{ route('report-invoice-export-All')}}" method="GET" enctype="multipart/form-data">
+      <h4>Report Plugging</h4>
+        <form action="{{ route('plugging-report')}}" method="GET" enctype="multipart/form-data">
           <div class="row">
             <div class="col-sm-3">
               <div class="form-group">
@@ -64,15 +64,15 @@
               <div class="form-group">
                 <label for="">Invoice Type</label>
                  <div class="row">
-                    <div class="col-6">
+                    <!-- <div class="col-6">
                       <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" name="inv_type[]" value="OSK" id="checkbox-dsk">
                         <label class="form-check-label" for="checkbox-dsk">OSK</label>
                       </div>
-                    </div>
+                    </div> -->
                     <div class="col-6">
                       <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" name="inv_type[]" value="OS" id="checkbox-ds">
+                        <input class="form-check-input" type="checkbox" name="inv_type[]" value="OS" id="checkbox-ds" checked>
                         <label class="form-check-label" for="checkbox-ds">OS</label>
                       </div>
                     </div>
@@ -92,7 +92,7 @@
       <div class="col-12">
         <div class="card">
           <div class="card-header">
-            <h4 class="card-title">Tabel Data Billing Reciving (Belum Bayar)</h4>
+            <h4 class="card-title">Tabel Data Billing Plugging (Belum Bayar)</h4>
             <p>Rekap Data Billing</p>
           </div>
           <div class="card-body">
@@ -134,7 +134,7 @@
                       <th>Status</th>
                       <th>Pranota</th>
                       <th>Invoice</th>
-                      <th>Job</th>
+                    
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -164,30 +164,22 @@
                       </td>
                       @endif
                       <td>
-                        @if($inv->inv_type == 'OSK')
-                      <a type="button" href="/pranota/export-OSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
-                        @else
-                      <a type="button" href="/pranota/export-OS{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
-                        @endif
+                      
+                      <a type="button" href="/plugging-pranota-{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
+                        
                       </td>
                       @if($inv->lunas == "N")
                       <td>
                       <button type="button" href="/invoice/export-OSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white" disabled><i class="fa fa-dollar"></i></button>
                       </td>
-                      <td>
-                      <button type="button" href="/invoice/job/import-{{$inv->id}}" target="_blank" class="btn btn-sm btn-info text-white" disabeled><i class="fa fa-ship"></i></button>
-                      </td>
+                     
                       @else
                       <td>
-                      @if($inv->inv_type == 'OSK')
-                      <a type="button" href="/invoice/export-OSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                      @else  
+                      
                       <a type="button" href="/invoice/export-OS{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                      @endif
+                      
                       </td>
-                      <td>
-                      <a type="button" href="/invoice/job/export-{{$inv->id}}" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
-                      </td>
+                    
                       @endif
                       <td>
                       <button type="button" id="pay" data-id="{{$inv->id}}" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>
@@ -210,7 +202,7 @@
       <div class="col-12">
         <div class="card">
           <div class="card-header">
-            <h4 class="card-title">Tabel Data Billing Reciving (Piutang)</h4>
+            <h4 class="card-title">Tabel Data Billing Plugging (Piutang)</h4>
             <p>Rekap Data Billing</p>
           </div>
           <div class="card-body">
@@ -252,7 +244,7 @@
                       <th>Status</th>
                       <th>Pranota</th>
                       <th>Invoice</th>
-                      <th>Job</th>
+                     
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -282,30 +274,22 @@
                       </td>
                       @endif
                       <td>
-                        @if($inv->inv_type == 'OSK')
-                      <a type="button" href="/pranota/export-OSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
-                        @else
-                      <a type="button" href="/pranota/export-OS{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
-                        @endif
+                      
+                      <a type="button" href="/plugging-pranota-{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
+                        
                       </td>
                       @if($inv->lunas == "N")
                       <td>
                       <button type="button" href="/invoice/export-OSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white" disabled><i class="fa fa-dollar"></i></button>
                       </td>
-                      <td>
-                      <button type="button" href="/invoice/job/import-{{$inv->id}}" target="_blank" class="btn btn-sm btn-info text-white" disabeled><i class="fa fa-ship"></i></button>
-                      </td>
+                     
                       @else
                       <td>
-                      @if($inv->inv_type == 'OSK')
-                      <a type="button" href="/invoice/export-OSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                      @else  
+                      
                       <a type="button" href="/invoice/export-OS{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                      @endif
+                      
                       </td>
-                      <td>
-                      <a type="button" href="/invoice/job/export-{{$inv->id}}" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
-                      </td>
+                    
                       @endif
                       <td>
                       <button type="button" id="pay" data-id="{{$inv->id}}" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>
@@ -329,11 +313,11 @@
       <div class="col-12">
         <div class="card">
           <div class="card-header">
-            <h4 class="card-title">Tabel Data Billing Reciving {{$os->name}}</h4>
+            <h4 class="card-title">Tabel Data Billing {{$os->name}}</h4>
             <p>Rekap Data Billing</p>
           </div>
           <div class="card-body">
-            <form action="{{ route('report-invoice-export')}}" method="GET" enctype="multipart/form-data">
+            <form action="{{ route('plugging-report-os')}}" method="GET" enctype="multipart/form-data">
               @CSRF
               <div class="row">
 
@@ -341,14 +325,14 @@
                   <div class="form-group">
                     <label>Pick Start Date Range</label>
                     <input name="start" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
-                    <!-- <input type="date" name="start" class="form-control" required> -->
+                   
                   </div>
                 </div>
                 <div class="col-sm-3">
                   <div class="form-group">
                     <label>Pick End Date Range</label>
                     <input name="end" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
-                    <!-- <input type="date" name="end" class="form-control" required> -->
+                 
                     <input type="hidden" name="os_id" value="{{$os->id}}">
 
                   </div>
@@ -392,7 +376,7 @@
                       <th>Status</th>
                       <th>Pranota</th>
                       <th>Invoice</th>
-                      <th>Job</th>
+                     
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -423,30 +407,22 @@
                       </td>
                       @endif
                       <td>
-                        @if($inv->inv_type == 'OSK')
-                      <a type="button" href="/pranota/export-OSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
-                        @else
-                      <a type="button" href="/pranota/export-OS{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
-                        @endif
+                      
+                      <a type="button" href="/plugging-pranota-{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
+                        
                       </td>
                       @if($inv->lunas == "N")
                       <td>
                       <button type="button" href="/invoice/export-OSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white" disabled><i class="fa fa-dollar"></i></button>
                       </td>
-                      <td>
-                      <button type="button" href="/invoice/job/import-{{$inv->id}}" target="_blank" class="btn btn-sm btn-info text-white" disabeled><i class="fa fa-ship"></i></button>
-                      </td>
+                     
                       @else
                       <td>
-                      @if($inv->inv_type == 'OSK')
-                      <a type="button" href="/invoice/export-OSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                      @else  
+                      
                       <a type="button" href="/invoice/export-OS{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                      @endif
+                      
                       </td>
-                      <td>
-                      <a type="button" href="/invoice/job/export-{{$inv->id}}" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
-                      </td>
+                    
                       @endif
                       <td>
                       <button type="button" id="pay" data-id="{{$inv->id}}" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>
@@ -552,7 +528,7 @@
                             'Data berhasil dihapus.',
                             'success'
                         ).then(() => {
-                            window.location.href = '/billing/export/delivey-system'; // Arahkan ke halaman beranda setelah penghapusan sukses
+                            window.location.href = '/plugging'; // Arahkan ke halaman beranda setelah penghapusan sukses
                         });
                     },
                     error: function(xhr) {

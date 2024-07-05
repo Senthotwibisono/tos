@@ -221,6 +221,15 @@ class MasterInvoiceController extends Controller
         return view('billingSystem.export.master-tarif.create', $data);
     }
 
+    public function indexMTpluggingDetail($id)
+    {
+        $masterTarif = MT::where('id', $id)->first();
+        $data['title'] = 'Master Tarif '. $masterTarif->name;
+        $data['MasterTarif'] = $masterTarif;
+        $data['masterTarifDetail'] = MTDetail::where('master_tarif_id', $id)->get(); 
+        return view('billingSystem.plugging.master-tarif.create', $data);
+    }
+
     public function tarifFirst(Request $request)
     {
         $os = OS::where('id', $request->os_id)->first();
@@ -271,6 +280,31 @@ class MasterInvoiceController extends Controller
         return redirect()->route('invoice-master-tarifExport-detail', ['id' => $mt->id])->with('success', 'Silahkan Lengkapi Tairf');
     }
 
+    public function tarifFirstPlugging(Request $request)
+    {
+        $os = OS::where('id', $request->os_id)->first();
+        $mt = MT::create([
+            'os_id'=>$request->os_id,
+            'os_name'=>$request->os_name,
+            'ctr_size'=>$request->ctr_size,
+            'ctr_status'=>$request->ctr_status,
+        ]);
+
+        $osDetail = OSDetail::where('os_id', $os->id)->get();
+        foreach ($osDetail as $detail) {
+            $item = MItem::where('id', $detail->master_item_id)->first();
+            // dd($item);
+            $mtDetail = MTDetail::create([
+                'master_tarif_id'=>$mt->id,
+                'master_item_id'=>$detail->master_item_id,
+                'master_item_name'=>$detail->master_item_name,
+                'count_by'=> $item->count_by,
+            ]);
+        }
+
+        return redirect()->route('plugging-tarif-detail', ['id' => $mt->id])->with('success', 'Silahkan Lengkapi Tairf');
+    }
+
     public function tarifDetail(Request $request)
     {
         $mt = MT::where('id', $request->tarif_id)->first();
@@ -299,5 +333,13 @@ class MasterInvoiceController extends Controller
 
         $mt->delete();
         return redirect()->back()->with('success', 'Data Berhasil di Hapus');
+    }
+
+    public function indexMTplugging(Request $request)
+    {
+        $data['title'] = "Mater Tarif Export";
+        $data ['orderService'] = OS::where('ie', '=', 'P')->orderBy('ie', 'asc')->get();
+        $data ['masterTarif'] = MT::get();
+        return view('billingSystem.plugging.master-tarif.main', $data);
     }
 }

@@ -104,4 +104,9 @@ class InvoiceExport extends Model
     {
         return $this->belongsTo(Customer::class, 'cust_id', 'id');
     }
+
+    public function service()
+    {
+        return $this->belongsTo(OrderService::class, 'os_id', 'id');
+    }
 }

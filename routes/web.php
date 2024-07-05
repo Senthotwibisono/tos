@@ -59,6 +59,7 @@ use App\Http\Controllers\ContainerController;
 use App\Http\Controllers\RealisasiMuatController;
 use App\Http\Controllers\GateCheckingController;
 use App\Http\Controllers\GateMTcontroller;
+use App\Http\Controllers\PluggingController;
 use App\Exports\ContainersReport;
 
 /*
@@ -898,6 +899,7 @@ Route::post('/billing/export/master-tarif/store-MT', [MasterTarifController::cla
 Route::get('/billing/export/master-tarif/edit-{id?}', [MasterTarifController::class, 'EditExport']);
 Route::post('/billing/import/master-tarif/update-MT', [MasterTarifController::class, 'updateMTexport'])->name('updateMTexport');
 
+
 // coparn
 Route::get('/billing/coparn', [CoparnController::class, 'index'])->name('coparnMain');
 Route::get('/billing/coparn/upload-file', [CoparnController::class, 'uploadView'])->name('uploadView');
@@ -1041,6 +1043,7 @@ Route::post('/post-shifting', [ShiftingController::class, 'shifting']);
 // Zahir
 Route::get('/invoice/zahir-import', [ZahirController::class, 'ZahirImport'])->name('zahir-invoice-import');
 Route::get('/invoice/zahir-export', [ZahirController::class, 'ZahirExport'])->name('zahir-invoice-export');
+Route::get('/invoice/zahir-export', [ZahirController::class, 'ZahirPlugging'])->name('zahir-invoice-plugging');
 Route::get('/invoice/zahir-extend', [ZahirController::class, 'ZahirExtend'])->name('zahir-invoice-extend');
 Route::get('/invoice/zahir-steva', [ZahirController::class, 'ZahirSteva'])->name('zahir-invoice-steva');
 
@@ -1100,3 +1103,31 @@ Route::post('/gate/gate-in/MT-confirm', [GateMTcontroller::class, 'ConfirmIn'])-
 Route::get('/gate/gate-out/MT', [GateMTcontroller::class, 'IndexOut']);
 Route::post('/gate/gate-out/MT-confirm', [GateMTcontroller::class, 'ConfirmOut'])->name('confirmOutGateMT');
 
+
+
+// plugging
+// main
+Route::get('/plugging', [PluggingController::class, 'billingMain'])->name('plugging-main');
+  // Tarif
+Route::get('/plugging/master-tarif', [MasterInvoiceController::class, 'indexMTplugging'])->name('plugging-tarif-index');
+Route::get('/plugging/master-tarifDetail-{id?}', [MasterInvoiceController::class, 'indexMTpluggingDetail'])->name('plugging-tarif-detail');
+Route::post('/plugging/master-tarif-create-first', [MasterInvoiceController::class, 'tarifFirstPlugging'])->name('plugging-tarif-create-first');
+
+
+// Form
+  // list
+  Route::get('/plugging-form', [PluggingController::class, 'deliveryMenu'])->name('plugging-form-index');
+  Route::get('/plugging-create-index', [PluggingController::class, 'FormIndex'])->name('plugging-create-index');
+  Route::get('/plugging-create-container', [PluggingController::class, 'getContainer'])->name('container-plugging');
+  Route::post('/plugging-create-store', [PluggingController::class, 'FormStore'])->name('plugging-create-post');
+  Route::get('/plugging-preinvoice/{id?}', [PluggingController::class, 'preinvoice'])->name('plugging-preinvoice');
+  Route::get('/plugging-create-edit-{id?}', [PluggingController::class, 'FormEdit'])->name('plugging-edit-index');
+  Route::post('/plugging-create-update', [PluggingController::class, 'FormUpdate'])->name('plugging-create-update');
+  
+  //Submit Invoice
+  Route::post('/plugging-invoice-post', [PluggingController::class, 'SubmitInvoice'])->name('plugging-invoice-post');
+
+  // Invoice
+  Route::get('/plugging-pranota-{id?}', [PluggingController::class, 'Pranota'])->name('plugging-pranota');
+  Route::get('/plugging-report', [PluggingController::class, 'ReportExcel'])->name('plugging-report');
+  Route::get('/plugging-report-os', [PluggingController::class, 'ReportExcelOnce'])->name('plugging-report-os');
