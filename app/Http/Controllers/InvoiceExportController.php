@@ -627,7 +627,7 @@ class InvoiceExportController extends Controller
         $invoiceDS = InvoiceExport::create([
             'inv_type'=>'OS',
             'form_id'=>$form->id,
-            'inv_no' =>$invoiceNo,
+       
             'proforma_no'=>$nextProformaNumber,
             'cust_id'=>$form->cust_id,
             'cust_name'=>$form->customer->name,
@@ -674,7 +674,7 @@ class InvoiceExportController extends Controller
                             $hargaC = $tarifDetail->tarif * $containerCount;
                             $detailImport = Detail::create([
                              'inv_id'=>$invoiceDS->id,
-                             'inv_no'=>$invoiceDS->inv_no,
+                     
                              'inv_type'=>$invoiceDS->inv_type,
                              'keterangan'=>$form->service->name,
                              'ukuran'=>$size,
@@ -700,7 +700,7 @@ class InvoiceExportController extends Controller
                             $hargaC = $tarifDetail->tarif * $containerCount;
                             $detailImport = Detail::create([
                              'inv_id'=>$invoiceDS->id,
-                             'inv_no'=>$invoiceDS->inv_no,
+      
                              'inv_type'=>$invoiceDS->inv_type,
                              'keterangan'=>$form->service->name,
                              'ukuran'=>$size,
@@ -733,7 +733,7 @@ class InvoiceExportController extends Controller
                 if ($singleTarifDetail) {
                     $detailImport = Detail::create([
                         'inv_id'=>$invoiceDS->id,
-                        'inv_no'=>$invoiceDS->inv_no,
+            
                         'inv_type'=>$invoiceDS->inv_type,
                         'keterangan'=>$form->service->name,
                         'ukuran'=> '0',
