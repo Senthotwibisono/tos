@@ -78,6 +78,7 @@
                             <option value="C">Container</option>
                             <option value="T">Time</option>
                             <option value="O">Once</option>
+                            <option value="H">Hour</option>
                         </select>
                     </div>
                     <label>Genereate By Ctr Size </label>

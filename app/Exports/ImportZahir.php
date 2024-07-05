@@ -44,7 +44,7 @@ class ImportZahir implements FromCollection, WithMapping, WithHeadings, ShouldAu
                 break;
         }
 
-        if ($data->count_by == 'T') {
+        if ($data->count_by == 'T' || $data->count_by == 'H') {
             if ($data->jumlah_hari == 0 || $data->jumlah_hari == null) {
                 $item = '0';
             }else {

@@ -72,7 +72,20 @@ class ZahirController extends Controller
    {
      $startDate = $request->start;
      $endDate = $request->end;
-     $data = ExportDetail::whereDate('order_date', '>=', $startDate)->whereDate('order_date', '<=', $endDate)->orderBy('inv_id', 'asc')->get();
+     $data = ExportDetail::whereHas('service', function ($query) {
+      $query->where('ie', '!=', 'P');
+  })->whereDate('order_date', '>=', $startDate)->whereDate('order_date', '<=', $endDate)->orderBy('inv_id', 'asc')->get();
+       $fileName = 'ReportZahirExport-'. $startDate . $endDate .'.csv';
+     return Excel::download(new ImportZahir($data), $fileName);
+   }
+
+   public function ZahirPlugging(Request $request)
+   {
+     $startDate = $request->start;
+     $endDate = $request->end;
+     $data = ExportDetail::whereHas('service', function ($query) {
+      $query->where('ie', '=', 'P');
+  })->whereDate('order_date', '>=', $startDate)->whereDate('order_date', '<=', $endDate)->orderBy('inv_id', 'asc')->get();
        $fileName = 'ReportZahirExport-'. $startDate . $endDate .'.csv';
      return Excel::download(new ImportZahir($data), $fileName);
    }

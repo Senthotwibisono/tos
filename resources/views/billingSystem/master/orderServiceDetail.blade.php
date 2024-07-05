@@ -28,6 +28,7 @@
                                 <option value="I" {{ $orderService->ie == 'I' ? 'selected' : '' }}>Import</option>
                                 <option value="E" {{ $orderService->ie == 'E' ? 'selected' : '' }}>Export</option>
                                 <option value="X" {{ $orderService->ie == 'X' ? 'selected' : '' }}>Extend</option>
+                                <option value="P" {{ $orderService->ie == 'P' ? 'selected' : '' }}>Plugging</option>
                             </select>
                         </div>
                     </div>
@@ -39,6 +40,7 @@
                                 <option value="SPPS" {{ $orderService->order == 'SPPS' ? 'selected' : '' }}>SPPS</option>
                                 <option value="MTI" {{ $orderService->order == 'MTI' ? 'selected' : '' }}>MT Kapal Icon</option>
                                 <option value="MTK" {{ $orderService->order == 'MTK' ? 'selected' : '' }}>MT Kapal Luar</option>
+                                <option value="N" {{ $orderService->order == 'N' ? 'selected' : '' }}>None</option>
                             </select>
                         </div>
                     </div>

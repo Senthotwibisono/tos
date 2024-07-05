@@ -176,9 +176,8 @@ new simpleDatatables.DataTable('#table2');
       "minDate": new Date()
     });
     flatpickr('#hour', {
-      noCalendar: true,
       enableTime: true,
-      dateFormat: 'h:i K'
+      dateFormat: 'd-m-Y h:i K'
     });
   });
 </script>
