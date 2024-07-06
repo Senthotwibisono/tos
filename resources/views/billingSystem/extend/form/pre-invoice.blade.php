@@ -38,7 +38,7 @@
           <div class="col-4">
             <div class="form-group">
               <label for="">Expired Date</label>
-              <input type="date" name="expired_date"class="form-control" readonly value="{{$form->expired_date}}">
+              <input type="datetime-local" name="expired_date"class="form-control" readonly value="{{$form->expired_date}}">
             </div>
           </div>
           <div class="col-12">
@@ -57,7 +57,7 @@
           <div class="col-6">
             <div class="form-group">
               <label for="">Old Invoice Expired</label>
-              <input type="date" name="old_inv_no" class="form-control" readonly value="{{$form->disc_date}}">
+              <input type="datetime-local" name="old_inv_no" class="form-control" readonly value="{{$form->disc_date}}">
             </div>
           </div>
         

@@ -36,7 +36,7 @@
           <div class="col-4">
             <div class="form-group">
               <label for="">Expired Date</label>
-              <input type="date" name="expired_date"class="form-control" readonly value="{{$expired}}">
+              <input type="datetime-local" name="expired_date"class="form-control" readonly value="{{$expired}}">
               <input type="hidden" name="discDate"class="form-control" readonly value="">
             </div>
           </div>
