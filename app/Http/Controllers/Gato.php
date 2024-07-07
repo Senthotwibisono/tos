@@ -310,11 +310,11 @@ class Gato extends Controller
         $container_key = $request->container_key;
         $item = Item::where('container_key', $container_key)->first();
         $request->validate([
-            'container_no' => 'required',
+          
             'truck_no' => 'required',
         ], [
             'container_no.required' => 'Container Number is required.',
-            'truck_no.required' => 'Truck Number is required.',
+         
         ]);
 
 
