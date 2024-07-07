@@ -60,6 +60,7 @@ use App\Http\Controllers\RealisasiMuatController;
 use App\Http\Controllers\GateCheckingController;
 use App\Http\Controllers\GateMTcontroller;
 use App\Http\Controllers\PluggingController;
+use App\Http\Controllers\RentalController;
 use App\Exports\ContainersReport;
 
 /*
@@ -1129,5 +1130,41 @@ Route::post('/plugging/master-tarif-create-first', [MasterInvoiceController::cla
 
   // Invoice
   Route::get('/plugging-pranota-{id?}', [PluggingController::class, 'Pranota'])->name('plugging-pranota');
+  Route::get('/plugging-invoice-{id?}', [PluggingController::class, 'Invoice'])->name('plugging-invoice');
   Route::get('/plugging-report', [PluggingController::class, 'ReportExcel'])->name('plugging-report');
   Route::get('/plugging-report-os', [PluggingController::class, 'ReportExcelOnce'])->name('plugging-report-os');
+  Route::post('/plugging-piutang', [PluggingController::class, 'Piutang'])->name('PiutangPlugging');
+  Route::post('/plugging-paid', [PluggingController::class, 'Paid'])->name('PaidPlugging');
+  Route::post('/plugging-cancel', [PluggingController::class, 'Cancel'])->name('CancelPlugging');
+
+
+// Rental-Repair
+// main
+Route::get('/renta&repair', [RentalController::class, 'billingMain'])->name('rental-repair-main');
+  // Tarif
+Route::get('/renta&repair/master-tarif', [MasterInvoiceController::class, 'indexMTrental'])->name('rental-repair-tarif-index');
+Route::get('/renta&repair/master-tarifDetail-{id?}', [MasterInvoiceController::class, 'indexMTrentalDetail'])->name('rental-repair-tarif-detail');
+Route::post('/renta&repair/master-tarif-create-first', [MasterInvoiceController::class, 'tarifFirstRental'])->name('rental-repair-tarif-create-first');
+
+
+// Form
+  // list
+  Route::get('/renta&repair-form', [RentalController::class, 'deliveryMenu'])->name('rental-repair-form-index');
+  Route::get('/renta&repair-create-index', [RentalController::class, 'FormIndex'])->name('rental-repair-create-index');
+  Route::get('/rental&repair-create-container', [RentalController::class, 'getContainer'])->name('container-rental-repair');
+  Route::post('/renta&repair-create-store', [RentalController::class, 'FormStore'])->name('rental-repair-create-post');
+  Route::get('/renta&repair-preinvoice/{id?}', [RentalController::class, 'preinvoice'])->name('rental-repair-preinvoice');
+  Route::get('/renta&repair-create-edit-{id?}', [RentalController::class, 'FormEdit'])->name('rental-repair-edit-index');
+  Route::post('/renta&repair-create-update', [RentalController::class, 'FormUpdate'])->name('rental-repair-create-update');
+  
+  //Submit Invoice
+  Route::post('/renta&repair-invoice-post', [RentalController::class, 'SubmitInvoice'])->name('rental-repair-invoice-post');
+
+  // Invoice
+  Route::get('/renta&repair-pranota-{id?}', [RentalController::class, 'Pranota'])->name('rental-repair-pranota');
+  Route::get('/renta&repair-invoice-{id?}', [RentalController::class, 'Invoice'])->name('rental-repair-invoice');
+  Route::get('/renta&repair-report', [RentalController::class, 'ReportExcel'])->name('rental-repair-report');
+  Route::get('/renta&repair-report-os', [RentalController::class, 'ReportExcelOnce'])->name('rental-repair-report-os');
+  Route::post('/renta&repair-piutang', [RentalController::class, 'Piutang'])->name('PiutangRentalRepair');
+  Route::post('/renta&repair-paid', [RentalController::class, 'Paid'])->name('PaidRentalRepair');
+  Route::post('/renta&repair-cancel', [RentalController::class, 'Cancel'])->name('CancelRentalRepair');

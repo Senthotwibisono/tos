@@ -140,6 +140,36 @@
         </div>
       </div>
     </li>
+
+
+    <!--Rental Repair -->
+    <li class="menu-item has-sub">
+      <a type="button" class="menu-link">
+        <i class="fa-solid fa-ship"></i>
+        Rental & Repair
+      </a>
+      <div class="submenu">
+        <div class="submenu-group-wrapper">
+          <ul class="submenu-group">
+            <li class="submenu-item">
+              <a href="{{ route('rental-repair-main')}}" class="submenu-link">Rental & Repair Billing System</a>
+            </li>
+            <li class="submenu-item">
+              <a href="{{ route('rental-repair-form-index')}}" class="submenu-link">Rental & Repair Form</a>
+            </li>
+            <li class="submenu-item">
+              <a href="{{ route('rental-repair-tarif-index')}}" class="submenu-link">Master Tarif</a>
+            </li>
+            <!-- <li class="submenu-item">
+              <a href="" class="submenu-link">Stuffing Dalam</a>
+            </li>
+            <li class="submenu-item">
+              <a href="" class="submenu-link">Stuffing Luar</a>
+            </li> -->
+          </ul>
+        </div>
+      </div>
+    </li>
     <!-- Steva -->
     <li class="menu-item has-sub">
       <a type="button" class="menu-link">

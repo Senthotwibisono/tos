@@ -515,10 +515,12 @@ class PluggingController extends Controller
     public function Invoice($id)
     {
 
-        $data['title'] = "Invoice";
-
+        
         $data['invoice'] = InvoiceExport::where('id', $id)->first();
         $data['form'] = Form::where('id', $data['invoice']->form_id)->first();
+
+        $data['title'] = "Invoice " .$data['form']->service->name;
+
         $data['contInvoice'] = Container::where('form_id', $data['invoice']->form_id)->orderBy('ctr_size', 'asc')->get();
         $invDetail = Detail::where('inv_id', $id)->whereNot('count_by', '=', 'O')->orderBy('count_by', 'asc')->orderBy('kode', 'asc')->get();
         $data['invGroup'] = $invDetail->groupBy('ukuran');
@@ -574,6 +576,122 @@ class PluggingController extends Controller
     
         $invoice = $invoiceQuery->orderBy('order_date', 'asc')->get();        $fileName = 'ReportInvoiceExport-'.$os.'-'. $startDate . $endDate .'.xlsx';
       return Excel::download(new ReportExport($invoice), $fileName);
+    }
+
+    public function Paid(Request $request)
+    {
+        $id = $request->inv_id;
+
+        $invoice = InvoiceExport::where('id', $id)->first();
+        if ($invoice->lunas == 'N') {
+            $invDate = Carbon::now();
+        }else {
+            $invDate = $invoice->invoice_date;
+        }
+        if ($invoice->inv_no == null) {
+            if ($invoice->inv_type == 'OSK' ) {
+                $invoiceNo = $this->getNextInvoiceDSK();
+            }else {
+                $invoiceNo = $this->getNextInvoiceDS();
+            }
+       }else {
+         $invoiceNo = $invoice->inv_no;
+       }
+        $containerInvoice = Container::where('form_id', $invoice->form_id)->get();
+        $bigOS = OS::where('id', $invoice->os_id)->first();
+
+
+        $details = Detail::where('inv_id', $id)->get();
+        foreach ($details as $detail) {
+            $detail->update([
+            'lunas'=>'Y',
+            'inv_no'=>$invoiceNo,
+            ]);
+        }
+
+        $invoice->update([
+            'lunas' => 'Y',
+            'inv_no'=>$invoiceNo,
+            'lunas_at'=> Carbon::now(),
+            'invoice_date'=> $invDate,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'updated successfully!',
+        ]);
+        
+    }
+
+    public function Piutang(Request $request)
+    {
+        $id = $request->inv_id;
+
+        $invoice = InvoiceExport::where('id', $id)->first();
+        if ($invoice->inv_no == null) {
+            if ($invoice->inv_type == 'OSK' ) {
+                $invoiceNo = $this->getNextInvoiceDSK();
+            }else {
+                $invoiceNo = $this->getNextInvoiceDS();
+            }
+       }else {
+         $invoiceNo = $invoice->inv_no;
+       }
+        $containerInvoice = Container::where('form_id', $invoice->form_id)->get();
+        $bigOS = OS::where('id', $invoice->os_id)->first();
+        
+
+        $details = Detail::where('inv_id', $id)->get();
+        foreach ($details as $detail) {
+            $detail->update([
+            'lunas'=>'P',
+            'inv_no'=>$invoiceNo,
+            ]);
+        }
+
+        $invoice->update([
+            'lunas' => 'P',
+            'inv_no'=>$invoiceNo,
+            'piutang_at'=> Carbon::now(),
+            'invoice_date'=> Carbon::now(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'updated successfully!',
+        ]);
+    }
+
+    public function Cancel(Request $request)
+    {
+        $id = $request->inv_id;
+        $invoice = InvoiceExport::where('id', $id)->first();
+        // var_dump($invoice);
+        // die;
+        $invoice->update([
+            'lunas' => 'C',
+            'total'=> 0,
+            'discount'=> 0,
+            'pajak'=> 0,
+            'grand_total'=> 0,
+            
+        ]);
+
+        $details = Detail::where('inv_id', $id)->get();
+        foreach ($details as $detail) {
+            $detail->update([
+            'lunas'=>'C',
+            'jumlah'=>0,
+            'jumlah_hari'=> 0,
+            'tarif'=>0,
+            'total'=>0,
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Invoice Berhasil di Cancel!',
+        ]);
     }
 
 }

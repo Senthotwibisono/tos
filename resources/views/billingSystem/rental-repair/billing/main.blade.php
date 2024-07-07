@@ -5,16 +5,16 @@
 
 <div class="page-heading">
   <h3><?= $title ?></h3>
-  <p>Management Data Billing Plugging</p>
+  <p>Management Data Billing Rental & Repair</p>
 
 </div>
 <div class="page-content">
 
   <section class="row">
     <div class="col-12 mb-3">
-      <a href="{{ route('plugging-form-index')}}" type="button" class="btn btn-primary">
+      <a href="{{ route('rental-repair-form-index')}}" type="button" class="btn btn-primary">
         <i class="fa fa-folder"></i>
-        Plugging Form
+        Rental & Repair Form
       </a>
     </div>
     <div class="card">
@@ -44,7 +44,7 @@
       </div>
       <div class="card-header">
       <h4>Report Plugging</h4>
-        <form action="{{ route('plugging-report')}}" method="GET" enctype="multipart/form-data">
+        <form action="{{ route('rental-repair-report')}}" method="GET" enctype="multipart/form-data">
           <div class="row">
             <div class="col-sm-3">
               <div class="form-group">
@@ -165,18 +165,18 @@
                       @endif
                       <td>
                       
-                      <a type="button" href="/plugging-pranota-{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
+                      <a type="button" href="/renta&repair-pranota-{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
                         
                       </td>
                       @if($inv->lunas == "N")
                       <td>
-                      <button type="button" href="/plugging-invoice-K{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white" disabled><i class="fa fa-dollar"></i></button>
+                      <button type="button" href="/renta&repair-invoice-K{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white" disabled><i class="fa fa-dollar"></i></button>
                       </td>
                      
                       @else
                       <td>
                       
-                      <a type="button" href="/plugging-invoice-{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
+                      <a type="button" href="/renta&repair-invoice-{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
                       
                       </td>
                     
@@ -275,18 +275,18 @@
                       @endif
                       <td>
                       
-                      <a type="button" href="/plugging-pranota-{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
+                      <a type="button" href="/renta&repair-pranota-{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
                         
                       </td>
                       @if($inv->lunas == "N")
                       <td>
-                      <button type="button" href="/plugging-invoice-K{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white" disabled><i class="fa fa-dollar"></i></button>
+                      <button type="button" href="/renta&repair-invoice-K{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white" disabled><i class="fa fa-dollar"></i></button>
                       </td>
                      
                       @else
                       <td>
                       
-                      <a type="button" href="/plugging-invoice-{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
+                      <a type="button" href="/renta&repair-invoice-{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
                       
                       </td>
                     
@@ -317,7 +317,7 @@
             <p>Rekap Data Billing</p>
           </div>
           <div class="card-body">
-            <form action="{{ route('plugging-report-os')}}" method="GET" enctype="multipart/form-data">
+            <form action="{{ route('rental-repair-report-os')}}" method="GET" enctype="multipart/form-data">
               @CSRF
               <div class="row">
 
@@ -408,18 +408,18 @@
                       @endif
                       <td>
                       
-                      <a type="button" href="/plugging-pranota-{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
+                      <a type="button" href="/renta&repair-pranota-{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
                         
                       </td>
                       @if($inv->lunas == "N")
                       <td>
-                      <button type="button" href="/plugging-invoice-K{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white" disabled><i class="fa fa-dollar"></i></button>
+                      <button type="button" href="/renta&repair-invoice-K{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white" disabled><i class="fa fa-dollar"></i></button>
                       </td>
                      
                       @else
                       <td>
                       
-                      <a type="button" href="/plugging-invoice-{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
+                      <a type="button" href="/renta&repair-invoice-{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
                       
                       </td>
                     
@@ -528,7 +528,7 @@
                             'Data berhasil dihapus.',
                             'success'
                         ).then(() => {
-                            window.location.href = '/plugging'; // Arahkan ke halaman beranda setelah penghapusan sukses
+                            window.location.href = '/renta&repair'; // Arahkan ke halaman beranda setelah penghapusan sukses
                         });
                     },
                     error: function(xhr) {
@@ -668,7 +668,7 @@ $(document).ready(function() {
 
         $.ajax({
           type: 'POST',
-          url: '/plugging-paid',
+          url: '/renta&repair-paid',
           data: data,
           cache: false,
           dataType: 'json',
@@ -734,7 +734,7 @@ $(document).ready(function() {
 
         $.ajax({
           type: 'POST',
-          url: '/plugging-piutang',
+          url: '/renta&repair-piutang',
           data: data,
           cache: false,
           dataType: 'json',
@@ -800,7 +800,7 @@ $(document).ready(function() {
 
         $.ajax({
           type: 'POST',
-          url: '/plugging-cancel',
+          url: '/renta&repair-cancel',
           data: data,
           cache: false,
           dataType: 'json',

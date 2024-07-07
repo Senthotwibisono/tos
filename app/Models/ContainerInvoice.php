@@ -23,6 +23,7 @@ class ContainerInvoice extends Model
         'ctr_type',
         'ctr_intern_status',
         'gross',
+        'tarif'
     ];
 
     public function Form()

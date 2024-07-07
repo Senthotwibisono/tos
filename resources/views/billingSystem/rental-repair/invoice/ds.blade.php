@@ -222,33 +222,24 @@
           </div> -->
           <div class="row mt-3">
               <div class="col-md-12">
-                  <!-- <h3>PRANOTA SUMMARY</h3> -->
-                  @foreach ($invGroup as $ukuran => $details)
-                  <span>Container <strong>{{$ukuran}}</strong></span>
-              <table class="table table-striped">
-                <thead>
-                  <tr class="line">
-                    <!-- <td><strong>#</strong></td> -->
-                    <td class="text-right"><strong>Keterangan</strong></td>
-                    <td class="text-right"><strong>Jumlah Container</strong></td>
-                    <td class="text-right"><strong>Shift</strong></td>
-                    <td class="text-right"><strong>Tarif Satuan</strong></td>
-                    <td class="text-right"><strong>Amount</strong></td>
-                  </tr>
-                </thead>
-                <tbody>
-                @foreach ($details as $detail)
-                <tr>
-                    <td class="text-right">{{ $detail->master_item_name }}</td>
-                    <td class="text-right">{{ $detail->jumlah }}</td>
-                    <td class="text-right">{{ $detail->jumlah_hari }}</td>
-                    <td class="text-right">{{ $detail->tarif }}</td>
-                    <td class="text-right">{{ $detail->total }}</td>
-                </tr>
-                @endforeach
-                </tbody>
-            </table>
-            @endforeach
+                <table class="table table-striped">
+                  <thead>
+                    <tr class="line">
+                      <td class="text-right"><strong>Keterangan</strong></td>
+                      <td class="text-right"><strong>Ukuran</strong></td>
+                      <td class="text-right"><strong>Tarif</strong></td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach ($contInvoice as $cont)
+                    <tr>
+                      <td class="text-right">{{$form->service->name}} {{$cont->container_no}}</td>
+                      <td class="text-right">{{$cont->ctr_size}}</td>
+                      <td class="text-right">{{$cont->tarif}}</td>
+                    </tr>
+                    @endforeach
+                  </tbody>
+                </table>
             </div>
           </div>
           <div class="row p-3">

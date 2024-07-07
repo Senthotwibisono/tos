@@ -14,7 +14,7 @@
 
 
 <style>
- body{
+  body{
         font-family: 'Roboto Condensed', sans-serif;
         margin: 0;
         padding: 0;
@@ -121,7 +121,7 @@
             <br>
             <div class="row">
               <div class="col-xs-12 col-8 my-auto">
-                <h2>{{$title}}<br>
+                <h2>Invoice<br>
                   <span class="small">Proforma No. # {{$invoice->proforma_no}}</span><br>
                   <span class="small">Invoice No. # {{$invoice->inv_no}}</span>
                   <br>
@@ -149,7 +149,7 @@
               <div class="col-xs-12 col-12">
                 <address>
                   <strong>Tipe Invoice:</strong><br>
-                            OS
+                            OSK
                 </address>
               </div>
               <div class="col-xs-12 col-12">
@@ -163,7 +163,7 @@
               <div class="col-xs-12 col-12">
                 <address>
                   <strong>Order Date:</strong><br>
-                  {{$invoice->invoice_date}}
+                    {{$invoice->invoice_date}}
                 </address>
               </div>
               <div class="col-xs-12 col-12">
@@ -231,7 +231,7 @@
                     <!-- <td><strong>#</strong></td> -->
                     <td class="text-right"><strong>Keterangan</strong></td>
                     <td class="text-right"><strong>Jumlah Container</strong></td>
-                    <td class="text-right"><strong>Shift</strong></td>
+                    <td class="text-right"><strong>Hari</strong></td>
                     <td class="text-right"><strong>Tarif Satuan</strong></td>
                     <td class="text-right"><strong>Amount</strong></td>
                   </tr>
@@ -255,7 +255,7 @@
           <div class="col-xs-12 col-6">
               <p>Total Amount: </p>
               <p>Admin :</p>
-              <p>Discount {{ number_format($form->discount_ds, 2) }}% :</p>
+              <p>Discount {{ number_format($form->discount_dsk, 2) }}%:</p>
               <p>Tax (11%): </p>
               <p>Grand Total: </p>
             </div>
@@ -275,7 +275,6 @@
             <h6>Note : </h6>
               <p><strong>1. Pembayaran secara penuh sesuai nilai invoice. Biaya lainnya diluar tanggung jawab kami. 2. Complain Invoice Maksimal 3 (tiga) hari setelah invoice diterima. 3. Invoice dianggap lunas jika pembayaran masuk ke rekening yang telah diinfokan di invoice ini.
                 4. Due date dihitung dari ATD. 5. Tidak Menerima pembayaran dalam bentuk tunai.</strong></p>
-            </div>
             </div>
           </div>
         </div>
