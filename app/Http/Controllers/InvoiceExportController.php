@@ -40,10 +40,10 @@ class InvoiceExportController extends Controller
 
         $data['service'] = OS::where('ie', '=' , 'E')->orderBy('id', 'asc')->get();
         $data['unPaids'] = InvoiceExport::whereHas('service', function ($query) {
-            $query->where('ie', '!=', 'P');
+            $query->where('ie', '=', 'E');
         })->whereNot('form_id', '=', '')->where('lunas', '=', 'N')->orderBy('order_at', 'asc')->get();
         $data['piutangs'] = InvoiceExport::whereHas('service', function ($query) {
-            $query->where('ie', '!=', 'P');
+            $query->where('ie', '=', 'E');
         })->whereNot('form_id', '=', '')->where('lunas', '=', 'P')->orderBy('order_at', 'asc')->get();
 
         return view('billingSystem.export.billing.main', $data);
@@ -1221,7 +1221,7 @@ class InvoiceExportController extends Controller
         }
     
         $invoice = $invoiceQuery->whereHas('service', function ($query) {
-            $query->where('ie', '!=', 'P');
+            $query->where('ie', '=', 'E');
         })->whereNot('lunas', '=', 'N')->orderBy('inv_no', 'asc')->get();
     
         $fileName = 'ReportInvoiceExport-' . $startDate . '-' . $endDate . '.xlsx';

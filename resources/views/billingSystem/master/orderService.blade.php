@@ -75,6 +75,7 @@
                                     <option value="E">Export</option>
                                     <option value="X">Extend</option>
                                     <option value="P">Plugging</option>
+                                    <option value="R">Rental & Repair</option>
                                 </select>
                             </div>
                         </div>

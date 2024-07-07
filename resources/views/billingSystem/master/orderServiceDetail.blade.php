@@ -29,6 +29,7 @@
                                 <option value="E" {{ $orderService->ie == 'E' ? 'selected' : '' }}>Export</option>
                                 <option value="X" {{ $orderService->ie == 'X' ? 'selected' : '' }}>Extend</option>
                                 <option value="P" {{ $orderService->ie == 'P' ? 'selected' : '' }}>Plugging</option>
+                                <option value="R" {{ $orderService->ie == 'R' ? 'selected' : '' }}>Rental & Repair</option>
                             </select>
                         </div>
                     </div>
