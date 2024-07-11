@@ -52,7 +52,7 @@ class StevadooringController extends Controller
         $data['title'] = "Realisasi Bonglar Muat";
 
         $now = Carbon::now();
-        $data['ves'] = VVoyage::where('deparature_date', '<=', $now)->get();
+        $data['ves'] = VVoyage::orderBy('arrival_date', 'desc')->get();
         $data['realisasiBongkarMuat'] = RBM::orderBy('created_at', 'desc')->get();
 
         return view('billingSystem.stevadooring.RBM.main', $data);

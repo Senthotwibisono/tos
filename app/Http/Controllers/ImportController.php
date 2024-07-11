@@ -211,7 +211,7 @@ class ImportController extends Controller
             // die;
     
             if ($os != 4 && $os != 5) {
-                $cont = Item::whereIn('container_no', $doCont)->where('selected_do','=', 'N')->where('ves_id', $ves)->get();            
+                $cont = Item::whereIn('container_no', $doCont)->whereIn('ctr_intern_status', ['03', '04', '10', '09', '14'])->where('selected_do','=', 'N')->where('ves_id', $ves)->get();            
             }else {
                 $cont = Item::whereIn('container_no', $doCont)->where('ctr_intern_status', '=',  '15')->where('selected_do','=', 'N')->where('ves_id', 'PELINDO')->get();            
             }

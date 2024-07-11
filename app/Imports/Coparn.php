@@ -34,7 +34,8 @@ class Coparn implements ToCollection, WithHeadingRow
 
     public function collection(Collection $rows)
     {
-        // dd($headers);
+        // $headers = $rows->first()->keys()->all();
+        // dd($headers); 
         $this->ves_id = $this->ves_id;
         $this->ves_code = $this->ves_code;
         $this->ves_name = $this->ves_name;
