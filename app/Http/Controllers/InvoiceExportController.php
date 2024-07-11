@@ -17,6 +17,7 @@ use App\Models\OSDetail;
 use App\Models\MTDetail;
 use App\Models\ExportDetail as Detail;
 use App\Models\JobExport;
+use App\Models\InvoiceHeaderStevadooring;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ReportExport;
@@ -340,13 +341,17 @@ class InvoiceExportController extends Controller
             if ($kapal == 'PELINDO') {
                $ves = (object)[
                 'ves_id'=>'PELINDO',
-                'ves_name'=>'PELINDO'
+                'ves_name'=>'PELINDO',
+                'clossing_date' => null,
+
                ];
             }else {
                 $vessel = VVoyage::where('ves_id', $kapal)->first();
                 $ves = (object)[
                     'ves_id'=>$vessel->ves_id,
-                    'ves_name'=>$vessel->ves_name
+                    'ves_name'=>$vessel->ves_name,
+                    'clossing_date' => $vessel->clossing_date,
+
                    ];
             }
         }else {
@@ -354,19 +359,21 @@ class InvoiceExportController extends Controller
             if ($kapal == 'PELINDO') {
                $ves = (object)[
                 'ves_id'=>'PELINDO',
-                'ves_name'=>'PELINDO'
+                'ves_name'=>'PELINDO',
+                'clossing_date' => null,
                ];
             }else {
                 $vessel = VVoyage::where('ves_id', $kapal)->first();
                 $ves = (object)[
                     'ves_id'=>$vessel->ves_id,
-                    'ves_name'=>$vessel->ves_name
+                    'ves_name'=>$vessel->ves_name,
+                    'clossing_date' => $vessel->clossing_date,
                    ];
             }
         }
         
         $invoice = Form::create([
-            'expired_date'=>$request->exp_date,
+            'expired_date'=>$ves->clossing_date,
             'os_id'=>$request->order_service,
             'cust_id'=>$request->customer,
             'do_id'=>$request->booking_no,
@@ -412,20 +419,23 @@ class InvoiceExportController extends Controller
             if ($kapal == 'PELINDO') {
                $ves = (object)[
                 'ves_id'=>'PELINDO',
-                'ves_name'=>'PELINDO'
+                'ves_name'=>'PELINDO',
+                'clossing_date' => null,
                ];
             }else {
                 $vessel = VVoyage::where('ves_id', $kapal)->first();
                 $ves = (object)[
                     'ves_id'=>$vessel->ves_id,
-                    'ves_name'=>$vessel->ves_name
+                    'ves_name'=>$vessel->ves_name,
+                    'clossing_date' => $vessel->clossing_date
                    ];
             }
         }else {
             $vessel = VVoyage::where('ves_id', $singleCont->ves_id)->first();
             $ves = (object)[
                 'ves_id'=>$vessel->ves_id,
-                'ves_name'=>$vessel->ves_name
+                'ves_name'=>$vessel->ves_name,
+                'clossing_date' => $vessel->clossing_date,
                ];
         }
 
@@ -435,7 +445,7 @@ class InvoiceExportController extends Controller
         }
 
         $form->update([
-            'expired_date'=>$request->exp_date,
+            'expired_date'=>$ves->clossing_date,
             'os_id'=>$request->order_service,
             'cust_id'=>$request->customer,
             'do_id'=>$request->booking_no,
@@ -802,26 +812,33 @@ class InvoiceExportController extends Controller
     
     private function getNextInvoiceDSK()
     {
-        // Mendapatkan nomor proforma terakhir
-        $latest = InvoiceExport::where('inv_type', 'OSK')->orderBy('inv_no', 'desc')->first();
-    
-        // Jika tidak ada proforma sebelumnya, kembalikan nomor proforma awal
-        if (!$latest) {
+        // Mendapatkan nomor invoice terakhir dari kedua tabel
+        $latestExport = InvoiceExport::where('inv_type', 'OSK')->orderBy('inv_no', 'desc')->first();
+        $latestStev = InvoiceHeaderStevadooring::orderBy('invoice_no', 'desc')->first();
+
+        // Jika tidak ada invoice sebelumnya di kedua tabel, kembalikan nomor invoice awal
+        if (!$latestExport && !$latestStev) {
             return 'OSK0000001';
         }
-    
-        // Mendapatkan nomor urut proforma terakhir
-        $lastInvoice = $latest->inv_no;
-    
-        // Mengekstrak angka dari nomor proforma terakhir
-        $lastNumber = (int)substr($lastInvoice, 3);
-    
-        // Menambahkan 1 ke nomor proforma terakhir
+
+        // Mendapatkan nomor invoice terakhir dari kedua tabel
+        $lastExportInvoice = $latestExport ? $latestExport->inv_no : null;
+        $lastStevInvoice = $latestStev ? $latestStev->invoice_no : null;
+
+        // Mengekstrak angka dari nomor invoice terakhir dari kedua tabel
+        $lastExportNumber = $lastExportInvoice ? (int)substr($lastExportInvoice, 3) : 0;
+        $lastStevNumber = $lastStevInvoice ? (int)substr($lastStevInvoice, 3) : 0;
+
+        // Menentukan nomor invoice terbesar dari kedua tabel
+        $lastNumber = max($lastExportNumber, $lastStevNumber);
+
+        // Menambahkan 1 ke nomor invoice terakhir
         $nextNumber = $lastNumber + 1;
-    
-        // Menghasilkan nomor proforma berikutnya dengan format yang benar
+
+        // Menghasilkan nomor invoice berikutnya dengan format yang benar
         return 'OSK' . str_pad($nextNumber, 7, '0', STR_PAD_LEFT);
     }
+
     
     private function getNextInvoiceDS()
     {
@@ -1192,7 +1209,7 @@ class InvoiceExportController extends Controller
       $startDate = $request->start;
       $endDate = $request->end;
       $invoiceQuery = Detail::whereHas('service', function ($query) {
-        $query->where('ie', '=', 'P');
+        $query->where('ie', '=', 'E');
     })->where('os_id', $os)
       ->whereDate('order_date', '>=', $startDate)
       ->whereDate('order_date', '<=', $endDate);

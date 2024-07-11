@@ -84,7 +84,7 @@
               <div class="col-xs-12 col-8 my-auto">
                 <h2>Invoice<br>
                   <span class="small">Proforma No. # {{$invoice->proforma_no}}</span><br>
-                  <span class="small">Invoice No. # {{$invoice->inv_no}}</span>
+                  <span class="small">Invoice No. # {{$invoice->invoice_no}}</span>
                   <br>
                 </h2>
               </div>

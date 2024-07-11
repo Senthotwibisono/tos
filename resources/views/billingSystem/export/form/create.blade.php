@@ -35,12 +35,7 @@
                 <input required type="text" class="form-control" id="npwp" name="npwp" placeholder="Pilih Customer Dahulu!.." readonly>
               </div>
             </div>
-            <div class="col-4">
-              <div class="form-group">
-                <label for="">Expired Date</label>
-                <input required name="exp_date" id="exp_date" type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023" id="expired">
-              </div>
-            </div>
+            
             <div class="col-12">
               <div class="form-group">
                 <label for="">Address</label>

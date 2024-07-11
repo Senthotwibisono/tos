@@ -9,6 +9,7 @@ use App\Models\VVoyage;
 use App\Models\Item;
 use App\Models\Shifting;
 use App\Models\RBM;
+use App\Models\InvoiceExport;
 use App\Models\TarifStevadooring as Tarif;
 use App\Models\OrderService as OS;
 use App\Models\MasterTarif as MT;
@@ -523,10 +524,10 @@ class StevadooringController extends Controller
         $cust = Customer::where('id', $request->customer)->first();
         $user = Auth::user()->id;
         $nextProformaNumber = $this->getNextProformaNumber();
-        $invoiceNo = $this->getNextInvoice();
+        
         $header = Header::create([
             'proforma_no'=>$nextProformaNumber,
-            'invoice_no'=>$invoiceNo,
+
             'cust_id'=>$request->customer,
             'cust_name'=>$cust->name,
             'fax'=>$cust->fax,
@@ -1239,8 +1240,14 @@ class StevadooringController extends Controller
     {
         $id = $request->inv_id;
         $invoice = Header::where('id', $id)->first();
+        if ($invoice->inv_no == null) {
+                $invoiceNo = $this->getNextInvoiceDSK();
+       }else {
+         $invoiceNo = $invoice->inv_no;
+       }
         if ($invoice) {
             $invoice->update([
+                'invoice_no' => $invoiceNo,
                 'lunas' => 'Y',
                 'lunas_at'=> Carbon::now(),
             ]);
@@ -1262,8 +1269,14 @@ class StevadooringController extends Controller
     {
         $id = $request->inv_id;
         $invoice = Header::where('id', $id)->first();
+        if ($invoice->inv_no == null) {
+                $invoiceNo = $this->getNextInvoiceDSK();
+       }else {
+         $invoiceNo = $invoice->inv_no;
+       }
         if ($invoice) {
             $invoice->update([
+                'invoice_no' => $invoiceNo,
                 'lunas' => 'P',
                 'lunas_at'=> Carbon::now(),
             ]);
@@ -1328,28 +1341,35 @@ class StevadooringController extends Controller
         return 'P' . str_pad($nextNumber, 7, '0', STR_PAD_LEFT);
     }
     
-    private function getNextInvoice()
+    private function getNextInvoiceDSK()
     {
-        // Mendapatkan nomor proforma terakhir
-        $latest = Header::orderBy('created_at', 'desc')->first();
-    
-        // Jika tidak ada proforma sebelumnya, kembalikan nomor proforma awal
-        if (!$latest) {
-            return 'STV0000001';
+        // Mendapatkan nomor invoice terakhir dari kedua tabel
+        $latestExport = InvoiceExport::where('inv_type', 'OSK')->orderBy('inv_no', 'desc')->first();
+        $latestStev = Header::orderBy('invoice_no', 'desc')->first();
+
+        // Jika tidak ada invoice sebelumnya di kedua tabel, kembalikan nomor invoice awal
+        if (!$latestExport && !$latestStev) {
+            return 'OSK0000001';
         }
-    
-        // Mendapatkan nomor urut proforma terakhir
-        $lastInvoice = $latest->invoice_no;
-    
-        // Mengekstrak angka dari nomor proforma terakhir
-        $lastNumber = (int)substr($lastInvoice, 3);
-    
-        // Menambahkan 1 ke nomor proforma terakhir
+
+        // Mendapatkan nomor invoice terakhir dari kedua tabel
+        $lastExportInvoice = $latestExport ? $latestExport->inv_no : null;
+        $lastStevInvoice = $latestStev ? $latestStev->invoice_no : null;
+
+        // Mengekstrak angka dari nomor invoice terakhir dari kedua tabel
+        $lastExportNumber = $lastExportInvoice ? (int)substr($lastExportInvoice, 3) : 0;
+        $lastStevNumber = $lastStevInvoice ? (int)substr($lastStevInvoice, 3) : 0;
+
+        // Menentukan nomor invoice terbesar dari kedua tabel
+        $lastNumber = max($lastExportNumber, $lastStevNumber);
+
+        // Menambahkan 1 ke nomor invoice terakhir
         $nextNumber = $lastNumber + 1;
-    
-        // Menghasilkan nomor proforma berikutnya dengan format yang benar
-        return 'STV' . str_pad($nextNumber, 7, '0', STR_PAD_LEFT);
+
+        // Menghasilkan nomor invoice berikutnya dengan format yang benar
+        return 'OSK' . str_pad($nextNumber, 7, '0', STR_PAD_LEFT);
     }
+
 
     private function terbilang($number)
     {

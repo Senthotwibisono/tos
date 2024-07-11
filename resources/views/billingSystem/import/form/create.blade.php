@@ -38,7 +38,7 @@
             <div class="col-4">
               <div class="form-group">
                 <label for="">Expired Date</label>
-                <input required name="exp_date" id="exp_date" type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023" id="expired">
+                <input required name="exp_date" id="exp_date" type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023" readonly>
               </div>
             </div>
             <div class="col-12">
@@ -292,6 +292,7 @@ $(function(){
                             }).then(() => {
                                 $('#do_exp_date').val(response.data.expired);
                                 $('#boln').val(response.data.bl_no);
+                                $('#exp_date').val(response.expired);
                                 $('#containerSelector').empty();
                             
                                 $.each(response.cont, function(index, item) {

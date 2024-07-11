@@ -147,6 +147,12 @@
               </div>
               <div class="col-xs-12 col-12">
                 <address>
+                  <strong>Active To:</strong><br>
+                  {{$invoice->expired_date}}
+                </address>
+              </div>
+              <div class="col-xs-12 col-12">
+                <address>
                 <strong>Metode Pembayaran</strong><br>
                   Nama Bank : <strong>MANDIRI</strong> <br>
                   Pemilik Rekening :  <strong>PT. INDO KONTAINER SARANA</strong><br>

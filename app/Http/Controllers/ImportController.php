@@ -217,11 +217,19 @@ class ImportController extends Controller
             }
            
             if (!$cont->isEmpty()) {
+                $singleCont = $cont->first();
+                $discDate = Carbon::parse($singleCont->disc_date);
+                $expiryDate = $discDate->addDays(4);
+                $expired = Carbon::now()->greaterThan($expiryDate);
+                // var_dump($singleCont->disc_date, $discDate, $expiryDate, $expired);
+                // die;
+                $expiryDateFormatted = $expiryDate->format('Y-m-d');
                 return response()->json([
                     'success' => true,
                     'message' => 'updated successfully!',
                     'data'    => $do,
                     'cont' => $cont,
+                    'expired' => $expiryDateFormatted,
                 ]);
             } else {
                 return response()->json([
@@ -1174,13 +1182,18 @@ private function getNextJob($lastJobNo)
             $jobNo = $this->getNextJob($lastJobNo);
             $job = JobImport::where('inv_id', $invoice->id)->where('container_key', $cont->container_key)->first();
             if (!$job) {
+                $discDate = Carbon::parse($cont->disc_date);
+                $expiryDate = $discDate->addDays(4);
+                $expired = Carbon::now()->greaterThan($expiryDate);
+                
+                $expiryDateFormatted = $expiryDate->format('Y-m-d');
                 $job = JobImport::create([
                     'inv_id'=>$invoice->id,
                     'job_no'=>$jobNo,
                     'os_id'=>$invoice->os_id,
                     'os_name'=>$invoice->os_name,
                     'cust_id'=>$invoice->cust_id,
-                    'active_to'=>$invoice->expired_date,
+                    'active_to'=>$expiryDateFormatted,
                     'container_key'=>$cont->container_key,
                     'container_no'=>$cont->container_no,
                     'ves_id'=>$cont->ves_id,
@@ -1235,13 +1248,18 @@ private function getNextJob($lastJobNo)
         foreach ($containerInvoice as $cont) {
             $lastJobNo = JobImport::orderBy('id', 'desc')->value('job_no');
             $jobNo = $this->getNextJob($lastJobNo);
+            $discDate = Carbon::parse($cont->disc_date);
+            $expiryDate = $discDate->addDays(4);
+            $expired = Carbon::now()->greaterThan($expiryDate);
+            
+            $expiryDateFormatted = $expiryDate->format('Y-m-d');
             $job = JobImport::create([
                 'inv_id'=>$invoice->id,
                 'job_no'=>$jobNo,
                 'os_id'=>$invoice->os_id,
                 'os_name'=>$invoice->os_name,
                 'cust_id'=>$invoice->cust_id,
-                'active_to'=>$invoice->expired_date,
+                'active_to'=>$expiryDateFormatted,
                 'container_key'=>$cont->container_key,
                 'container_no'=>$cont->container_no,
                 'ves_id'=>$cont->ves_id,
