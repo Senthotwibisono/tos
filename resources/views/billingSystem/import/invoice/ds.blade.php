@@ -156,6 +156,12 @@
                   {{$invoice->os_name}}
                 </address>
               </div>
+              <div class="col-xs-12 col-12">
+                <address>
+                  <strong>DO Number:</strong><br>
+                  {{$invoice->Form->doOnline->do_no}}
+                </address>
+              </div>
             </div>
             <div class="col-6">
               <div class="col-xs-12 col-12">

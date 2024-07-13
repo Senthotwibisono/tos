@@ -29,7 +29,7 @@
                                 <option value="E" {{ $orderService->ie == 'E' ? 'selected' : '' }}>Export</option>
                                 <option value="X" {{ $orderService->ie == 'X' ? 'selected' : '' }}>Extend</option>
                                 <option value="P" {{ $orderService->ie == 'P' ? 'selected' : '' }}>Plugging</option>
-                                <option value="R" {{ $orderService->ie == 'R' ? 'selected' : '' }}>Rental & Repair</option>
+                                <option value="R" {{ $orderService->ie == 'R' ? 'selected' : '' }}>Others</option>
                             </select>
                         </div>
                     </div>
@@ -39,8 +39,10 @@
                             <select name="order" class="form-select js-example-basic-multiple">
                                 <option value="SP2" {{ $orderService->order == 'SP2' ? 'selected' : '' }}>SP2</option>
                                 <option value="SPPS" {{ $orderService->order == 'SPPS' ? 'selected' : '' }}>SPPS</option>
+                                <option value="SPPSD" {{ $orderService->order == 'SPPSD' ? 'selected' : '' }}>SPPS (Stuffing Dalam)</option>
                                 <option value="MTI" {{ $orderService->order == 'MTI' ? 'selected' : '' }}>MT Kapal Icon</option>
                                 <option value="MTK" {{ $orderService->order == 'MTK' ? 'selected' : '' }}>MT Kapal Luar</option>
+                                <option value="P" {{ $orderService->order == 'P' ? 'selected' : '' }}>Palka</option>
                                 <option value="N" {{ $orderService->order == 'N' ? 'selected' : '' }}>None</option>
                             </select>
                         </div>

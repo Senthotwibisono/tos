@@ -75,7 +75,7 @@
                                     <option value="E">Export</option>
                                     <option value="X">Extend</option>
                                     <option value="P">Plugging</option>
-                                    <option value="R">Rental & Repair</option>
+                                    <option value="R">Others</option>
                                 </select>
                             </div>
                         </div>
@@ -86,8 +86,10 @@
                                     <option disabeled selected value>Pilih Satu !!</option>
                                     <option value="SP2">SP2/RC</option>
                                     <option value="SPPS">SPPS</option>
+                                    <option value="SPPSD">SPPS (Stuffing Dalam)</option>
                                     <option value="MTI">MT Kapal Icon</option>
                                     <option value="MTK">MT Kapal Luar</option>
+                                    <option value="P">Palka</option>
                                     <option value="N">None</option>
                                 </select>
                             </div>

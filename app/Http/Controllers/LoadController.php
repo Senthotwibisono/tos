@@ -163,7 +163,15 @@ class LoadController extends Controller
   public function get_cont(Request $request)
   {
     $ves_id = $request->ves_id;
-    $container_key = Item::where('ves_id', $ves_id)->whereIn('ctr_intern_status', ['50', '51', '53'])->get();
+    $container_key = Item::where('ves_id', $ves_id)
+    ->where(function ($query) {
+        $query->whereIn('ctr_intern_status', ['50', '51', '53'])
+              ->orWhere(function ($query) {
+                  $query->where('ctr_status', 'MTY')
+                        ->whereIn('ctr_intern_status', ['14', '04']);
+              });
+    })
+    ->get();
 
     $option = []; // Inisialisasi variabel $option sebagai array kosong
 
@@ -210,6 +218,7 @@ class LoadController extends Controller
 
   public function confirm(Request $request)
   {
+    $kapal = VVoyage::where('ves_id', $request->ves_id)->first();
     $container_key = $request->container_key;
     $id_alat = $request->cc_tt_no;
     $alat = MasterAlat::where('id', $id_alat)->first();
@@ -271,6 +280,11 @@ class LoadController extends Controller
           'cc_tt_oper'  => $opr->name,
           'ctr_intern_status' => '56',
           'ctr_active_yn' => 'N',
+          'ctr_i_e_t' => 'E',
+          'ves_id'=>$kapal->ves_id,
+          'ves_code'=>$kapal->ves_code,
+          'ves_name'=>$kapal->ves_name,
+          'voy_no'=>$kapal->voy_out,
         ]);
         $ship->update([
           'container_no'=>$item->container_no,

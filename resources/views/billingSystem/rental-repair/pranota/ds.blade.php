@@ -130,6 +130,7 @@
                 </address>
               </div>
             </div>
+            @if($form->service->order != 'P')
             <div class="row">
               <div class="col-12">
                 <h6>CONTAINER SUMMARY</h6>
@@ -155,26 +156,46 @@
                 </table>
               </div>
             </div>
+            @endif
             <div class="row mt-3">
               <div class="col-md-12">
                 <h6>PRANOTA SUMMARY</h6>
                 <table class="table table-striped">
+                  @if($form->service->order != 'P')
                   <thead>
-                    <tr class="line">
-                      <td class="text-right"><strong>Keterangan</strong></td>
-                      <td class="text-right"><strong>Ukuran</strong></td>
-                      <td class="text-right"><strong>Tarif</strong></td>
+                    <tr>
+                      <td class="text-center"><strong>Keterangan</strong></td>
+                      <td class="text-center"><strong>Ukuran</strong></td>
+                      <td class="text-center"><strong>Type</strong></td>
                     </tr>
                   </thead>
                   <tbody>
                     @foreach ($contInvoice as $cont)
                     <tr>
-                      <td class="text-right">{{$form->service->name}} {{$cont->container_no}}</td>
-                      <td class="text-right">{{$cont->ctr_size}}</td>
-                      <td class="text-right">{{$cont->tarif}}</td>
+                      <td class="text-center">{{$form->service->name}} {{$cont->container_no}}</td>
+                      <td class="text-center">{{$cont->ctr_size}}</td>
+                      <td class="text-center">{{$cont->ctr_type}}</td>
                     </tr>
                     @endforeach
                   </tbody>
+                  @else
+                    <thead>
+                      <tr>
+                        <th class="text-center">Kapal</th>
+                        <th class="text-center">Voy In</th>
+                        <th class="text-center">Voy Out</th>
+                        <th class="text-center">Jumlah Palka</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td class="text-center">{{$form->Kapal->ves_name}}</td>
+                      <td class="text-center">{{$form->Kapal->voy_in}}</td>
+                      <td class="text-center">{{$form->Kapal->voy_out}}</td>
+                      <td class="text-center">{{$form->palka}}</td>
+                    </tr>
+                    </tbody>
+                  @endif
                 </table>
               </div>
             </div>

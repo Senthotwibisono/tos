@@ -151,6 +151,18 @@
           
 
           <div class="row mt-5">
+            <div id="kapalManual" class="col-12 col-md-4" style="{{ $form->Service->order == 'SPPSD' ? 'block' : 'none' }};">
+              <div class="form-group">
+                <label for="">Select Vessel</label>
+                <select  name="ves_id" id="vesStuffing" class="js-example-basic-single form-control" style="height: 150%;">
+                    <option value="" disabled selected>Pilih Salah Satu</option>
+                    @foreach($kapalRO as $kpl)
+                    <option value="{{$kpl->ves_id}}" {{$form->ves_id == $kpl->ves_id ? 'selected' : ''}}>{{$kpl->ves_name}} -- {{$kpl->voy_out}}</option>
+                    @endforeach
+                    <option value="PELINDO">Relokasi Pelindo</option>
+                  </select>
+              </div>
+            </div>
             <div class="col-12">
               <h5>Add Container</h5>
               <p>Masukan Nomor Container</p>
@@ -272,33 +284,60 @@ $(function(){
                 })
             })
 
-            $('#orderService'). on('change', function(){
+            $('#orderService').on('change', function() {
                 let id = $('#orderService').val();
-
+            
                 $.ajax({
                     type: 'get',
-                    url: "{{ route('getOrder')}}",
-                    data : {id : id},
+                    url: "{{ route('getOrder') }}",
+                    data: { id: id },
                     cache: false,
-                    
-                    success: function(response){
+                    success: function(response) {
                         $('#order').val(response.data.order);
                         $('#containerSelector').empty();
-                        $('#booking_no').val(null);
-                        $('#RoNo').val(null);
-                          if (response.data.order == "SPPS") {
+                    
+                        if (response.data.order == "SPPS") {
                             $('#do_fill').hide();
                             $('#roDok').show();
-                          } else {
+                            $('#kapalManual').hide();
+                        } else if (response.data.order == "SPPSD") {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Saved!',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    $('#do_fill').hide();
+                                    $('#roDok').hide();
+                                    $('#kapalManual').show();
+                                    $.each(response.cont, function(index, item) {
+                                        $('#containerSelector').append($('<option>', {
+                                            value: item.container_key,
+                                            text: item.container_no,
+                                        }));
+                                    });
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: response.message
+                                }).then(() => {
+                                    window.location.reload();
+                                });
+                            }
+                        } else {
                             $('#do_fill').show();
                             $('#roDok').hide();
-                          }
+                            $('#kapalManual').hide();
+                        }
                     },
-                    error: function(data){
-                        console.log('error:',data)
+                    error: function(data) {
+                        console.log('error:', data);
                     },
-                })
-            })
+                });
+            });
 
 
     // Do

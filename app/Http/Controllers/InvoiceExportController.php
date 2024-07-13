@@ -141,11 +141,33 @@ class InvoiceExportController extends Controller
     public function getOrder(Request $request)
     {
         $os = OS::where('id', $request->id)->first();
-        return response()->json([
-            'success' => true,
-            'message' => 'Tidak ada container yang dapat digunakan !!',
-            'data' => $os
-        ]);
+        if ($os->order == 'SPPSD') {
+            $cont = Item::where('ctr_status', '=', 'MTY')
+                        ->whereIn('ctr_intern_status', ['04', '06', '53', '56'])
+                        ->get();
+
+            if ($cont->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tidak ada kontainer yang dapat digunakan !!',
+                    'data' => $os,
+                ]);
+            } else {
+                return response()->json([
+                    'success' => true,
+                    'message' => '',
+                    'data' => $os,
+                    'cont' => $cont,
+                ]);
+            }
+        } else {
+            return response()->json([
+                'success' => true,
+                'message' => 'Tidak ada container yang dapat digunakan !!',
+                'data' => $os
+            ]);
+        }
+        
     }
 
     public function getROdataExport(Request $request)

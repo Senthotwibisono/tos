@@ -106,6 +106,16 @@ class RentalController extends Controller
          }
     }
 
+    public function getOrder(Request $request)
+    {
+        $os = OS::where('id', $request->id)->first();
+        return response()->json([
+            'success' => true,
+            'message' => 'Tidak ada container yang dapat digunakan !!',
+            'data' => $os
+        ]);
+    }
+
     public function FormStore(Request $request)
     {
         $contSelect = $request->container;
@@ -119,13 +129,15 @@ class RentalController extends Controller
             'done'=>'N',
             'discount_ds'=>$request->discount_ds,
             'discount_dsk'=>$request->discount_dsk,
+            'tarif'=>$request->tarif,
+            'palka'=>$request->palka,
         ]);
 
-      
+      $service = OS::where('id', $invoice->os_id)->first();
+      if ($service->order != 'P') {
         foreach ($contSelect as $cont) {
             $item = Item::where('container_key', $cont)->first();
             $tarif = $request->input("tarif-$cont");
-            // dd($tarif);
             $contInvoice = Container::create([
                 'container_key'=>$item->container_key,
                 'container_no'=>$item->container_no,
@@ -137,9 +149,10 @@ class RentalController extends Controller
                 'ctr_type'=>$item->ctr_type,
                 'ctr_intern_status'=>$item->ctr_intern_status,
                 'gross'=>$item->gross,
-                'tarif'=>$tarif,
             ]);
         }
+      }
+       
 
 
         return redirect()->route('rental-repair-preinvoice', ['id' => $invoice->id])->with('success', 'Silahkan Lanjut ke Tahap Selanjutnya');
@@ -149,31 +162,35 @@ class RentalController extends Controller
     {
        $invoice = Form::where('id', $request->form_id)->first();
       
+       $service = OS::where('id', $request->order_service)->first();
+        if ($service->order != 'P') {
+         $oldCont = Container::where('form_id', $invoice->id)->get();
+         foreach ($oldCont as $cont) {
+             $cont->delete();
+         }   
+
+         $newContainer = $request->container;
+         foreach ($newContainer as $cont) {
+             $item = Item::where('container_key', $cont)->first();
+             $tarif = $request->input("tarif-$cont");
+             $contInvoice = Container::create([
+                 'container_key'=>$item->container_key,
+                 'container_no'=>$item->container_no,
+                 'ctr_size'=>$item->ctr_size,
+                 'ctr_status'=>$item->ctr_status,
+                 'form_id'=>$invoice->id,
+                 'ves_id'=>$item->ves_id,
+                 'ves_name'=>$item->ves_name,
+                 'ctr_type'=>$item->ctr_type,
+                 'ctr_intern_status'=>$item->ctr_intern_status,
+                 'gross'=>$item->gross,
+                 'palka'=>$request->palka,
+             ]);
+         }
+
+       }
        
-       $oldCont = Container::where('form_id', $invoice->id)->get();
-        foreach ($oldCont as $cont) {
-            $cont->delete();
-        }
-
-        $newContainer = $request->container;
-        foreach ($newContainer as $cont) {
-            $item = Item::where('container_key', $cont)->first();
-            $tarif = $request->input("tarif-$cont");
-            $contInvoice = Container::create([
-                'container_key'=>$item->container_key,
-                'container_no'=>$item->container_no,
-                'ctr_size'=>$item->ctr_size,
-                'ctr_status'=>$item->ctr_status,
-                'form_id'=>$invoice->id,
-                'ves_id'=>$item->ves_id,
-                'ves_name'=>$item->ves_name,
-                'ctr_type'=>$item->ctr_type,
-                'ctr_intern_status'=>$item->ctr_intern_status,
-                'gross'=>$item->gross,
-                'tarif'=>$tarif,
-            ]);
-        }
-
+       
         $invoice->update([
             'os_id'=>$request->order_service,
             'cust_id'=>$request->customer,
@@ -182,6 +199,7 @@ class RentalController extends Controller
             'done'=>'N',
             'discount_ds'=>$request->discount_ds,
             'discount_dsk'=>$request->discount_dsk,
+            'tarif'=>$request->tarif,
         ]);
 
         return redirect()->route('rental-repair-preinvoice', ['id' => $invoice->id])->with('success', 'Silahkan Lanjut ke Tahap Selanjutnya');
@@ -205,10 +223,10 @@ class RentalController extends Controller
             return $sizeGroup->groupBy('ctr_status');
         });
         $data['ctrGroup'] = $ctrGroup;
-        $discDateCarbon = Carbon::parse($form->disc_date);
-        $expDateCarbon = Carbon::parse($form->expired_date);
-        $secondsDifference = $discDateCarbon->diffInSeconds($expDateCarbon);
-        $shiftCount = ceil($secondsDifference / 28800);
+        // $discDateCarbon = Carbon::parse($form->disc_date);
+        // $expDateCarbon = Carbon::parse($form->expired_date);
+        // $secondsDifference = $discDateCarbon->diffInSeconds($expDateCarbon);
+        // $shiftCount = ceil($secondsDifference / 28800);
         // dd($shiftCount);
         $osDS = OSDetail::where('os_id', $form->os_id)->where('type', '=', 'OS')->get();
 
@@ -223,7 +241,7 @@ class RentalController extends Controller
             if ($singleTarifDetail) {
                 $data['adminDS'] = $singleTarifDetail->tarif;
             }
-            $data['totalDS'] = $containerInvoice->sum('tarif');
+            $data['totalDS'] = $form->tarif;
             $data['discountDS'] = ($data['totalDS'] + $data['adminDS']) * $form->discount_ds / 100;
             $data['pajakDS'] = (($data['totalDS'] + $data['adminDS']) - $data['discountDS']) * 11 / 100;
             $data['grandTotalDS'] = (($data['totalDS'] + $data['adminDS']) - $data['discountDS']) + $data['pajakDS'];
@@ -345,8 +363,8 @@ class RentalController extends Controller
                         'master_item_id'=>$service->master_item_id,
                         'master_item_name'=>$service->master_item_name,
                         'kode'=>$service->kode,
-                        'tarif'=>$tarifDetail->tarif,
-                        'total'=>$tarifDetail->tarif,
+                        'tarif'=>$singleTarifDetail->tarif,
+                        'total'=>$singleTarifDetail->tarif,
                         'form_id'=>$form->id,
                         'count_by'=>'O',
                        ]);

@@ -14,11 +14,12 @@
   <div class="card">
     <div class="card-body">
       <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns display ">
+        @if($form->service->order != 'P')
         <thead>
           <tr>
             <th>Keterangan</th>
             <th>Ukuran</th>
-            <th>Tarif</th>
+            <th>Type</th>
           </tr>
         </thead>
         <tbody>
@@ -26,10 +27,28 @@
         <tr>
           <td>{{$form->service->name}} {{$cont->container_no}}</td>
           <td>{{$cont->ctr_size}}</td>
-          <td>{{$cont->tarif}}</td>
+          <td>{{$cont->ctr_type}}</td>
         </tr>
         @endforeach
         </tbody>
+        @else
+        <thead>
+          <tr>
+            <th>Kapal</th>
+            <th>Voy In</th>
+            <th>Voy Out</th>
+            <th>Jumlah Palka</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>{{$form->Kapal->ves_name}}</td>
+          <td>{{$form->Kapal->voy_in}}</td>
+          <td>{{$form->Kapal->voy_out}}</td>
+          <td>{{$form->palka}}</td>
+        </tr>
+        </tbody>
+        @endif
       </table>
     </div>
   </div>

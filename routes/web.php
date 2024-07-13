@@ -1168,3 +1168,4 @@ Route::post('/renta&repair/master-tarif-create-first', [MasterInvoiceController:
   Route::post('/renta&repair-piutang', [RentalController::class, 'Piutang'])->name('PiutangRentalRepair');
   Route::post('/renta&repair-paid', [RentalController::class, 'Paid'])->name('PaidRentalRepair');
   Route::post('/renta&repair-cancel', [RentalController::class, 'Cancel'])->name('CancelRentalRepair');
+  Route::get('/renta&repair/osData', [RentalController::class, 'getOrder'])->name('rental-osData');

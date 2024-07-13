@@ -83,19 +83,19 @@
                 </select>
               </div>
             </div>
+            <div class="col-12" id="palka">
+              <label for="">Jumlah Palka</label>
+              <input type="number" class="form-control" name="palka" value="{{$form->palka ?? ''}}">
+            </div>
           </div>
-          <div id="tarifContainer">
-            @foreach($containerInvoice as $container)
-              <div class="tarif-input">
-                <label for="tarif-{{$container->container_key}}">Tarif for {{$container->container_no}}</label>
-                <input type="text" id="tarif-{{$container->container_key}}" name="tarif[{{$container->container_key}}]" class="form-control" placeholder="Enter tarif for {{$container->container_no}}" value="{{ $container->tarif }}">
-              </div>
-            @endforeach
+          <div class="col-12">
+            <label for="">Tarif</label>
+            <input type="number" class="form-control" name="tarif" value="{{$form->tarif}}">
           </div>
             
-          </div>
           
-          <div class="row mt-5">
+          
+        <div class="row mt-5">
           <h5>Discount</h5>
           <p>Di Isi dengan Persen (%)</p>
           <div class="col-sm-6">
@@ -147,6 +147,44 @@
       });
     });
 
+   
+    // Initial page load check
+    let initialOrder = "{{$form->service->order ?? ''}}";
+    if (initialOrder === "P") {
+        $('#selector').hide();
+        $('#palka').show();
+    } else {
+        $('#selector').show();
+        $('#palka').hide();
+    }
+
+    $('#orderService'). on('change', function(){
+        let id = $('#orderService').val();
+        $.ajax({
+            type: 'get',
+            url: "/renta&repair/osData",
+            data : {id : id},
+            cache: false,
+            
+            success: function(response){
+                $('#order').val(response.data.order);
+                $('#containerSelector').empty();
+                // $('#booking_no').empty();
+                // $('#RoNo').empty();
+                  if (response.data.order == "P") {
+                    $('#selector').hide();
+                    $('#palka').show();
+                  } else {
+                    $('#selector').show();
+                    $('#palka').hide();
+                  }
+            },
+            error: function(data){
+                console.log('error:',data)
+            },
+        })
+    })
+
     // Vessel Change Event
     $('#kapalPlugging').on('change', function() {
       let kapal = $(this).val();
@@ -192,20 +230,20 @@
     });
 
     // Container Selector Change Event
-    $('#containerSelector').on('change', function() {
-      $('#tarifContainer').empty();
-      const selectedContainers = Array.from(this.selectedOptions).map(option => ({
-        value: option.value,
-        label: option.text
-      }));
-      selectedContainers.forEach(container => {
-        const tarifInput = $('<div>').addClass('tarif-input').html(`
-          <label for="tarif-${container}">Tarif for ${container.label}</label>
-          <input type="text" id="tarif-${container}" name="tarif-${container.value}" class="form-control" placeholder="Enter tarif for ${container.label}">
-        `);
-        $('#tarifContainer').append(tarifInput);
-      });
-    });
+    // $('#containerSelector').on('change', function() {
+    //   $('#tarifContainer').empty();
+    //   const selectedContainers = Array.from(this.selectedOptions).map(option => ({
+    //     value: option.value,
+    //     label: option.text
+    //   }));
+    //   selectedContainers.forEach(container => {
+    //     const tarifInput = $('<div>').addClass('tarif-input').html(`
+    //       <label for="tarif-${container}">Tarif for ${container.label}</label>
+    //       <input type="text" id="tarif-${container}" name="tarif-${container.value}" class="form-control" placeholder="Enter tarif for ${container.label}">
+    //     `);
+    //     $('#tarifContainer').append(tarifInput);
+    //   });
+    // });
   });
 </script>
 

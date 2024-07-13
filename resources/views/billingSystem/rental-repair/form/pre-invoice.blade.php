@@ -57,6 +57,7 @@
 
         </div>
 
+        @if($form->service->order != 'P')
         <div class="row mt-3">
           <div class="col-12">
             <h4 class="card-title">
@@ -93,6 +94,8 @@
             </table>
           </div>
         </div>
+        @endif
+        
         <div class="row mt-3">
           @include('billingSystem.rental-repair.form.preInvoice.ds')
         </div>
