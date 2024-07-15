@@ -430,7 +430,7 @@ class InvoiceExtend extends Controller
             'alamat'=>$form->customer->alamat,
             'os_id'=>$form->os_id,
             'os_name'=>$form->service->name,
-            'admin'=>$request->admin,
+            'admin'=>$request->admin, 
             'total'=>$request->total,
             'discount'=>$request->discount,
             'pajak'=>$request->pajak,

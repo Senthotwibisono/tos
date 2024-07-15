@@ -1,3 +1,6 @@
+<?php
+use Carbon\Carbon;
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -147,8 +150,8 @@
               </div>
               <div class="col-xs-12 col-12">
                 <address>
-                  <strong>Active To:</strong><br>
-                  {{$invoice->expired_date}}
+                  <strong>Perpanjangan Dari:</strong><br>
+                  {{ Carbon::parse($form->disc_date)->addDay()->format('Y-m-d') }} Sampai Dengan {{$form->expired_date}}
                 </address>
               </div>
               <div class="col-xs-12 col-12">

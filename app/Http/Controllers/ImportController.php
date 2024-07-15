@@ -545,9 +545,9 @@ class ImportController extends Controller
         $interval = $discDate->diff($expDate);
         $jumlahHari = $interval->days;
         // dd($jumlahHari);
-        if($jumlahHari >= 6 ){
-            return redirect()->back()->with('error', 'Melebihi Kuota Massa 1 !!');
-        }
+        // if($jumlahHari >= 6 ){
+        //     return redirect()->back()->with('error', 'Melebihi Kuota Massa 1 !!');
+        // }
         $invoice = Form::create([
             'expired_date'=>$request->exp_date,
             'os_id'=>$request->order_service,
