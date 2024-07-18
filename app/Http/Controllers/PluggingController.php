@@ -583,7 +583,7 @@ class PluggingController extends Controller
         $id = $request->inv_id;
 
         $invoice = InvoiceExport::where('id', $id)->first();
-        if ($invoice->lunas == 'N') {
+        if ($invoice->invoice_date == null) {
             $invDate = Carbon::now();
         }else {
             $invDate = $invoice->invoice_date;

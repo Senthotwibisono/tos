@@ -5,7 +5,7 @@
 
 <div class="page-heading">
   <h3><?= $title ?></h3>
-  <p>Management Data Billing Delivery</p>
+  <p>Management Data Billing Bongkar</p>
 
 </div>
 <div class="page-content">
@@ -14,12 +14,12 @@
     <div class="col-12 mb-3">
       <a href="{{ route('deliveryMenu')}}" type="button" class="btn btn-primary">
         <i class="fa fa-folder"></i>
-        Delivery Form
+        Bongkar Form
       </a>
     </div>
     <div class="card">
       <div class="card-header">
-        <h4>EXport to Zahir</h4>
+        <h4>Export to Zahir</h4>
         <form action="{{ route('zahir-invoice-import')}}" method="GET" enctype="multipart/form-data">
           <div class="row">
             <div class="col-4">
@@ -321,7 +321,7 @@
       <div class="col-12">
         <div class="card">
           <div class="card-header">
-            <h4 class="card-title">Tabel Data Billing Delivery {{$os->name}}</h4>
+            <h4 class="card-title">Tabel Data Billing Bongkaran {{$os->name}}</h4>
             <p>Rekap Data Billing</p>
           </div>
           <div class="card-body">

@@ -19,7 +19,7 @@
     </div>
     <div class="card">
       <div class="card-header">
-        <h4>EXport to Zahir</h4>
+        <h4>Muat to Zahir</h4>
         <form action="/invoice/zahir-export" method="GET" enctype="multipart/form-data">
           <div class="row">
             <div class="col-4">
@@ -43,7 +43,7 @@
         </form>
       </div>
       <div class="card-header">
-      <h4>Report Export</h4>
+      <h4>Report Muat</h4>
         <form action="{{ route('report-invoice-export-All')}}" method="GET" enctype="multipart/form-data">
           <div class="row">
             <div class="col-sm-3">

@@ -22,6 +22,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ReportExport;
 use App\Exports\ReportInvoice;
+use App\Exports\ReportInvoiceAllExport;
 
 
 use Auth;
@@ -1247,26 +1248,83 @@ class InvoiceExportController extends Controller
     }
 
     public function ReportExcelAll(Request $request)
-    {
-        $startDate = $request->start;
-        $endDate = $request->end;
-        $invoiceQuery = InvoiceExport::whereDate('invoice_date', '>=', $startDate)
-            ->whereDate('invoice_date', '<=', $endDate);
-    
-        // Cek apakah checkbox 'inv_type' ada dalam request dan tidak kosong
-        if ($request->has('inv_type') && !empty($request->inv_type)) {
-            // Tambahkan filter berdasarkan 'inv_type'
-            $invoiceQuery->whereIn('inv_type', $request->inv_type);
-        }
-    
-        $invoice = $invoiceQuery->whereHas('service', function ($query) {
-            $query->where('ie', '=', 'E');
-        })->whereNot('lunas', '=', 'N')->orderBy('inv_no', 'asc')->get();
-    
-        $fileName = 'ReportInvoiceExport-' . $startDate . '-' . $endDate . '.xlsx';
+{
+    $startDate = $request->start;
+    $endDate = $request->end;
 
-      return Excel::download(new ReportInvoice($invoice), $fileName);
+    // Initialize the query for InvoiceExport
+    $invoiceQuery = InvoiceExport::whereDate('invoice_date', '>=', $startDate)
+        ->whereDate('invoice_date', '<=', $endDate);
+
+    // Check if the 'inv_type' checkbox is present and not empty in the request
+    if ($request->has('inv_type') && !empty($request->inv_type)) {
+        // Add filter based on 'inv_type'
+        $invoiceQuery->whereIn('inv_type', $request->inv_type);
     }
+
+    // Apply additional filters to the InvoiceExport query
+    $invoiceQuery->whereHas('service', function ($query) {
+        $query->where('ie', '=', 'E');
+    })->whereNot('lunas', '=', 'N')
+        ->orderBy('inv_no', 'asc');
+
+    // Retrieve the invoices
+    $invoices = $invoiceQuery->get();
+
+    // Initialize the query for InvoiceHeaderStevadooring
+    $stevadooringQuery = InvoiceHeaderStevadooring::whereDate('invoice_date', '>=', $startDate)
+        ->whereDate('invoice_date', '<=', $endDate)
+        ->whereNot('lunas', '=', 'N')
+        ->orderBy('invoice_no', 'asc');
+
+    // Retrieve the stevadooring invoices
+    $stevadooringInvoices = $stevadooringQuery->get();
+
+    // Merge both invoice collections
+    $mergedInvoices = $invoices->map(function ($invoice) {
+        return [
+            'inv_no' => $invoice->inv_no,
+            'invoice_date' => $invoice->invoice_date,
+            'proforma_no' => $invoice->proforma_no,
+            'inv_type' => $invoice->inv_type,
+            'cust_name' => $invoice->cust_name,
+            'os_name' => $invoice->os_name,
+            'total' => $invoice->total,
+            'admin' => $invoice->admin,
+            'discount' => $invoice->discount,
+            'pajak' => $invoice->pajak,
+            'grand_total' => $invoice->grand_total,
+            'lunas' => $invoice->lunas,
+            'Form' => $invoice->Form
+        ];
+    })->merge($stevadooringInvoices->map(function ($invoice) {
+        return [
+            'inv_no' => $invoice->invoice_no,
+            'invoice_date' => $invoice->invoice_date,
+            'proforma_no' => $invoice->proforma_no ?? 'N/A',
+            'inv_type' => 'N/A',
+            'cust_name' => $invoice->cust_name,
+            'os_name' => $invoice->os_name,
+            'total' => $invoice->total,
+            'admin' => $invoice->admin,
+            'discount' => $invoice->discount,
+            'pajak' => $invoice->pajak,
+            'grand_total' => $invoice->grand_total,
+            'lunas' => $invoice->lunas,
+            'Form' => $invoice->Form
+        ];
+    }));
+
+    // Sort the merged collection by 'inv_no'
+    $invoice = $mergedInvoices->sortBy('inv_no')->values();
+
+    // Generate the file name for the Excel file
+    $fileName = 'ReportInvoiceExport-' . $startDate . '-' . $endDate . '.xlsx';
+
+    // Download the Excel file with the merged and sorted invoices
+    return Excel::download(new ReportInvoiceAllExport($invoice), $fileName);
+}
+
 
     public function recivingInvoiceCancel(Request $request)
     {

@@ -69,13 +69,13 @@
         <div class="submenu-group-wrapper">
           <ul class="submenu-group">
             <li class="submenu-item">
-              <a href="{{ route('billinImportgMain')}}" class="submenu-link">Delivery Billing System</a>
+              <a href="{{ route('billinImportgMain')}}" class="submenu-link">Bongkaran Billing System</a>
             </li>
             <li class="submenu-item">
-              <a href="{{ route('deliveryMenu')}}" class="submenu-link">Delivery Form</a>
+              <a href="{{ route('deliveryMenu')}}" class="submenu-link">Bongkaran Form</a>
             </li>
             <li class="submenu-item">
-              <a href="{{ route('index-extend')}}" class="submenu-link">Delivery Form Extend</a>
+              <a href="{{ route('index-extend')}}" class="submenu-link">Bongkaran Form Extend</a>
             </li>
             <li class="submenu-item">
               <a href="{{ route('invoice-master-tarifImport')}}" class="submenu-link">Master Tarif</a>
@@ -93,20 +93,14 @@
         <div class="submenu-group-wrapper">
           <ul class="submenu-group">
             <li class="submenu-item">
-              <a href="{{ route('billingExportMain')}}" class="submenu-link">Receiving Billing System</a>
+              <a href="{{ route('billingExportMain')}}" class="submenu-link">Muat Billing System</a>
             </li>
             <li class="submenu-item">
-              <a href="{{ route('deliveryMenuExport')}}" class="submenu-link">Receiving Form</a>
+              <a href="{{ route('deliveryMenuExport')}}" class="submenu-link">Muat Form</a>
             </li>
             <li class="submenu-item">
               <a href="{{ route('invoice-master-tarifExport')}}" class="submenu-link">Master Tarif</a>
             </li>
-            <!-- <li class="submenu-item">
-              <a href="" class="submenu-link">Stuffing Dalam</a>
-            </li>
-            <li class="submenu-item">
-              <a href="" class="submenu-link">Stuffing Luar</a>
-            </li> -->
           </ul>
         </div>
       </div>
@@ -130,12 +124,6 @@
             <li class="submenu-item">
               <a href="{{ route('plugging-tarif-index')}}" class="submenu-link">Master Tarif</a>
             </li>
-            <!-- <li class="submenu-item">
-              <a href="" class="submenu-link">Stuffing Dalam</a>
-            </li>
-            <li class="submenu-item">
-              <a href="" class="submenu-link">Stuffing Luar</a>
-            </li> -->
           </ul>
         </div>
       </div>

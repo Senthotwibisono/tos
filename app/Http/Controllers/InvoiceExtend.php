@@ -272,7 +272,7 @@ class InvoiceExtend extends Controller
 
         if ($oldForm->massa3 == null) {
             if ($oldForm->massa2 == null) {
-                if ($jumlahHari > 5) {
+                if ($jumlahHari >= 6) {
                     $m2 = 5;
                     $m3 = $jumlahHari - 5;
                 } else {
@@ -280,21 +280,27 @@ class InvoiceExtend extends Controller
                     $m3 = 0;
                 }
             } elseif ($oldForm->massa2 < 5) {
-                if ($jumlahHari > 5) {
-                    $m2 = min(5 - $oldForm->massa2, $jumlahHari);
-                    $m3 = $jumlahHari - $m2;
+                // Calculate remaining days needed to reach 5 days for massa2
+                $remainingMassa2Days = 5 - $oldForm->massa2;
+                
+                // If there are more days than needed to reach 5 days in massa2
+                if ($jumlahHari > $remainingMassa2Days) {
+                    $m2 = $remainingMassa2Days;
+                    $m3 = $jumlahHari - $remainingMassa2Days;
                 } else {
-                    $m2 = min(5 - $oldForm->massa2, $jumlahHari);
+                    $m2 = $jumlahHari;
                     $m3 = 0;
                 }
             } else {
+                // If massa2 already has 5 or more days
                 $m2 = 0;
                 $m3 = $jumlahHari;
             }
-        }else {
+        } else {
             $m2 = 0;
             $m3 = $jumlahHari;
         }
+        
        
         // dd($m2, $m3);
 
@@ -385,7 +391,7 @@ class InvoiceExtend extends Controller
 
         if ($oldForm->massa3 == null) {
             if ($oldForm->massa2 == null) {
-                if ($jumlahHari > 5) {
+                if ($jumlahHari >= 6) {
                     $m2 = 5;
                     $m3 = $jumlahHari - 5;
                 } else {
@@ -393,21 +399,27 @@ class InvoiceExtend extends Controller
                     $m3 = 0;
                 }
             } elseif ($oldForm->massa2 < 5) {
-                if ($jumlahHari > 5) {
-                    $m2 = min(5 - $oldForm->massa2, $jumlahHari);
-                    $m3 = $jumlahHari - $m2;
+                // Calculate remaining days needed to reach 5 days for massa2
+                $remainingMassa2Days = 5 - $oldForm->massa2;
+                
+                // If there are more days than needed to reach 5 days in massa2
+                if ($jumlahHari > $emainingMassa2Days) {
+                    $m2 = $remainingMassa2Days;
+                    $m3 = $jumlahHari - $remainingMassa2Days;
                 } else {
-                    $m2 = min(5 - $oldForm->massa2, $jumlahHari);
+                    $m2 = $jumlahHari;
                     $m3 = 0;
                 }
             } else {
+                // If massa2 already has 5 or more days
                 $m2 = 0;
                 $m3 = $jumlahHari;
             }
-        }else {
+        } else {
             $m2 = 0;
             $m3 = $jumlahHari;
         }
+        
 
         $massa2 = $m2;
         $massa3 = $m3; 

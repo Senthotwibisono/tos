@@ -239,7 +239,7 @@ class RentalController extends Controller
                 ->where('count_by', 'O')
                 ->first();
             if ($singleTarifDetail) {
-                $data['adminDS'] = $singleTarifDetail->tarif;
+                $data['adminDS'] = 0;
             }
             $data['totalDS'] = $form->tarif;
             $data['discountDS'] = ($data['totalDS'] + $data['adminDS']) * $form->discount_ds / 100;
@@ -332,43 +332,43 @@ class RentalController extends Controller
                          'master_item_id'=>$service->master_item_id,
                          'master_item_name'=>$service->master_item_name,
                          'kode'=>$service->kode,
-                         'tarif'=>$tarifDetail->tarif,
-                         'total'=>$cont->tarif,
+                         'tarif'=>$form->tarif,
+                         'total'=>$form->tarif,
                          'form_id'=>$form->id,
                          'count_by'=>$tarifDetail->count_by,
                         ]);
                     }
                 }    
             }
-            $singleTarif = MT::where('os_id', $bigOS->id)->first();
-                $singleTarifDetail = MTDetail::where('master_tarif_id', $singleTarif->id)
-                    ->where('master_item_id', $service->master_item_id)
-                    ->where('count_by', 'O')
-                    ->first();
-                if ($singleTarifDetail) {
-                    $detailImport = Detail::create([
-                        'inv_id'=>$invoiceDS->id,
-                        'inv_type'=>$invoiceDS->inv_type,
-                        'keterangan'=>$form->service->name,
-                        'ukuran'=> '0',
-                        'jumlah'=> 1,
-                        'satuan'=>'unit',
-                        'expired_date'=>$form->expired_date,
-                        'order_date'=>$invoiceDS->order_at,
-                        'lunas'=>'N',
-                        'cust_id'=>$form->cust_id,
-                        'cust_name'=>$form->customer->name,
-                        'os_id'=>$form->os_id,
-                        'jumlah_hari'=>'0',
-                        'master_item_id'=>$service->master_item_id,
-                        'master_item_name'=>$service->master_item_name,
-                        'kode'=>$service->kode,
-                        'tarif'=>$singleTarifDetail->tarif,
-                        'total'=>$singleTarifDetail->tarif,
-                        'form_id'=>$form->id,
-                        'count_by'=>'O',
-                       ]);
-                }
+            // $singleTarif = MT::where('os_id', $bigOS->id)->first();
+            //     $singleTarifDetail = MTDetail::where('master_tarif_id', $singleTarif->id)
+            //         ->where('master_item_id', $service->master_item_id)
+            //         ->where('count_by', 'O')
+            //         ->first();
+            //     if ($singleTarifDetail) {
+            //         $detailImport = Detail::create([
+            //             'inv_id'=>$invoiceDS->id,
+            //             'inv_type'=>$invoiceDS->inv_type,
+            //             'keterangan'=>$form->service->name,
+            //             'ukuran'=> '0',
+            //             'jumlah'=> 1,
+            //             'satuan'=>'unit',
+            //             'expired_date'=>$form->expired_date,
+            //             'order_date'=>$invoiceDS->order_at,
+            //             'lunas'=>'N',
+            //             'cust_id'=>$form->cust_id,
+            //             'cust_name'=>$form->customer->name,
+            //             'os_id'=>$form->os_id,
+            //             'jumlah_hari'=>'0',
+            //             'master_item_id'=>$service->master_item_id,
+            //             'master_item_name'=>$service->master_item_name,
+            //             'kode'=>$service->kode,
+            //             'tarif'=>$singleTarifDetail->tarif,
+            //             'total'=>$singleTarifDetail->tarif,
+            //             'form_id'=>$form->id,
+            //             'count_by'=>'O',
+            //            ]);
+            //     }
         }
        
 

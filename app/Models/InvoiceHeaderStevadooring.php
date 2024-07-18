@@ -52,5 +52,6 @@ class InvoiceHeaderStevadooring extends Model
         'piutang_at',
         'lunas',
         'status',
+        'invoice_date',
     ];
 }

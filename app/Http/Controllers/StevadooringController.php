@@ -1242,14 +1242,17 @@ class StevadooringController extends Controller
         $invoice = Header::where('id', $id)->first();
         if ($invoice->inv_no == null) {
                 $invoiceNo = $this->getNextInvoiceDSK();
+                $invoiceDate = Carbon::now();
        }else {
          $invoiceNo = $invoice->inv_no;
+         $invoiceDate = $invoice->invoice_date;
        }
         if ($invoice) {
             $invoice->update([
                 'invoice_no' => $invoiceNo,
                 'lunas' => 'Y',
                 'lunas_at'=> Carbon::now(),
+                'invoice_date' => $invoiceDate,
             ]);
 
             return response()->json([
@@ -1279,6 +1282,7 @@ class StevadooringController extends Controller
                 'invoice_no' => $invoiceNo,
                 'lunas' => 'P',
                 'lunas_at'=> Carbon::now(),
+                'invoice_date'=> Carbon::now(),
             ]);
 
             return response()->json([

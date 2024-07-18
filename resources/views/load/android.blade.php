@@ -349,6 +349,7 @@
             'bay_slot': $('#slot').val(),
             'bay_row': $('#row').val(),
             'bay_tier': $('#tier').val(),
+            'ves_id': $('#id_kapal').val(),
 
         }
         $.ajaxSetup({
