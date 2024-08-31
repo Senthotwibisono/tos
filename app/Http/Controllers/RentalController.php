@@ -83,7 +83,7 @@ class RentalController extends Controller
         $data['customer'] = Customer::get();
         $data['orderService'] = OS::where('ie', '=', 'R')->get();
         $data['vessel'] = VVoyage::get();
-        $data['containerInvoice'] = Container::where('form_id', $id)->get();
+        // $data['containerInvoice'] = Container::where('form_id', $id)->get();
         return view('billingSystem.rental-repair.form.edit', $data);
     }
 
@@ -118,7 +118,7 @@ class RentalController extends Controller
 
     public function FormStore(Request $request)
     {
-        $contSelect = $request->container;
+        // $contSelect = $request->container;
        
         
         $invoice = Form::create([
@@ -133,25 +133,25 @@ class RentalController extends Controller
             'palka'=>$request->palka,
         ]);
 
-      $service = OS::where('id', $invoice->os_id)->first();
-      if ($service->order != 'P') {
-        foreach ($contSelect as $cont) {
-            $item = Item::where('container_key', $cont)->first();
-            $tarif = $request->input("tarif-$cont");
-            $contInvoice = Container::create([
-                'container_key'=>$item->container_key,
-                'container_no'=>$item->container_no,
-                'ctr_size'=>$item->ctr_size,
-                'ctr_status'=>$item->ctr_status,
-                'form_id'=>$invoice->id,
-                'ves_id'=>$item->ves_id,
-                'ves_name'=>$item->ves_name,
-                'ctr_type'=>$item->ctr_type,
-                'ctr_intern_status'=>$item->ctr_intern_status,
-                'gross'=>$item->gross,
-            ]);
-        }
-      }
+    //   $service = OS::where('id', $invoice->os_id)->first();
+    //   if ($service->order != 'P') {
+    //     foreach ($contSelect as $cont) {
+    //         $item = Item::where('container_key', $cont)->first();
+    //         $tarif = $request->input("tarif-$cont");
+    //         $contInvoice = Container::create([
+    //             'container_key'=>$item->container_key,
+    //             'container_no'=>$item->container_no,
+    //             'ctr_size'=>$item->ctr_size,
+    //             'ctr_status'=>$item->ctr_status,
+    //             'form_id'=>$invoice->id,
+    //             'ves_id'=>$item->ves_id,
+    //             'ves_name'=>$item->ves_name,
+    //             'ctr_type'=>$item->ctr_type,
+    //             'ctr_intern_status'=>$item->ctr_intern_status,
+    //             'gross'=>$item->gross,
+    //         ]);
+    //     }
+    //   }
        
 
 
@@ -163,32 +163,32 @@ class RentalController extends Controller
        $invoice = Form::where('id', $request->form_id)->first();
       
        $service = OS::where('id', $request->order_service)->first();
-        if ($service->order != 'P') {
-         $oldCont = Container::where('form_id', $invoice->id)->get();
-         foreach ($oldCont as $cont) {
-             $cont->delete();
-         }   
+    //     if ($service->order != 'P') {
+    //      $oldCont = Container::where('form_id', $invoice->id)->get();
+    //      foreach ($oldCont as $cont) {
+    //          $cont->delete();
+    //      }   
 
-         $newContainer = $request->container;
-         foreach ($newContainer as $cont) {
-             $item = Item::where('container_key', $cont)->first();
-             $tarif = $request->input("tarif-$cont");
-             $contInvoice = Container::create([
-                 'container_key'=>$item->container_key,
-                 'container_no'=>$item->container_no,
-                 'ctr_size'=>$item->ctr_size,
-                 'ctr_status'=>$item->ctr_status,
-                 'form_id'=>$invoice->id,
-                 'ves_id'=>$item->ves_id,
-                 'ves_name'=>$item->ves_name,
-                 'ctr_type'=>$item->ctr_type,
-                 'ctr_intern_status'=>$item->ctr_intern_status,
-                 'gross'=>$item->gross,
-                 'palka'=>$request->palka,
-             ]);
-         }
+    //      $newContainer = $request->container;
+    //      foreach ($newContainer as $cont) {
+    //          $item = Item::where('container_key', $cont)->first();
+    //          $tarif = $request->input("tarif-$cont");
+    //          $contInvoice = Container::create([
+    //              'container_key'=>$item->container_key,
+    //              'container_no'=>$item->container_no,
+    //              'ctr_size'=>$item->ctr_size,
+    //              'ctr_status'=>$item->ctr_status,
+    //              'form_id'=>$invoice->id,
+    //              'ves_id'=>$item->ves_id,
+    //              'ves_name'=>$item->ves_name,
+    //              'ctr_type'=>$item->ctr_type,
+    //              'ctr_intern_status'=>$item->ctr_intern_status,
+    //              'gross'=>$item->gross,
+    //              'palka'=>$request->palka,
+    //          ]);
+    //      }
 
-       }
+    //    }
        
        
         $invoice->update([
@@ -215,9 +215,9 @@ class RentalController extends Controller
         $data['expDate'] = Carbon::parse($form->expired_date)->format('d-m-Y h:i K');
 
         $data['service'] = OS::where('id', $form->os_id)->first();
-        $data['selectCont'] = Container::where('form_id', $id)->get();
+        // $data['selectCont'] = Container::where('form_id', $id)->get();
         $containerInvoice = Container::where('form_id', $id)->get();
-        $data['jumlahCont'] = $containerInvoice->count();
+        // $data['jumlahCont'] = $containerInvoice->count();
         $groupedBySize = $containerInvoice->groupBy('ctr_size');
         $ctrGroup = $groupedBySize->map(function ($sizeGroup) {
             return $sizeGroup->groupBy('ctr_status');
@@ -242,7 +242,7 @@ class RentalController extends Controller
                 $data['adminDS'] = 0;
             }
             $data['totalDS'] = $form->tarif;
-            $data['discountDS'] = ($data['totalDS'] + $data['adminDS']) * $form->discount_ds / 100;
+            $data['discountDS'] = $form->discount_ds;
             $data['pajakDS'] = (($data['totalDS'] + $data['adminDS']) - $data['discountDS']) * 11 / 100;
             $data['grandTotalDS'] = (($data['totalDS'] + $data['adminDS']) - $data['discountDS']) + $data['pajakDS'];
      
@@ -259,13 +259,13 @@ class RentalController extends Controller
         $data['expDate'] = Carbon::parse($form->expired_date)->format('d-m-Y h:i K');
 
         $data['service'] = OS::where('id', $form->os_id)->first();
-        $data['selectCont'] = Container::where('form_id', $request->formId)->get();
-        $containerInvoice = Container::where('form_id', $request->formId)->get();
-        $groupedBySize = $containerInvoice->groupBy('ctr_size');
-        $ctrGroup = $groupedBySize->map(function ($sizeGroup) {
-            return $sizeGroup->groupBy('ctr_status');
-        });
-        $data['ctrGroup'] = $ctrGroup;
+        // $data['selectCont'] = Container::where('form_id', $request->formId)->get();
+        // $containerInvoice = Container::where('form_id', $request->formId)->get();
+        // $groupedBySize = $containerInvoice->groupBy('ctr_size');
+        // $ctrGroup = $groupedBySize->map(function ($sizeGroup) {
+        //     return $sizeGroup->groupBy('ctr_status');
+        // });
+        // $data['ctrGroup'] = $ctrGroup;
         $discDateCarbon = Carbon::parse($form->disc_date);
         $expDateCarbon = Carbon::parse($form->expired_date);
         $secondsDifference = $discDateCarbon->diffInSeconds($expDateCarbon);
@@ -307,69 +307,69 @@ class RentalController extends Controller
             
         ]);
         $admin = 0;
-        foreach ($osDS as $service) {
-            foreach ($containerInvoice as $cont) {
-                $tarif = MT::where('os_id', $bigOS->id)->first();
-                $tarifDetail = MTDetail::where('master_tarif_id', $tarif->id)
-                    ->where('master_item_id', $service->master_item_id)
-                    ->first();
-                if ($tarifDetail) {
-                    if ($tarifDetail->count_by != 'O') {
-                        $detailImport = Detail::create([
-                         'inv_id'=>$invoiceDS->id,
-                         'inv_type'=>$invoiceDS->inv_type,
-                         'keterangan'=>$form->service->name,
-                         'ukuran'=>$cont->ctr_size,
-                         'jumlah'=>'1',
-                         'satuan'=>'unit',
-                         'expired_date'=>$form->expired_date,
-                         'order_date'=>$invoiceDS->order_at,
-                         'lunas'=>'N',
-                         'cust_id'=>$form->cust_id,
-                         'cust_name'=>$form->customer->name,
-                         'os_id'=>$form->os_id,
-                         'jumlah_hari' => $shiftCount,
-                         'master_item_id'=>$service->master_item_id,
-                         'master_item_name'=>$service->master_item_name,
-                         'kode'=>$service->kode,
-                         'tarif'=>$form->tarif,
-                         'total'=>$form->tarif,
-                         'form_id'=>$form->id,
-                         'count_by'=>$tarifDetail->count_by,
-                        ]);
-                    }
-                }    
-            }
-            // $singleTarif = MT::where('os_id', $bigOS->id)->first();
-            //     $singleTarifDetail = MTDetail::where('master_tarif_id', $singleTarif->id)
-            //         ->where('master_item_id', $service->master_item_id)
-            //         ->where('count_by', 'O')
-            //         ->first();
-            //     if ($singleTarifDetail) {
-            //         $detailImport = Detail::create([
-            //             'inv_id'=>$invoiceDS->id,
-            //             'inv_type'=>$invoiceDS->inv_type,
-            //             'keterangan'=>$form->service->name,
-            //             'ukuran'=> '0',
-            //             'jumlah'=> 1,
-            //             'satuan'=>'unit',
-            //             'expired_date'=>$form->expired_date,
-            //             'order_date'=>$invoiceDS->order_at,
-            //             'lunas'=>'N',
-            //             'cust_id'=>$form->cust_id,
-            //             'cust_name'=>$form->customer->name,
-            //             'os_id'=>$form->os_id,
-            //             'jumlah_hari'=>'0',
-            //             'master_item_id'=>$service->master_item_id,
-            //             'master_item_name'=>$service->master_item_name,
-            //             'kode'=>$service->kode,
-            //             'tarif'=>$singleTarifDetail->tarif,
-            //             'total'=>$singleTarifDetail->tarif,
-            //             'form_id'=>$form->id,
-            //             'count_by'=>'O',
-            //            ]);
-            //     }
-        }
+        // foreach ($osDS as $service) {
+        //     foreach ($containerInvoice as $cont) {
+        //         $tarif = MT::where('os_id', $bigOS->id)->first();
+        //         $tarifDetail = MTDetail::where('master_tarif_id', $tarif->id)
+        //             ->where('master_item_id', $service->master_item_id)
+        //             ->first();
+        //         if ($tarifDetail) {
+        //             if ($tarifDetail->count_by != 'O') {
+        //                 $detailImport = Detail::create([
+        //                  'inv_id'=>$invoiceDS->id,
+        //                  'inv_type'=>$invoiceDS->inv_type,
+        //                  'keterangan'=>$form->service->name,
+        //                  'ukuran'=>$cont->ctr_size,
+        //                  'jumlah'=>'1',
+        //                  'satuan'=>'unit',
+        //                  'expired_date'=>$form->expired_date,
+        //                  'order_date'=>$invoiceDS->order_at,
+        //                  'lunas'=>'N',
+        //                  'cust_id'=>$form->cust_id,
+        //                  'cust_name'=>$form->customer->name,
+        //                  'os_id'=>$form->os_id,
+        //                  'jumlah_hari' => $shiftCount,
+        //                  'master_item_id'=>$service->master_item_id,
+        //                  'master_item_name'=>$service->master_item_name,
+        //                  'kode'=>$service->kode,
+        //                  'tarif'=>$form->tarif,
+        //                  'total'=>$form->tarif,
+        //                  'form_id'=>$form->id,
+        //                  'count_by'=>$tarifDetail->count_by,
+        //                 ]);
+        //             }
+        //         }    
+        //     }
+        //     $singleTarif = MT::where('os_id', $bigOS->id)->first();
+        //         $singleTarifDetail = MTDetail::where('master_tarif_id', $singleTarif->id)
+        //             ->where('master_item_id', $service->master_item_id)
+        //             ->where('count_by', 'O')
+        //             ->first();
+        //         if ($singleTarifDetail) {
+        //             $detailImport = Detail::create([
+        //                 'inv_id'=>$invoiceDS->id,
+        //                 'inv_type'=>$invoiceDS->inv_type,
+        //                 'keterangan'=>$form->service->name,
+        //                 'ukuran'=> '0',
+        //                 'jumlah'=> 1,
+        //                 'satuan'=>'unit',
+        //                 'expired_date'=>$form->expired_date,
+        //                 'order_date'=>$invoiceDS->order_at,
+        //                 'lunas'=>'N',
+        //                 'cust_id'=>$form->cust_id,
+        //                 'cust_name'=>$form->customer->name,
+        //                 'os_id'=>$form->os_id,
+        //                 'jumlah_hari'=>'0',
+        //                 'master_item_id'=>$service->master_item_id,
+        //                 'master_item_name'=>$service->master_item_name,
+        //                 'kode'=>$service->kode,
+        //                 'tarif'=>$singleTarifDetail->tarif,
+        //                 'total'=>$singleTarifDetail->tarif,
+        //                 'form_id'=>$form->id,
+        //                 'count_by'=>'O',
+        //                ]);
+        //         }
+        // }
        
 
        $form->update([
@@ -465,7 +465,7 @@ class RentalController extends Controller
 
         $data['invoice'] = InvoiceExport::where('id', $id)->first();
         $data['form'] = Form::where('id', $data['invoice']->form_id)->first();
-        $data['contInvoice'] = Container::where('form_id', $data['invoice']->form_id)->orderBy('ctr_size', 'asc')->get();
+        // $data['contInvoice'] = Container::where('form_id', $data['invoice']->form_id)->orderBy('ctr_size', 'asc')->get();
         $invDetail = Detail::where('inv_id', $id)->whereNot('count_by', '=', 'O')->orderBy('count_by', 'asc')->orderBy('kode', 'asc')->get();
         $data['invGroup'] = $invDetail->groupBy('ukuran');
 
@@ -490,7 +490,7 @@ class RentalController extends Controller
         
         $data['title'] = "Invoice " .$data['form']->service->name;
         
-        $data['contInvoice'] = Container::where('form_id', $data['invoice']->form_id)->orderBy('ctr_size', 'asc')->get();
+        // $data['contInvoice'] = Container::where('form_id', $data['invoice']->form_id)->orderBy('ctr_size', 'asc')->get();
         $invDetail = Detail::where('inv_id', $id)->whereNot('count_by', '=', 'O')->orderBy('count_by', 'asc')->orderBy('kode', 'asc')->get();
         $data['invGroup'] = $invDetail->groupBy('ukuran');
 
@@ -531,11 +531,11 @@ class RentalController extends Controller
       $os = $request->os_id;
       $startDate = $request->start;
       $endDate = $request->end;
-      $invoiceQuery = Detail::whereHas('service', function ($query) {
+      $invoiceQuery = InvoiceExport::whereHas('service', function ($query) {
         $query->where('ie', '=', 'R');
     })->where('os_id', $os)
-      ->whereDate('order_date', '>=', $startDate)
-      ->whereDate('order_date', '<=', $endDate);
+      ->whereDate('invoice_date', '>=', $startDate)
+      ->whereDate('invoice_date', '<=', $endDate);
 
         // Cek apakah checkbox 'inv_type' ada dalam request dan tidak kosong
         if ($request->has('inv_type') && !empty($request->inv_type)) {
@@ -543,8 +543,8 @@ class RentalController extends Controller
             $invoiceQuery->whereIn('inv_type', $request->inv_type);
         }
     
-        $invoice = $invoiceQuery->orderBy('order_date', 'asc')->get();        $fileName = 'ReportInvoiceExport-'.$os.'-'. $startDate . $endDate .'.xlsx';
-      return Excel::download(new ReportExport($invoice), $fileName);
+        $invoice = $invoiceQuery->orderBy('invoice_date', 'asc')->get();        $fileName = 'ReportInvoiceExport-'.$os.'-'. $startDate . $endDate .'.xlsx';
+      return Excel::download(new ReportInvoice($invoice), $fileName);
     }
 
     public function Paid(Request $request)
@@ -566,7 +566,7 @@ class RentalController extends Controller
        }else {
          $invoiceNo = $invoice->inv_no;
        }
-        $containerInvoice = Container::where('form_id', $invoice->form_id)->get();
+        // $containerInvoice = Container::where('form_id', $invoice->form_id)->get();
         $bigOS = OS::where('id', $invoice->os_id)->first();
 
 
@@ -606,7 +606,7 @@ class RentalController extends Controller
        }else {
          $invoiceNo = $invoice->inv_no;
        }
-        $containerInvoice = Container::where('form_id', $invoice->form_id)->get();
+        // $containerInvoice = Container::where('form_id', $invoice->form_id)->get();
         $bigOS = OS::where('id', $invoice->os_id)->first();
         
 

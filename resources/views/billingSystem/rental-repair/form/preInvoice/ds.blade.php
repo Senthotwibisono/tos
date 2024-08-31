@@ -18,18 +18,14 @@
         <thead>
           <tr>
             <th>Keterangan</th>
-            <th>Ukuran</th>
-            <th>Type</th>
+            <th>Jumlah</th>
           </tr>
         </thead>
         <tbody>
-        @foreach($selectCont as $cont)
         <tr>
-          <td>{{$form->service->name}} {{$cont->container_no}}</td>
-          <td>{{$cont->ctr_size}}</td>
-          <td>{{$cont->ctr_type}}</td>
+          <td>{{$form->service->name}}</td>
+          <td>{{$form->palka}}</td>
         </tr>
-        @endforeach
         </tbody>
         @else
         <thead>

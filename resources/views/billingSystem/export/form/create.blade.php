@@ -186,14 +186,15 @@
           <div class="col-sm-6">
             <div class="form-group">
               <label for="">Discount OSK</label>
-              <input type="number" class="form-control" value='0' name="discount_dsk">
+              <p>Di Isi dengan Nomial !!</p>
+              <input type="text" class="form-control" name="discount_dsk" value="0">
             </div>
           </div>
           <div class="col-sm-6">
             <div class="form-group">
               <label for="">Discount OS</label>
-              <input type="number" class="form-control" value='0' name="discount_ds">
-            </div>
+              <p>Di Isi dengan Nomial !!</p>
+              <input type="text" class="form-control" name="discount_ds" value="0">
           </div>
          </div>
 

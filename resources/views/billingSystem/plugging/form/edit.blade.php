@@ -108,7 +108,7 @@
           <div class="col-sm-6">
             <div class="form-group">
               <label for="">Discount OS</label>
-              <input type="number" class="form-control" value='{{$form->discount_ds}}' name="discount_ds">
+              <input type="text" class="form-control" name="discount_ds" value='{{$form->discount_ds}}'>
             </div>
           </div>
          </div>

@@ -99,7 +99,7 @@
           <p>Di Isi dengan Persen (%)</p>
             <div class="col-sm-3">
               <label for="">Discount</label>
-              <input type="number" class="form-control" value='{{$form->discount_ds}}' name="discount_ds">
+              <input type="text" class="form-control" value='{{$form->discount_ds ?? 0 }}' name="discount_ds">
             </div>
           </div>
           <div class="row mt-5">

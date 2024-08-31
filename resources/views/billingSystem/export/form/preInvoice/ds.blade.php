@@ -51,7 +51,7 @@
                         </h1>
                         <h4 class="text-white">Total Amount :</h4>
                         <h4 class="text-white">Admin :</h4>
-                        <h4 class="text-white">Discount {{ number_format($form->discount_ds, 2) }}%  :</h4>
+                        <h4 class="text-white">Discount</h4>
                         <h4 class="text-white">Tax 11%      :</h4>
                         <h4 class="text-white">Grand Total  :</h4>
                     </div>

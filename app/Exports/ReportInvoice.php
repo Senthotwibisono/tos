@@ -58,7 +58,7 @@ class ReportInvoice implements FromCollection, WithMapping, WithHeadings, Should
             $invoice->proforma_no,
             $invoice->inv_no,
             $invoice->inv_type,
-            $invoice->cust_name,
+            $invoice->customer->name,
             $kapal,
             $invoice->os_name,
             $invoice->total,

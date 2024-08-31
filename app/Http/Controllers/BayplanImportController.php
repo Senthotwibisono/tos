@@ -75,7 +75,7 @@ class BayplanImportController extends Controller
         $isocode = Isocode::all();
         $today = date('Y-m-d H:i:s');
         $vessel_voyage = Vvoyage::all();
-        $vessel_import = VVoyage::whereDate('eta_date', '>=', now())->get();
+        $vessel_import = VVoyage::get();
         // where('eta_date', '>', $today)->get();
         $currentDateTime = Carbon::now();
         $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');

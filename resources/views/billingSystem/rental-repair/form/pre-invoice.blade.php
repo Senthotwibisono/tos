@@ -51,50 +51,13 @@
           <div class="col-6">
             <div class="form-group">
               <label for="">Jumlah Container</label>
-              <input type="text" class="form-control" readonly value="{{$jumlahCont}}">
+              <input type="text" class="form-control" readonly value="{{$form->palka}}">
             </div>
           </div>
 
         </div>
 
-        @if($form->service->order != 'P')
-        <div class="row mt-3">
-          <div class="col-12">
-            <h4 class="card-title">
-              Selected Container Detail
-            </h4>
-            <p>Informasi Detil Container</p>
-          </div>
-          <div class="col-12">
-            <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
-              <thead>
-                <tr>
-                  <th>Container No</th>
-                  <th>Vessel Name</th>
-                  <th>Size</th>
-                  <th>Type</th>
-                  <th>CTR Status</th>
-                  <th>CTR Intern Status</th>
-                  <th>Gross</th>
-                </tr>
-              </thead>
-              <tbody>
-               @foreach($selectCont as $cont)
-               <tr>
-                <td>{{$cont->container_no}}</td>
-                <td>{{$cont->ves_name}}</td>
-                <td>{{$cont->ctr_size}}</td>
-                <td>{{$cont->ctr_type}}</td>
-                <td>{{$cont->ctr_status}}</td>
-                <td>{{$cont->ctr_intern_status}}</td>
-                <td>{{$cont->gross}}</td>
-               </tr>
-               @endforeach
-              </tbody>
-            </table>
-          </div>
-        </div>
-        @endif
+        <!--  -->
         
         <div class="row mt-3">
           @include('billingSystem.rental-repair.form.preInvoice.ds')

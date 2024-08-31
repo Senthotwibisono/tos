@@ -285,7 +285,7 @@ class InvoiceExportController extends Controller
             }
             $data['totalDSK'] = $resultsDSK->sum('harga');
             $data['resultsDSK'] = $resultsDSK;
-            $data['discountDSK'] = ($data['totalDSK'] + $data['adminDSK']) * $form->discount_dsk / 100;
+            $data['discountDSK'] = $form->discount_dsk;
             $data['pajakDSK'] = (($data['totalDSK'] + $data['adminDSK']) - $data['discountDSK']) * 11 / 100;
             $data['grandTotalDSK'] = (($data['totalDSK'] + $data['adminDSK']) - $data['discountDSK']) + $data['pajakDSK'];
         }
@@ -345,7 +345,7 @@ class InvoiceExportController extends Controller
             }
             $data['totalDS'] = $resultsDS->sum('harga');
             $data['resultsDS'] = $resultsDS;
-            $data['discountDS'] = ($data['totalDS'] + $data['adminDS']) * $form->discount_ds / 100;
+            $data['discountDS'] = $form->discount_ds;
             $data['pajakDS'] = (($data['totalDS'] + $data['adminDS']) - $data['discountDS']) * 11 / 100;
             $data['grandTotalDS'] = (($data['totalDS'] + $data['adminDS']) - $data['discountDS']) + $data['pajakDS'];
         }
@@ -1163,15 +1163,24 @@ class InvoiceExportController extends Controller
     public function JobInvoice($id)
     {
         $data['title'] = 'Job Number';
-        $data['inv'] = InvoiceExport::where('id', $id)->first();
-        $data['form'] = Form::where('id', $data['inv']->form_id)->first();
-        $data['job'] = JobExport::where('inv_id', $id)->paginate(5);
+
+        // Ambil Invoice dan Form terkait
+        $data['inv'] = InvoiceExport::with('form')->where('id', $id)->first();
+        $data['form'] = $data['inv']->form;
+
+        // Ambil Job terkait dengan inv_id, hanya ambil 1 untuk pagination
+        $data['job'] = JobExport::where('inv_id', $id)->paginate(10);
+
+        // Set timezone dan ambil waktu sekarang
         date_default_timezone_set('Asia/Jakarta');
         $data['now'] = Carbon::now();
         $data['formattedDate'] = $data['now']->format('l, d-m-Y');
-        $singleJob =  JobExport::where('inv_id', $id)->first();
+
+        // Ambil single job untuk mendapatkan informasi kapal
+        $singleJob = JobExport::where('inv_id', $id)->first();
         $kapal = VVoyage::where('ves_id', $singleJob->ves_id)->first();
-       
+
+        // Cek kondisi khusus untuk ves_id "PELINDO"
         if ($singleJob->ves_id == "PELINDO") {
             $data['kapal'] = (object)[
                 'ves_name' => 'PELINDO',
@@ -1179,20 +1188,26 @@ class InvoiceExportController extends Controller
                 'clossing_date' => 'PELINDO',
                 'etd_date' => 'PELINDO',
             ];
-        }else {
+        } else {
             $data['kapal'] = $kapal;
         }
-        // dd($singleJob->ves_id, $data['kapal'],  $data['inv']->id);
-        $data['cont'] = Item::get();
+
+        // Ambil data container yang dibutuhkan
+        $data['cont'] = Item::whereIn('container_key', $data['job']->pluck('container_key'))->get()->keyBy('container_key');
+
+        // Inisialisasi variabel qrcodes
+        $qrcodes = [];
+
+        // Loop untuk menghasilkan QR Code untuk setiap job
         foreach ($data['job'] as $jb) {
-            foreach ($data['cont'] as $ct) {
-                if ($ct->container_key == $jb->container_key) {
-                    $qrcodes[$jb->id] = QrCode::size(100)->generate($ct->container_no);
-                    break;
-                }
+            if ($data['cont']->has($jb->container_key)) {
+                $ct = $data['cont']->get($jb->container_key);
+                $qrcodes[$jb->id] = QrCode::size(100)->generate($ct->container_no);
             }
         }
-        return view('billingSystem.export.job.main',compact('qrcodes'), $data);
+
+        // Kembalikan view dengan data dan qrcodes yang dihasilkan
+        return view('billingSystem.export.job.main', compact('qrcodes'), $data);
     }
 
     private function terbilang($number)
@@ -1287,7 +1302,7 @@ class InvoiceExportController extends Controller
             'invoice_date' => $invoice->invoice_date,
             'proforma_no' => $invoice->proforma_no,
             'inv_type' => $invoice->inv_type,
-            'cust_name' => $invoice->cust_name,
+            'cust_name' => $invoice->customer->name,
             'os_name' => $invoice->os_name,
             'total' => $invoice->total,
             'admin' => $invoice->admin,
@@ -1303,7 +1318,7 @@ class InvoiceExportController extends Controller
             'invoice_date' => $invoice->invoice_date,
             'proforma_no' => $invoice->proforma_no ?? 'N/A',
             'inv_type' => 'N/A',
-            'cust_name' => $invoice->cust_name,
+            'cust_name' => $invoice->customer->name,
             'os_name' => $invoice->os_name,
             'total' => $invoice->total,
             'admin' => $invoice->admin,

@@ -147,18 +147,39 @@ class InvoiceExtend extends Controller
             $oldInv = Extend::where('form_id', $request->inv_id)->first();
         }
         $oldForm = Form::where('id', $request->inv_id)->first();
-        $oldExpired = $oldForm->expired_date;
+        
+
+        $contSelect = $request->container_key;
+        $cont = Item::whereIn('container_key', $contSelect)->orderBy('disc_date', 'asc')->get();
+        $singleCont = $cont->first();
+        
+        $firstJobActiveToDate = null;
+
+        foreach ($cont as $item) {
+            if ($oldForm->i_e == 'X') {
+                $job = JobExtend::where('job_no', $item->job_no)->first();
+            }elseif ($oldForm->i_e == 'I') {
+                $job = JobImport::where('job_no', $item->job_no)->first();
+            }else {
+                return back()->with('error', 'Something Wromg');
+            }
+
+            $jobActiveToDate = Carbon::parse($job->active_to)->toDateString();
+
+            if (!$firstJobActiveToDate) {
+                $firstJobActiveToDate = $jobActiveToDate;
+            } elseif ($firstJobActiveToDate != $jobActiveToDate) {
+                return back()->with('error', 'Active to date differs between containers');
+            }
+        }
+
+        $oldExpired = $firstJobActiveToDate;
         // dd($oldInv, $oldExpired);
         $expired = $request->exp_date;
 
         if ($oldExpired >= $expired) {
             return back()->with('error', 'Expired date tidak lebih besar dari expired date sebelumnya');
         }
-
-        $contSelect = $request->container_key;
-        $cont = Item::whereIn('container_key', $contSelect)->orderBy('disc_date', 'asc')->get();
-        $singleCont = $cont->first();
-        // dd($singleCont);
         $invoice = Form::create([
             'expired_date'=>$request->exp_date,
             'os_id'=>$request->order_service,
@@ -166,7 +187,7 @@ class InvoiceExtend extends Controller
             'do_id'=>$oldInv->id,
             'ves_id'=> $singleCont->ves_id,
             'i_e'=>'X',
-            'disc_date'=>$oldExpired,
+            'disc_date'=>$firstJobActiveToDate,
             'done'=>'N',
             'tipe'=>$request->tipe,
             'discount_ds'=>$request->discount_ds,
@@ -403,7 +424,7 @@ class InvoiceExtend extends Controller
                 $remainingMassa2Days = 5 - $oldForm->massa2;
                 
                 // If there are more days than needed to reach 5 days in massa2
-                if ($jumlahHari > $emainingMassa2Days) {
+                if ($jumlahHari > $remainingMassa2Days) {
                     $m2 = $remainingMassa2Days;
                     $m3 = $jumlahHari - $remainingMassa2Days;
                 } else {
@@ -727,23 +748,37 @@ class InvoiceExtend extends Controller
     public function JobExtend($id)
     {
         $data['title'] = 'Job Number';
-        $data['inv'] = Extend::where('id', $id)->first();
-        $data['form'] = Form::where('id', $data['inv']->form_id)->first();
+
+        // Ambil data Extend dan Form terkait
+        $data['inv'] = Extend::with('form')->where('id', $id)->first();
+        $data['form'] = $data['inv']->form;
+
+        // Set timezone dan ambil waktu sekarang
         date_default_timezone_set('Asia/Jakarta');
         $data['now'] = Carbon::now();
         $data['formattedDate'] = $data['now']->format('l, d-m-Y');
+
+        // Ambil job terkait dengan inv_id, lakukan pagination
         $data['job'] = JobExtend::where('inv_id', $id)->paginate(10);
-        $data['cont'] = Item::get();
+
+        // Ambil data container yang dibutuhkan
+        $data['cont'] = Item::whereIn('container_key', $data['job']->pluck('container_key'))->get()->keyBy('container_key');
+
+        // Inisialisasi variabel qrcodes
+        $qrcodes = [];
+
+        // Loop untuk menghasilkan QR Code untuk setiap job
         foreach ($data['job'] as $jb) {
-            foreach ($data['cont'] as $ct) {
-                if ($ct->container_key == $jb->container_key) {
-                    $qrcodes[$jb->id] = QrCode::size(100)->generate($ct->container_no);
-                    break;
-                }
+            if ($data['cont']->has($jb->container_key)) {
+                $ct = $data['cont']->get($jb->container_key);
+                $qrcodes[$jb->id] = QrCode::size(100)->generate($ct->container_no);
             }
         }
-        return view('billingSystem.import.job.main',compact('qrcodes'), $data);
+
+        // Kembalikan view dengan data dan qrcodes yang dihasilkan
+        return view('billingSystem.import.job.main', compact('qrcodes'), $data);
     }
+
 
 
     private function terbilang($number)

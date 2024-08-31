@@ -101,7 +101,7 @@
           <div class="col-sm-6">
             <div class="form-group">
               <label for="">Discount OS</label>
-              <input type="number" class="form-control" value='0' name="discount_ds">
+              <input type="text" class="form-control" name="discount_ds" value="0">
             </div>
           </div>
          </div>

@@ -73,18 +73,9 @@
                 </select>
               </div>
             </div>
-            <div class="col-12" id="selector">
-              <div class="form-group">
-                <label for="">Container Number</label>
-                <select name="container[]" id="containerSelector" class="js-example-basic-multiple form-control" style="height: 150%;" multiple="multiple">
-                  @foreach($containerInvoice as $container)
-                      <option value="{{$container->container_key}}" selected>{{$container->container_no}}</option>
-                  @endforeach
-                </select>
-              </div>
-            </div>
-            <div class="col-12" id="palka">
-              <label for="">Jumlah Palka</label>
+            <div class="col-12">
+              <label for="" id="selector" >Jumlah Container</label>
+              <label for="" id="palka" style="display:none;">Jumlah Palka</label>
               <input type="number" class="form-control" name="palka" value="{{$form->palka ?? ''}}">
             </div>
           </div>
@@ -101,7 +92,8 @@
           <div class="col-sm-6">
             <div class="form-group">
               <label for="">Discount OS</label>
-              <input type="number" class="form-control" value='{{$form->discount_ds}}' name="discount_ds">
+                <p>Di Isi dengan Nomial !!</p>
+              <input type="text" class="form-control" name="discount_ds" value='{{$form->discount_ds ?? 0 }}'>
             </div>
           </div>
          </div>

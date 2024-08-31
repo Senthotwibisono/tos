@@ -464,7 +464,7 @@ class ImportController extends Controller
             }
             $data['totalDSK'] = $resultsDSK->sum('harga');
             $data['resultsDSK'] = $resultsDSK;
-            $data['discountDSK'] = ($data['totalDSK'] + $data['adminDSK']) * $form->discount_dsk / 100;
+            $data['discountDSK'] = $form->discount_dsk;
             $data['pajakDSK'] = (($data['totalDSK'] + $data['adminDSK']) - $data['discountDSK']) * 11 / 100;
             $data['grandTotalDSK'] = (($data['totalDSK'] + $data['adminDSK']) - $data['discountDSK']) + $data['pajakDSK'];
         }
@@ -524,7 +524,7 @@ class ImportController extends Controller
             }
             $data['totalDS'] = $resultsDS->sum('harga');
             $data['resultsDS'] = $resultsDS;
-            $data['discountDS'] = ($data['totalDS'] + $data['adminDS']) * $form->discount_ds / 100;
+            $data['discountDS'] = $form->discount_ds ;
             $data['pajakDS'] = (($data['totalDS'] + $data['adminDS']) - $data['discountDS']) * 11 / 100;
             $data['grandTotalDS'] = (($data['totalDS'] + $data['adminDS']) - $data['discountDS']) + $data['pajakDS'];
         }
@@ -1122,7 +1122,7 @@ private function getNextJob($lastJobNo)
     public function JobInvoice($id)
     {
         $data['title'] = 'Job Number';
-        $data['inv'] = InvoiceImport::where('id', $id)->first();
+        $data['inv'] = InvoiceImport::with('form')->where('id', $id)->first();
         $data['form'] = Form::where('id', $data['inv']->form_id)->first();
         date_default_timezone_set('Asia/Jakarta');
         $data['now'] = Carbon::now();
@@ -1130,14 +1130,13 @@ private function getNextJob($lastJobNo)
         if ($data['inv']->extend == 'Y') {
             return back()->with('error', 'Job Telah Di Perbarui, Silahkan Cek Menu Extend');
         }
-        $data['job'] = JobImport::where('inv_id', $id)->paginate(5);
-        $data['cont'] = Item::get();
+        $data['job'] = JobImport::where('inv_id', $id)->paginate(10);
+        $data['cont'] = Item::whereIn('container_key', $data['job']->pluck('container_key'))->get()->keyBy('container_key');
+
         foreach ($data['job'] as $jb) {
-            foreach ($data['cont'] as $ct) {
-                if ($ct->container_key == $jb->container_key) {
-                    $qrcodes[$jb->id] = QrCode::size(100)->generate($ct->container_no);
-                    break;
-                }
+            if ($data['cont']->has($jb->container_key)) {
+                $ct = $data['cont']->get($jb->container_key);
+                $qrcodes[$jb->id] = QrCode::size(100)->generate($ct->container_no);
             }
         }
         return view('billingSystem.import.job.main',compact('qrcodes'), $data);
@@ -1182,7 +1181,8 @@ private function getNextJob($lastJobNo)
             $jobNo = $this->getNextJob($lastJobNo);
             $job = JobImport::where('inv_id', $invoice->id)->where('container_key', $cont->container_key)->first();
             if (!$job) {
-                $discDate = Carbon::parse($cont->disc_date);
+                $item = Item::where('container_key', $cont->container_key)->first();
+                $discDate = Carbon::parse($item->disc_date);
                 $expiryDate = $discDate->addDays(4);
                 $expired = Carbon::now()->greaterThan($expiryDate);
                 
@@ -1199,7 +1199,7 @@ private function getNextJob($lastJobNo)
                     'ves_id'=>$cont->ves_id,
                 ]);
             }
-            $item = Item::where('container_key', $cont->container_key)->first();
+           
             $item->update([
                 'invoice_no'=>$invoiceNo,
                 'job_no' => $job->job_no,
@@ -1248,7 +1248,8 @@ private function getNextJob($lastJobNo)
         foreach ($containerInvoice as $cont) {
             $lastJobNo = JobImport::orderBy('id', 'desc')->value('job_no');
             $jobNo = $this->getNextJob($lastJobNo);
-            $discDate = Carbon::parse($cont->disc_date);
+            $item = Item::where('container_key', $cont->container_key)->first();
+            $discDate = Carbon::parse($item->disc_date);
             $expiryDate = $discDate->addDays(4);
             $expired = Carbon::now()->greaterThan($expiryDate);
             
@@ -1264,7 +1265,7 @@ private function getNextJob($lastJobNo)
                 'container_no'=>$cont->container_no,
                 'ves_id'=>$cont->ves_id,
             ]);
-            $item = Item::where('container_key', $cont->container_key)->first();
+            
             $item->update([
                 'invoice_no'=>$invoiceNo,
                 'job_no' => $job->job_no,

@@ -1240,11 +1240,11 @@ class StevadooringController extends Controller
     {
         $id = $request->inv_id;
         $invoice = Header::where('id', $id)->first();
-        if ($invoice->inv_no == null) {
+        if ($invoice->invoice_no == null) {
                 $invoiceNo = $this->getNextInvoiceDSK();
                 $invoiceDate = Carbon::now();
        }else {
-         $invoiceNo = $invoice->inv_no;
+         $invoiceNo = $invoice->invoice_no;
          $invoiceDate = $invoice->invoice_date;
        }
         if ($invoice) {
@@ -1272,16 +1272,16 @@ class StevadooringController extends Controller
     {
         $id = $request->inv_id;
         $invoice = Header::where('id', $id)->first();
-        if ($invoice->inv_no == null) {
+        if ($invoice->invoice_no == null) {
                 $invoiceNo = $this->getNextInvoiceDSK();
        }else {
-         $invoiceNo = $invoice->inv_no;
+         $invoiceNo = $invoice->invoice_no;
        }
         if ($invoice) {
             $invoice->update([
                 'invoice_no' => $invoiceNo,
                 'lunas' => 'P',
-                'lunas_at'=> Carbon::now(),
+                'piutang_at'=> Carbon::now(),
                 'invoice_date'=> Carbon::now(),
             ]);
 

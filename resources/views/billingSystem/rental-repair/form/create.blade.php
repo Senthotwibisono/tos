@@ -70,16 +70,15 @@
                 @endforeach
               </select>
             </div>
-            <div class="col-12" id="selector">
-              <label for="containerSelector">Container Number</label>
-              <select name="container[]" id="containerSelector" class="js-example-basic-multiple form-control" style="height: 150%;" multiple="multiple">
-                <option disabled value="">Pilih Salah Satu</option>
-              </select>
-            </div>
-            <div class="col-12" id="palka" style="display:none;">
-              <label for="">Jumlah Palka</label>
+            <div class="col-12">
+              <label for="" id="selector" >Jumlah Container</label>
+              <label for="" id="palka" style="display:none;">Jumlah Palka</label>
               <input type="number" class="form-control" name="palka">
             </div>
+            <!-- <div class="col-12" id="palka" style="display:none;">
+              <label for="">Jumlah Palka</label>
+              <input type="number" class="form-control" name="palka">
+            </div> -->
           </div>
           <div class="col-12">
             <label for="">Tarif</label>
@@ -93,7 +92,8 @@
             <div class="col-sm-6">
               <div class="form-group">
                 <label for="discount_ds">Discount OS</label>
-                <input type="number" class="form-control" value='0' name="discount_ds">
+                  <p>Di Isi dengan Nomial !!</p>
+                <input type="text" class="form-control" name="discount_ds" value="0">
               </div>
             </div>
           </div>
@@ -138,48 +138,48 @@
     });
 
     // Vessel Change Event
-    $('#kapalPlugging').on('change', function() {
-      let kapal = $(this).val();
-      $.ajax({
-        type: 'GET',
-        url: "/rental&repair-create-container",
-        data: { kapal: kapal },
-        success: function(response) {
-          if (response.success) {
-            Swal.fire({
-              icon: 'success',
-              title: 'Saved!',
-              timer: 2000,
-              showConfirmButton: false
-            }).then(() => {
-              $('#containerSelector').empty();
-              $.each(response.data, function(index, item) {
-                $('#containerSelector').append($('<option>', {
-                  value: item.container_key,
-                  text: item.container_no
-                }));
-              });
-            });
-          } else {
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: response.message
-            }).then(() => {
-              window.location.reload();
-            });
-          }
-        },
-        error: function(data) {
-          console.log('error:', data);
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.',
-          });
-        }
-      });
-    });
+    // $('#kapalPlugging').on('change', function() {
+    //   let kapal = $(this).val();
+    //   $.ajax({
+    //     type: 'GET',
+    //     url: "/rental&repair-create-container",
+    //     data: { kapal: kapal },
+    //     success: function(response) {
+    //       if (response.success) {
+    //         Swal.fire({
+    //           icon: 'success',
+    //           title: 'Saved!',
+    //           timer: 2000,
+    //           showConfirmButton: false
+    //         }).then(() => {
+    //           $('#containerSelector').empty();
+    //           $.each(response.data, function(index, item) {
+    //             $('#containerSelector').append($('<option>', {
+    //               value: item.container_key,
+    //               text: item.container_no
+    //             }));
+    //           });
+    //         });
+    //       } else {
+    //         Swal.fire({
+    //           icon: 'error',
+    //           title: 'Error',
+    //           text: response.message
+    //         }).then(() => {
+    //           window.location.reload();
+    //         });
+    //       }
+    //     },
+    //     error: function(data) {
+    //       console.log('error:', data);
+    //       Swal.fire({
+    //         icon: 'error',
+    //         title: 'Oops...',
+    //         text: 'Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.',
+    //       });
+    //     }
+    //   });
+    // });
 
     $('#orderService'). on('change', function(){
         let id = $('#orderService').val();

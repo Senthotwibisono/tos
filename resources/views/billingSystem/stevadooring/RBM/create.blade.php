@@ -535,7 +535,7 @@
                 <div class="col-3">
                     <div class="form-group">
                         <label for="">Etmal</label>
-                        <input type="number" class="form-control" name="etmal" placeholder="isi dengan 0 jika kosong" required>
+                        <input type="text" class="form-control" name="etmal" placeholder="isi dengan 0 jika kosong" required pattern="^\d+([.,]\d+)?$" title="Please enter a valid decimal number (e.g., 12.34 or 12,34)">
                     </div>
                 </div>
             </div>

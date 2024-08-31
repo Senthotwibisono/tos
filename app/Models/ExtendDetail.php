@@ -50,4 +50,9 @@ class ExtendDetail extends Model
     {
         return $this->belongsTo(Customer::class, 'cust_id', 'id');
     }
+
+    public function master()
+    {
+        return $this->belongsTo(Extend::class, 'inv_id',' id');
+    }
 }

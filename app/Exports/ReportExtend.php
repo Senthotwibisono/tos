@@ -66,7 +66,7 @@ class ReportExtend implements FromCollection, WithMapping, WithHeadings, ShouldA
             $no,
             $invoice->order_date,
             $invoice->inv_no,
-            $invoice->cust_name,
+            $invoice->customer->name,
             $kapal,
             $invoice->master_item_name,
             $invoice->service->order,

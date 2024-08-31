@@ -195,31 +195,7 @@
 
             </div>
           </div>
-          <!-- <div class="row">
-            <div class="col-12">
-              <h3>CONTAINER SUMMARY</h3>
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Container No</th>
-                    <th>Size</th>
-                    <th>Status</th>
-                    <th>Type</th>
-                  </tr>
-                </thead>
-                <tbody>
-                @foreach($contInvoice as $cont)
-                    <tr>
-                        <td>{{$cont->container_no}}</td>
-                        <td>{{$cont->ctr_size}}</td>
-                        <td>{{$cont->ctr_status}}</td>
-                        <td>{{$cont->ctr_type}}</td>
-                    </tr>
-                 @endforeach
-                </tbody>
-              </table>
-            </div>
-          </div> -->
+          
           <div class="row mt-3">
               <div class="col-md-12">
                 <table class="table table-striped">
@@ -227,18 +203,16 @@
                   <thead>
                     <tr>
                       <td class="text-center"><strong>Keterangan</strong></td>
-                      <td class="text-center"><strong>Ukuran</strong></td>
-                      <td class="text-center"><strong>Type</strong></td>
+                      <td class="text-center"><strong>Jumlah Container</strong></td>
                     </tr>
                   </thead>
                   <tbody>
-                    @foreach ($contInvoice as $cont)
+                    
                     <tr>
-                      <td class="text-center">{{$form->service->name}} {{$cont->container_no}}</td>
-                      <td class="text-center">{{$cont->ctr_size}}</td>
-                      <td class="text-center">{{$cont->ctr_type}}</td>
+                      <td class="text-center">{{$form->service->name}}</td>
+                      <td class="text-center">{{$form->palka}}</td>
                     </tr>
-                    @endforeach
+               
                   </tbody>
                   @else
                     <thead>

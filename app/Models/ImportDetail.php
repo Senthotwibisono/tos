@@ -50,4 +50,9 @@ class ImportDetail extends Model
     {
         return $this->belongsTo(Customer::class, 'cust_id', 'id');
     }
+
+    public function master()
+    {
+        return $this->belongsTo(InvoiceImport::class, 'inv_id',' id');
+    }
 }

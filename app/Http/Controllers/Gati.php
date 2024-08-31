@@ -162,11 +162,21 @@ class Gati extends Controller
     public function data_container(Request $request)
     {
         $item = Item::where('container_key', $request->container_key)->first();
+        $jobImport = Job::where('container_key', $item->container_key)->first();
+        $jobExtend = JobExtend::where('container_key', $item->container_key)->first();
+
+        if ($jobExtend) {
+            $active = $jobExtend->active_to;
+        }else {
+            $active = $jobImport->active_to;
+        }
+
         if ($item) {
             return response()->json([
                 'success' => true,
                 'message' => 'updated successfully!',
                 'data'    => $item,
+                'active' => $active,
             ]);
         }
     }

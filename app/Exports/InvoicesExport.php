@@ -64,7 +64,7 @@ class InvoicesExport implements FromCollection, WithMapping, WithHeadings, Shoul
             $no,
             $invoice->order_date,
             $invoice->inv_no,
-            $invoice->cust_name,
+            $invoice->customer->name,
             $kapal,
             $invoice->master_item_name,
             $invoice->service->order,

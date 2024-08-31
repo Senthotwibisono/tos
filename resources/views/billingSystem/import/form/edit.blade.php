@@ -174,13 +174,15 @@
           <div class="col-sm-6">
             <div class="form-group">
               <label for="">Discount DSK</label>
-              <input type="number" class="form-control" value='{{$form->discount_dsk}}' name="discount_dsk">
+                <p>Di Isi dengan Nomial !!</p>
+              <input type="text" class="form-control" name="discount_dsk" value="{{$form->discount_dsk ?? 0}}">
             </div>
           </div>
           <div class="col-sm-6">
             <div class="form-group">
-              <label for="">Discount DS</label>
-              <input type="number" class="form-control" value='{{$form->discount_ds}}' name="discount_ds">
+              <label for="">Discount OS</label>
+                <p>Di Isi dengan Nomial !!</p>
+              <input type="text" class="form-control" name="discount_ds" value="{{$discount->ds ?? 0}}">
             </div>
           </div>
          </div>

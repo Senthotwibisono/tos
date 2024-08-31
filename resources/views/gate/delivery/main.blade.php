@@ -139,6 +139,12 @@
             </div>
             <div class="col-12">
               <div class="form-group">
+                <label for="first-name-vertical">Active</label>
+                <input type="datetime-local" id="active" class="form-control" readonly>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">
                 <label for="first-name-vertical">Truck Number</label>
                 <input type="text" id="tayo" class="form-control" name="truck_no" required>
               </div>
@@ -331,6 +337,7 @@
             $('#container_no').val(response.data.container_no);
             $('#opr').val(response.data.ctr_opr);
             $('#job').val(response.data.job_no);
+            $('#active').val(response.active);
             $('#invoice').val(response.data.invoice_no);
             $('#orderservice').val(response.data.order_service);
           },
@@ -496,6 +503,7 @@
                 cache: false,
 
                 success: function(msg) {
+                    selectContainer.clearChoices();
                     let res = msg;
                     var len = res.length;
                     var choicesArray = []; // Array untuk menyimpan pilihan-pilihan baru
@@ -504,7 +512,7 @@
                         let nama = res[i].text;
                         choicesArray.push({ value: id, label: nama }); // Tambahkan pilihan baru ke dalam array
                     }
-                    selectContainer.clearChoices(); // Hapus pilihan-pilihan saat ini
+                    // Hapus pilihan-pilihan saat ini
                     selectContainer.setChoices(choicesArray, 'value', 'label', false); // Atur pilihan-pilihan baru
                 },
                 error: function(data) {

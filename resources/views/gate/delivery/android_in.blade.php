@@ -139,6 +139,12 @@
             </div>
             <div class="col-12">
               <div class="form-group">
+                <label for="first-name-vertical">Active</label>
+                <input type="datetime-local" id="active" class="form-control" readonly>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">
                 <label for="first-name-vertical">Truck Number</label>
                 <input type="text" id="tayo" class="form-control" name="truck_no" required>
               </div>
@@ -331,6 +337,7 @@
             $('#container_no').val(response.data.container_no);
             $('#opr').val(response.data.ctr_opr);
             $('#job').val(response.data.job_no);
+            $('#active').val(response.active);
             $('#invoice').val(response.data.invoice_no);
             $('#orderservice').val(response.data.order_service);
           },

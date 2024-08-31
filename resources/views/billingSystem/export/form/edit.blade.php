@@ -189,13 +189,13 @@
           <div class="col-sm-6">
             <div class="form-group">
               <label for="">Discount OSK</label>
-              <input type="number" class="form-control" value='{{$form->discount_dsk}}' name="discount_dsk">
+              <input type="text" class="form-control" name="discount_dsk" value="{{$form->discount_dsk}}">
             </div>
           </div>
           <div class="col-sm-6">
             <div class="form-group">
               <label for="">Discount OS</label>
-              <input type="number" class="form-control" value='{{$form->discount_ds}}' name="discount_ds">
+              <input type="text" class="form-control" name="discount_ds" value="{{$discount->ds}}">
             </div>
           </div>
          </div>

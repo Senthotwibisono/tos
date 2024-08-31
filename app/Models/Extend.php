@@ -67,4 +67,9 @@ class Extend extends Model
     {
         return $this->belongsTo(Customer::class, 'cust_id', 'id');
     }
+
+    public function Form()
+    {
+        return $this->belongsTo(InvoiceForm::class, 'form_id', 'id');
+    }
 }

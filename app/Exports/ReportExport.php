@@ -64,9 +64,9 @@ class ReportExport implements FromCollection, WithMapping, WithHeadings, ShouldA
         $grand = $pajak + $invoice->total;
         return [
             $no,
-            $invoice->order_date,
+            $invoice->master->invoice_date,
             $invoice->inv_no,
-            $invoice->cust_name,
+            $invoice->customer->name,
             $kapal,
             $invoice->master_item_name,
             $invoice->service->order,

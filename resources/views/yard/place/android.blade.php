@@ -669,17 +669,14 @@
                                     <input type="text" class="form-control" value="{{ Auth::user()->name }}" name="user_id" readonly>
                                 </div>
                             </div>
+                            <div class="col-3">
+                                <button type="submit" class="btn btn-warning">Confirm</button>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
-                        <i class="bx bx-x d-block d-sm-none"></i>
-                        <span class="d-none d-sm-block">Close</span>
-                    </button>
-                    <button type="submit" class="btn btn-warning">
-                        <span class="d-none d-sm-block">Confirm</span>
-                    </button>
+                    
                 </div>
             </form>
         </div>

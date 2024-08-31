@@ -219,7 +219,7 @@
           <div class="col-6">
                 <p>Total Amount: </p>
                 <p>Admin :</p>
-                <p>Discount {{ number_format($form->discount_ds, 2) }}% :</p>
+                <p>Discount :</p>
                 <p>Tax (11%): </p>
                 <p>Grand Total: </p>
               </div>
