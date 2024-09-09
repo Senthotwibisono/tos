@@ -77,8 +77,12 @@
         </div>
     </div>
     <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+<!-- Load jQuery first -->
     <script src="{{asset('dist/assets/js/bootstrap.js')}}"></script>
     <script src="{{asset('dist/assets/js/app.js')}}"></script>
+    <script src="{{asset('dist/assets/js/pages/horizontal-layout.js')}}"></script>
+    <script src="{{asset('dist/assets/extensions/apexcharts/apexcharts.min.js')}}"></script>
+    <script src="{{asset('dist/assets/js/pages/dashboard.js')}}"></script>
     <script src="{{asset('fontawesome/js/all.js')}}"></script>
     <script src="{{asset('fontawesome/js/all.min.js')}}"></script>
     <script src="{{asset('dist/assets/extensions/simple-datatables/umd/simple-datatables.js')}}"></script>
@@ -88,11 +92,37 @@
     <script src="{{asset('dist/assets/js/pages/sweetalert2.js')}}"></script>
     <script src="{{asset('dist/assets/extensions/choices.js/public/assets/scripts/choices.js')}}"></script>
     <script src="{{asset('dist/assets/js/pages/form-element-select.js')}}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="https://cdn.datatables.net/v/bs5/dt-1.12.1/datatables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+        // Initialize all tables with class 'dataTable-wrapper'
+            $('.tabelCustom').each(function() {
+                $(this).DataTable({});
+                
+            });
+        });
+    </script>
 
     <script>new simpleDatatables.DataTable('#table2');</script>
     <script>new simpleDatatables.DataTable('#table3');</script>
+
+      <!-- select 2 js  -->
+  <script src="{{ asset('select2/dist/js/select2.min.js') }}"></script>
+  <!-- <link rel="stylesheet" href="{{ asset('select2/dist/css/select2.min.js') }}"> -->
+
+
+  <!-- flatpickr js -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+  <!-- Dropify Inject -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Dropify/0.2.2/js/dropify.min.js" integrity="sha512-8QFTrG0oeOiyWo/VM9Y8kgxdlCryqhIxVeRpWSezdRRAvarxVtwLnGroJgnVW9/XBRduxO/z1GblzPrMQoeuew==" crossorigin="anonymous"></script>
+
+  <!-- date-range-picker  -->
+  <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+
+  <!-- moment.js  -->
+  <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     @if (\Session::has('success'))
   <script type="text/javascript">
     // Add CSRF token to the headers
@@ -124,6 +154,7 @@
       });
     }
   </script>
+  
   @endif
     <!-- <script src="{{ asset('query-ui/jquery-ui.js') }}"></script>
     <script src="{{ asset('query-ui/jquery-ui.min.js') }}" type="text/javascript"></script>

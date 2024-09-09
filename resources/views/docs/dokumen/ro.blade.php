@@ -28,7 +28,7 @@
             <button id="upload-xls-file" type="button" class="btn btn-warning btn-sm"><i class="fa fa-plus"></i> Input Document</button>
         </div>
         <div class="card-body">
-            <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
+            <table class="tabelCustom table table-bordered table-striped">
               <thead>
                   <tr>
                       <th>No</th>
@@ -307,7 +307,7 @@
 @endsection
 @section('custom_js')
     
-    <script src="{{ asset('vendor/components/jquery/jquery.min.js') }}"></script>
+    <!-- <script src="{{ asset('vendor/components/jquery/jquery.min.js') }}"></script> -->
     <script src="{{ asset('select2/dist/js/select2.full.min.js') }}"></script>
     <script src="{{asset('dist/assets/extensions/sweetalert2/sweetalert2.min.js')}}"></script>
     <script src="{{asset('dist/assets/js/pages/sweetalert2.js')}}"></script>

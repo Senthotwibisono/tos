@@ -20,7 +20,8 @@
 <link rel="stylesheet" href="{{asset('dist/assets/extensions/datatables.net-bs5/css/dataTables.bootstrap5.min.css')}}">
 <link rel="stylesheet" href="{{asset('dist/assets/extensions/choices.js/public/assets/styles/choices.css')}}">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
+<link rel="stylesheet" type="text/css" href="{{ asset('query-ui/jquery-ui.min.css') }}">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 
 <style>
   .select2-container--default .select2-selection--single {

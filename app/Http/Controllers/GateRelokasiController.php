@@ -30,7 +30,7 @@ class GateRelokasiController extends Controller
                             ->whereNotIn('order', ['MTI', 'MTK']);
                   });
         })->get();
-            $item_confirmed = Item::whereIn('ctr_intern_status',  ['12', '13', '14'])->get();
+            $item_confirmed = Item::whereIn('ctr_intern_status',  ['12', '13', '14'])->orderBy('truck_in_date', 'desc')->get();
 
       
         return view('gate.relokasi.main', compact('item', 'title', 'item_confirmed'));
@@ -80,7 +80,7 @@ class GateRelokasiController extends Controller
             if ($item->ves_id == "PELINDO") {
                 if ($service === 'SPPS') {
                     $item->update([
-                        'ctr_intern_status' => 12,
+                        'ctr_intern_status' => '12',
                         'order_service' => $request->order_service,
                         'no_dok' => $request->no_dok,
                         'jenis_dok' => $request->jenis_dok,
@@ -100,7 +100,7 @@ class GateRelokasiController extends Controller
                     // SP2 RELOKASI
                 } elseif ($service === 'SP2') {
                     $item->update([
-                        'ctr_intern_status' => 13,
+                        'ctr_intern_status' => '13',
                         'order_service' => $request->order_service,
                         'no_dok' => $request->no_dok,
                         'jenis_dok' => $request->jenis_dok,
@@ -120,7 +120,7 @@ class GateRelokasiController extends Controller
             }else {
                 if ($request->depo_return != null) {
                     $item->update([
-                        'ctr_intern_status' => 14,
+                        'ctr_intern_status' => '14',
                         'ctr_status' => 'MTY',
                         'ctr_active_yn' => 'Y',
                         'truck_no' => $request->truck_no,

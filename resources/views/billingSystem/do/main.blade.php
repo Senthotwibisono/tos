@@ -66,8 +66,12 @@
                       <td>{{$do->bl_no}}</td>
                       <td>
                            @php
-                              $doArray = json_decode($do->container_no);
-                              echo implode(', ', $doArray);
+                            $doArray = json_decode($do->container_no, true);
+                              if (is_array($doArray)) {
+                                  echo implode(', ', $doArray);
+                              } else {
+                                echo $do->container_no; // Atau berikan pesan default jika tidak valid
+                              }
                           @endphp
                       </td>
                       <td>{{$do->expired}}</td>

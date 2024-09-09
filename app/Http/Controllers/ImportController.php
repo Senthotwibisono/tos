@@ -183,13 +183,13 @@ class ImportController extends Controller
     {
         $id = $request->id;
         $do = DOonline::where('id', $id)->first();
-        $now = Carbon::now();
-        // if ($now > $do->expired) {
-        //     return response()->json([
-        //         'success' => false,
-        //         'message' => 'Nomor Do Expired !!',
-        //     ]);
-        // }
+
+        if (!$do) {
+            return response()->json([
+                'success' => false,
+                'message' => 'DO not found!',
+            ]);
+        }
 
         $ves = $request->ves;
         if (empty($ves)) {
@@ -198,6 +198,7 @@ class ImportController extends Controller
                 'message' => 'Pilih Vessel Service Dahulu !!',
             ]);
         }
+
         $os = $request->os;
         if (empty($os)) {
             return response()->json([
@@ -205,45 +206,51 @@ class ImportController extends Controller
                 'message' => 'Pilih Order Service Dahulu !!',
             ]);
         }
-        if ($do) {
-            $doCont = json_decode($do->container_no);
-            // var_dump($doCont);
-            // die;
-    
-            if ($os != 4 && $os != 5) {
-                $cont = Item::whereIn('container_no', $doCont)->whereIn('ctr_intern_status', ['03', '04', '10', '09', '14'])->where('selected_do','=', 'N')->where('ves_id', $ves)->get();            
-            }else {
-                $cont = Item::whereIn('container_no', $doCont)->where('ctr_intern_status', '=',  '15')->where('selected_do','=', 'N')->where('ves_id', 'PELINDO')->get();            
-            }
-           
-            if (!$cont->isEmpty()) {
-                $singleCont = $cont->first();
-                $discDate = Carbon::parse($singleCont->disc_date);
-                $expiryDate = $discDate->addDays(4);
-                $expired = Carbon::now()->greaterThan($expiryDate);
-                // var_dump($singleCont->disc_date, $discDate, $expiryDate, $expired);
-                // die;
-                $expiryDateFormatted = $expiryDate->format('Y-m-d');
-                return response()->json([
-                    'success' => true,
-                    'message' => 'updated successfully!',
-                    'data'    => $do,
-                    'cont' => $cont,
-                    'expired' => $expiryDateFormatted,
-                ]);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Container Belum Dapat Di Pilih !!',
-                ]);
-            }
-        } else {
+
+        $doCont = json_decode($do->container_no, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE || !is_array($doCont) || empty($doCont)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Something Wrong!',
+                'message' => 'Invalid container data!',
             ]);
         }
+
+        if ($os != 4 && $os != 5) {
+            $cont = Item::whereIn('container_no', $doCont)
+                ->whereIn('ctr_intern_status', ['03', '04', '10', '09', '14'])
+                ->where('selected_do', '=', 'N')
+                ->where('ves_id', $ves)
+                ->get();
+        } else {
+            $cont = Item::whereIn('container_no', $doCont)
+                ->where('ctr_intern_status', '=', '15')
+                ->where('selected_do', '=', 'N')
+                ->where('ves_id', 'PELINDO')
+                ->get();
+        }
+
+        if ($cont->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Container Belum Dapat Di Pilih !!',
+            ]);
+        }
+
+        $singleCont = $cont->first();
+        $discDate = Carbon::parse($singleCont->disc_date);
+        $expiryDate = $discDate->addDays(4);
+        $expiryDateFormatted = $expiryDate->format('Y-m-d');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'updated successfully!',
+            'data'    => $do,
+            'cont'    => $cont,
+            'expired' => $expiryDateFormatted,
+        ]);
     }
+
 
     public function getDokImport(Request $request)
     {

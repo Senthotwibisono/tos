@@ -32,7 +32,8 @@ class PlacementController extends Controller
         $formattedData = [];
         $data = [];
 
-        $data['containerMT'] = Item::whereIn('ctr_intern_status', ['04', '12', '13', '14'])->get();
+        $data['containerMT'] = Item::whereIn('ctr_intern_status', [04, 12, 13, 14])->get();
+        // dd($data['containerMT']['container_no']);
         $users = User::all();
         $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
         $yard_slot = Yard::distinct('yard_slot')->pluck('yard_slot');

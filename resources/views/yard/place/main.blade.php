@@ -558,9 +558,9 @@
                                     <label for="container_number">Choose Container Number</label>
                                     <select class="form-control choices" name="container_key" style="font-size: 16px; width: 75%;">
                                         <option disabled selected value>Select a container</option>
-                                        @foreach($containerMT as $item)
-                                            <option value="{{ $item->container_key }}">
-                                                {{ $item->container_no }} Ex.Kpl; {{ $item->ves_code }}-{{ $item->voy_no }}
+                                        @foreach($containerMT as $itemMt)
+                                            <option value="{{ $itemMt->container_key }}">
+                                                {{ $itemMt->container_no }} Ex.Kpl; {{ $itemMt->ves_code }}-{{ $itemMt->voy_no }}
                                             </option>
                                         @endforeach
                                     </select>
