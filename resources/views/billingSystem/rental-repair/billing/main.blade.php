@@ -20,7 +20,7 @@
     <div class="card">
       <div class="card-header">
         <h4>Export to Zahir</h4>
-        <form action="{{ route('zahir-invoice-plugging')}}" method="GET" enctype="multipart/form-data">
+        <form action="{{ route('zahir-invoice-others')}}" method="GET" enctype="multipart/form-data">
           <div class="row">
             <div class="col-4">
               <div class="form-group">

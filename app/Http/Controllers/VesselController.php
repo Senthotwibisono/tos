@@ -23,11 +23,32 @@ class VesselController extends Controller
     {
         $this->middleware('auth');
     }
+
+    public function androidDashboard()
+    {
+        $title = 'Vessel Schedule';
+        $vessel_voyage = VVoyage::orderBy('deparature_date', 'desc')->get();
+        return view('planning.vessel.android.main', compact('vessel_voyage', 'title'));
+    }
     public function index()
     {
         $title = 'Vessel Schedule';
         $vessel_voyage = VVoyage::orderBy('deparature_date', 'desc')->get();
         return view('planning.vessel.main', compact('vessel_voyage', 'title'));
+    }
+    
+    public function androidCreate()
+    {
+        $title = 'Add Schedule';
+        $users = User::all();
+        $vessel_master = VMaster::all();
+        $vessel_seq = VSeq::all();
+        $vessel_service = VService::select('service')->distinct()->get();
+        $berth = Berth::all();
+        $currentDateTime = Carbon::now();
+        $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
+        $item = Item::select('ves_id');
+         return view('planning.vessel.android.create', compact('users', 'vessel_master', 'vessel_seq', 'vessel_service', 'berth', 'currentDateTimeString', 'item', 'title'));
     }
 
     public function create()
@@ -163,8 +184,6 @@ class VesselController extends Controller
             'voy_out' => 'required|max:7',
             'berth_no' => 'required',
             'berth_grid' => 'required|max:5',
-            'est_anchorage_date' => 'required',
-            'est_pilot_date' =>'required',
             'est_start_work_date' =>'required',
             'est_end_work_date' =>'required',
             'eta_date' =>'required',
@@ -177,7 +196,6 @@ class VesselController extends Controller
             'voy_in.max' => 'Kolom Voy In tidak boleh lebih dari 7 karakter.',
             'voy_out.max' => 'Kolom Voy Out tidak boleh lebih dari 7 karakter.',
             'berth_grid.max' => 'Kolom Berth Grid tidak boleh lebih dari 5 karakter.',
-            'cy_code.max' => 'Kolom Cy Code tidak boleh lebih dari 1 karakter.',
             'no_ook.max' => 'Kolom No.PPK tidak boleh lebih dari 20 karakter.',
         ]    
     );
@@ -279,12 +297,21 @@ class VesselController extends Controller
         return view('planning.vessel.edit', compact('vessel_voyage', 'currentDateTimeString', 'title', 'bongkar_import',));
     }
 
+    public function androidEdit($ves_id){
+        $title = 'Edit Schedule';
+        $bongkar_import = Item::where('ves_id', $ves_id)->where('ctr_i_e_t', '=', 'I')->where('ctr_intern_status','!=', '01' )->count();
+        $users = User::all();
+        $vessel_voyage = VVoyage::where('ves_id', $ves_id)->first();
+        $currentDateTime = Carbon::now();
+        $currentDateTimeString = $currentDateTime->format('Y-m-d H:i:s');
+       
+        return view('planning.vessel.android.edit', compact('vessel_voyage', 'currentDateTimeString', 'title', 'bongkar_import',));
+    }
+
     public function update_schedule(Request $request, $ves_id)
     {
 
         $request->validate([
-            'act_anchorage_date' => 'required',
-            'act_pilot_date' =>'required',
             'act_start_work_date' =>'required',
             'act_end_work_date' =>'required',
             'arrival_date' =>'required',
@@ -302,7 +329,8 @@ class VesselController extends Controller
 
         VVoyage::where('ves_id', $ves_id)->update([
 
-       
+        'voy_in' => $request->voy_in,
+        'voy_out' => $request->voy_out,
         'act_anchorage_date'=> $request->act_anchorage_date,     
         'act_pilot_date' => $request->act_pilot_date,       
         'act_start_work_date' => $request->act_start_work_date,        

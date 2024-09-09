@@ -399,6 +399,9 @@ Route::patch('/planning/schedule_update={ves_id}', [VesselController::class, 'up
 Route::delete('/planning/delete_schedule={ves_id}', [VesselController::class, 'delete_schedule']);
 Route::get('/refresh_counter', [VesselController::class, 'refreshCounter']);
 
+Route::get('/android/vessel-main', [VesselController::class, 'androidDashboard']);
+Route::get('/android/vessel-create', [VesselController::class, 'androidCreate']);
+Route::get('/android/editVessel={ves_id}', [VesselController::class, 'androidEdit']);
 
 Route::get('/planning/bayplan_import', [BayplanImportController::class, 'index']);
 Route::post('/getsize', [BayplanImportController::class, 'size']);
@@ -1029,6 +1032,8 @@ Route::get('/pranota/stevadooring-{id}', [StevadooringController::class, 'Pranot
 Route::get('/stevadooring/pay-button{id}', [StevadooringController::class, 'Pay'])->name('index-stevadooring-Pay');
 Route::post('/invoice/stevadooring-payFull', [StevadooringController::class, 'payFullStevadooring'])->name('index-stevadooring-PayFull');
 Route::post('/invoice/stevadooring-piutang', [StevadooringController::class, 'piutangStevadooring'])->name('index-stevadooring-Piutang');
+Route::post('/invoice/stevadooring-cancel', [StevadooringController::class, 'cancelStevadooring'])->name('index-stevadooring-cancel');
+Route::delete('/billing/stevadooring/deleteInvoice/{id?}', [StevadooringController::class, 'invoiceDelete']);
 
 // invoice
 Route::get('/invoice/stevadooring-{id}', [StevadooringController::class, 'Invoice'])->name('index-stevadooring-Invoice');
@@ -1047,6 +1052,7 @@ Route::get('/invoice/zahir-export', [ZahirController::class, 'ZahirExport'])->na
 Route::get('/invoice/zahir-export', [ZahirController::class, 'ZahirPlugging'])->name('zahir-invoice-plugging');
 Route::get('/invoice/zahir-extend', [ZahirController::class, 'ZahirExtend'])->name('zahir-invoice-extend');
 Route::get('/invoice/zahir-steva', [ZahirController::class, 'ZahirSteva'])->name('zahir-invoice-steva');
+Route::get('/invoice/zahir-others', [ZahirController::class, 'ZahirOthers'])->name('zahir-invoice-others');
 
 // Master Invoice
 Route::get('/invoice/master/item', [MasterInvoiceController::class, 'indexMItem'])->name('invoice-master-item');

@@ -45,6 +45,15 @@
                 <div class="col-12">
                     <div style="width: 250px;">
                         <div style="float: left; margin-right: 60px;">
+                            <lottie-player src="https://lottie.host/d4da0e2c-aec1-4e4a-ae7c-61ca551c3621/409LHanlKF.json" background="#FFFFFF" speed="1" width="100" height="100" loop autoplay></lottie-player>
+                            <a href="/android/vessel-main" style="text-align: justify;" class="btn btn-primary rounded-pill">Vessel Schedule</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div style="width: 250px;">
+                        <div style="float: left; margin-right: 60px;">
                             <lottie-player src="https://assets10.lottiefiles.com/packages/lf20_7hgsy40v.json" background="#FFFFFF" speed="1" width="100" height="100" loop autoplay></lottie-player>
                             <a href="/android-cc" style="text-align: justify;" class="btn btn-primary rounded-pill">Discharge & Load</a>
                         </div>

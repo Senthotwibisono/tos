@@ -195,6 +195,10 @@
                     <input type="text" class="form-control" value="{{$invoice->clossing_date}}" readonly>
                 </div>
             </div>
+            <h4>Type RBM</h4>
+            <div class="col-12">
+                <input type="text" class="form-control" value="{{$type}}" readonly>
+            </div>
         </div>
           <div class="row mt-3">
               <div class="col-md-12">

@@ -41,6 +41,7 @@
                     <th>Deparature Date</th>
                     <th>Open Stack Date</th>
                     <th>Clossing Date</th>
+                    <th>Type</th>
                     <th>Created At</th>
                     <th>Action</th>
                   </tr>
@@ -57,6 +58,7 @@
                     <td>{{$header->deparature_date}}</td>
                     <td>{{$header->open_stack_date}}</td>
                     <td>{{$header->clossing_date}}</td>
+                    <td>{{$header->rbm->tipe ?? ''}}</td>
                     <td>{{$header->created_at}}</td>
                     <td>
                       <a class="btn btn-success text-white" href="/billing/stevadooring/edit-invoice/{{$header->id}}"><i class="fa fa-pen"></i></a>

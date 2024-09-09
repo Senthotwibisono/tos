@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\InvoiceImport;
+use App\Models\InvoiceExport;
+use App\Models\Extend;
 use App\Models\ImportDetail;
 use App\Models\ExportDetail;
 use App\Models\ExtendDetail;
 use App\Models\InvoiceHeaderStevadooring as Steva;
 use App\Exports\ImportZahir;
 use App\Exports\ZahirSteva;
+use App\Exports\ZahirOthers;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -63,7 +66,19 @@ class ZahirController extends Controller
    {
      $startDate = $request->start;
      $endDate = $request->end;
-     $data = ImportDetail::whereDate('order_date', '>=', $startDate)->whereDate('order_date', '<=', $endDate)->orderBy('inv_id', 'asc')->get();
+    //  $data = ImportDetail::whereDate('order_date', '>=', $startDate)->whereDate('order_date', '<=', $endDate)->orderBy('inv_id', 'asc')->get();
+     $exportInv = InvoiceImport::whereHas('service', function ($query) {
+      $query->where('ie', '=', 'I');
+      })
+      ->whereDate('invoice_date', '>=', $startDate)
+      ->whereDate('invoice_date', '<=', $endDate)
+      ->get();
+    
+      // Get the ids of the fetched InvoiceExport records
+      $exportInvIds = $exportInv->pluck('id')->toArray();
+    
+      // Fetch ExportDetail records that match the InvoiceExport ids
+      $data = ImportDetail::whereIn('inv_id', $exportInvIds)->get();
        $fileName = 'ReportZahirImport-'. $startDate . $endDate .'.csv';
      return Excel::download(new ImportZahir($data), $fileName);
    }
@@ -72,9 +87,18 @@ class ZahirController extends Controller
    {
      $startDate = $request->start;
      $endDate = $request->end;
-     $data = ExportDetail::whereHas('service', function ($query) {
-      $query->where('ie', '!=', 'P');
-  })->whereDate('order_date', '>=', $startDate)->whereDate('order_date', '<=', $endDate)->orderBy('inv_id', 'asc')->get();
+     $exportInv = InvoiceExport::whereHas('service', function ($query) {
+      $query->where('ie', '=', 'E');
+      })
+      ->whereDate('invoice_date', '>=', $startDate)
+      ->whereDate('invoice_date', '<=', $endDate)
+      ->get();
+    
+      // Get the ids of the fetched InvoiceExport records
+      $exportInvIds = $exportInv->pluck('id')->toArray();
+    
+      // Fetch ExportDetail records that match the InvoiceExport ids
+      $data = ExportDetail::whereIn('inv_id', $exportInvIds)->get();
        $fileName = 'ReportZahirExport-'. $startDate . $endDate .'.csv';
      return Excel::download(new ImportZahir($data), $fileName);
    }
@@ -83,10 +107,19 @@ class ZahirController extends Controller
    {
      $startDate = $request->start;
      $endDate = $request->end;
-     $data = ExportDetail::whereHas('service', function ($query) {
+     $exportInv = InvoiceExport::whereHas('service', function ($query) {
       $query->where('ie', '=', 'P');
-  })->whereDate('order_date', '>=', $startDate)->whereDate('order_date', '<=', $endDate)->orderBy('inv_id', 'asc')->get();
-       $fileName = 'ReportZahirExport-'. $startDate . $endDate .'.csv';
+      })
+      ->whereDate('invoice_date', '>=', $startDate)
+      ->whereDate('invoice_date', '<=', $endDate)
+      ->get();
+    
+      // Get the ids of the fetched InvoiceExport records
+      $exportInvIds = $exportInv->pluck('id')->toArray();
+    
+      // Fetch ExportDetail records that match the InvoiceExport ids
+      $data = ExportDetail::whereIn('inv_id', $exportInvIds)->get();
+       $fileName = 'ReportZahirPlugging-'. $startDate . $endDate .'.csv';
      return Excel::download(new ImportZahir($data), $fileName);
    }
 
@@ -94,7 +127,19 @@ class ZahirController extends Controller
    {
      $startDate = $request->start;
      $endDate = $request->end;
-     $data = ExtendDetail::whereDate('order_date', '>=', $startDate)->whereDate('order_date', '<=', $endDate)->orderBy('inv_id', 'asc')->get();
+    //  $data = ExtendDetail::whereNot('total', null)->whereDate('order_date', '>=', $startDate)->whereDate('order_date', '<=', $endDate)->orderBy('inv_id', 'asc')->get();
+     $exportInv = Extend::whereHas('service', function ($query) {
+      $query->where('ie', '=', 'X');
+      })
+      ->whereDate('invoice_date', '>=', $startDate)
+      ->whereDate('invoice_date', '<=', $endDate)
+      ->get();
+    
+      // Get the ids of the fetched InvoiceExport records
+      $exportInvIds = $exportInv->pluck('id')->toArray();
+    
+      // Fetch ExportDetail records that match the InvoiceExport ids
+      $data = ExtendDetail::whereIn('inv_id', $exportInvIds)->whereNot('total', '=', 0)->get();
        $fileName = 'ReportZahirExtend-'. $startDate . $endDate .'.csv';
      return Excel::download(new ImportZahir($data), $fileName);
    }
@@ -106,5 +151,20 @@ class ZahirController extends Controller
      $data = Steva::whereDate('created_at', '>=', $startDate)->whereDate('created_at', '<=', $endDate)->orderBy('id', 'asc')->get();
        $fileName = 'ReportZahirStevadooring-'. $startDate . $endDate .'.xlsx';
      return Excel::download(new ZahirSteva($data), $fileName);
+   }
+
+   public function ZahirOthers(Request $request)
+   {
+     $startDate = $request->start;
+     $endDate = $request->end;
+     $data = InvoiceExport::whereHas('service', function ($query) {
+      $query->where('ie', '=', 'R');
+      })
+      ->whereDate('invoice_date', '>=', $startDate)
+      ->whereDate('invoice_date', '<=', $endDate)
+      ->get();
+    
+       $fileName = 'ReportZahirPlugging-'. $startDate . $endDate .'.csv';
+     return Excel::download(new ZahirOthers($data), $fileName);
    }
 }

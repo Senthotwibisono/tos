@@ -13,7 +13,8 @@
             <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
                 <thead>
                     <tr>
-                        <th>NO</th>
+                        <th>No</th>
+                        <th>Tipe</th>
                         <th>Ves Code</th>
                         <th>Vessel</th>
                         <th>Voy Out</th>
@@ -27,17 +28,18 @@
                 <tbody>
                    @foreach($realisasiBongkarMuat as $rbm)
                     <tr>
-                        <th>{{$loop->iteration}}</th>
-                        <th>{{$rbm->ves_code}}</th>
-                        <th>{{$rbm->ves_name}}</th>
-                        <th>{{$rbm->voy_out}}</th>
-                        <th>{{$rbm->arrival_date}}</th>
-                        <th>{{$rbm->deparature_date}}</th>
-                        <th>{{$rbm->open_stack_date}}</th>
-                        <th>{{$rbm->clossing_date}}</th>
-                        <th>
+                        <td>{{$loop->iteration}}</td>
+                        <td>{{$rbm->tipe ?? ''}}</td>
+                        <td>{{$rbm->ves_code}}</td>
+                        <td>{{$rbm->ves_name}}</td>
+                        <td>{{$rbm->voy_out}}</td>
+                        <td>{{$rbm->arrival_date}}</td>
+                        <td>{{$rbm->deparature_date}}</td>
+                        <td>{{$rbm->open_stack_date}}</td>
+                        <td>{{$rbm->clossing_date}}</td>
+                        <td>
                             <a href="/billing/stevadooring/RBM-detali/{{$rbm->id}}" class="btn btn-outline-warning">Detail</a>
-                        </th>
+                        </td>
                     </tr>
                    @endforeach
                 </tbody>

@@ -15,6 +15,7 @@ class RBM extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
+        'tipe',
         'ves_id',
         'ves_code',
         'voy_in',

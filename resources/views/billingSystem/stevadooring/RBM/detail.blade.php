@@ -70,6 +70,13 @@
                         <input type="text" class="form-control" value="{{$kapal->clossing_date}}" readonly>
                     </div>
                 </div>
+                <h4>Tipe RBM</h4>
+                <div class="col-sm-12">
+                    <select name="tipe" class="js-example-basic-single select2 form-select" style="widht:100%;">
+                        <option value="I" {{ $rbm->tipe == 'I' ? 'selected' : '' }}>Import</option>
+                        <option value="E" {{ $rbm->tipe == 'E' ? 'selected' : '' }}>Export</option>
+                    </select>
+                </div>
             </div>
             <hr>
 

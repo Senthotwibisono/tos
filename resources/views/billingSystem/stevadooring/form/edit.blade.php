@@ -48,7 +48,7 @@
                 <select name="rbm_id" class="js-example-basic-single form-select" required>
                   <option value="" default selected disabled>Pilih Salah Satu..</option>
                  @foreach($rbm as $ves)
-                 <option value="{{$ves->id}}" {{ $ves->id == $inv->rbm_id ? 'selected' : '' }}>{{$ves->ves_name}} -- {{$ves->voy_out}}</option>
+                 <option value="{{$ves->id}}" {{ $ves->id == $inv->rbm_id ? 'selected' : '' }}>{{$ves->ves_name}} -- {{$ves->voy_out}} {{$ves->tipe}}</option>
                  @endforeach
                 </select>
               </div>

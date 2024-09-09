@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\ImportDetail;
+use App\Models\InvoiceExport;
 use App\Models\Item; 
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Illuminate\Support\Collection;
 
-class ImportZahir implements FromCollection, WithMapping, WithHeadings, ShouldAutoSize
+class ZahirOthers implements FromCollection, WithMapping, WithHeadings, ShouldAutoSize
 {
     /**
     * @return \Illuminate\Support\Collection
@@ -44,19 +44,10 @@ class ImportZahir implements FromCollection, WithMapping, WithHeadings, ShouldAu
                 break;
         }
 
-        if ($data->count_by == 'T' || $data->count_by == 'H') {
-            if ($data->jumlah_hari == 0 || $data->jumlah_hari == null) {
-                $item = '0';
-            }else {
-                $item = $data->jumlah_hari * $data->jumlah;
-            }
-        }else {
-            $item = $data->jumlah;
-        }
 
         
 
-        $keterangan = "By. ". $data->master_item_name. ' ' . $data->jumlah . 'x' . $data->ukuran . '('. $data->customer->name .', PT)';
+        $keterangan = "By. ". $data->master_item_name. ' ' . $data->Form->palka . 'x' . $data->ukuran . '('. $data->customer->name .', PT)';
         $note = $data->Form->Kapal->ves_code . ' V.' . $data->Form->Kapal->voy_in . '/' . $data->Form->Kapal->voy_out . '/' . $data->Form->Kapal->no_ppk;
 
         $expiredDate = Carbon::parse($data->order_date);
@@ -65,8 +56,30 @@ class ImportZahir implements FromCollection, WithMapping, WithHeadings, ShouldAu
         // Format the new date in the desired format (d/m/Y)
         $formattedExpiredDate = $expiredDate->format('d/m/Y');
 
+        switch ($data->os_id) {
+            case 32:
+                $kode = 'TAGICON20';
+                break;
+            case  36:
+                $kode = 'PALKA';
+                break;
+            case 38:
+                $kode = 'REPAIR';
+                break;
+            case 42:
+                $kode = 'Biaya Penggunaan Peralatan';
+                break;
+            case 43:
+                $kode = 'RELOKASI';
+                break;
+            
+            default:
+                $kode = null;
+                break;
+        }
+
         return [
-            date("d/m/Y", strtotime($data->master->invoice_date)),
+            date("d/m/Y", strtotime($data->invoice_date)),
            $data->inv_no,
            $data->customer->mapping_zahir,
            'Head Quarter',
@@ -78,11 +91,11 @@ class ImportZahir implements FromCollection, WithMapping, WithHeadings, ShouldAu
            '',
            '',
            '',
-           $data->kode,
-           $item,
-           $data->satuan,
-           $data->tarif,
-           $data->master->Form->discount_ds . '%' ?? $data->master->Form->discount_dsk . '%' ?? 0 . '%',
+           $kode,
+           $data->Form->palka,
+           'unit',
+           $data->total,
+           $data->Form->discount_ds . '%' ?? $data->Form->discount_dsk . '%' ?? 0 . '%',
            'VAT',
            $formattedExpiredDate,
            '',
@@ -108,6 +121,4 @@ class ImportZahir implements FromCollection, WithMapping, WithHeadings, ShouldAu
                 'NOTE DETA', 'NO DOKUMEN', 'MATA UANG', 'NILAI TUKAR', 'NOMOR SERI', 'NOMOR SO',
         ];
     }
-
-
 }

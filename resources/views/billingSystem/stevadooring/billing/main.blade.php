@@ -108,9 +108,13 @@
                       <td>
                       <span class="badge bg-warning text-white">Piutang</span>
                       </td>
-                      @else
+                      @elseif($header->lunas == "Y")
                       <td>
                       <span class="badge bg-success text-white">Paid</span>
+                      </td>
+                      @else
+                      <td>
+                      <span class="badge bg-danger text-white">Canceled</span>
                       </td>
                       @endif
                       <td>
@@ -127,6 +131,9 @@
                       @endif
                       <td>
                         <button type="button" id="pay" data-id="{{$header->id}}" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>
+                        @if($header->lunas == "N")
+                        <button type="button" data-id="{{$header->id}}" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>
+                        @endif
                       </td>
                     </tr>
                     @endforeach
@@ -175,6 +182,9 @@
           </button>
           <button id="piutang" type="button" class="btn btn-warning ml-1 piutang" >
             Piutang This Invoices
+          </button>
+          <button id="cancel" type="button" class="btn btn-danger ml-1 cancel" >
+            Cancel This Invoices
           </button>
         </div>
       </form>
@@ -394,5 +404,119 @@
       }
     });
   });
+</script>
+
+<script>
+  $(document).on('click', '.cancel', function(e) {
+    e.preventDefault();
+
+    var data = {
+      'inv_id': $('#idInvoice').val(),
+   
+    }
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+    Swal.fire({
+      icon: 'question',
+      title: 'Do you want to save the changes?',
+      showDenyButton: false,
+      showCancelButton: true,
+      confirmButtonText: 'Save',
+      denyButtonText: `Don't save`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+
+
+        $.ajax({
+          type: 'POST',
+          url: '/invoice/stevadooring-cancel',
+          data: data,
+          cache: false,
+          dataType: 'json',
+          success: function(response) {
+            console.log(response);
+                        if (response.success) {
+                            Swal.fire('Saved!', '', 'success')
+                            .then(() => {
+                            // Memuat ulang halaman setelah berhasil menyimpan data
+                            window.location.reload();
+                        });
+                        } else {
+                            Swal.fire('Error', response.message, 'error');
+                        }
+          },
+          error: function(response) {
+            var errors = response.responseJSON.errors;
+            if (errors) {
+              var errorMessage = '';
+              $.each(errors, function(key, value) {
+                errorMessage += value[0] + '<br>';
+              });
+              Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                html: errorMessage,
+              });
+            } else {
+              console.log('error:', response);
+            }
+          },
+        });
+      } else if (result.isDenied) {
+        Swal.fire('Changes are not saved', '', 'info');
+      }
+    });
+  });
+</script>
+
+<script>
+  $(document).ready(function() {
+   
+    // Event delegation for delete button
+    $(document).on('click', '.Delete', function() {
+        var formId = $(this).data('id'); // Ambil ID dari data-id atribut
+
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Anda tidak akan bisa mengembalikan ini!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/billing/stevadooring/deleteInvoice/' + formId, // Ganti dengan endpoint penghapusan Anda
+                    type: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}' // Sertakan token CSRF untuk keamanan
+                    },
+                    success: function(response) {
+                        Swal.fire(
+                            'Dihapus!',
+                            'Data berhasil dihapus.',
+                            'success'
+                        ).then(() => {
+                          window.location.reload();
+                        });
+                    },
+                    error: function(xhr) {
+                        console.error(xhr.responseText);
+                        Swal.fire(
+                            'Gagal!',
+                            'Terjadi kesalahan saat menghapus data.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    });
+});
 </script>
 @endsection

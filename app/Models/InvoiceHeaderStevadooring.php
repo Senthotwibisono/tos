@@ -59,4 +59,9 @@ class InvoiceHeaderStevadooring extends Model
     {
         return $this->belongsTo(Customer::class, 'cust_id', 'id');
     }
+
+    public function rbm()
+    {
+        return $this->belongsTo(RBM::class, 'rbm_id', 'id');
+    }
 }

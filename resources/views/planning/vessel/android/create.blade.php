@@ -1,4 +1,4 @@
-@extends('partial.main')
+@extends('partial.android')
 
 @section('content')
 
@@ -26,7 +26,7 @@
                                     <div class="col-md-6 col-12" >
                                         <div class="form-group">
                                             <label for="first-name-column">Vessel Code</label>
-                                            <select class="form-select" id="vescode" name="ves_code">
+                                            <select class="form-select choices" id="vescode" name="ves_code">
                                             <option value="-">-</option>
                                                 @foreach($vessel_master as $master)
                                             <option value="{{$master->ves_code}}">{{$master->ves_code}}</option>

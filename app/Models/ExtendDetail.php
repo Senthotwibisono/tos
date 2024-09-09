@@ -53,6 +53,6 @@ class ExtendDetail extends Model
 
     public function master()
     {
-        return $this->belongsTo(Extend::class, 'inv_id',' id');
+        return $this->belongsTo(Extend::class, 'inv_id', 'id');
     }
 }

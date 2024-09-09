@@ -47,6 +47,20 @@ class InvoiceStevadoring implements FromCollection, WithMapping, WithHeadings, S
                 break;
         }
 
+        $type = '';
+        switch ($invoice->rbm->tipe) {
+            case 'I':
+                $type = 'Import';
+                break;
+            case 'E':
+                $type = 'Export';
+                break;
+            
+            default:
+                $type = ' ';
+                break;
+        }
+
         $no = $this->invoices->search($invoice) + 1;
         return [
             $no,
@@ -67,6 +81,7 @@ class InvoiceStevadoring implements FromCollection, WithMapping, WithHeadings, S
             $invoice->deparature_date,
             $invoice->open_stack_date,
             $invoice->clossing_date,
+            $type,
             $invoice->tambat_tongkak,
             $invoice->tambat_kapal,
             $invoice->stevadooring,
@@ -112,6 +127,7 @@ class InvoiceStevadoring implements FromCollection, WithMapping, WithHeadings, S
             'deparature_date',
             'open_stack_date',
             'clossing_date',
+            'Tipe Invoice',
             'tambat_tongkak',
             'tambat_kapal',
             'stevadooring',

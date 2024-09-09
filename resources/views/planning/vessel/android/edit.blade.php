@@ -1,4 +1,4 @@
-@extends('partial.main')
+@extends('partial.android')
 
 @section('content')
 

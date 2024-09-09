@@ -45,7 +45,7 @@
         <div class="row">
           <div class="col-12">
             <h4 class="card-title">
-              Customer Detail
+              Vessel Detail
             </h4>
             <p>Informasi Detil Kapal</p>
           </div>
@@ -97,6 +97,10 @@
                     <label for="">Clossing Date</label>
                     <input type="text" class="form-control" value="{{$inv->clossing_date}}" readonly>
                 </div>
+            </div>
+            <h4>Type RBM</h4>
+            <div class="col-12">
+                <input type="text" class="form-control" value="{{$type}}" readonly>
             </div>
         </div>
 

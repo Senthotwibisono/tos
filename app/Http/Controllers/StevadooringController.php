@@ -65,10 +65,11 @@ class StevadooringController extends Controller
 
         $ves = VVoyage::where('ves_id', $request->ves_id)->first();
         $rbm = RBM::where('ves_id', $request->ves_id)->first();
+        $data['rbm'] = $rbm;
 
-        if ($rbm) {
-            return redirect()->back()->with('error', 'Data Sudah Tersedia');
-        }
+        // if ($rbm) {
+        //     return redirect()->back()->with('error', 'Data Sudah Tersedia');
+        // }
         $data['kapal'] = $ves;
         
         $cont = Item::where('ves_id', $request->ves_id)->whereNot('ctr_intern_status', '01')->get();
@@ -172,6 +173,7 @@ class StevadooringController extends Controller
         $now = Carbon::now();
         $user = Auth::user()->id;
         $rbm = RBM::create([
+            'tipe' =>$request->tipe,
             'ves_id' => $request->ves_id,
             'ves_code' => $ves->ves_code,
             'voy_in' => $ves->voy_in,
@@ -345,6 +347,7 @@ class StevadooringController extends Controller
         $now = Carbon::now();
         $user = Auth::user()->id;
         $rbm->update([
+            'tipe' =>$request->tipe,
             'ves_id' => $request->ves_id,
             'ves_code' => $ves->ves_code,
             'voy_in' => $ves->voy_in,
@@ -569,6 +572,18 @@ class StevadooringController extends Controller
         $tarif = Tarif::first();
         $data['mt'] = $tarif;
         $data['inv'] = $header;
+        switch ($header->rbm->tipe) {
+            case 'I':
+                $data['type'] = 'Import';
+                break;
+            case 'E':
+                $data['type'] = 'Export';
+                break;
+            
+            default:
+                $data['type'] = ' ';
+                break;
+        }
 
         $rbm = RBM::where('id', $header->rbm_id)->first();
         $data['rbm'] = $rbm;
@@ -1203,6 +1218,18 @@ class StevadooringController extends Controller
     public function Pranota($id)
     {
         $header = Header::where('id', $id)->first();
+        switch ($header->rbm->tipe) {
+            case 'I':
+                $data['type'] = 'Import';
+                break;
+            case 'E':
+                $data['type'] = 'Export';
+                break;
+            
+            default:
+                $data['type'] = ' ';
+                break;
+        }
         $data['title'] = 'Pranota Stevadooring ' . $header->ves_name . ' ' . $header->voy_out;
         $data['invoice'] = $header;
         if ($header->tambat_tongkak == 'Y') {
@@ -1301,6 +1328,18 @@ class StevadooringController extends Controller
     public function Invoice($id)
     {
         $header = Header::where('id', $id)->first();
+        switch ($header->rbm->tipe) {
+            case 'I':
+                $data['type'] = 'Import';
+                break;
+            case 'E':
+                $data['type'] = 'Export';
+                break;
+            
+            default:
+                $data['type'] = ' ';
+                break;
+        }
         $data['title'] = 'Pranota Stevadooring ' . $header->ves_name . ' ' . $header->voy_out;
         $data['invoice'] = $header;
         if ($header->tambat_tongkak == 'Y') {
@@ -1414,4 +1453,85 @@ class StevadooringController extends Controller
         $fileName = 'ReportInvoiceStevadooring-'. $startDate . $endDate .'.xlsx';
       return Excel::download(new InvoiceStevadoring($invoice), $fileName);
     }
+
+    public function invoiceDelete($id)
+    {
+        // var_dump($id);
+        // die;
+        $invoice = Header::find($id);
+
+        // Check if the invoice exists
+        if (!$invoice) {
+            return response()->json(['message' => 'Invoice not found.'], 404);
+        }
+    
+        // Delete related records in one query per model
+        STV::where('inv_id', $invoice->id)->delete();
+        SFT::where('inv_id', $invoice->id)->delete();
+        TT::where('inv_id', $invoice->id)->delete();
+        TK::where('inv_id', $invoice->id)->delete();
+    
+        // Delete the invoice
+        $invoice->delete();
+
+        return response()->json(['message' => 'Data berhasil dihapus.']);
+    }
+
+    public function cancelStevadooring(Request $request)
+    {
+        $id = $request->inv_id;
+        $header = Header::find($id);
+
+        // var_dump($header);
+        // die();
+        if ($header) {
+            if ($header->tambat_tongkak == 'Y') {
+                $tongkak = TT::where('inv_id', $header->id)->get();
+                foreach ($tongkak as $tk) {
+                    $tk->update([
+                        'total' => 0,
+                    ]);
+                }
+             }
+             if ($header->tambat_kapal == 'Y') {
+                 $tkapal = TK::where('inv_id', $header->id)->get();
+                 foreach ($tkapal as $tt) {
+                    $tt->update([
+                        'total' => 0,
+                    ]);
+                }
+             }
+             if ($header->stevadooring == 'Y') {
+                 $stevadooring = STV::where('inv_id', $header->id)->get();
+                 foreach ($stevadooring as $sv) {
+                    $sv->update([
+                        'total' => 0,
+                    ]);
+                }
+             }
+             if ($header->shifting == 'Y') {
+                 $shift = SFT::where('inv_id', $header->id)->get();
+                 foreach ($shift as $sft) {
+                    $sft->update([
+                        'total' => 0,
+                    ]);
+                 }
+             }
+
+             $header->update([
+                'total'=>0,
+                'pajak'=>0,
+                'admin'=>0,
+                'grand_total'=>0,
+                'lunas'=>'C',
+             ]);
+             return response()->json([
+                'success' => true,
+                'message' => 'Invoice Berhasil di Cancel!',
+            ]);
+        }
+
+       
+    }
+
 }
