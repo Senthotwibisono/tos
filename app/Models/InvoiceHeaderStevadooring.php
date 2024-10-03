@@ -43,6 +43,7 @@ class InvoiceHeaderStevadooring extends Model
         'total',
         'pajak',
         'admin',
+        'discount',
         'grand_total',
         'created_by',
         'created_at',

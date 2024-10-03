@@ -14,7 +14,6 @@
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Tipe</th>
                         <th>Ves Code</th>
                         <th>Vessel</th>
                         <th>Voy Out</th>
@@ -29,7 +28,6 @@
                    @foreach($realisasiBongkarMuat as $rbm)
                     <tr>
                         <td>{{$loop->iteration}}</td>
-                        <td>{{$rbm->tipe ?? ''}}</td>
                         <td>{{$rbm->ves_code}}</td>
                         <td>{{$rbm->ves_name}}</td>
                         <td>{{$rbm->voy_out}}</td>

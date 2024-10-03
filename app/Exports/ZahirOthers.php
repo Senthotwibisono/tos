@@ -95,7 +95,7 @@ class ZahirOthers implements FromCollection, WithMapping, WithHeadings, ShouldAu
            $data->Form->palka,
            'unit',
            $data->total,
-           $data->Form->discount_ds . '%' ?? $data->Form->discount_dsk . '%' ?? 0 . '%',
+           ceil($data->Form->discount_ds ?? $data->Form->discount_dsk ?? 0),
            'VAT',
            $formattedExpiredDate,
            '',

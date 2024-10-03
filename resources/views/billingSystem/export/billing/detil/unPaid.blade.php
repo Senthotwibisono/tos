@@ -3,102 +3,16 @@
 
 @section('content')
 
-<div class="page-heading">
-  <h3><?= $title ?></h3>
-  <p>Management Data Billing Reciving</p>
-
-</div>
 <div class="page-content">
-
-  <section class="row">
-    <div class="col-12 mb-3">
-      <a href="{{ route('deliveryMenuExport')}}" type="button" class="btn btn-primary">
-        <i class="fa fa-folder"></i>
-        Reciving Form
-      </a>
-    </div>
-    <div class="card">
-      <div class="card-header">
-        <h4>Muat to Zahir</h4>
-        <form action="/invoice/zahir-export" method="GET" enctype="multipart/form-data">
-          <div class="row">
-            <div class="col-4">
-              <div class="form-group">
-                <label>Pick Start Date Range</label>
-                <!-- <input name="start" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired"> -->
-                <input type="date" name="start" class="form-control" required>
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
-                <label>Pick End Date Range</label>
-                <!-- <input name="end" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired"> -->
-                <input type="date" name="end" class="form-control" required>
-              </div>
-            </div>
-            <div class="col-4 mt-4">
-              <button class="btn btn-info" type="submit"><i class=" fa fa-file"></i> Export Active Invoice to CSV</button>
-            </div>
-          </div>
-        </form>
-      </div>
-      <div class="card-header">
-      <h4>Report Muat</h4>
-        <form action="{{ route('report-invoice-export-All')}}" method="GET" enctype="multipart/form-data">
-          <div class="row">
-            <div class="col-sm-3">
-              <div class="form-group">
-                <label>Pick Start Date Range</label>
-                <input name="start" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
-                <!-- <input type="date" name="start" class="form-control" required> -->
-              </div>
-            </div>
-            <div class="col-sm-3">
-              <div class="form-group">
-                <label>Pick End Date Range</label>
-                <input name="end" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
-                <!-- <input type="date" name="end" class="form-control" required> -->
-              </div>
-            </div>
-            <div class="col-sm-3">
-              <div class="form-group">
-                <label for="">Invoice Type</label>
-                 <div class="row">
-                    <div class="col-6">
-                      <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" name="inv_type[]" value="OSK" id="checkbox-dsk">
-                        <label class="form-check-label" for="checkbox-dsk">OSK</label>
-                      </div>
-                    </div>
-                    <div class="col-6">
-                      <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" name="inv_type[]" value="OS" id="checkbox-ds">
-                        <label class="form-check-label" for="checkbox-ds">OS</label>
-                      </div>
-                    </div>
-                 </div>
-              </div>
-            </div>
-            <div class="col-3 mt-4">
-              <button class="btn btn-primary" type="submit"><i class=" fa fa-file"></i> Export Active Invoice to Excel</button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </section>
-
-  <div class="row">
-  <div class="col-6">
   <section class="row">
       <div class="col-12">
-        <div class="card border border-danger">
+        <div class="card">
           <div class="card-header">
             <h4 class="card-title">Tabel Data Billing Delivery (Belum Bayar)</h4>
             <p>Rekap Data Billing</p>
           </div>
           <div class="card-body">
-            <form action="/invoice/export/report-unpaid" method="GET" enctype="multipart/form-data">
+          <form action="/invoice/export/report-unpaid" method="GET" enctype="multipart/form-data">
               <div class="row">
 
                 <div class="col-4">
@@ -128,23 +42,84 @@
                 <table class="dataTable-wrapperEXP dataTable-loading no-footer sortable searchable fixed-columns" id="tableImp">
                   <thead>
                     <tr>
-                      <th>Jumlah Invoice</th>
-                      <th>Total Amount</th>
-                      <th>Grand Total Amount</th>
+                      <th>Proforma No</th>
+                      <th>Customer</th>
+                      <th>Order Service</th>
+                      <th>Tipe Invoice</th>
+                      <th>Dibuat Pada</th>
+                      <th>Status</th>
+                      <th>Pranota</th>
+                      <th>Invoice</th>
+                      <th>Job</th>
                       <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>{{$countUnpaids ?? 0}}</td>
-                      <td>{{$totaltUnpaids ?? 0}}</td>
-                      <td>{{$grandTotalUnpaids ?? 0}}</td>
+                  @foreach($unPaids as $inv)
+                  <tr>
+                      <td>{{$inv->proforma_no}}</td>
+                      <td>{{$inv->cust_name}}</td>
+                      <td>{{$inv->os_name}}</td>
+                      <td>{{$inv->inv_type}}</td>
+                      <td>{{$inv->order_at}}</td>
+                      @if($inv->lunas == "N")
                       <td>
-                        <a href="/invoice/export/reciving-detail/unpaid">
-                          <span class="badge bg-primary text-white">See moreee....</span>
-                        </a>
+                      <span class="badge bg-danger text-white">Not Paid</span>
+                      </td>
+                      @elseif($inv->lunas == "P")
+                      <td>
+                      <span class="badge bg-warning text-white">Piutang</span>
+                      </td>
+                      @elseif($inv->lunas == "Y")
+                      <td>
+                      <span class="badge bg-success text-white">Paid</span>
+                      </td>
+                      @else
+                      <td>
+                      <span class="badge bg-danger text-white">Canceled</span>
+                      </td>
+                      @endif
+                      <td>
+                        @if($inv->inv_type == 'DSK')
+                      <a type="button" href="/pranota/import-DSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
+                        @else
+                      <a type="button" href="/pranota/import-DS{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
+                        @endif
+                      </td>
+                      @if($inv->lunas == "N")
+                      <td>
+                      <button type="button" href="/invoice/import-DSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white" disabled><i class="fa fa-dollar"></i></button>
+                      </td>
+                      <td>
+                      <button type="button" href="/invoice/job/import-{{$inv->id}}" target="_blank" class="btn btn-sm btn-info text-white" disabeled><i class="fa fa-ship"></i></button>
+                      </td>
+                      @else
+                      <td>
+                      @if($inv->inv_type == 'DSK')
+                      <a type="button" href="/invoice/import-DSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
+                      @else  
+                      <a type="button" href="/invoice/import-DS{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
+                      @endif
+                      </td>
+                      <td>
+                      <a type="button" href="/invoice/job/import-{{$inv->id}}" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
+                      </td>
+                      @endif
+                      <td>
+                        <div class="row">
+
+                          <div class="col-5">
+                            <button type="button" id="pay" data-id="{{$inv->id}}" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>
+                          </div>
+                          @if($inv->lunas == "N")
+                          <div class="col-5">
+                            <button type="button" data-id="{{$inv->form_id}}" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>
+                          </div>
+                          @endif
+                        </div>
                       </td>
                     </tr>
+                   @endforeach
                   </tbody>
                 </table>
               </div>
@@ -153,164 +128,10 @@
         </div>
       </div>
     </section>
-  </div>
 
-    <div class="col-6">
-    <section class="row">
-      <div class="col-12">
-        <div class="card border border-warning">
-          <div class="card-header">
-            <h4 class="card-title">Tabel Data Billing Delivery (Piutang)</h4>
-            <p>Rekap Data Billing</p>
-          </div>
-          <div class="card-body">
-            <form action="/invoice/export/report-piutang" method="GET" enctype="multipart/form-data">
-                <div class="row">
-
-                  <div class="col-4">
-                    <div class="form-group">
-                      <label>Pick Start Date Range</label>
-
-                      <input type="date" name="start" class="form-control" required>
-                    </div>
-                  </div>
-                  <div class="col-4">
-                    <div class="form-group">
-                      <label>Pick End Date Range</label>
-
-                      <input type="date" name="end" class="form-control" required>
-
-                    </div>
-                  </div>
-                  <div class="col-4 mt-4">
-                    <button class="btn btn-primary" type="submit"><i class=" fa fa-file"></i> Export Active Invoice to Excel</button>
-                  </div>
-                </div>
-              </form>
-            <div class="row">
-
-              <div class="col-12">
-              <table class="dataTable-wrapperEXP dataTable-loading no-footer sortable searchable fixed-columns" id="tableImp">
-                  <thead>
-                    <tr>
-                      <th>Jumlah Invoice</th>
-                      <th>Total Amount</th>
-                      <th>Grand Total Amount</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>{{$countPiutangs ?? 0}}</td>
-                      <td>{{$totalPiutangs ?? 0}}</td>
-                      <td>{{$grandTotalPiutangs ?? 0}}</td>
-                      <td>
-                        <a href="/invoice/export/reciving-detail/piutang">
-                          <span class="badge bg-primary text-white">See moreee....</span>
-                        </a>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <div class="footer">
+        <a href="/billing/import/delivey-system" class="btn btn-primary">Back</a>
     </div>
-  </div>
-
-<div class="row">
-  @foreach($service as $os)
-  <div class="col-6">
-    <section class="row">
-      <div class="col-12">
-        <div class="card border border-primary">
-          <div class="card-header">
-            <h4 class="card-title">Tabel Data Billing Bongkaran {{$os->name}}</h4>
-            <p>Rekap Data Billing</p>
-          </div>
-          <div class="card-body">
-            <form action="{{ route('report-invoice-export')}}" method="GET" enctype="multipart/form-data">
-              <div class="row">
-
-                <div class="col-sm-3">
-                  <div class="form-group">
-                    <label>Pick Start Date Range</label>
-                    <input name="start" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
-                    <!-- <input type="date" name="start" class="form-control" required> -->
-                  </div>
-                </div>
-                <div class="col-sm-3">
-                  <div class="form-group">
-                    <label>Pick End Date Range</label>
-                    <input name="end" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired">
-                    <!-- <input type="date" name="end" class="form-control" required> -->
-                    <input type="hidden" name="os_id" value="{{$os->id}}">
-
-                  </div>
-                </div>
-                <div class="col-sm-3">
-                  <div class="form-group">
-                    <label for="">Invoice Type</label>
-                     <div class="row">
-                        <div class="col-6">
-                          <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" name="inv_type[]" value="DSK" id="checkbox-dsk">
-                            <label class="form-check-label" for="checkbox-dsk">DSK</label>
-                          </div>
-                        </div>
-                        <div class="col-6">
-                          <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" name="inv_type[]" value="DS" id="checkbox-ds">
-                            <label class="form-check-label" for="checkbox-ds">DS</label>
-                          </div>
-                        </div>
-                     </div>
-                  </div>
-                </div>
-                <div class="col-3 mt-4">
-                  <button class="btn btn-primary" type="submit"><i class=" fa fa-file"></i> Export Active Invoice to Excel</button>
-                </div>
-              </div>
-            </form>
-
-              <div class="row">
-                <div class="col-12">
-                  <div class="table-responsive">
-                    <table class="table table-stripped">
-                        <thead>
-                            <tr>
-                                <th>Jumlah Invoice</th>
-                                <th>Total Amount</th>
-                                <th>Grand Total Amount</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>{{$invoice->where('os_id', $os->id)->count()}}</td>
-                                <td>{{$invoice->where('os_id', $os->id)->sum('total')}}</td>
-                                <td>{{$invoice->where('os_id', $os->id)->sum('grand_total')}}</td>
-                                <td>
-                                    <a href="/invoice/export/reciving-detail/{{$os->id}}">
-                                        <span class="badge bg-primary text-white">See more...</span>
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-    @endforeach
-  </div>
 </div>
 
 <!-- Edit Modal Single Data Table  -->
@@ -341,6 +162,7 @@
             <i class="bx bx-x d-block d-sm-none"></i>
             <span class="d-none d-sm-block">Cancel</span>
           </button>
+        
           <button id="payFull" type="button" class="btn btn-primary ml-1 payFull">
             Verify This Payment
           </button>

@@ -84,6 +84,10 @@
                     </div>
                 </div>
             </div>
+            <div class="form-group">
+                <label for="">Discount</label>
+                <input type="text" name="discount" class="form-control" value="{{$inv->discount}}">
+            </div>
           </div>
           <div class="row mt-5">
             <div class="col-12 text-right">

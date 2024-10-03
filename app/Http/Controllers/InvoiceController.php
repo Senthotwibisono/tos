@@ -23,6 +23,9 @@ use App\Models\TpsSppbPibCont; // check container
 use App\Models\TpsSppbBcCont; // check container bc
 use App\Models\TpsDokPabeanCont; // check container pabean
 
+use App\Models\InvoiceImport as Import;
+use App\Models\InvoiceExport as Export;
+
 // cari doc number, type & date
 // 1. check TpsSppbPib (NO_SPPB)
 // 2. kalo ga nemu ke yg TpsSppbBc (NO_SPPB)
@@ -48,6 +51,37 @@ class InvoiceController extends Controller
     $data = [];
     $data["title"] = "Menu Billing System";
 
+    // DS
+    $ds = Import::where('inv_type', 'DS')->get();
+    // dd($ds);
+    $data['ds'] = $ds;
+    $data['paidDS'] = $ds->where('lunas', '=', 'Y')->count();
+    $data['piutangDS'] = $ds->where('lunas', '=', 'P')->count();
+    $data['unpaidDS'] = $ds->where('lunas', '=', 'N')->count();
+
+    // DSK
+    $dsK = Import::where('inv_type', 'DSK')->get();
+    $data['dsk'] = $dsK;
+    // dd($dsK);
+    $data['paidDSK'] = $dsK->where('lunas', '=', 'Y')->count();
+    $data['piutangDSK'] = $dsK->where('lunas', '=', 'P')->count();
+    $data['unpaidDSK'] = $dsK->where('lunas', '=', 'N')->count();
+
+    // oS
+    $os = Export::where('inv_type', 'OS')->get();
+    // dd($ds);
+    $data['os'] = $os;
+    $data['paidOS'] = $os->where('lunas', '=', 'Y')->count();
+    $data['piutangOS'] = $os->where('lunas', '=', 'P')->count();
+    $data['unpaidOS'] = $os->where('lunas', '=', 'N')->count();
+   
+  //  osk
+    $osk = Export::where('inv_type', 'OSK')->get();
+    // dd($ds);
+    $data['osk'] = $osk;
+    $data['paidOSK'] = $osk->where('lunas', '=', 'Y')->count();
+    $data['piutangOSK'] = $osk->where('lunas', '=', 'P')->count();
+    $data['unpaidOSK'] = $osk->where('lunas', '=', 'N')->count();
     return view('invoice.menu', $data);
   }
   public function index()

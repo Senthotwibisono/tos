@@ -47,8 +47,38 @@ class InvoiceExportController extends Controller
         $data['piutangs'] = InvoiceExport::whereHas('service', function ($query) {
             $query->where('ie', '=', 'E');
         })->whereNot('form_id', '=', '')->where('lunas', '=', 'P')->orderBy('order_at', 'asc')->get();
+        $data['countUnpaids'] = $data['unPaids']->count();
+        $data['totalUnpaids'] = $data['unPaids']->sum('total');
+        $data['grandTotalUnpaids'] = $data['unPaids']->sum('grand_total');
 
+        $data['countPiutangs'] = $data['piutangs']->count();
+        $data['totalPiutangs'] = $data['piutangs']->sum('total');
+        $data['grandTotalPiutangs'] = $data['piutangs']->sum('grand_total');
         return view('billingSystem.export.billing.main', $data);
+    }
+    public function detilUnpaid()
+    {
+        $data['title'] = "Delivery Billing System (Unpaid Invoice)";
+        $data['unPaids'] = InvoiceExport::whereHas('service', function ($query) {
+            $query->where('ie', '=', 'E');
+        })->whereNot('form_id', '=', '')->where('lunas', '=', 'N')->orderBy('order_at', 'asc')->get();
+        return view('billingSystem.export.billing.detil.unPaid', $data);
+    }
+   
+    public function detilPiutang()
+    {
+        $data['title'] = "Delivery Billing System (Piutang Invoice)";
+        $data['piutangs'] = InvoiceExport::whereHas('service', function ($query) {
+            $query->where('ie', '=', 'E');
+        })->whereNot('form_id', '=', '')->where('lunas', '=', 'P')->orderBy('order_at', 'asc')->get();
+        return view('billingSystem.export.billing.detil.piutang', $data);
+    }
+    public function detilInvoice($id)
+    {
+        $data['title'] = "Delivery Billing System (Piutang Invoice)";
+        $data['os'] = OS::find($id);
+        $data['invoice'] = InvoiceExport::whereNot('form_id', '=', '')->where('os_id', $id)->orderBy('order_at', 'asc')->orderBy('lunas', 'asc')->get();
+        return view('billingSystem.export.billing.detil.detil', $data);
     }
 
     public function deliveryMenuExport()
@@ -1259,6 +1289,46 @@ class InvoiceExportController extends Controller
         }
     
         $invoice = $invoiceQuery->orderBy('order_date', 'asc')->get();        $fileName = 'ReportInvoiceExport-'.$os.'-'. $startDate . $endDate .'.xlsx';
+      return Excel::download(new ReportExport($invoice), $fileName);
+    }
+    public function unpaidReport(Request $request)
+    {
+      $startDate = $request->start;
+      $endDate = $request->end;
+      $invoiceQuery = Detail::whereHas('service', function ($query) {
+        $query->where('ie', '=', 'E');
+    })
+      ->where('lunas', '=', 'N')
+      ->whereDate('order_date', '>=', $startDate)
+      ->whereDate('order_date', '<=', $endDate);
+
+        // Cek apakah checkbox 'inv_type' ada dalam request dan tidak kosong
+        if ($request->has('inv_type') && !empty($request->inv_type)) {
+            // Tambahkan filter berdasarkan 'inv_type'
+            $invoiceQuery->whereIn('inv_type', $request->inv_type);
+        }
+    
+        $invoice = $invoiceQuery->orderBy('order_date', 'asc')->get();        $fileName = 'ReportInvoiceExportUnpaid'.'-'. $startDate . $endDate .'.xlsx';
+      return Excel::download(new ReportExport($invoice), $fileName);
+    }
+    public function piutangReport(Request $request)
+    {
+      $startDate = $request->start;
+      $endDate = $request->end;
+      $invoiceQuery = Detail::whereHas('service', function ($query) {
+        $query->where('ie', '=', 'E');
+    })
+      ->where('lunas', '=', 'P')
+      ->whereDate('order_date', '>=', $startDate)
+      ->whereDate('order_date', '<=', $endDate);
+
+        // Cek apakah checkbox 'inv_type' ada dalam request dan tidak kosong
+        if ($request->has('inv_type') && !empty($request->inv_type)) {
+            // Tambahkan filter berdasarkan 'inv_type'
+            $invoiceQuery->whereIn('inv_type', $request->inv_type);
+        }
+    
+        $invoice = $invoiceQuery->orderBy('order_date', 'asc')->get();        $fileName = 'ReportInvoiceExportPiutang'.'-'. $startDate . $endDate .'.xlsx';
       return Excel::download(new ReportExport($invoice), $fileName);
     }
 

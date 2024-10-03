@@ -47,7 +47,7 @@
                 <select name="rbm_id" class="js-example-basic-single form-select" required>
                   <option value="" default selected disabled>Pilih Salah Satu..</option>
                  @foreach($rbm as $ves)
-                 <option value="{{$ves->id}}">{{$ves->ves_name}} -- {{$ves->voy_out}} -- {{$ves->tipe}}</option>
+                 <option value="{{$ves->id}}">{{$ves->ves_name}} -- {{$ves->voy_out}}</option>
                  @endforeach
                 </select>
               </div>
@@ -82,6 +82,10 @@
                         <label class="form-check-label" for="flexSwitchCheckDefault">Shifting</label>
                     </div>
                 </div>
+            </div>
+            <div class="form-group">
+                <label for="">Discount</label>
+                <input type="text" name="discount" class="form-control">
             </div>
           </div>
           <div class="row mt-5">

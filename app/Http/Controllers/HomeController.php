@@ -37,11 +37,13 @@ class HomeController extends Controller
         $data["active"] = "Dashboard";
         $data["subactive"] = "";
         // dd($data);
-        return view('dashboard', compact('title', 'vessel_voyage', 'history_container', 'total'),  [
-            'countNotNull' => $countNotNull,
-            'countNull' => $countNull,
-            'active' => "Dashboard",
-            'subactive' => "",
-        ]);
+        
+        $data['kg'] = Yard::count();
+        
+        $terisi = Yard::whereNot('container_key', null)->count(); 
+        $tidakTerisi = $data['kg'] - $terisi;
+        $data['persentaseTerisi'] = ($terisi / $data['kg']) * 100;
+        $data['persentaseTidakTerisi'] = ($tidakTerisi / $data['kg']) * 100;
+        return view('dashboard', compact('title', 'vessel_voyage', 'history_container', 'total'), $data);
     }
 }

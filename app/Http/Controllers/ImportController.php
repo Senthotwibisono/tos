@@ -63,7 +63,34 @@ class ImportController extends Controller
         $data['unPaids'] = InvoiceImport::whereNot('form_id', '=', '')->where('lunas', '=', 'N')->orderBy('order_at', 'asc')->get();
         $data['piutangs'] = InvoiceImport::whereNot('form_id', '=', '')->where('lunas', '=', 'P')->orderBy('order_at', 'asc')->get();
 
+        $data['countUnpaids'] = $data['unPaids']->count();
+        $data['totalUnpaids'] = $data['unPaids']->sum('total');
+        $data['grandTotalUnpaids'] = $data['unPaids']->sum('grand_total');
+
+        $data['countPiutangs'] = $data['piutangs']->count();
+        $data['totalPiutangs'] = $data['piutangs']->sum('total');
+        $data['grandTotalPiutangs'] = $data['piutangs']->sum('grand_total');
         return view('billingSystem.import.billing.main', $data);
+    }
+    public function detilUnpaid()
+    {
+        $data['title'] = "Delivery Billing System (Unpaid Invoice)";
+        $data['unPaids'] = InvoiceImport::whereNot('form_id', '=', '')->where('lunas', '=', 'N')->orderBy('order_at', 'asc')->get();
+        return view('billingSystem.import.billing.detil.unPaid', $data);
+    }
+   
+    public function detilPiutang()
+    {
+        $data['title'] = "Delivery Billing System (Piutang Invoice)";
+        $data['piutangs'] = InvoiceImport::whereNot('form_id', '=', '')->where('lunas', '=', 'P')->orderBy('order_at', 'asc')->get();
+        return view('billingSystem.import.billing.detil.piutang', $data);
+    }
+    public function detilInvoice($id)
+    {
+        $data['title'] = "Delivery Billing System (Piutang Invoice)";
+        $data['os'] = OS::find($id);
+        $data['invoice'] = InvoiceImport::whereNot('form_id', '=', '')->where('os_id', $id)->orderBy('order_at', 'asc')->orderBy('lunas', 'asc')->get();
+        return view('billingSystem.import.billing.detil.detil', $data);
     }
 
     public function deliveryMenu()
@@ -1187,8 +1214,8 @@ private function getNextJob($lastJobNo)
             $lastJobNo = JobImport::orderBy('id', 'desc')->value('job_no');
             $jobNo = $this->getNextJob($lastJobNo);
             $job = JobImport::where('inv_id', $invoice->id)->where('container_key', $cont->container_key)->first();
+            $item = Item::where('container_key', $cont->container_key)->first();
             if (!$job) {
-                $item = Item::where('container_key', $cont->container_key)->first();
                 $discDate = Carbon::parse($item->disc_date);
                 $expiryDate = $discDate->addDays(4);
                 $expired = Carbon::now()->greaterThan($expiryDate);
@@ -1354,6 +1381,43 @@ private function getNextJob($lastJobNo)
         $invoice = $invoiceQuery->orderBy('order_date', 'asc')->get();
     
         $fileName = 'ReportInvoiceImport-' . $os . '-' . $startDate . '-' . $endDate . '.xlsx';
+
+      return Excel::download(new InvoicesExport($invoice), $fileName);
+    }
+
+    public function unpaidReport(Request $request)
+    {
+        $startDate = $request->start;
+        $endDate = $request->end;
+        $invoiceQuery = Detail::whereBetween('order_date', [$startDate, $endDate])->where('lunas', '=', 'N');
+    
+        // Cek apakah checkbox 'inv_type' ada dalam request dan tidak kosong
+        if ($request->has('inv_type') && !empty($request->inv_type)) {
+            // Tambahkan filter berdasarkan 'inv_type'
+            $invoiceQuery->whereIn('inv_type', $request->inv_type);
+        }
+    
+        $invoice = $invoiceQuery->orderBy('order_date', 'asc')->get();
+    
+        $fileName = 'ReportInvoiceImport-'. '-' . $startDate . '-' . $endDate . '.xlsx';
+
+      return Excel::download(new InvoicesExport($invoice), $fileName);
+    }
+    public function piutangReport(Request $request)
+    {
+        $startDate = $request->start;
+        $endDate = $request->end;
+        $invoiceQuery = Detail::whereBetween('order_date', [$startDate, $endDate])->where('lunas', '=', 'P');
+    
+        // Cek apakah checkbox 'inv_type' ada dalam request dan tidak kosong
+        if ($request->has('inv_type') && !empty($request->inv_type)) {
+            // Tambahkan filter berdasarkan 'inv_type'
+            $invoiceQuery->whereIn('inv_type', $request->inv_type);
+        }
+    
+        $invoice = $invoiceQuery->orderBy('order_date', 'asc')->get();
+    
+        $fileName = 'ReportInvoiceImport-' . '-' . $startDate . '-' . $endDate . '.xlsx';
 
       return Excel::download(new InvoicesExport($invoice), $fileName);
     }

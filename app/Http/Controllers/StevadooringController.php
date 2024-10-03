@@ -67,9 +67,9 @@ class StevadooringController extends Controller
         $rbm = RBM::where('ves_id', $request->ves_id)->first();
         $data['rbm'] = $rbm;
 
-        // if ($rbm) {
-        //     return redirect()->back()->with('error', 'Data Sudah Tersedia');
-        // }
+        if ($rbm) {
+            return redirect()->back()->with('error', 'Data Sudah Tersedia');
+        }
         $data['kapal'] = $ves;
         
         $cont = Item::where('ves_id', $request->ves_id)->whereNot('ctr_intern_status', '01')->get();
@@ -173,7 +173,6 @@ class StevadooringController extends Controller
         $now = Carbon::now();
         $user = Auth::user()->id;
         $rbm = RBM::create([
-            'tipe' =>$request->tipe,
             'ves_id' => $request->ves_id,
             'ves_code' => $ves->ves_code,
             'voy_in' => $ves->voy_in,
@@ -530,7 +529,7 @@ class StevadooringController extends Controller
         
         $header = Header::create([
             'proforma_no'=>$nextProformaNumber,
-
+            'discount'=>$request->discount,
             'cust_id'=>$request->customer,
             'cust_name'=>$cust->name,
             'fax'=>$cust->fax,
@@ -683,12 +682,12 @@ class StevadooringController extends Controller
             $shifting = 0;
         }
 
-        $total = $t_kapal + $t_tongkak + $stevadooring + $shifting;
+        $total = $t_kapal + $t_tongkak + $stevadooring + $shifting + $tarif->admin - $header->discount;
         $data['total'] = $total;
 
         $ppn = ($total * $tarif->pajak) / 100;        
         $data['pajak'] = $ppn;
-        $grandTotal = $total + $ppn + $tarif->admin;
+        $grandTotal = $total + $ppn;
         $data['gt'] = $grandTotal;
         return view('billingSystem.stevadooring.form.preinvoice', $data, compact('t_kapal', 't_tongkak', 'stevadooring', 'shifting'));
     }
@@ -761,6 +760,7 @@ class StevadooringController extends Controller
             'shifting'=>$shifting,
             'update_by'=>$user,
             'status'=>'1',
+            'discount'=>$request->discount,
         ]);
 
         $data['inv'] = $header;

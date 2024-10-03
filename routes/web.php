@@ -894,6 +894,23 @@ Route::post('/invoice/import-payFull', [ImportController::class, 'payFullImport'
 Route::post('/invoice/import-piutang', [ImportController::class, 'piutangImport'])->name('piutangImport');
 Route::post('/invoice/import-cancel', [ImportController::class, 'deliveryInvoiceCancel'])->name('deliveryInvoiceCancel');
 
+// Detil
+Route::controller(ImportController::class)->group(function(){
+  Route::get('/invoice/import/delivery-detail/unpaid', 'detilUnpaid');
+  Route::get('/invoice/import/delivery-detail/piutang', 'detilPiutang');
+  Route::get('/invoice/import/delivery-detail/{id?}', 'detilInvoice');
+  Route::get('/invoice/import/report-unpaid', 'unpaidReport');
+  Route::get('/invoice/import/report-piutang', 'piutangReport');
+});
+
+Route::controller(InvoiceExportController::class)->group(function(){
+  Route::get('/invoice/export/reciving-detail/unpaid', 'detilUnpaid');
+  Route::get('/invoice/export/reciving-detail/piutang', 'detilPiutang');
+  Route::get('/invoice/export/reciving-detail/{id?}', 'detilInvoice');
+  Route::get('/invoice/export/report-unpaid', 'unpaidReport');
+  Route::get('/invoice/export/report-piutang', 'piutangReport');
+});
+
 
 
 // Export

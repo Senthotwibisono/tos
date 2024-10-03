@@ -82,7 +82,7 @@ class ImportZahir implements FromCollection, WithMapping, WithHeadings, ShouldAu
            $item,
            $data->satuan,
            $data->tarif,
-           $data->master->Form->discount_ds . '%' ?? $data->master->Form->discount_dsk . '%' ?? 0 . '%',
+           ceil($data->master->Form->discount_ds ?? $data->master->Form->discount_dsk ?? 0),
            'VAT',
            $formattedExpiredDate,
            '',

@@ -262,7 +262,7 @@
         <h4>Yard Condition</h4>
       </div>
       <div class="card-body">
-        <div id="chart-visitors-profile"></div>
+        <canvas id="myDonutChart"></canvas>
       </div>
     </div>
   </div>
@@ -277,6 +277,9 @@
 <script src="{{asset('dist/assets/extensions/sweetalert2/sweetalert2.min.js')}}"></script>
 <script src="{{asset('dist/assets/js/pages/sweetalert2.js')}}"></script>
 <script src="{{asset('dist/assets/extensions/apexcharts/apexcharts.min.js')}}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <script src="{{asset('dist/assets/js/pages/dashboard.js')}}"></script>
 <!-- <script src="{{asset('dist/assets/js/pages/dashboard.js')}}"></script> -->
 <script src="{{asset('lottifiles/lokal.min.js')}}"></script>
 
@@ -294,93 +297,52 @@
 </script>
 
 <script>
-  let optionsVisitorsProfile = {
-    series: [@json($countNotNull), @json($countNull)],
-    labels: ['Terisi', 'Kosong'],
-    colors: ['#ff0000', '#55c6e8'],
-    chart: {
-      type: 'donut',
-      width: '100%',
-      height: '350px'
-    },
-    legend: {
-      position: 'bottom'
-    },
-    plotOptions: {
-      pie: {
-        donut: {
-          size: '30%'
+    var ctx = document.getElementById('myDonutChart').getContext('2d');
+    var donutChart = new Chart(ctx, {
+        type: 'doughnut', // Tipe chart
+        data: {
+            labels: ['Terisi', 'Tidak Terisi'], // Label chart
+            datasets: [{
+                label: 'Kapasitas',
+                data: [{{ $persentaseTerisi }}, {{ $persentaseTidakTerisi }}], // Data persentase
+                backgroundColor: [
+                    'rgba(75, 192, 192, 1)', // Warna untuk 'Terisi'
+                    'rgba(211, 211, 211, 1)'  // Warna untuk 'Tidak Terisi' (abu-abu muda)
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return tooltipItem.label + ': ' + tooltipItem.raw + '%';
+                        }
+                    }
+                },
+                datalabels: {
+                    color: '#fff',
+                    font: {
+                        weight: 'bold',
+                        size: 20
+                    },
+                    formatter: function(value, context) {
+                        if (context.dataIndex === 0) {
+                            return context.chart.data.datasets[0].data[0] + '%';
+                        } else {
+                            return null;
+                        }
+                    },
+                    anchor: 'center',
+                    align: 'center'
+                }
+            }
         }
-      }
-    }
-  }
-
-  var optionsEurope = {
-    series: [{
-      name: 'series1',
-      data: [310, 800, 600, 430, 540, 340, 605, 805, 430, 540, 340, 605]
-    }],
-    chart: {
-      height: 80,
-      type: 'bar',
-      toolbar: {
-        show: false,
-      },
-    },
-    colors: ['#5350e9'],
-    stroke: {
-      width: 2,
-    },
-    grid: {
-      show: false,
-    },
-    dataLabels: {
-      enabled: false
-    },
-    xaxis: {
-      type: 'datetime',
-      categories: ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z", "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z", "2018-09-19T07:30:00.000Z", "2018-09-19T08:30:00.000Z", "2018-09-19T09:30:00.000Z", "2018-09-19T10:30:00.000Z", "2018-09-19T11:30:00.000Z"],
-      axisBorder: {
-        show: false
-      },
-      axisTicks: {
-        show: false
-      },
-      labels: {
-        show: false,
-      }
-    },
-    show: false,
-    yaxis: {
-      labels: {
-        show: false,
-      },
-    },
-    tooltip: {
-      x: {
-        format: 'dd/MM/yy HH:mm'
-      },
-    },
-  };
-
-  let optionsAmerica = {
-    ...optionsEurope,
-    colors: ['#008b75'],
-  }
-  let optionsIndonesia = {
-    ...optionsEurope,
-    colors: ['#dc3545'],
-  }
-
-
-  var chartEurope = new ApexCharts(document.querySelector("#chart-europe"), optionsEurope);
-  var chartAmerica = new ApexCharts(document.querySelector("#chart-america"), optionsAmerica);
-  var chartIndonesia = new ApexCharts(document.querySelector("#chart-indonesia"), optionsIndonesia);
-
-  chartIndonesia.render();
-  chartAmerica.render();
-  chartEurope.render();
-  var chartVisitorsProfile = new ApexCharts(document.getElementById('chart-visitors-profile'), optionsVisitorsProfile)
-  chartVisitorsProfile.render()
+    });
 </script>
 @endsection
