@@ -139,6 +139,7 @@
             <tr>
               <th>No</th>
               <th>Container No</th>
+              <th>Container Size</th>
               <th>Order Service</th>
               <th>Truck No</th>
               <th>Truck in Date</th>
@@ -149,6 +150,7 @@
             <tr>
               <td>{{$loop->iteration}}</td>
               <td>{{$itm->container_no}}</td>
+              <td>{{$itm->ctr_size ?? ''}}</td>
               <td>{{$itm->service->name ?? '' }}</td>
               <td>{{$itm->truck_no}}</td>
               <td>{{$itm->truck_in_date}}</td>

@@ -1049,7 +1049,7 @@ Route::post('/post-shifting', [ShiftingController::class, 'shifting']);
 // Zahir
 Route::get('/invoice/zahir-import', [ZahirController::class, 'ZahirImport'])->name('zahir-invoice-import');
 Route::get('/invoice/zahir-export', [ZahirController::class, 'ZahirExport'])->name('zahir-invoice-export');
-Route::get('/invoice/zahir-export', [ZahirController::class, 'ZahirPlugging'])->name('zahir-invoice-plugging');
+Route::get('/invoice/zahir-plugging', [ZahirController::class, 'ZahirPlugging'])->name('zahir-invoice-plugging');
 Route::get('/invoice/zahir-extend', [ZahirController::class, 'ZahirExtend'])->name('zahir-invoice-extend');
 Route::get('/invoice/zahir-steva', [ZahirController::class, 'ZahirSteva'])->name('zahir-invoice-steva');
 Route::get('/invoice/zahir-others', [ZahirController::class, 'ZahirOthers'])->name('zahir-invoice-others');

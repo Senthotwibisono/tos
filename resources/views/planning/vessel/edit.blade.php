@@ -40,13 +40,13 @@
                                     <div class="col-md-6 col-12">
                                         <div class="form-group">
                                             <label for="-floating">Voy In</label>
-                                            <input type="text" id="first-name-vertical" class="form-control" name="ves_code" value="{{ $vessel_voyage->voy_in }}">
+                                            <input type="text" id="first-name-vertical" class="form-control" name="voy_in" value="{{ $vessel_voyage->voy_in }}">
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-12">
                                         <div class="form-group">
                                             <label for="-column">Voy Out</label>
-                                            <input type="text" id="first-name-vertical" class="form-control" name="ves_code" value="{{ $vessel_voyage->voy_out }}">
+                                            <input type="text" id="first-name-vertical" class="form-control" name="voy_out" value="{{ $vessel_voyage->voy_out }}">
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-12">

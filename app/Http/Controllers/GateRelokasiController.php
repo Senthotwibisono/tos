@@ -46,7 +46,7 @@ class GateRelokasiController extends Controller
                             ->whereNotIn('order', ['MTI', 'MTK']);
                   });
         })->get();
-            $item_confirmed = Item::whereIn('ctr_intern_status',  ['12', '13', '14'])->get();
+            $item_confirmed = Item::whereIn('ctr_intern_status',  ['12', '13', '14'])->orderBy('truck_in_date', 'desc')->get();
 
         return view('gate.relokasi.android', compact('item', 'title', 'item_confirmed'));
     }

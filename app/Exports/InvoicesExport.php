@@ -53,7 +53,7 @@ class InvoicesExport implements FromCollection, WithMapping, WithHeadings, Shoul
         $kapal = $namaKapal . '/' . $voyKapal;
         $no = $this->invoices->search($invoice) + 1;
         if ($invoice->jumlah_hari != 0) {
-            $item = $invoice->jumlah_hari;
+            $item = $invoice->jumlah_hari * $invoice->jumlah;
         }else {
             $item = $invoice->jumlah;
         }

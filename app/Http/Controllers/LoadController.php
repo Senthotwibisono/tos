@@ -78,7 +78,11 @@ class LoadController extends Controller
             ->whereHas('service', function ($query) {
                 $query->where('order', '=', 'MTI');
             });
-    })->get();
+    })->orWhere(function ($query) {
+      $query->where('ctr_intern_status', '=', '14');
+  })->orWhere(function ($query) {
+    $query->whereIn('ctr_intern_status', ['03', '04'])->where('ctr_status', '=', 'MTY');
+})->get();
 
     $users = User::all();
     $data["active"] = "discharge";
@@ -146,7 +150,11 @@ class LoadController extends Controller
             ->whereHas('service', function ($query) {
                 $query->where('order', '=', 'MTI');
             });
-    })->get();
+    })->orWhere(function ($query) {
+    $query->where('ctr_intern_status', '=', '14');
+})->orWhere(function ($query) {
+  $query->whereIn('ctr_intern_status', ['03', '04'])->where('ctr_status', '=', 'MTY');
+})->get();
 
     $users = User::all();
     $data["active"] = "discharge";
@@ -161,29 +169,34 @@ class LoadController extends Controller
   }
 
   public function get_cont(Request $request)
-  {
+{
     $ves_id = $request->ves_id;
-    $container_key = Item::where('ves_id', $ves_id)
-    ->where(function ($query) {
-        $query->whereIn('ctr_intern_status', ['50', '51', '53'])
-              ->orWhere(function ($query) {
-                  $query->where('ctr_status', 'MTY')
-                        ->whereIn('ctr_intern_status', ['14', '04']);
-              });
+
+    $container_key = Item::where(function ($query) use ($ves_id) {
+        // When ctr_i_e_t is 'E', filter by ves_id and ctr_intern_status
+        $query->where('ctr_i_e_t', 'E')
+              ->where('ves_id', $ves_id)
+              ->whereIn('ctr_intern_status', ['50', '51', '53']);
+    })
+    ->orWhere(function ($query) {
+        // For MTY containers, check only ctr_status and ctr_intern_status
+        $query->where('ctr_status', 'MTY')
+              ->whereIn('ctr_intern_status', ['14', '04', '03']);
     })
     ->get();
 
-    $option = []; // Inisialisasi variabel $option sebagai array kosong
+    $option = []; // Initialize $option as an empty array
 
     foreach ($container_key as $kode) {
-      $option[] = [
-        'value' => $kode->container_key,
-        'text' => $kode->container_no,
-      ];
+        $option[] = [
+            'value' => $kode->container_key,
+            'text' => $kode->container_no,
+        ];
     }
 
     return response()->json($option);
-  }
+}
+
 
   // public function get_cont(Request $request)
   // {

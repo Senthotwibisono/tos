@@ -349,6 +349,15 @@ class VesselController extends Controller
         'open_stack_date' =>$request->open_stack_date,
         ]);
 
+        $kapal = VVoyage::where('ves_id', $ves_id)->first();
+
+    // Update items with the correct voyage number
+    $items = Item::where('ves_id', $ves_id)->get();
+    foreach ($items as $item) {
+        $item->update([
+            'voy_no' => $kapal->voy_out,
+        ]);
+    }
         
         return redirect('/planning/vessel-schedule')->with('success', "Jadwal Berhasil Diperbarui");
     }

@@ -55,7 +55,7 @@ class ReportExtend implements FromCollection, WithMapping, WithHeadings, ShouldA
         $kapal = $namaKapal . '/' . $voyKapal;
         $no = $this->invoices->search($invoice) + 1;
         if ($invoice->jumlah_hari != 0) {
-            $item = $invoice->jumlah_hari;
+            $item = $invoice->jumlah_hari * $invoice->jumlah;
         }else {
             $item = $invoice->jumlah;
         }
