@@ -72,4 +72,9 @@ class Extend extends Model
     {
         return $this->belongsTo(InvoiceForm::class, 'form_id', 'id');
     }
+
+    public function service()
+    {
+        return $this->belongsTo(OrderService::class, 'os_id', 'id');
+    }
 }

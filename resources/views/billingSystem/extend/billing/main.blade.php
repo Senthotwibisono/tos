@@ -92,10 +92,10 @@
             <p>Rekap Data Billing</p>
           </div>
           <div class="card-body">
-            <!-- <form action="{{ route('report-invoice-import')}}" method="GET" enctype="multipart/form-data">
+            <form action="{{ route('report-invoice-extendUnpaid')}}" method="GET" enctype="multipart/form-data">
               <div class="row">
 
-                <div class="col-4">s
+                <div class="col-4">
                   <div class="form-group">
                     <label>Pick Start Date Range</label>
 
@@ -114,7 +114,7 @@
                   <button class="btn btn-primary" type="submit"><i class=" fa fa-file"></i> Export Active Invoice to Excel</button>
                 </div>
               </div>
-            </form> -->
+            </form>
 
             <div class="row">
 
@@ -208,10 +208,10 @@
             <p>Rekap Data Billing</p>
           </div>
           <div class="card-body">
-            <!-- <form action="{{ route('report-invoice-import')}}" method="GET" enctype="multipart/form-data">
+            <form action="{{ route('report-invoice-extendPiutang')}}" method="GET" enctype="multipart/form-data">
               <div class="row">
 
-                <div class="col-4">s
+                <div class="col-4">
                   <div class="form-group">
                     <label>Pick Start Date Range</label>
 
@@ -230,7 +230,7 @@
                   <button class="btn btn-primary" type="submit"><i class=" fa fa-file"></i> Export Active Invoice to Excel</button>
                 </div>
               </div>
-            </form> -->
+            </form>
 
             <div class="row">
 

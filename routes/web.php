@@ -997,6 +997,8 @@ Route::get('/invoice/report-importAll', [ImportController::class, 'ReportImpiort
 Route::get('/invoice/report-export', [InvoiceExportController::class, 'ReportExcel'])->name('report-invoice-export');
 
 Route::get('/invoice/report-extend', [InvoiceExtend::class, 'ReportExcel'])->name('report-invoice-extend');
+Route::get('/invoice/report-extendUnpaid', [InvoiceExtend::class, 'ReportExcelUnpaid'])->name('report-invoice-extendUnpaid');
+Route::get('/invoice/report-extendPiutang', [InvoiceExtend::class, 'ReportExcelPiutang'])->name('report-invoice-extendPiutang');
 Route::get('/invoice/report-extend-all', [InvoiceExtend::class, 'ReportExcelAll'])->name('report-invoice-extend-All');
 Route::get('/invoice/report-export-all', [InvoiceExportController::class, 'ReportExcelAll'])->name('report-invoice-export-All');
 

@@ -884,6 +884,22 @@ public function ReportExcel(Request $request)
     $fileName = 'ReportInvoiceExtend-'.$os.'-'. $startDate . $endDate .'.xlsx';
   return Excel::download(new ReportExtend($invoice), $fileName);
 }
+public function ReportExcelUnpaid(Request $request)
+{
+  $startDate = $request->start;
+  $endDate = $request->end;
+  $invoice = Detail::where('lunas', '=', 'N')->whereDate('order_date', '>=', $startDate)->whereDate('order_date', '<=', $endDate)->orderBy('order_date', 'asc')->get();
+    $fileName = 'ReportInvoiceExtendUnpaid'.'-'. $startDate . $endDate .'.xlsx';
+  return Excel::download(new ReportExtend($invoice), $fileName);
+}
+public function ReportExcelPiutang(Request $request)
+{
+  $startDate = $request->start;
+  $endDate = $request->end;
+  $invoice = Detail::where('lunas', '=', 'P')->whereDate('order_date', '>=', $startDate)->whereDate('order_date', '<=', $endDate)->orderBy('order_date', 'asc')->get();
+    $fileName = 'ReportInvoiceExtendPiutang'.'-'. $startDate . $endDate .'.xlsx';
+  return Excel::download(new ReportExtend($invoice), $fileName);
+}
 
     public function extendInvoiceDelete($id)    
     {

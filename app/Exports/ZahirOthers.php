@@ -74,7 +74,7 @@ class ZahirOthers implements FromCollection, WithMapping, WithHeadings, ShouldAu
                 break;
             
             default:
-                $kode = null;
+                $kode = 'TUMPUKMT';
                 break;
         }
 
@@ -92,7 +92,7 @@ class ZahirOthers implements FromCollection, WithMapping, WithHeadings, ShouldAu
            '',
            '',
            $kode,
-           $data->Form->palka,
+           1,
            'unit',
            $data->total,
            ceil($data->Form->discount_ds ?? $data->Form->discount_dsk ?? 0),

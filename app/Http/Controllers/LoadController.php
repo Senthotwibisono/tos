@@ -250,7 +250,7 @@ class LoadController extends Controller
       'cc_tt_no.required' => 'Nomor Alat Number is required.',
       'operator.required' => 'Operator Alat Number is required.',
     ]);
-    $ship = Ship::where('ves_id', $item->ves_id)->where('bay_slot', $request->bay_slot)->where('bay_row', $request->bay_row)->where('bay_tier', $request->bay_tier)->first();
+    $ship = Ship::where('ves_id', $kapal->ves_id)->where('bay_slot', $request->bay_slot)->where('bay_row', $request->bay_row)->where('bay_tier', $request->bay_tier)->first();
     if ($ship) {
       if ($ship->container_key == null) {
           $act_alat = ActAlat::create([
@@ -271,9 +271,9 @@ class LoadController extends Controller
             'operator_name'=>$opr->name,
             'container_key'=>$item->container_key,
             'container_no'=>$item->container_no,
-            'ves_id'=>$item->ves_id,
-            'ves_name'=>$item->ves_name,
-            'voy_no'=>$item->voy_no,
+            'ves_id'=>$kapal->ves_id,
+            'ves_name'=>$kapal->ves_name,
+            'voy_no'=>$kapal->voy_no,
             'activity' =>'LOAD',
         ]);
         $oldItem = Item::where('container_no', $item->container_no)->where('ctr_intern_status', '=', '04')->first();

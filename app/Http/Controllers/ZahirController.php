@@ -70,6 +70,7 @@ class ZahirController extends Controller
      $exportInv = InvoiceImport::whereHas('service', function ($query) {
       $query->where('ie', '=', 'I');
       })
+      ->whereNot('lunas', '=', 'C')
       ->whereDate('invoice_date', '>=', $startDate)
       ->whereDate('invoice_date', '<=', $endDate)
       ->get();
@@ -90,6 +91,7 @@ class ZahirController extends Controller
      $exportInv = InvoiceExport::whereHas('service', function ($query) {
       $query->where('ie', '=', 'E');
       })
+      ->whereNot('lunas', '=', 'C')
       ->whereDate('invoice_date', '>=', $startDate)
       ->whereDate('invoice_date', '<=', $endDate)
       ->get();
@@ -110,6 +112,7 @@ class ZahirController extends Controller
      $exportInv = InvoiceExport::whereHas('service', function ($query) {
       $query->where('ie', '=', 'P');
       })
+      ->whereNot('lunas', '=', 'C')
       ->whereDate('invoice_date', '>=', $startDate)
       ->whereDate('invoice_date', '<=', $endDate)
       ->get();
@@ -131,9 +134,11 @@ class ZahirController extends Controller
      $exportInv = Extend::whereHas('service', function ($query) {
       $query->where('ie', '=', 'X');
       })
+      ->whereNot('lunas', '=', 'C')
       ->whereDate('invoice_date', '>=', $startDate)
       ->whereDate('invoice_date', '<=', $endDate)
       ->get();
+      // dd($exportInv);
     
       // Get the ids of the fetched InvoiceExport records
       $exportInvIds = $exportInv->pluck('id')->toArray();
@@ -148,7 +153,7 @@ class ZahirController extends Controller
    {
      $startDate = $request->start;
      $endDate = $request->end;
-     $data = Steva::whereDate('created_at', '>=', $startDate)->whereDate('created_at', '<=', $endDate)->orderBy('id', 'asc')->get();
+     $data = Steva::whereDate('created_at', '>=', $startDate)->whereDate('created_at', '<=', $endDate)->whereNot('lunas', '=', 'C')->orderBy('id', 'asc')->get();
        $fileName = 'ReportZahirStevadooring-'. $startDate . $endDate .'.xlsx';
      return Excel::download(new ZahirSteva($data), $fileName);
    }
@@ -160,6 +165,7 @@ class ZahirController extends Controller
      $data = InvoiceExport::whereHas('service', function ($query) {
       $query->where('ie', '=', 'R');
       })
+      ->whereNot('lunas', '=', 'C')
       ->whereDate('invoice_date', '>=', $startDate)
       ->whereDate('invoice_date', '<=', $endDate)
       ->get();
