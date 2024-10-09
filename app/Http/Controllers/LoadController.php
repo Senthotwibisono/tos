@@ -331,6 +331,33 @@ class LoadController extends Controller
    
   }
 
+  public function cancelBay($id)
+  {
+    $cont = Item::find($id);
+    if ($cont) {
+      $ship = $cont->ves_id;
+      $bay = Ship::where('ves_id', $ship)->where('container_key', $cont->container_key)->where('ctr_i_e_t', '=',  'E')->first();
+      // dd($cont, $bay);
+      $bay->update([
+          'container_no'=>null,
+          'container_key'=>null,
+          'ctr_size'=>null,
+          'ctr_type'=>null,
+          'dangerous_yn'=>null,
+          'ctr_i_e_t'=> null,
+      ]);
+      $cont->update([
+        'bay_slot' => null,
+        'bay_row' => null,
+        'bay_tier' => null,
+        'ctr_intern_status' => 50,
+     ]);
+     return back()->with('success', 'Bay Berhasil di Update');
+    }else {
+      return back()->with('error', 'Bay Tidak Ditemukan');
+    }
+  }
+
   public function bay_edit($id)
   {
     

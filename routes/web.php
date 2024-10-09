@@ -763,6 +763,7 @@ Route::post('/confirm-load', [LoadController::class, 'confirm']);
 Route::post('/get-con-load', [LoadController::class, 'get_cont']);
 Route::get('/get-con/bay-edit/{id?}', [LoadController::class, 'bay_edit']);
 Route::post('/load/updateBay', [LoadController::class, 'bay_update'])->name('updateBayLoad');
+Route::post('/load/cancel{id?}', [LoadController::class, 'cancelBay']);
 
 //BeaCukai
 Route::get('/bea/req-dok', [BeaController::class, 'index']);
