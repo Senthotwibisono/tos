@@ -177,7 +177,7 @@
                                     </thead>
                                     <tbody>
                                     @foreach($confirmed as $d)
-                                        @if($d->ctr_intern_status === '04' && $d->ctr_status === 'MTY' )
+                                        @if(($d->ctr_intern_status === '04' && $d->ctr_status === 'MTY') || ($d->ctr_intern_status === '03' && $d->ctr_status === 'MTY'))
                                         <tr>
                                             <td>{{$d->container_no}}</td>
                                             <td>{{$d->ctr_type}}</td>
