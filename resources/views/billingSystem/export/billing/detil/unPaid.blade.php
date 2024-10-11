@@ -194,46 +194,47 @@
 
     // Event delegation for delete button
     $(document).on('click', '.Delete', function() {
-        var formId = $(this).data('id'); // Ambil ID dari data-id atribut
+    var formId = $(this).data('id'); // Retrieve the ID from data-id attribute
 
-        Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Anda tidak akan bisa mengembalikan ini!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: '/billing/export/reciving-deleteInvoice/' + formId, // Ganti dengan endpoint penghapusan Anda
-                    type: 'DELETE',
-                    data: {
-                        _token: '{{ csrf_token() }}' // Sertakan token CSRF untuk keamanan
-                    },
-                    success: function(response) {
-                        Swal.fire(
-                            'Dihapus!',
-                            'Data berhasil dihapus.',
-                            'success'
-                        ).then(() => {
-                            window.location.href = '/billing/export/delivey-system'; // Arahkan ke halaman beranda setelah penghapusan sukses
-                        });
-                    },
-                    error: function(xhr) {
-                        console.error(xhr.responseText);
-                        Swal.fire(
-                            'Gagal!',
-                            'Terjadi kesalahan saat menghapus data.',
-                            'error'
-                        );
-                    }
-                });
-            }
-        });
+    Swal.fire({
+        title: 'Apakah Anda yakin?',
+        text: "Anda tidak akan bisa mengembalikan ini!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '/billing/export/reciving-deleteInvoice/' + formId, // Set the deletion endpoint
+                type: 'DELETE',
+                data: {
+                    _token: '{{ csrf_token() }}' // Include CSRF token for security
+                },
+                success: function(response) {
+                    Swal.fire(
+                        'Dihapus!',
+                        'Data berhasil dihapus.',
+                        'success'
+                    ).then(() => {
+                        window.location.href = '/billing/export/delivey-system'; // Redirect after successful deletion
+                    });
+                },
+                error: function(xhr) {
+                    console.error(xhr.responseText);
+                    Swal.fire(
+                        'Gagal!',
+                        'Terjadi kesalahan saat menghapus data.',
+                        'error'
+                    );
+                }
+            });
+        }
     });
+});
+
 });
 </script>
 <!-- <script>

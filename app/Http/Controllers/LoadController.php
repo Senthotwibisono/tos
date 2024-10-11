@@ -183,6 +183,11 @@ class LoadController extends Controller
         $query->where('ctr_status', 'MTY')
               ->whereIn('ctr_intern_status', ['14', '04', '03']);
     })
+    ->orWhere(function ($query) {
+        // For MTY containers, check only ctr_status and ctr_intern_status
+        $query->where('ves_code', 'NTG')
+              ->whereIn('ctr_intern_status', ['50', '51', '53']);
+    })
     ->get();
 
     $option = []; // Initialize $option as an empty array

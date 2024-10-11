@@ -1081,32 +1081,52 @@ private function getNextJob($lastJobNo)
     }
     
     public function deliveryInvoiceDelete($id)
-    {
-        $invoice = InvoiceImport::where('form_id', $id)->get();
-        foreach ($invoice as $inv) {
-            $inv->delete();
-        }
-
-        $invoiceDetail = Detail::where('form_id', $id)->get();
-        foreach ($invoiceDetail as $detail) {
-            $detail->delete();
-        }
-
-        $containerInvoice = Container::where('form_id', $id)->get();
-        foreach ($containerInvoice as $cont) {
-            $item = Item::where('container_key', $cont->container_key)->first();
-            $item->update([
-                'selected_do'=>'N',
-                'os_id'=>null,
-            ]);
-            $cont->delete();
-        }
-
-        $form = Form::where('id', $id)->first();
-        $form->delete();
-
-        return response()->json(['message' => 'Data berhasil dihapus.']);
+{
+    // Retrieve the invoice data for the specified form ID
+    $invoice = InvoiceImport::where('form_id', $id)->get();
+    
+    // Check if any invoice is already paid (not 'N' in 'lunas')
+    $paid = $invoice->whereNot('lunas', 'N')->first();
+    
+    // If there's a paid invoice, return an error message
+    if ($paid) {
+        return response()->json(['message' => 'Data tidak bisa dihapus, ada invoice yang sudah lunas.', 'status' => 'error']);
     }
+    
+    // Delete the invoices
+    foreach ($invoice as $inv) {
+        $inv->delete();
+    }
+
+    // Delete the related details
+    $invoiceDetail = Detail::where('form_id', $id)->get();
+    foreach ($invoiceDetail as $detail) {
+        $detail->delete();
+    }
+
+    // Delete the container invoices and update the associated items
+    $containerInvoice = Container::where('form_id', $id)->get();
+    foreach ($containerInvoice as $cont) {
+        $item = Item::where('container_key', $cont->container_key)->first();
+        if ($item) {
+            $item->update([
+                'selected_do' => 'N',
+                'os_id' => null,
+            ]);
+        }
+        $cont->delete();
+    }
+
+    // Delete the form entry
+    $form = Form::where('id', $id)->first();
+    if ($form) {
+        $form->delete();
+    }
+
+    // Return a success response
+    return response()->json(['message' => 'Data berhasil dihapus.', 'status' => 'success']);
+}
+
 
     // invoice
     public function InvoiceImportDSK($id)
@@ -1389,7 +1409,7 @@ private function getNextJob($lastJobNo)
     {
         $startDate = $request->start;
         $endDate = $request->end;
-        $invoiceQuery = Detail::whereBetween('order_date', [$startDate, $endDate])->where('lunas', '=', 'N');
+        $invoiceQuery = InvoiceImport::whereBetween('order_at', [$startDate, $endDate])->where('lunas', '=', 'N');
     
         // Cek apakah checkbox 'inv_type' ada dalam request dan tidak kosong
         if ($request->has('inv_type') && !empty($request->inv_type)) {
@@ -1397,11 +1417,11 @@ private function getNextJob($lastJobNo)
             $invoiceQuery->whereIn('inv_type', $request->inv_type);
         }
     
-        $invoice = $invoiceQuery->orderBy('order_date', 'asc')->get();
+        $invoice = $invoiceQuery->orderBy('order_at', 'asc')->get();
     
         $fileName = 'ReportInvoiceImport-'. '-' . $startDate . '-' . $endDate . '.xlsx';
 
-      return Excel::download(new InvoicesExport($invoice), $fileName);
+      return Excel::download(new ReportInvoice($invoice), $fileName);
     }
     public function piutangReport(Request $request)
     {

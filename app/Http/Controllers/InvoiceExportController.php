@@ -936,6 +936,12 @@ class InvoiceExportController extends Controller
     public function recivingInvoiceDelete($id)
     {
         $invoice = InvoiceExport::where('form_id', $id)->get();
+        $paid = $invoice->whereNot('lunas', 'N')->first();
+    
+    // If there's a paid invoice, return an error message
+    if ($paid) {
+        return response()->json(['message' => 'Data tidak bisa dihapus, ada invoice yang sudah lunas.', 'status' => 'error']);
+    }
         foreach ($invoice as $inv) {
             $inv->delete();
         }
@@ -958,7 +964,7 @@ class InvoiceExportController extends Controller
         $form = Form::where('id', $id)->first();
         $form->delete();
 
-        return response()->json(['message' => 'Data berhasil dihapus.']);
+        return response()->json(['message' => 'Data berhasil dihapus.', 'status' => 'success']);
     }
 
     public function PranotaExportOSK($id)
@@ -1295,12 +1301,12 @@ class InvoiceExportController extends Controller
     {
       $startDate = $request->start;
       $endDate = $request->end;
-      $invoiceQuery = Detail::whereHas('service', function ($query) {
+      $invoiceQuery = InvoiceExport::whereHas('service', function ($query) {
         $query->where('ie', '=', 'E');
     })
       ->where('lunas', '=', 'N')
-      ->whereDate('order_date', '>=', $startDate)
-      ->whereDate('order_date', '<=', $endDate);
+      ->whereDate('order_at', '>=', $startDate)
+      ->whereDate('order_at', '<=', $endDate);
 
         // Cek apakah checkbox 'inv_type' ada dalam request dan tidak kosong
         if ($request->has('inv_type') && !empty($request->inv_type)) {
@@ -1308,8 +1314,8 @@ class InvoiceExportController extends Controller
             $invoiceQuery->whereIn('inv_type', $request->inv_type);
         }
     
-        $invoice = $invoiceQuery->orderBy('order_date', 'asc')->get();        $fileName = 'ReportInvoiceExportUnpaid'.'-'. $startDate . $endDate .'.xlsx';
-      return Excel::download(new ReportExport($invoice), $fileName);
+        $invoice = $invoiceQuery->orderBy('order_at', 'asc')->get();        $fileName = 'ReportInvoiceExportUnpaid'.'-'. $startDate . $endDate .'.xlsx';
+      return Excel::download(new ReportInvoiceAllExport($invoice), $fileName);
     }
     public function piutangReport(Request $request)
     {

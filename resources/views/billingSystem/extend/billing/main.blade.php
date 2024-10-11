@@ -492,11 +492,6 @@
 @section('custom_js')
 <script>
 $(document).ready(function() {
-    // Initialize all tables with class 'dataTable-wrapper'
-    $('.dataTable-wrapperEXTD').each(function() {
-        $(this).DataTable();
-    });
-
     // Event delegation for delete button
     $(document).on('click', '.Delete', function() {
         var formId = $(this).data('id'); // Ambil ID dari data-id atribut
@@ -519,13 +514,21 @@ $(document).ready(function() {
                         _token: '{{ csrf_token() }}' // Sertakan token CSRF untuk keamanan
                     },
                     success: function(response) {
-                        Swal.fire(
-                            'Dihapus!',
-                            'Data berhasil dihapus.',
-                            'success'
-                        ).then(() => {
-                            window.location.href = '/billing/import/extendIndex'; // Arahkan ke halaman beranda setelah penghapusan sukses
-                        });
+                        if (response.status === 'success') {
+                            Swal.fire(
+                                'Dihapus!',
+                                response.message, // Display success message from server
+                                'success'
+                            ).then(() => {
+                                window.location.href = '/billing/import/extendIndex'; // Arahkan ke halaman beranda setelah penghapusan sukses
+                            });
+                        } else {
+                            Swal.fire(
+                                'Gagal!',
+                                response.message, // Display error message from server
+                                'error'
+                            );
+                        }
                     },
                     error: function(xhr) {
                         console.error(xhr.responseText);
@@ -540,6 +543,7 @@ $(document).ready(function() {
         });
     });
 });
+
 </script>
 <script>
    $(document).on('click', '.pay', function() {

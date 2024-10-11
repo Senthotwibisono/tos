@@ -888,9 +888,9 @@ public function ReportExcelUnpaid(Request $request)
 {
   $startDate = $request->start;
   $endDate = $request->end;
-  $invoice = Detail::where('lunas', '=', 'N')->whereDate('order_date', '>=', $startDate)->whereDate('order_date', '<=', $endDate)->orderBy('order_date', 'asc')->get();
+  $invoice = Extend::where('lunas', '=', 'N')->whereDate('order_at', '>=', $startDate)->whereDate('order_at', '<=', $endDate)->orderBy('order_date', 'asc')->get();
     $fileName = 'ReportInvoiceExtendUnpaid'.'-'. $startDate . $endDate .'.xlsx';
-  return Excel::download(new ReportExtend($invoice), $fileName);
+  return Excel::download(new ReportInvoice($invoice), $fileName);
 }
 public function ReportExcelPiutang(Request $request)
 {
@@ -904,6 +904,12 @@ public function ReportExcelPiutang(Request $request)
     public function extendInvoiceDelete($id)    
     {
         $invoice = Extend::where('form_id', $id)->get();
+        $paid = $invoice->whereNot('lunas', 'N')->first();
+    
+    // If there's a paid invoice, return an error message
+    if ($paid) {
+        return response()->json(['message' => 'Data tidak bisa dihapus, ada invoice yang sudah lunas.', 'status' => 'error']);
+    }
         foreach ($invoice as $inv) {
             $inv->delete();
         }
@@ -922,7 +928,7 @@ public function ReportExcelPiutang(Request $request)
         $form = Form::where('id', $id)->first();
         $form->delete();
 
-        return response()->json(['message' => 'Data berhasil dihapus.']);
+        return response()->json(['message' => 'Data berhasil dihapus.', 'status' => 'success']);
     }
 
     public function extendInvoiceCancel(Request $request)    
