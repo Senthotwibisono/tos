@@ -78,10 +78,12 @@
     </div>
     <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
 <!-- Load jQuery first -->
-    <script src="{{asset('dist/assets/js/bootstrap.js')}}"></script>
+<script src="{{asset('dist/assets/js/bootstrap.js')}}"></script>
     <script src="{{asset('dist/assets/js/app.js')}}"></script>
     <script src="{{asset('dist/assets/js/pages/horizontal-layout.js')}}"></script>
     <script src="{{asset('dist/assets/extensions/apexcharts/apexcharts.min.js')}}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0/dist/chartjs-plugin-datalabels.min.js"></script>
     <script src="{{asset('dist/assets/js/pages/dashboard.js')}}"></script>
     <script src="{{asset('fontawesome/js/all.js')}}"></script>
     <script src="{{asset('fontawesome/js/all.min.js')}}"></script>
@@ -93,6 +95,7 @@
     <script src="{{asset('dist/assets/extensions/choices.js/public/assets/scripts/choices.js')}}"></script>
     <script src="{{asset('dist/assets/js/pages/form-element-select.js')}}"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    
 
     <script>
         $(document).ready(function() {

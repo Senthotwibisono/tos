@@ -9,6 +9,8 @@
                                 <th>Status</th>
                                 <th>Intern Status</th>
                                 <th>Operator(MLO)</th>
+                                <th>Invoice No</th>
+                                <th>JOb No</th>
                                 <th>Is Damage</th>
                                 <th>POL</th>
                                 <th>POD</th>
@@ -44,6 +46,8 @@
                                 <td>{{$item->ctr_status}}</td>
                                 <td>{{$item->ctr_intern_status}}</td>
                                 <td>{{$item->ctr_opr}}</td>
+                                <td>{{$item->invoice_no ?? ''}}</td>
+                                <td>{{$item->job_no ?? ''}}</td>
                                 <td>
                                     @if($item->is_damage == "Y")    
                                         Damaged

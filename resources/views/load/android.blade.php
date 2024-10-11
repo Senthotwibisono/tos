@@ -26,7 +26,7 @@
                     </svg> Load</button>
             </div>
             <div class="card-body">
-                <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
+                <table class="dataTable-Load">
                     <thead>
                         <tr>
                             <th>NO</th>
@@ -281,11 +281,20 @@
 </style>
 @endsection
 @section('custom_js')
-<script src="{{ asset('vendor/components/jquery/jquery.min.js') }}"></script>
+
 <script src="{{ asset('select2/dist/js/select2.full.min.js') }}"></script>
 <script src="{{asset('dist/assets/extensions/sweetalert2/sweetalert2.min.js')}}"></script>
 <script src="{{asset('dist/assets/js/pages/sweetalert2.js')}}"></script>
+<script>
+$(document).ready(function() {
+    // Initialize all tables with class 'dataTable-wrapper'
+    $('.dataTable-Load').each(function() {
+        $(this).DataTable();
+    });
+});
 
+
+</script>
 <script>
   @if(session('success'))
   Swal.fire({

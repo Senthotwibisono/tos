@@ -338,14 +338,17 @@ class LoadController extends Controller
       $ship = $cont->ves_id;
       $bay = Ship::where('ves_id', $ship)->where('container_key', $cont->container_key)->where('ctr_i_e_t', '=',  'E')->first();
       // dd($cont, $bay);
-      $bay->update([
-          'container_no'=>null,
-          'container_key'=>null,
-          'ctr_size'=>null,
-          'ctr_type'=>null,
-          'dangerous_yn'=>null,
-          'ctr_i_e_t'=> null,
-      ]);
+      if ($bay) {
+        # code...
+        $bay->update([
+            'container_no'=>null,
+            'container_key'=>null,
+            'ctr_size'=>null,
+            'ctr_type'=>null,
+            'dangerous_yn'=>null,
+            'ctr_i_e_t'=> null,
+        ]);
+      }
       $cont->update([
         'bay_slot' => null,
         'bay_row' => null,
