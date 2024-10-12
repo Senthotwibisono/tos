@@ -154,7 +154,7 @@ class ZahirController extends Controller
      $startDate = $request->start;
      $endDate = $request->end;
      $data = Steva::whereDate('created_at', '>=', $startDate)->whereDate('created_at', '<=', $endDate)->whereNot('lunas', '=', 'C')->orderBy('id', 'asc')->get();
-       $fileName = 'ReportZahirStevadooring-'. $startDate . $endDate .'.xlsx';
+       $fileName = 'ReportZahirStevadooring-'. $startDate . $endDate .'.csv';
      return Excel::download(new ZahirSteva($data), $fileName);
    }
 
