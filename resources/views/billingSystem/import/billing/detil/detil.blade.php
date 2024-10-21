@@ -208,6 +208,9 @@
 
 <script>
 $(document).ready(function() {
+  $('.dataTable-wrapperIMP').each(function() {
+        $(this).DataTable();
+    });
     // Event delegation for delete button
     $(document).on('click', '.Delete', function() {
         var formId = $(this).data('id'); // Ambil ID dari data-id atribut

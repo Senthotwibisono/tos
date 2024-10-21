@@ -936,7 +936,9 @@ class InvoiceExportController extends Controller
     public function recivingInvoiceDelete($id)
     {
         $invoice = InvoiceExport::where('form_id', $id)->get();
-        $paid = $invoice->whereNot('lunas', 'N')->first();
+        $paid = $invoice->first(function ($inv) {
+            return $inv->lunas !== 'N';
+        });
     
     // If there's a paid invoice, return an error message
     if ($paid) {
@@ -1319,23 +1321,23 @@ class InvoiceExportController extends Controller
     }
     public function piutangReport(Request $request)
     {
-      $startDate = $request->start;
-      $endDate = $request->end;
-      $invoiceQuery = Detail::whereHas('service', function ($query) {
-        $query->where('ie', '=', 'E');
-    })
-      ->where('lunas', '=', 'P')
-      ->whereDate('order_date', '>=', $startDate)
-      ->whereDate('order_date', '<=', $endDate);
-
-        // Cek apakah checkbox 'inv_type' ada dalam request dan tidak kosong
-        if ($request->has('inv_type') && !empty($request->inv_type)) {
-            // Tambahkan filter berdasarkan 'inv_type'
-            $invoiceQuery->whereIn('inv_type', $request->inv_type);
-        }
-    
-        $invoice = $invoiceQuery->orderBy('order_date', 'asc')->get();        $fileName = 'ReportInvoiceExportPiutang'.'-'. $startDate . $endDate .'.xlsx';
-      return Excel::download(new ReportExport($invoice), $fileName);
+        $startDate = $request->start;
+        $endDate = $request->end;
+        $invoiceQuery = InvoiceExport::whereHas('service', function ($query) {
+          $query->where('ie', '=', 'E');
+      })
+        ->where('lunas', '=', 'P')
+        ->whereDate('order_at', '>=', $startDate)
+        ->whereDate('order_at', '<=', $endDate);
+  
+          // Cek apakah checkbox 'inv_type' ada dalam request dan tidak kosong
+          if ($request->has('inv_type') && !empty($request->inv_type)) {
+              // Tambahkan filter berdasarkan 'inv_type'
+              $invoiceQuery->whereIn('inv_type', $request->inv_type);
+          }
+      
+          $invoice = $invoiceQuery->orderBy('order_at', 'asc')->get();        $fileName = 'ReportInvoiceExportPiutang'.'-'. $startDate . $endDate .'.xlsx';
+        return Excel::download(new ReportInvoiceAllExport($invoice), $fileName);
     }
 
     public function ReportExcelAll(Request $request)

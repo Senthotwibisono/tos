@@ -52,7 +52,7 @@ class ZahirSteva implements FromCollection, WithMapping, WithHeadings, ShouldAut
             $tt = TTongkakDetail::where('inv_id', $data->id)->get();
             $jumlahTT = $tt->sum('jumlah');
             $result[] = [
-                $data->created_at,
+                date("d/m/Y", strtotime($data->created_at)),
                 $data->invoice_no,
                 $data->cust_name,
                 'Head Quarter',
@@ -65,7 +65,7 @@ class ZahirSteva implements FromCollection, WithMapping, WithHeadings, ShouldAut
                 '0',
                 '0',
                 'TAMBAT',
-                $jumlahTT,
+                1,
                 'LITER',
                 $data->tambat_tongkak_total,
                 ceil($data->discount),
@@ -87,7 +87,7 @@ class ZahirSteva implements FromCollection, WithMapping, WithHeadings, ShouldAut
             $tk = TKapalDetail::where('inv_id', $data->id)->get();
             $jumlahTK = $tk->sum('gt_kapal');
             $result[] = [
-                $data->created_at,
+                date("d/m/Y", strtotime($data->created_at)),
                 $data->invoice_no,
                 $data->cust_name,
                 'Head Quarter',
@@ -100,7 +100,7 @@ class ZahirSteva implements FromCollection, WithMapping, WithHeadings, ShouldAut
                 '0',
                 '0',
                 'TAMBAT',
-                $jumlahTK,
+                1,
                 'LITER',
                 $data->tambat_kapal_total,
                 ceil($data->discount),
@@ -120,23 +120,23 @@ class ZahirSteva implements FromCollection, WithMapping, WithHeadings, ShouldAut
 
         if ($data->stevadooring == 'Y') {
             $stev = StevadooringDetail::where('inv_id', $data->id)->get();
-            $jumlahST = $stev->jumlah;
+            $jumlahST = $stev->sum('jumlah');  // Sum all 'jumlah' values in the collection
             $result[] = [
-                $data->created_at,
+                date("d/m/Y", strtotime($data->created_at)),
                 $data->invoice_no,
                 $data->cust_name,
                 'Head Quarter',
                 'Head Quarter',
                 '0',
-                'STEVADOORING ' .$data->ves_name . '-' . $data->voy_out,
+                'STEVADOORING ' . $data->ves_name . '-' . $data->voy_out,
                 '0',
                 $status,
                 '0',
                 '0',
                 '0',
-                'TAMBAT',
-                $jumlahST,
-                'unit',
+                'STEVADOORING',
+                1,
+                'LITER',
                 $data->stevadooring_total,
                 ceil($data->discount),
                 'VAT',

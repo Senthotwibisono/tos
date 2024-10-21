@@ -88,10 +88,22 @@ class ImportController extends Controller
     public function detilInvoice($id)
     {
         $data['title'] = "Delivery Billing System (Piutang Invoice)";
+
+        // Retrieve the 'OS' model
         $data['os'] = OS::find($id);
-        $data['invoice'] = InvoiceImport::whereNot('form_id', '=', '')->where('os_id', $id)->orderBy('order_at', 'asc')->orderBy('lunas', 'asc')->get();
+
+        // Retrieve 'InvoiceImport' records with eager loading (replace 'relatedModel' with actual relationships)
+        $data['invoice'] = InvoiceImport::whereNotNull('form_id')
+            ->where('os_id', $id)
+            ->orderBy('order_at', 'asc')
+            ->orderBy('lunas', 'asc')
+            ->select('id', 'proforma_no', 'cust_id', 'os_id', 'inv_type', 'form_id', 'order_at', 'invoice_date', 'cust_name', 'os_name', 'lunas')
+            ->get();
+
+        // Return the view with the retrieved data
         return view('billingSystem.import.billing.detil.detil', $data);
     }
+
 
     public function deliveryMenu()
     {
@@ -1086,7 +1098,9 @@ private function getNextJob($lastJobNo)
     $invoice = InvoiceImport::where('form_id', $id)->get();
     
     // Check if any invoice is already paid (not 'N' in 'lunas')
-    $paid = $invoice->whereNot('lunas', 'N')->first();
+    $paid = $invoice->first(function ($inv) {
+        return $inv->lunas !== 'N';
+    });
     
     // If there's a paid invoice, return an error message
     if ($paid) {
@@ -1419,7 +1433,7 @@ private function getNextJob($lastJobNo)
     
         $invoice = $invoiceQuery->orderBy('order_at', 'asc')->get();
     
-        $fileName = 'ReportInvoiceImport-'. '-' . $startDate . '-' . $endDate . '.xlsx';
+        $fileName = 'ReportInvoiceImportUnoaid-'. '-' . $startDate . '-' . $endDate . '.xlsx';
 
       return Excel::download(new ReportInvoice($invoice), $fileName);
     }
@@ -1427,7 +1441,7 @@ private function getNextJob($lastJobNo)
     {
         $startDate = $request->start;
         $endDate = $request->end;
-        $invoiceQuery = Detail::whereBetween('order_date', [$startDate, $endDate])->where('lunas', '=', 'P');
+        $invoiceQuery = InvoiceImport::whereBetween('order_at', [$startDate, $endDate])->where('lunas', '=', 'P');
     
         // Cek apakah checkbox 'inv_type' ada dalam request dan tidak kosong
         if ($request->has('inv_type') && !empty($request->inv_type)) {
@@ -1435,11 +1449,11 @@ private function getNextJob($lastJobNo)
             $invoiceQuery->whereIn('inv_type', $request->inv_type);
         }
     
-        $invoice = $invoiceQuery->orderBy('order_date', 'asc')->get();
+        $invoice = $invoiceQuery->orderBy('order_at', 'asc')->get();
     
-        $fileName = 'ReportInvoiceImport-' . '-' . $startDate . '-' . $endDate . '.xlsx';
+        $fileName = 'ReportInvoiceImportPiutang-'. '-' . $startDate . '-' . $endDate . '.xlsx';
 
-      return Excel::download(new InvoicesExport($invoice), $fileName);
+      return Excel::download(new ReportInvoice($invoice), $fileName);
     }
 
     public function ReportImpiortAll(Request $request)

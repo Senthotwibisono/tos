@@ -119,7 +119,7 @@
             <div class="row">
 
               <div class="col-12">
-                <table class="dataTable-wrapperEXTD dataTable-loading no-footer sortable searchable fixed-columns" id="tableImp">
+                <table class="dataTable-wrapperIMP dataTable-loading no-footer sortable searchable fixed-columns">
                   <thead>
                     <tr>
                       <th>Proforma No</th>
@@ -235,7 +235,7 @@
             <div class="row">
 
               <div class="col-12">
-                <table class="dataTable-wrapperEXTD dataTable-loading no-footer sortable searchable fixed-columns" id="tableImp">
+                <table class="dataTable-wrapperIMP dataTable-loading no-footer sortable searchable fixed-columns">
                   <thead>
                     <tr>
                       <th>Proforma No</th>
@@ -354,7 +354,7 @@
             <div class="row">
 
               <div class="col-12">
-                <table class="dataTable-wrapperEXTD dataTable-loading no-footer sortable searchable fixed-columns">
+                <table class="dataTable-wrapperIMP dataTable-loading no-footer sortable searchable fixed-columns">
                   <thead>
                     <tr>
                       <th>Proforma No</th>
@@ -492,6 +492,10 @@
 @section('custom_js')
 <script>
 $(document).ready(function() {
+     // Initialize all tables with class 'dataTable-wrapper'
+    $('.dataTable-wrapperIMP').each(function() {
+        $(this).DataTable();
+    });
     // Event delegation for delete button
     $(document).on('click', '.Delete', function() {
         var formId = $(this).data('id'); // Ambil ID dari data-id atribut
