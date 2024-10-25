@@ -1086,6 +1086,67 @@ class InvoiceExportController extends Controller
             'invoice_date'=> $invDate,
         ]);
 
+        if ($request->couple == 'on') {
+            $form = Form::find($invoice->form_id);
+            $coupleInvoice = InvoiceExport::where('form_id', $form->id)->whereNot('id', $invoice->id)->first();
+            if ($coupleInvoice && $coupleInvoice->lunas != 'Y') {
+                if ($coupleInvoice->lunas == 'N') {
+                    $coupleDate = Carbon::now();
+                }else {
+                    $coupleDate = $coupleInvoice->invoice_date;
+                }
+                if ($coupleInvoice->inv_no == null) {
+                    if ($coupleInvoice->inv_type == 'OSK' ) {
+                        $coupleInvoiceNo = $this->getNextInvoiceDSK();
+                    }else {
+                        $coupleInvoiceNo = $this->getNextInvoiceDS();
+                    }
+               }else {
+                 $coupleInvoiceNo = $coupleInvoice->inv_no;
+               }
+                $containerInvoice = Container::where('form_id', $coupleInvoice->form_id)->get();
+                $bigOS = OS::where('id', $coupleInvoice->os_id)->first();
+                foreach ($containerInvoice as $cont) {
+                    $lastJobNo = JobExport::orderBy('id', 'desc')->value('job_no');
+                    $jobNo = $this->getNextJob($lastJobNo);
+                    $job = JobExport::where('inv_id', $coupleInvoice->id)->where('container_key', $cont->container_key)->first();
+                    if (!$job) {
+                        $job = JobExport::create([
+                            'inv_id'=>$coupleInvoice->id,
+                            'job_no'=>$jobNo,
+                            'os_id'=>$coupleInvoice->os_id,
+                            'os_name'=>$coupleInvoice->os_name,
+                            'cust_id'=>$coupleInvoice->cust_id,
+                            'active_to'=>$coupleInvoice->expired_date,
+                            'container_key'=>$cont->container_key,
+                            'container_no'=>$cont->container_no,
+                            'ves_id'=>$cont->ves_id,
+                        ]);
+                    }
+                    $item = Item::where('container_key', $cont->container_key)->first();
+                    $item->update([
+                        'invoice_no'=>$coupleInvoiceNo,
+                        'job_no' => $job->job_no,
+                        'order_service' => $bigOS->order,
+                    ]);
+                }
+        
+                $details = Detail::where('inv_id', $id)->get();
+                foreach ($details as $detail) {
+                    $detail->update([
+                    'lunas'=>'Y',
+                    'inv_no'=>$coupleInvoiceNo,
+                    ]);
+                }
+        
+                $coupleInvoice->update([
+                    'lunas' => 'Y',
+                    'inv_no'=>$coupleInvoiceNo,
+                    'lunas_at'=> Carbon::now(),
+                    'invoice_date'=> $coupleDate,
+                ]);
+            }
+        }
         return response()->json([
             'success' => true,
             'message' => 'updated successfully!',
@@ -1146,6 +1207,60 @@ class InvoiceExportController extends Controller
             'piutang_at'=> Carbon::now(),
             'invoice_date'=> Carbon::now(),
         ]);
+
+        if ($request->couple == 'on') {
+            $form = Form::find($invoice->form_id);
+            $coupleInvoice = InvoiceExport::where('form_id', $form->id)->whereNot('id', $invoice->id)->first();
+            if ($coupleInvoice && $coupleInvoice->lunas != 'Y') {
+                if ($coupleInvoice->inv_no == null) {
+                    if ($coupleInvoice->inv_type == 'OSK' ) {
+                        $coupleInvoiceNo = $this->getNextInvoiceDSK();
+                    }else {
+                        $coupleInvoiceNo = $this->getNextInvoiceDS();
+                    }
+               }else {
+                 $coupleInvoiceNo = $coupleInvoice->inv_no;
+               }
+                $containerInvoice = Container::where('form_id', $coupleInvoice->form_id)->get();
+                $bigOS = OS::where('id', $coupleInvoice->os_id)->first();
+                foreach ($containerInvoice as $cont) {
+                    $lastJobNo = JobExport::orderBy('id', 'desc')->value('job_no');
+                    $jobNo = $this->getNextJob($lastJobNo);
+                    $job = JobExport::create([
+                        'inv_id'=>$coupleInvoice->id,
+                        'job_no'=>$jobNo,
+                        'os_id'=>$coupleInvoice->os_id,
+                        'os_name'=>$coupleInvoice->os_name,
+                        'cust_id'=>$coupleInvoice->cust_id,
+                        'active_to'=>$coupleInvoice->expired_date,
+                        'container_key'=>$cont->container_key,
+                        'container_no'=>$cont->container_no,
+                        'ves_id'=>$cont->ves_id,
+                    ]);
+                    $item = Item::where('container_key', $cont->container_key)->first();
+                    $item->update([
+                        'invoice_no'=>$coupleInvoiceNo,
+                        'job_no' => $job->job_no,
+                        'order_service' => $bigOS->order,
+                    ]);
+                }
+        
+                $details = Detail::where('inv_id', $id)->get();
+                foreach ($details as $detail) {
+                    $detail->update([
+                    'lunas'=>'P',
+                    'inv_no'=>$coupleInvoice,
+                    ]);
+                }
+        
+                $invoice->update([
+                    'lunas' => 'P',
+                    'inv_no'=>$coupleInvoice,
+                    'piutang_at'=> Carbon::now(),
+                    'invoice_date'=> Carbon::now(),
+                ]);
+            }
+        }
 
         return response()->json([
             'success' => true,

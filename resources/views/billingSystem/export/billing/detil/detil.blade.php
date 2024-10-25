@@ -8,7 +8,7 @@
       <div class="col-12">
         <div class="card">
           <div class="card-header">
-            <h4 class="card-title">Tabel Data Billing Bongkaran {{$os->name}}</h4>
+            <h4 class="card-title">Tabel Data Billing Muatan {{$os->name}}</h4>
             <p>Rekap Data Billing</p>
           </div>
           <div class="card-body">
@@ -360,6 +360,7 @@ $(document).ready(function() {
 
     var data = {
       'inv_id': $('#idInvoice').val(),
+      'couple': $('#couple').val(),
    
     }
     $.ajaxSetup({
@@ -426,6 +427,7 @@ $(document).ready(function() {
 
     var data = {
       'inv_id': $('#idInvoice').val(),
+      'couple': $('#couple').val(),
    
     }
     $.ajaxSetup({

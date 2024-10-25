@@ -152,6 +152,12 @@
             <label for="">Customer</label>
             <input type="text" id="customer" class="form-control" disabled value="kosong">
           </div>
+          <div class="form-group">
+            <label for="">Pay Couple Invoice</label>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" name="couple" id="couple">
+              </div>
+          </div>
           <input type="hidden" id="idInvoice">
 
         </div>
@@ -345,7 +351,7 @@ $(document).ready(function() {
 
     var data = {
       'inv_id': $('#idInvoice').val(),
-   
+      'couple': $('#couple').val(),
     }
     $.ajaxSetup({
       headers: {
@@ -411,7 +417,7 @@ $(document).ready(function() {
 
     var data = {
       'inv_id': $('#idInvoice').val(),
-   
+      'couple': $('#couple').val(),
     }
     $.ajaxSetup({
       headers: {

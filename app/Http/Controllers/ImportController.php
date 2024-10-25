@@ -1290,6 +1290,77 @@ private function getNextJob($lastJobNo)
             'invoice_date'=> $invDate,
         ]);
 
+        if ($request->couple == 'on') {
+            $form = Form::find($invoice->form_id);
+            $coupleInvoice = InvoiceImport::where('form_id', $form->id)->whereNot('id', $invoice->id)->first();
+            // var_dump($coupleInvoice->form_id);
+            // die();
+            if ($coupleInvoice && $coupleInvoice->lunas != 'Y') {
+                if ($coupleInvoice->lunas == 'N') {
+                    $invDate = Carbon::now();
+                }else {
+                    $invDate = $coupleInvoice->invoice_date;
+                }
+                if ($coupleInvoice->inv_no == null) {
+                    if ($coupleInvoice->inv_type == 'DSK' ) {
+                        $coupleInvoiceNo = $this->getNextInvoiceDSK();
+                    } else {
+                        $coupleInvoiceNo = $this->getNextInvoiceDS();
+                    }
+                } else {
+                    $coupleInvoiceNo = $coupleInvoice->inv_no;
+                }
+                
+                $containerInvoice = Container::where('form_id', $form->form_id)->get();
+                $bigOS = OS::where('id', $form->os_id)->first();
+                foreach ($containerInvoice as $cont) {
+                    $lastJobNo = JobImport::orderBy('id', 'desc')->value('job_no');
+                    $jobNo = $this->getNextJob($lastJobNo);
+                    $job = JobImport::where('inv_id', $coupleInvoice->id)->where('container_key', $cont->container_key)->first();
+                    $item = Item::where('container_key', $cont->container_key)->first();
+                    if (!$job) {
+                        $discDate = Carbon::parse($item->disc_date);
+                        $expiryDate = $discDate->addDays(4);
+                        $expired = Carbon::now()->greaterThan($expiryDate);
+                        
+                        $expiryDateFormatted = $expiryDate->format('Y-m-d');
+                        $job = JobImport::create([
+                            'inv_id'=>$coupleInvoice->id,
+                            'job_no'=>$jobNo,
+                            'os_id'=>$coupleInvoice->os_id,
+                            'os_name'=>$coupleInvoice->os_name,
+                            'cust_id'=>$coupleInvoice->cust_id,
+                            'active_to'=>$expiryDateFormatted,
+                            'container_key'=>$cont->container_key,
+                            'container_no'=>$cont->container_no,
+                            'ves_id'=>$cont->ves_id,
+                        ]);
+                    }
+                   
+                    $item->update([
+                        'invoice_no'=>$coupleInvoice,
+                        'job_no' => $job->job_no,
+                        'order_service' => $bigOS->order,
+                    ]);
+                }
+        
+                $details = Detail::where('inv_id', $id)->get();
+                foreach ($details as $detail) {
+                    $detail->update([
+                    'lunas'=>'Y',
+                    'inv_no'=>$coupleInvoiceNo,
+                    ]);
+                }
+        
+                $coupleInvoice->update([
+                    'lunas' => 'Y',
+                    'inv_no'=>$coupleInvoiceNo,
+                    'lunas_at'=> Carbon::now(),
+                    'invoice_date'=> $invDate,
+                ]);
+            }
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'updated successfully!',
@@ -1300,6 +1371,9 @@ private function getNextJob($lastJobNo)
     public function piutangImport(Request $request)
     {
         $id = $request->inv_id;
+
+        // var_dump($request->couple);
+        // die;
 
         $invoice = InvoiceImport::where('id', $id)->first();
         if ($invoice->inv_no == null) {
@@ -1355,6 +1429,66 @@ private function getNextJob($lastJobNo)
             'piutang_at'=> Carbon::now(),
             'invoice_date'=> Carbon::now(),
         ]);
+
+        if ($request->couple == 'on') {
+            $form = Form::find($invoice->form_id);
+            $coupleInvoice = InvoiceImport::where('form_id', $form->id)->whereNot('id', $invoice->id)->first();
+            if ($coupleInvoice && $coupleInvoice->lunas != 'Y') {
+                if ($coupleInvoice->inv_no == null) {
+                    if ($coupleInvoice->inv_type == 'DSK' ) {
+                        $coupleInvoiceNo = $this->getNextInvoiceDSK();
+                    }else {
+                        $coupleInvoiceNo = $this->getNextInvoiceDS();
+                    }
+               }else {
+                 $coupleInvoiceNo = $coupleInvoice->inv_no;
+               }
+                $containerInvoice = Container::where('form_id', $coupleInvoice->form_id)->get();
+                $bigOS = OS::where('id', $coupleInvoice->os_id)->first();
+                foreach ($containerInvoice as $cont) {
+                    $lastJobNo = JobImport::orderBy('id', 'desc')->value('job_no');
+                    $jobNo = $this->getNextJob($lastJobNo);
+                    $item = Item::where('container_key', $cont->container_key)->first();
+                    $discDate = Carbon::parse($item->disc_date);
+                    $expiryDate = $discDate->addDays(4);
+                    $expired = Carbon::now()->greaterThan($expiryDate);
+                    
+                    $expiryDateFormatted = $expiryDate->format('Y-m-d');
+                    $job = JobImport::create([
+                        'inv_id'=>$coupleInvoice->id,
+                        'job_no'=>$jobNo,
+                        'os_id'=>$coupleInvoice->os_id,
+                        'os_name'=>$coupleInvoice->os_name,
+                        'cust_id'=>$coupleInvoice->cust_id,
+                        'active_to'=>$expiryDateFormatted,
+                        'container_key'=>$cont->container_key,
+                        'container_no'=>$cont->container_no,
+                        'ves_id'=>$cont->ves_id,
+                    ]);
+                    
+                    $item->update([
+                        'invoice_no'=>$coupleInvoiceNo,
+                        'job_no' => $job->job_no,
+                        'order_service' => $bigOS->order,
+                    ]);
+                }
+        
+                $details = Detail::where('inv_id', $id)->get();
+                foreach ($details as $detail) {
+                    $detail->update([
+                    'lunas'=>'P',
+                    'inv_no'=>$coupleInvoiceNo,
+                    ]);
+                }
+        
+                $coupleInvoice->update([
+                    'lunas' => 'P',
+                    'inv_no'=>$coupleInvoiceNo,
+                    'piutang_at'=> Carbon::now(),
+                    'invoice_date'=> Carbon::now(),
+                ]);
+            }
+        }
 
         return response()->json([
             'success' => true,

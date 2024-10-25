@@ -8,7 +8,7 @@
       <div class="col-12">
         <div class="card">
           <div class="card-header">
-            <h4 class="card-title">Tabel Data Billing Delivery (Belum Bayar)</h4>
+            <h4 class="card-title">Tabel Data Billing Reciving (Belum Bayar)</h4>
             <p>Rekap Data Billing</p>
           </div>
           <div class="card-body">
@@ -130,7 +130,7 @@
     </section>
 
     <div class="footer">
-        <a href="/billing/import/delivey-system" class="btn btn-primary">Back</a>
+        <a href="/billing/export/delivey-system" class="btn btn-primary">Back</a>
     </div>
 </div>
 
@@ -155,7 +155,12 @@
             <input type="text" id="customer" class="form-control" disabled value="kosong">
           </div>
           <input type="hidden" id="idInvoice">
-
+          <div class="form-group">
+            <label for="">Pay Couple Invoice</label>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" name="couple" id="couple">
+              </div>
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
@@ -340,6 +345,7 @@ $(document).ready(function() {
 
     var data = {
       'inv_id': $('#idInvoice').val(),
+      'couple': $('#couple').val(),
    
     }
     $.ajaxSetup({
@@ -406,6 +412,7 @@ $(document).ready(function() {
 
     var data = {
       'inv_id': $('#idInvoice').val(),
+      'couple': $('#couple').val(),
    
     }
     $.ajaxSetup({
