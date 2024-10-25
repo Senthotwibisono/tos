@@ -37,6 +37,6 @@ class ContainerInvoice extends Model
    
     public function SingleCont()
     {
-        return $this->belongsTo(Item::class, 'contianer_key');
+        return $this->belongsTo(Item::class, 'container_key', 'container_key');
     }
 }
