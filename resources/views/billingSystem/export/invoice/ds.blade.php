@@ -158,6 +158,12 @@
                   {{$invoice->os_name}}
                 </address>
               </div>
+              <div class="col-xs-12 col-12">
+                <address>
+                  <strong>Booking Number:</strong><br>
+                  {{$singleCont->SingleCont->booking_no}}
+                </address>
+              </div>
             </div>
             <div class="col-6">
               <div class="col-xs-12 col-12">

@@ -936,36 +936,62 @@ public function ReportExcelPiutang(Request $request)
     public function extendInvoiceCancel(Request $request)    
     {
         $id = $request->inv_id;
-
+    
+        // Retrieve invoice
         $invoice = Extend::where('id', $id)->first();
-        
+        if ($invoice) {
             $invoice->update([
                 'lunas' => 'C',
-                'total'=> 0,
-                'discount'=> 0,
-                'pajak'=> 0,
-                'grand_total'=> 0,
-            ]);
-       
-
-        $invoiceDetail = Detail::where('form_id', $id)->get();
-        foreach ($invoiceDetail as $detail) {
-            $detail->update([
-                'lunas'=>'C',
-                'jumlah'=>0,
-                'jumlah_hari'=> 0,
-                'tarif'=>0,
-                'total'=>0,
+                'total' => 0,
+                'discount' => 0,
+                'pajak' => 0,
+                'grand_total' => 0,
             ]);
         }
-
-        $containerInvoice = Container::where('form_id', $id)->get();
-        
+    
+        // Retrieve invoice details and update
+        $invoiceDetails = Detail::where('inv_id', $id)->get();
+        foreach ($invoiceDetails as $detail) {
+            $detail->update([
+                'lunas' => 'C',
+                'jumlah' => 0,
+                'jumlah_hari' => 0,
+                'tarif' => 0,
+                'total' => 0,
+            ]);
+        }
+    
+        // Retrieve container invoices and old invoice
+        $containerInvoices = Container::where('form_id', $invoice->form_id)->get();
+        $oldInv = InvoiceImport::where('form_id', $request->inv_id)->first();
+    
+        if (is_null($oldInv)) {
+            $oldInv = Extend::where('form_id', $request->inv_id)->first();
+        }
+    
+        if ($oldInv) {
+            $job = is_null($oldInv->type) ? JobExtend::where('inv_id', $oldInv->id)->get() : JobImport::where('inv_id', $oldInv->id)->get();
+            
+            foreach ($containerInvoices as $cont) {
+                $item = Item::where('container_key', $cont->container_key)->first();
+                $singleJob = $job->where('container_key', $cont->container_key)->first();
+            
+                if ($item && $singleJob) {
+                    $item->update([
+                        'invoice_no' => $oldInv->inv_no,
+                        'job_no' => $singleJob->job_no,
+                        'os_id' => $oldInv->os_id,
+                    ]);
+                }
+            }
+        }
+    
         return response()->json([
             'success' => true,
             'message' => 'Invoice Berhasil di Cancel!',
         ]);
     }
+
 
     public function ReportExcelAll(Request $request)
     {

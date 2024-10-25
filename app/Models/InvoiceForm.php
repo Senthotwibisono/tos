@@ -28,6 +28,7 @@ class InvoiceForm extends Model
         'discount_dsk',
         'tarif',
         'palka',
+        'user_id',
     ];
 
     public function doOnline()

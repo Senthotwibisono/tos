@@ -196,6 +196,13 @@
         Customer
       </a>
     </li>
+    <li class="menu-item">
+      <a href="/invoice/customer/register" class="menu-link">
+        <i class="fa-solid fa-user">
+        </i>
+        Customer Account
+      </a>
+    </li>
 
     <!-- <li class="menu-item has-sub">
       <a href="/spps" class="menu-link">

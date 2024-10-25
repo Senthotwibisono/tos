@@ -47,6 +47,8 @@ class LoginController extends Controller
             }
             elseif ($user->hasRole('BeaCukai')) {
                 return '/bea-cukai-sevice';
+            } elseif ($user->hasRole('customer')) {
+                return '/customer-dashboard';
             }
         }
 
@@ -78,6 +80,8 @@ class LoginController extends Controller
             return redirect('/android-cc');
         } elseif ($user->hasRole('BeaCukai')) {
             return redirect('/bea-cukai-sevice');
+        } elseif ($user->hasRole('customer')) {
+            return redirect('/customer-dashboard');
         } else {
             return redirect('/invoice');
         }

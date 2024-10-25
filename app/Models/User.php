@@ -24,7 +24,23 @@ class User extends Authenticatable
         'email',
         'password',
         'profil',
+        'customer_id',
     ];
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id', 'id');
+    }
+    
+    public function MUI()
+    {
+        return $this->belongsTo(MasterUserInvoice::class, 'user_id', 'id');
+    }
+
+    public function customerCount()
+    {
+        return $this->hasMany(MasterUserInvoice::class, 'user_id', 'id')->count();
+    }
 
     /**
      * The attributes that should be hidden for serialization.

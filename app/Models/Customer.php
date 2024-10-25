@@ -21,5 +21,6 @@ class Customer extends Model
         'email',
         'fax',
         'phone',
+        'account_y_n',
     ];
 }

@@ -37,6 +37,8 @@ class RedirectIfAuthenticated
             return '/';
         } elseif ($user->hasRole('android')) {
             return '/android-dashboard';
+        }elseif ($user->hasRole('customer')) {
+            return '/customer-dashboard';
         } else {
             return '/default-page';
         }

@@ -63,6 +63,10 @@ use App\Http\Controllers\PluggingController;
 use App\Http\Controllers\RentalController;
 use App\Exports\ContainersReport;
 
+// Customer
+use App\Http\Controllers\customer\RegisterCustomerController;
+use App\Http\Controllers\customer\CustomerMainController;
+use App\Http\Controllers\customer\profile\CustomerProfileController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -1195,3 +1199,21 @@ Route::post('/renta&repair/master-tarif-create-first', [MasterInvoiceController:
   Route::post('/renta&repair-paid', [RentalController::class, 'Paid'])->name('PaidRentalRepair');
   Route::post('/renta&repair-cancel', [RentalController::class, 'Cancel'])->name('CancelRentalRepair');
   Route::get('/renta&repair/osData', [RentalController::class, 'getOrder'])->name('rental-osData');
+
+  Route::controller(RegisterCustomerController::class)->group(function(){
+    Route::get('/invoice/customer/register', 'index');
+    Route::get('/invoice/customer/register/createIndex', 'createIndex');
+    Route::post('/invoice/customer/register/createPost', 'createPost');
+    Route::get('/invoice/customer/register/editIndex{id?}', 'editIndex');
+    Route::post('/invoice/customer/register/editPost', 'editPost');
+  });
+
+  Route::controller(CustomerMainController::class)->group(function(){
+    Route::get('/customer-dashboard', 'dashboardIndex');
+    Route::get('/customer-import', 'Import');
+  });
+ 
+  Route::controller(CustomerProfileController::class)->group(function(){
+    Route::get('/customer-profile', 'index');
+    Route::post('/customer-profile/update', 'profile');
+  });

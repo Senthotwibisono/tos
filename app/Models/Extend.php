@@ -25,30 +25,6 @@ class Extend extends Model
         'os_id',
         'os_name',
         'container_key',
-        'm1',
-        'm2',
-        'm3',
-        // Tarif
-        'ctr_20',
-        'ctr_40',
-        'ctr_21',
-        'ctr_42',
-        // 20
-        'm1_20',
-        'm2_20',
-        'm3_20',
-        // 21
-        'm1_21',
-        'm2_21',
-        'm3_21',
-        // 40
-        'm1_40',
-        'm2_40',
-        'm3_40',
-        // 42
-        'm1_42',
-        'm2_42',
-        'm3_42',
         'admin',
         'total',
         'pajak',
@@ -61,6 +37,7 @@ class Extend extends Model
         'expired_date',
         'discount',
         'invoice_date',
+        'user_id',
     ];
     
     public function customer()

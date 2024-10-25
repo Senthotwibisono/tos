@@ -58,7 +58,7 @@ class InvoiceExportController extends Controller
     }
     public function detilUnpaid()
     {
-        $data['title'] = "Delivery Billing System (Unpaid Invoice)";
+        $data['title'] = "Reciving Billing System (Unpaid Invoice)";
         $data['unPaids'] = InvoiceExport::whereHas('service', function ($query) {
             $query->where('ie', '=', 'E');
         })->whereNot('form_id', '=', '')->where('lunas', '=', 'N')->orderBy('order_at', 'asc')->get();
@@ -67,7 +67,7 @@ class InvoiceExportController extends Controller
    
     public function detilPiutang()
     {
-        $data['title'] = "Delivery Billing System (Piutang Invoice)";
+        $data['title'] = "Reciving Billing System (Piutang Invoice)";
         $data['piutangs'] = InvoiceExport::whereHas('service', function ($query) {
             $query->where('ie', '=', 'E');
         })->whereNot('form_id', '=', '')->where('lunas', '=', 'P')->orderBy('order_at', 'asc')->get();
@@ -75,7 +75,7 @@ class InvoiceExportController extends Controller
     }
     public function detilInvoice($id)
     {
-        $data['title'] = "Delivery Billing System (Piutang Invoice)";
+        $data['title'] = "Reciving Billing System (Piutang Invoice)";
         $data['os'] = OS::find($id);
         $data['invoice'] = InvoiceExport::whereNot('form_id', '=', '')->where('os_id', $id)->orderBy('order_at', 'asc')->orderBy('lunas', 'asc')->get();
         return view('billingSystem.export.billing.detil.detil', $data);
@@ -1164,6 +1164,7 @@ class InvoiceExportController extends Controller
         $data['invoice'] = InvoiceExport::where('id', $id)->first();
         $data['form'] = Form::where('id', $data['invoice']->form_id)->first();
         $data['contInvoice'] = Container::where('form_id', $data['invoice']->form_id)->orderBy('ctr_size', 'asc')->get();
+        $data['singleCont'] = Container::where('form_id', $data['invoice']->form_id)->orderBy('ctr_size', 'asc')->first();
         $invDetail = Detail::where('inv_id', $id)->whereNot('count_by', '=', 'O')->orderBy('count_by', 'asc')->orderBy('kode', 'asc')->get();
         $data['invGroup'] = $invDetail->groupBy('ukuran');
         $data['admin'] = 0;
@@ -1183,6 +1184,7 @@ class InvoiceExportController extends Controller
         $data['invoice'] = InvoiceExport::where('id', $id)->first();
         $data['form'] = Form::where('id', $data['invoice']->form_id)->first();
         $data['contInvoice'] = Container::where('form_id', $data['invoice']->form_id)->orderBy('ctr_size', 'asc')->get();
+        $data['singleCont'] = Container::where('form_id', $data['invoice']->form_id)->orderBy('ctr_size', 'asc')->first();
         $invDetail = Detail::where('inv_id', $id)->whereNot('count_by', '=', 'O')->orderBy('count_by', 'asc')->orderBy('kode', 'asc')->get();
         $data['invGroup'] = $invDetail->groupBy('ukuran');
 

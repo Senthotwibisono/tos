@@ -34,4 +34,9 @@ class ContainerInvoice extends Model
     {
         return $this->belongsTo(VVoyage::class, 'ves_id');
     }
+   
+    public function SingleCont()
+    {
+        return $this->belongsTo(Item::class, 'contianer_key');
+    }
 }
