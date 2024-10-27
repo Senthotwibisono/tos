@@ -47,7 +47,7 @@
           <div class="row">
             <div class="col-12">
               <div class="table responsive">
-                <table class="dataTable-wrapperDO dataTable-loading no-footer sortable searchable fixed-columns">
+                <table class="table table-responsive table-hover" id="doTable">
                   <thead>
                     <tr>
                       <th>No</th>
@@ -58,7 +58,7 @@
                       <th>Action</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <!-- <tbody>
                    @foreach($doOnline as $do)
                    <tr>
                       <td>{{$loop->iteration}}</td>
@@ -91,7 +91,7 @@
                       </td>
                    </tr>
                    @endforeach
-                  </tbody>
+                  </tbody> -->
                 </table>
               </div>
             </div>
@@ -104,43 +104,52 @@
 
 @endsection
 @section('custom_js')
+
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Select all delete buttons
-        const deleteButtons = document.querySelectorAll('.delete-btn');
-        
-        // Add event listener to each delete button
-        deleteButtons.forEach(button => {
-            button.addEventListener('click', function (e) {
-                e.preventDefault();
-                
-                const id = this.getAttribute('data-id');
-                const form = document.getElementById('deleteForm-' + id);
-                
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
-                });
-            });
+    $(document).ready(function() {
+        $('#doTable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: '/billing/dock-DO/data', // Adjust this route to match your route definition
+                type: 'GET'
+            },
+            columns: [
+                { data: 'DT_RowIndex', name: 'DT_RowIndex', className: 'text-center', orderable: false, searchable: false },
+                { data: 'do_no', name: 'do_no', className: 'text-center' },
+                { data: 'bl_no', name: 'bl_no', className: 'text-center' },
+                { data: 'container_no', name: 'container_no', className: 'text-center' },
+                { data: 'expired', name: 'expired', className: 'text-center' },
+                { data: 'actions', name: 'actions', orderable: false, searchable: false, className: 'text-center' }
+            ],
+            pageLength: 30,
+            order: [[1, 'asc']]
         });
     });
 </script>
-
 <script>
-  $(document).ready(function() {
-    // Initialize all tables with class 'dataTable-wrapper'
-    $('.dataTable-wrapperDO').each(function() {
-        $(this).DataTable();
+    document.addEventListener('DOMContentLoaded', function () {
+        // Use jQuery to ensure the script loads after DataTables initializes
+        $(document).on('click', '.delete-btn', function (e) {
+            e.preventDefault();
+            
+            const id = $(this).data('id');
+            const form = $('#deleteForm-' + id);
+            
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This action cannot be undone!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit(); // Submit the form if confirmed
+                }
+            });
+        });
     });
-  });
 </script>
 @endsection

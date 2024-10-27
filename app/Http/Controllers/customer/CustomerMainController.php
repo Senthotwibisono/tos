@@ -31,9 +31,9 @@ class CustomerMainController extends Controller
         $this->middleware('role:customer'); 
         $this->middleware(function ($request, $next) {
             $this->userId = Auth::user()->id; // Ambil user ID di sini
-            $this->import = Import::where('user_id', Auth::user()->id)->get();
-            $this->export = Export::where('user_id', Auth::user()->id)->get();
-            $this->extend = Extend::where('user_id', Auth::user()->id)->get();
+            $this->import = Import::where('user_id', Auth::user()->id);
+            $this->export = Export::where('user_id', Auth::user()->id);
+            $this->extend = Extend::where('user_id', Auth::user()->id);
             return $next($request);
         });
 
@@ -53,25 +53,28 @@ class CustomerMainController extends Controller
 
         // Import
             // DSK
-            $data['dsk'] = $this->import->where('inv_type', '=', 'DSK');
-            $dskPaid = $this->import->where('inv_type', '=', 'DSK')->where('lunas', '=', 'Y')->where('lunas', '=', 'C');
-            $data['dskPaid'] = $dskPaid->count();
-            $data['dskPaidAmount'] = $dskPaid->sum('grand_total');
-            $dskUnpaid = $this->import->where('inv_type', '=', 'DSK')->where('lunas', '=', 'N')->where('lunas', '=', 'C');
-            $data['dskUnpaid'] = $dskUnpaid->count();
+            $data['dsk'] = (clone $this->import)->where('inv_type', '=', 'DSK')->get();
+            $dskPaid = (clone $this->import)->where('inv_type', '=', 'DSK')->where('lunas', '=', 'Y');
+            $data['dskPaid'] =  $dskPaid->count();
+            $data['dskPaidAmount'] =  $dskPaid->sum('grand_total');
+            $dskUnpaid = (clone $this->import)->where('inv_type', '=', 'DSK')->whereIn('lunas', ['N', 'P']);
+            $data['dskUnpaid'] =  $dskUnpaid->count();
             $data['dskUnpaidAmount'] = $dskUnpaid->sum('grand_total');
             $data['dskTotal'] = $data['dskPaid'] + $data['dskUnpaid'];
             $data['dskTotalAmount'] = $data['dskPaidAmount'] + $data['dskUnpaidAmount'];
+           
+
             // DS
-            $data['ds'] = $this->import->where('inv_type', '=', 'DS');
-            $dsPaid = $this->import->where('inv_type', '=', 'DS')->where('lunas', '=', 'Y')->where('lunas', '=', 'C');
+            $data['ds'] = (clone $this->import)->where('inv_type', '=', 'DS')->get();
+            $dsPaid = (clone $this->import)->where('inv_type', '=', 'DS')->where('lunas', '=', 'Y')->get();
             $data['dsPaid'] = $dsPaid->count();
             $data['dsPaidAmount'] = $dsPaid->sum('grand_total');
-            $dsUnpaid = $this->import->where('inv_type', '=', 'DS')->where('lunas', '=', 'N')->where('lunas', '=', 'C');
+            $dsUnpaid = (clone $this->import)->where('inv_type', '=', 'DS')->where('lunas', '=', 'N')->get();
             $data['dsUnpaid'] = $dsUnpaid->count();
             $data['dsUnpaidAmount'] = $dsUnpaid->sum('grand_total');
             $data['dsTotal'] = $data['dsPaid'] + $data['dsUnpaid'];
             $data['dsTotalAmount'] = $data['dsPaidAmount'] + $data['dsUnpaidAmount'];
+
             // Total
             $data['importPaid'] = $data['dskPaid'] + $data['dsPaid'];
             $data['importPaidAmount'] = $data['dskPaidAmount'] + $data['dsPaidAmount'];
@@ -82,21 +85,21 @@ class CustomerMainController extends Controller
 
         // Eksport
             // OSK
-            $data['osk'] = $this->export->where('inv_type', '=', 'OSK');
-            $oskPaid = $this->export->where('inv_type', '=', 'OSK')->where('lunas', '=', 'Y')->where('lunas', '=', 'C');
+            $data['osk'] = (clone $this->export)->where('inv_type', '=', 'OSK')->get();
+            $oskPaid = (clone $this->export)->where('inv_type', '=', 'OSK')->where('lunas', '=', 'Y')->where('lunas', '=', 'C')->get();
             $data['oskPaid'] = $oskPaid->count();
             $data['oskPaidAmount'] = $oskPaid->sum('grand_total');
-            $oskUnpaid = $this->export->where('inv_type', '=', 'OSK')->where('lunas', '=', 'N')->where('lunas', '=', 'C');
+            $oskUnpaid = (clone $this->export)->where('inv_type', '=', 'OSK')->where('lunas', '=', 'N')->where('lunas', '=', 'C')->get();
             $data['oskUnpaid'] = $oskUnpaid->count();
             $data['oskUnpaidAmount'] = $oskUnpaid->sum('grand_total');
             $data['oskTotal'] = $data['oskPaid'] + $data['oskUnpaid'];
             $data['oskTotalAmount'] = $data['oskPaidAmount'] + $data['oskUnpaidAmount'];
             // DS
-            $data['os'] = $this->export->where('inv_type', '=', 'OS');
-            $osPaid = $this->export->where('inv_type', '=', 'OS')->where('lunas', '=', 'Y')->where('lunas', '=', 'C');
+            $data['os'] = (clone $this->export)->where('inv_type', '=', 'OS')->get();
+            $osPaid = (clone $this->export)->where('inv_type', '=', 'OS')->where('lunas', '=', 'Y')->where('lunas', '=', 'C')->get();
             $data['osPaid'] = $osPaid->count();
             $data['osPaidAmount'] = $osPaid->sum('grand_total');
-            $osUnpaid = $this->export->where('inv_type', '=', 'OS')->where('lunas', '=', 'N')->where('lunas', '=', 'C');
+            $osUnpaid = (clone $this->export)->where('inv_type', '=', 'OS')->where('lunas', '=', 'N')->where('lunas', '=', 'C')->get();
             $data['osUnpaid'] = $osUnpaid->count();
             $data['osUnpaidAmount'] = $osUnpaid->sum('grand_total');
             $data['osTotal'] = $data['osPaid'] + $data['osUnpaid'];
@@ -110,7 +113,7 @@ class CustomerMainController extends Controller
             $data['exportTotalAmount'] = $data['oskTotalAmount'] + $data['osTotalAmount'];
 
         // Extend
-        $extend = $this->extend->where('lunas', '!=', 'C');
+        $extend = (clone $this->extend)->where('lunas', '!=', 'C')->get();
         $data['extend'] = $extend;
         $extendPaid = $extend->where('lunas', '=', 'Y');
         $data['extendPaid'] = $extendPaid->count();
@@ -125,8 +128,22 @@ class CustomerMainController extends Controller
 
     public function Import()
     {
-        $data['title'] = 'Invoice Muat';
+        $data['title'] = 'Invoice Muat, ' . Auth::user()->name;
         $data['orderService'] = OS::where('ie', '=' , 'I')->orderBy('id', 'asc')->get();
+
+        $data['importTotal'] = (clone $this->import)->count();
+        $data['importPaid'] = (clone $this->import)->where('lunas', '=', 'Y')->count();
+        $data['importUnpaid'] = (clone $this->import)->whereNotIn('lunas', ['Y', 'C'])->count();
+        $data['importCanceled'] = (clone $this->import)->where('lunas', '=', 'C')->count();
+        $data['invoice'] = (clone $this->import);
+
+        $data['importUnpaid'] = (clone $this->import)->where('lunas', '=', 'N')->count();
+        $data['importUnpaidAmount'] = (clone $this->import)->where('lunas', '=', 'N')->sum('grand_total');
+        
+        $data['importPiutang'] = (clone $this->import)->where('lunas', '=', 'P')->count();
+        $data['importPiutangAmount'] = (clone $this->import)->where('lunas', '=', 'P')->sum('grand_total');
+
+        $data['importCanceled'] = (clone $this->import)->where('lunas', '=', 'C')->count();
 
         return view('customer.import.index', $data);
     }

@@ -13,6 +13,8 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\uploadDO;
 
+use DataTables;
+
 
 class MasterTarifController extends Controller
 {
@@ -201,6 +203,40 @@ class MasterTarifController extends Controller
 
         return view('billingSystem.do.main', $data);
     }
+
+    public function doData()
+    {
+        $doData = DOonline::all(); // Adjust with your actual model and query logic
+        return datatables()->of($doData)
+            ->addIndexColumn() // This adds DT_RowIndex to each row
+            ->addColumn('actions', function($do) {
+                return '
+                    <div class="row mb-3">
+                        <div class="col-sm-6">
+                            <a href="/edit/doOnline/'.$do->id.'" class="btn btn-warning">Edit</a>
+                        </div>
+                        <div class="col-sm-6">
+                            <form id="deleteForm-'.$do->id.'" action="'.route('deleteDo').'" method="post">
+                                '.csrf_field().'
+                                <input type="hidden" name="id" value="'.$do->id.'">
+                                <button type="button" class="btn btn-outline-danger delete-btn" data-id="'.$do->id.'">Delete</button>
+                            </form>
+                        </div>
+                    </div>';
+            })
+            ->addColumn('container_no', function($do) {
+                $doArray = json_decode($do->container_no, true);
+                if (is_array($doArray)) {
+                    return implode(', ', $doArray);
+                } else {
+                    return $do->container_no;
+                }
+            })
+            ->rawColumns(['actions', 'container_no'])
+            ->make(true);
+    }
+    
+
     
     public function doUpload(Request $request)
     {

@@ -69,6 +69,8 @@
   <script src="{{asset('dist/assets/extensions/choices.js/public/assets/scripts/choices.js')}}"></script>
   <script src="{{asset('dist/assets/js/pages/form-element-select.js')}}"></script>
   <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+  <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
   <script>
     new simpleDatatables.DataTable('#table1bc');
   </script>

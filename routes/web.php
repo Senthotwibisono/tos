@@ -67,6 +67,7 @@ use App\Exports\ContainersReport;
 use App\Http\Controllers\customer\RegisterCustomerController;
 use App\Http\Controllers\customer\CustomerMainController;
 use App\Http\Controllers\customer\profile\CustomerProfileController;
+use App\Http\Controllers\customer\import\CustomerImportController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -865,6 +866,7 @@ Route::post('/billing/customer/update', [MasterTarifController::class, 'updateCu
 // DO ikut di Master Tarif
 
 Route::get('/billing/dock-DO', [MasterTarifController::class, 'doMain'])->name('doMain');
+Route::get('/billing/dock-DO/data', [MasterTarifController::class, 'doData']);
 Route::post('/billing/dock-DO/upload', [MasterTarifController::class, 'doUpload'])->name('doUpload');
 Route::post('/billing/dock-DO/delete', [MasterTarifController::class, 'deleteDo'])->name('deleteDo');
 Route::get('/edit/doOnline/{id?}', [MasterTarifController::class, 'doEdit'])->name('doEdit');
@@ -1216,4 +1218,11 @@ Route::post('/renta&repair/master-tarif-create-first', [MasterInvoiceController:
   Route::controller(CustomerProfileController::class)->group(function(){
     Route::get('/customer-profile', 'index');
     Route::post('/customer-profile/update', 'profile');
+  });
+
+  Route::controller(CustomerImportController::class)->group(function(){
+    Route::get('/customer-import/unpaid', 'indexUnpaid');
+    Route::get('/customer-import/unpaidData', 'dataUnpaid');
+    Route::get('/customer-import/piutang', 'indexPiutang');
+    Route::get('/customer-import/piutangData', 'dataPiutang');
   });

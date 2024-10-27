@@ -53,6 +53,8 @@ class ImportController extends Controller
     public function __construct()
     {
       $this->middleware('auth');
+      $this->middleware('role:invoice|admin|user')->only(['billingMain', 'detilUnpaid', 'detilPiutang', 'deliveryMenu',
+    'deliveryEdit', 'deliveryForm']); 
     }
 
     public function billingMain()
@@ -1095,50 +1097,55 @@ private function getNextJob($lastJobNo)
     public function deliveryInvoiceDelete($id)
 {
     // Retrieve the invoice data for the specified form ID
-    $invoice = InvoiceImport::where('form_id', $id)->get();
+    try {
+        $invoice = InvoiceImport::where('form_id', $id)->get();
     
-    // Check if any invoice is already paid (not 'N' in 'lunas')
-    $paid = $invoice->first(function ($inv) {
-        return $inv->lunas !== 'N';
-    });
-    
-    // If there's a paid invoice, return an error message
-    if ($paid) {
-        return response()->json(['message' => 'Data tidak bisa dihapus, ada invoice yang sudah lunas.', 'status' => 'error']);
-    }
-    
-    // Delete the invoices
-    foreach ($invoice as $inv) {
-        $inv->delete();
-    }
+        // Check if any invoice is already paid (not 'N' in 'lunas')
+        $paid = $invoice->first(function ($inv) {
+            return $inv->lunas !== 'N';
+        });
 
-    // Delete the related details
-    $invoiceDetail = Detail::where('form_id', $id)->get();
-    foreach ($invoiceDetail as $detail) {
-        $detail->delete();
-    }
-
-    // Delete the container invoices and update the associated items
-    $containerInvoice = Container::where('form_id', $id)->get();
-    foreach ($containerInvoice as $cont) {
-        $item = Item::where('container_key', $cont->container_key)->first();
-        if ($item) {
-            $item->update([
-                'selected_do' => 'N',
-                'os_id' => null,
-            ]);
+        // If there's a paid invoice, return an error message
+        if ($paid) {
+            return response()->json(['message' => 'Data tidak bisa dihapus, ada invoice yang sudah lunas.', 'status' => 'error']);
         }
-        $cont->delete();
-    }
 
-    // Delete the form entry
-    $form = Form::where('id', $id)->first();
-    if ($form) {
-        $form->delete();
-    }
+        // Delete the invoices
+        foreach ($invoice as $inv) {
+            $inv->delete();
+        }
 
-    // Return a success response
-    return response()->json(['message' => 'Data berhasil dihapus.', 'status' => 'success']);
+        // Delete the related details
+        $invoiceDetail = Detail::where('form_id', $id)->get();
+        foreach ($invoiceDetail as $detail) {
+            $detail->delete();
+        }
+
+        // Delete the container invoices and update the associated items
+        $containerInvoice = Container::where('form_id', $id)->get();
+        foreach ($containerInvoice as $cont) {
+            $item = Item::where('container_key', $cont->container_key)->first();
+            if ($item) {
+                $item->update([
+                    'selected_do' => 'N',
+                    'os_id' => null,
+                ]);
+            }
+            $cont->delete();
+        }
+
+        // Delete the form entry
+        $form = Form::where('id', $id)->first();
+        if ($form) {
+            $form->delete();
+        }
+
+        // Return a success response
+        return response()->json(['message' => 'Data berhasil dihapus.', 'status' => 'success']);
+    } catch (\Throwable $th) {
+        return response()->json(['message' => 'Oopss Something Wrong: ' . $th->getMessage(), 'status' => 'success']);
+        //throw $th;
+    }
 }
 
 
