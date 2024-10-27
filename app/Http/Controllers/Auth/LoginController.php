@@ -83,7 +83,7 @@ class LoginController extends Controller
         } elseif ($user->hasRole('customer')) {
             return redirect('/customer-dashboard');
         } else {
-            return redirect('/invoice');
+            return redirect('/invoice/menu');
         }
     }
 }
