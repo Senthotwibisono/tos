@@ -904,8 +904,11 @@ Route::post('/invoice/import-cancel', [ImportController::class, 'deliveryInvoice
 // Detil
 Route::controller(ImportController::class)->group(function(){
   Route::get('/invoice/import/delivery-detail/unpaid', 'detilUnpaid');
+  Route::get('/invoice/import/delivery-data/unpaid', 'dataUnpaid');
   Route::get('/invoice/import/delivery-detail/piutang', 'detilPiutang');
-  Route::get('/invoice/import/delivery-detail/{id?}', 'detilInvoice');
+  Route::get('/invoice/import/delivery-data/piutang', 'dataPiutang');
+  Route::get('/invoice/import/delivery-detail/service', 'detilInvoice');
+  Route::get('/invoice/import/delivery-data/service', 'dataService');
   Route::get('/invoice/import/report-unpaid', 'unpaidReport');
   Route::get('/invoice/import/report-piutang', 'piutangReport');
 });
@@ -1225,4 +1228,11 @@ Route::post('/renta&repair/master-tarif-create-first', [MasterInvoiceController:
     Route::get('/customer-import/unpaidData', 'dataUnpaid');
     Route::get('/customer-import/piutang', 'indexPiutang');
     Route::get('/customer-import/piutangData', 'dataPiutang');
+    Route::get('/customer-import/service', 'indexService');
+    Route::get('/customer-import/serviceData', 'dataService');
+
+    // Form
+    Route::get('/customer-import/formList', 'formList');
+    Route::get('/customer-import/formData', 'formData');
   });
+

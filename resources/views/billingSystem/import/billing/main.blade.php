@@ -294,7 +294,7 @@
                                 <td>{{$invoice->where('os_id', $os->id)->sum('total')}}</td>
                                 <td>{{$invoice->where('os_id', $os->id)->sum('grand_total')}}</td>
                                 <td>
-                                    <a href="/invoice/import/delivery-detail/{{$os->id}}">
+                                    <a href="/invoice/import/delivery-detail/service?id={{ $os->id }}">
                                         <span class="badge bg-primary text-white">See more...</span>
                                     </a>
                                 </td>

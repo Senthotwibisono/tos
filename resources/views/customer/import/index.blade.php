@@ -6,7 +6,10 @@
 @section('content')
 
 <div class="page-heading">
-<h2>{{$title}}</h2>
+<h2>{{$title}}</h2> <br>
+    <div class="button">
+        <a href="/customer-import/formList" class="btn btn-success"><i class="fa fa-folder"></i> Create Invoice</a>    
+    </div>
 </div>
 
 <div class="page-content">
@@ -74,7 +77,7 @@
                         <td>{{$os->name}}</td>
                         <td class="text-center">{{$invoice->where('os_id', $os->id)->count() ?? ''}}</td>
                         <td class="text-center">Rp. {{number_format($invoice->where('os_id', $os->id)->sum('grand_total') ?? ''), 2, ',', '.'}}</td>
-                        <td class="text-center"><a href="">See more...</a></td>
+                        <td class="text-center"><a href="/customer-import/service?id={{ $os->id }}">See more...</a></td>
                     </tr>
                     @endforeach
                     <tr style="background-color: maroon;">

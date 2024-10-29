@@ -24,6 +24,8 @@ use App\Exports\InvoicesExport; // Assuming you create an export class
 use App\Exports\ReportInvoice; // Assuming you create an export class
 use App\Models\ImportDetail as Detail; // Assuming you create an export class
 
+use DataTables;
+
 
 // BC 20
 use App\Models\TpsSppbPib as PIB;
@@ -77,33 +79,47 @@ class ImportController extends Controller
     public function detilUnpaid()
     {
         $data['title'] = "Delivery Billing System (Unpaid Invoice)";
-        $data['unPaids'] = InvoiceImport::whereNot('form_id', '=', '')->where('lunas', '=', 'N')->orderBy('order_at', 'asc')->get();
         return view('billingSystem.import.billing.detil.unPaid', $data);
+    }
+
+    public function dataUnpaid(Request $request)
+    {
+        $unpaids = InvoiceImport::whereNot('form_id', '=', '')->where('lunas', '=', 'N')->orderBy('order_at', 'asc'); // Removed `query()`
+        return DataTables::of($unpaids)->make(true);
     }
    
     public function detilPiutang()
     {
         $data['title'] = "Delivery Billing System (Piutang Invoice)";
-        $data['piutangs'] = InvoiceImport::whereNot('form_id', '=', '')->where('lunas', '=', 'P')->orderBy('order_at', 'asc')->get();
         return view('billingSystem.import.billing.detil.piutang', $data);
     }
-    public function detilInvoice($id)
+
+    public function dataPiutang(Request $request)
     {
-        $data['title'] = "Delivery Billing System (Piutang Invoice)";
+        $unpaids = InvoiceImport::whereNot('form_id', '=', '')->where('lunas', '=', 'P')->orderBy('order_at', 'asc'); // Removed `query()`
+        return DataTables::of($unpaids)->make(true);
+    }
+    public function detilInvoice(Request $request)
+    {
+        $data['os'] = OS::find($request->id);
+        $data['title'] = "Delivery Billing System " . $data['os']->name;
+        $data['osId'] = $request->id;
 
         // Retrieve the 'OS' model
-        $data['os'] = OS::find($id);
 
         // Retrieve 'InvoiceImport' records with eager loading (replace 'relatedModel' with actual relationships)
-        $data['invoice'] = InvoiceImport::whereNotNull('form_id')
-            ->where('os_id', $id)
-            ->orderBy('order_at', 'asc')
-            ->orderBy('lunas', 'asc')
-            ->select('id', 'proforma_no', 'cust_id', 'os_id', 'inv_type', 'form_id', 'order_at', 'invoice_date', 'cust_name', 'os_name', 'lunas')
-            ->get();
 
         // Return the view with the retrieved data
         return view('billingSystem.import.billing.detil.detil', $data);
+    }
+
+    public function dataService(Request $request)
+    {
+        $unpaids = InvoiceImport::whereNotNull('form_id')
+        ->where('os_id', $request->osId)
+        ->orderBy('order_at', 'asc')
+        ->orderBy('lunas', 'asc');
+        return DataTables::of($unpaids)->make(true);
     }
 
 

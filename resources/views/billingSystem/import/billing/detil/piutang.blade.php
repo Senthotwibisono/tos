@@ -37,89 +37,24 @@
             <div class="row">
 
               <div class="col-12">
-                <table class="dataTable-wrapperIMP dataTable-loading no-footer sortable searchable fixed-columns" id="tableImp">
-                  <thead>
-                    <tr>
-                      <th>Proforma No</th>
-                      <th>Customer</th>
-                      <th>Order Service</th>
-                      <th>Tipe Invoice</th>
-                      <th>Dibuat Pada</th>
-                      <th>Status</th>
-                      <th>Pranota</th>
-                      <th>Invoice</th>
-                      <th>Job</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  @foreach($piutangs as $inv)
-                  <tr>
-                      <td>{{$inv->proforma_no}}</td>
-                      <td>{{$inv->cust_name}}</td>
-                      <td>{{$inv->os_name}}</td>
-                      <td>{{$inv->inv_type}}</td>
-                      <td>{{$inv->order_at}}</td>
-                      @if($inv->lunas == "N")
-                      <td>
-                      <span class="badge bg-danger text-white">Not Paid</span>
-                      </td>
-                      @elseif($inv->lunas == "P")
-                      <td>
-                      <span class="badge bg-warning text-white">Piutang</span>
-                      </td>
-                      @elseif($inv->lunas == "Y")
-                      <td>
-                      <span class="badge bg-success text-white">Paid</span>
-                      </td>
-                      @else
-                      <td>
-                      <span class="badge bg-danger text-white">Canceled</span>
-                      </td>
-                      @endif
-                      <td>
-                        @if($inv->inv_type == 'DSK')
-                      <a type="button" href="/pranota/import-DSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
-                        @else
-                      <a type="button" href="/pranota/import-DS{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
-                        @endif
-                      </td>
-                      @if($inv->lunas == "N")
-                      <td>
-                      <button type="button" href="/invoice/import-DSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white" disabled><i class="fa fa-dollar"></i></button>
-                      </td>
-                      <td>
-                      <button type="button" href="/invoice/job/import-{{$inv->id}}" target="_blank" class="btn btn-sm btn-info text-white" disabeled><i class="fa fa-ship"></i></button>
-                      </td>
-                      @else
-                      <td>
-                      @if($inv->inv_type == 'DSK')
-                      <a type="button" href="/invoice/import-DSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                      @else  
-                      <a type="button" href="/invoice/import-DS{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                      @endif
-                      </td>
-                      <td>
-                      <a type="button" href="/invoice/job/import-{{$inv->id}}" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
-                      </td>
-                      @endif
-                      <td>
-                        <div class="row">
-
-                          <div class="col-5">
-                            <button type="button" id="pay" data-id="{{$inv->id}}" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>
-                          </div>
-                          @if($inv->lunas == "N")
-                          <div class="col-5">
-                            <button type="button" data-id="{{$inv->form_id}}" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>
-                          </div>
-                          @endif
-                        </div>
-                      </td> <!-- Tambahkan aksi sesuai kebutuhan -->
-                    </tr>
-                   @endforeach
-                  </tbody>
-                </table>
+                <div class="table table-responsive">
+                  <table class="table table-hover" id="piutangTable">
+                    <thead>
+                      <tr>
+                        <th>Proforma No</th>
+                        <th>Customer</th>
+                        <th>Order Service</th>
+                        <th>Tipe Invoice</th>
+                        <th>Dibuat Pada</th>
+                        <th>Status</th>
+                        <th>Pranota</th>
+                        <th>Invoice</th>
+                        <th>Job</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
@@ -189,12 +124,104 @@
 @endsection
 
 @section('custom_js')
-
+<script>
+  $(document).ready(function() {
+    $('#piutangTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '/invoice/import/delivery-data/piutang', // Endpoint to fetch $piutangs data
+        columns: [
+            { data: 'proforma_no', name: 'proforma_no', className: 'text-center' },
+            { data: 'cust_name', name: 'cust_name', className: 'text-center' },
+            { data: 'os_name', name: 'os_name', className: 'text-center' },
+            { data: 'inv_type', name: 'inv_type', className: 'text-center' },
+            { data: 'order_at', name: 'order_at', className: 'text-center' },
+            {
+                data: 'lunas',
+                name: 'lunas',
+                className: 'text-center',
+                render: function(data, type, row) {
+                    let badgeClass = '';
+                    let badgeText = '';
+                    switch (data) {
+                        case 'N':
+                            badgeClass = 'bg-danger text-white';
+                            badgeText = 'Not Paid';
+                            break;
+                        case 'P':
+                            badgeClass = 'bg-warning text-white';
+                            badgeText = 'Piutang';
+                            break;
+                        case 'Y':
+                            badgeClass = 'bg-success text-white';
+                            badgeText = 'Paid';
+                            break;
+                        default:
+                            badgeClass = 'bg-danger text-white';
+                            badgeText = 'Canceled';
+                            break;
+                    }
+                    return `<span class="badge ${badgeClass}">${badgeText}</span>`;
+                }
+            },
+            {
+                data: 'inv_type',
+                name: 'inv_type',
+                className: 'text-center',
+                render: function(data, type, row) {
+                    const link = data === 'DSK' ? `/pranota/import-DSK${row.id}` : `/pranota/import-DS${row.id}`;
+                    return `<a href="${link}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>`;
+                }
+            },
+            {
+                data: 'lunas',
+                name: 'lunas',
+                className: 'text-center',
+                render: function(data, type, row) {
+                    if (data === 'N') {
+                        return `<button class="btn btn-sm btn-primary text-white" disabled><i class="fa fa-dollar"></i></button>`;
+                    } else {
+                        const link = row.inv_type === 'DSK' ? `/invoice/import-DSK${row.id}` : `/invoice/import-DS${row.id}`;
+                        return `<a href="${link}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>`;
+                    }
+                }
+            },
+            {
+                data: 'id',
+                name: 'id',
+                className: 'text-center',
+                render: function(data, type, row) {
+                    if (row.lunas === 'N') {
+                        return `<button class="btn btn-sm btn-info text-white" disabled><i class="fa fa-ship"></i></button>`;
+                    } else {
+                        return `<a href="/invoice/job/import-${data}" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>`;
+                    }
+                }
+            },
+            {
+                data: 'id',
+                name: 'id',
+                className: 'text-center',
+                render: function(data, type, row) {
+                    return `<div class="row">
+                                <div class="col-5">
+                                    <button type="button" id="pay" data-id="${data}" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>
+                                </div>
+                                ${row.lunas === 'N' ? `
+                                <div class="col-5">
+                                    <button type="button" data-id="${row.form_id}" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>
+                                </div>` : ''}
+                            </div>`;
+                }
+            }
+        ],
+        pageLength: 25
+    });
+});
+</script>
 <script>
 $(document).ready(function() {
-  $('.dataTable-wrapperIMP').each(function() {
-        $(this).DataTable();
-    });
+
     // Event delegation for delete button
     $(document).on('click', '.Delete', function() {
         var formId = $(this).data('id'); // Ambil ID dari data-id atribut

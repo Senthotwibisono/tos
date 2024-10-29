@@ -51,6 +51,12 @@
   max-height: 300px; /* Set the fixed height for the card */
     overflow-y: auto; /* Enable vertical scrolling */
 }
+
+.button-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Adjust the gap between buttons as needed */
+}
 </style>
 @if(View::hasSection('custom_styles'))
 @yield('custom_styles')
