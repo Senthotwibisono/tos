@@ -131,8 +131,8 @@
             ajax: '/invoice/import/delivery-data/unpaid',
             columns: [
                 { data: 'proforma_no', name: 'proforma_no', className: 'text-center' },
-                { data: 'customer.name', name: 'customer.name', className: 'text-center' },
-                { data: 'service.name', name: 'service.name', className: 'text-center' },
+                { data: 'cust_name', name: 'cust_name', className: 'text-center' },
+                { data: 'os_name', name: 'os_name', className: 'text-center' },
                 { data: 'inv_type', name: 'inv_type', className: 'text-center' },
                 { data: 'order_at', name: 'order_at', className: 'text-center' },
                 { 
