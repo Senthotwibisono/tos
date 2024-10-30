@@ -17,6 +17,7 @@ class uploadDO implements ToCollection, WithHeadingRow
     public function collection(Collection $rows)
     {
         // Inisialisasi array di luar loop
+        // dd($rows);
         $containerNumbers = [];
     
         foreach ($rows as $row) {
@@ -24,6 +25,7 @@ class uploadDO implements ToCollection, WithHeadingRow
             $containerNo = $row['container_no'];
             $doNo = $row['do_no'];
             $blNo = $row['bl_no'];
+            $customerCode = $row['customer_code'];
             $active = 'Y';
             $doExpired = Carbon::createFromDate(1900, 1, 1)->addDays($row['do_expired'] - 2);
         
@@ -41,6 +43,7 @@ class uploadDO implements ToCollection, WithHeadingRow
                 $doOnline = new DoOnline();
                 $doOnline->do_no = $doNo;
                 $doOnline->bl_no = $blNo;
+                $doOnline->customer_code = $customerCode;
                 $doOnline->expired = $doExpired;
                 $doOnline->active = $active;
                 $doOnline->created_at = Carbon::now();

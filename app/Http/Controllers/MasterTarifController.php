@@ -274,6 +274,7 @@ class MasterTarifController extends Controller
                 'container_no'=>$request->container_no,
                 'bl_no'=>$request->bl_no,
                 'expired'=>$request->expired,
+                'customer_code'=>$request->customer_code,
             ]);
             return redirect()->back()->with('success', 'Data Berhasil di Update.');
         }else {

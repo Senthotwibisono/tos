@@ -54,6 +54,7 @@
                       <th>Do No</th>
                       <th>BL No</th>
                       <th>Container No</th>
+                      <th>Customer Code</th>
                       <th>Do Expired</th>
                       <th>Action</th>
                     </tr>
@@ -119,6 +120,7 @@
                 { data: 'do_no', name: 'do_no', className: 'text-center' },
                 { data: 'bl_no', name: 'bl_no', className: 'text-center' },
                 { data: 'container_no', name: 'container_no', className: 'text-center' },
+                { data: 'customer_code', name: 'customer_code', className: 'text-center' },
                 { data: 'expired', name: 'expired', className: 'text-center' },
                 { data: 'actions', name: 'actions', orderable: false, searchable: false, className: 'text-center' }
             ],

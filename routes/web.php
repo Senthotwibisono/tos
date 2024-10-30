@@ -1234,5 +1234,7 @@ Route::post('/renta&repair/master-tarif-create-first', [MasterInvoiceController:
     // Form
     Route::get('/customer-import/formList', 'formList');
     Route::get('/customer-import/formData', 'formData');
+    Route::post('/customer-import/formStoreFirst', 'formStoreFirst');
+    Route::get('/customer-import/formFirstStepId={id?}', 'firstStepIndex');
   });
 

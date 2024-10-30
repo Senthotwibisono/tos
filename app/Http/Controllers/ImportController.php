@@ -648,12 +648,16 @@ class ImportController extends Controller
 
     public function deliveryDelete($id)
     {
-        $form = Form::where('id', $id)->first();
+        $form = Form::find($id);
+        // var_dump($form, $id);
+        // die();
         if ($form) {
             $container = Container::where('form_id', $id)->get();
-        foreach ($container as $cont) {
-            $cont->delete();
-        }
+            if ($container) {
+                foreach ($container as $cont) {
+                    $cont->delete();
+                }
+            }
 
         $form->delete();
         return response()->json(['message' => 'Data berhasil dihapus.']);

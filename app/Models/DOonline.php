@@ -20,6 +20,7 @@ class DOonline extends Model
         'selected_cont',
         'created_at',
         'created_by',
+        'customer_code',
         'active',
     ];
 }

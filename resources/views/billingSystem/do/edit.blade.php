@@ -26,23 +26,29 @@
             @csrf
             <div class="card-body">
               <div class="row mb-3">
-                <div class="col-sm-4">
+                <div class="col-sm-3">
                     <div class="form-group">
                         <label for="">Do Number</label>
                         <input type="text" class="form-control" name="do_no" value="{{$do->do_no}}">
                         <input type="hidden" class="form-control" name="id" value="{{$do->id}}">
                     </div>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-3">
                     <div class="form-group">
                         <label for="">BL Number</label>
                         <input type="text" class="form-control" name="bl_no" value="{{$do->bl_no}}">
                     </div>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-3">
                     <div class="form-group">
                         <label for="">Expired</label>
                         <input type="date" class="form-control" name="expired" value="{{$do->expired}}">
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="">Customer Code</label>
+                        <input type="text" class="form-control" name="customer_code" value="{{$do->customer_code}}">
                     </div>
                 </div>
               </div>

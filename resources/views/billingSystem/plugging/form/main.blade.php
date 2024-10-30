@@ -44,10 +44,10 @@
                   @foreach($formInvoiceImport as $form)
                   <tr>
                     <td>{{$loop->iteration}}</td>
-                    <td>{{$form->customer->name}}</td>
-                    <td>{{$form->do_id}}</td>
-                    <td>{{$form->service->name}}</td>
-                    <td>{{$form->expired_date}}</td>
+                    <td>{{$form->customer->name ?? ''}}</td>
+                    <td>{{$form->do_id ?? ''}}</td>
+                    <td>{{$form->service->name ?? ''}}</td>
+                    <td>{{$form->expired_date ?? ''}}</td>
                     <td>
                       <div class="row">
                         <div class="col-4">
