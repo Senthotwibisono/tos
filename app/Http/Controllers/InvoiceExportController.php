@@ -1131,7 +1131,7 @@ class InvoiceExportController extends Controller
                     ]);
                 }
         
-                $details = Detail::where('inv_id', $id)->get();
+                $details = Detail::where('inv_id', $coupleInvoice->id)->get();
                 foreach ($details as $detail) {
                     $detail->update([
                     'lunas'=>'Y',
@@ -1245,7 +1245,7 @@ class InvoiceExportController extends Controller
                     ]);
                 }
         
-                $details = Detail::where('inv_id', $id)->get();
+                $details = Detail::where('inv_id', $coupleInvoice->id)->get();
                 foreach ($details as $detail) {
                     $detail->update([
                     'lunas'=>'P',

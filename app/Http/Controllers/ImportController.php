@@ -1372,7 +1372,7 @@ private function getNextJob($lastJobNo)
                     ]);
                 }
         
-                $details = Detail::where('inv_id', $id)->get();
+                $details = Detail::where('inv_id', $coupleInvoice->id)->get();
                 foreach ($details as $detail) {
                     $detail->update([
                     'lunas'=>'Y',
@@ -1501,7 +1501,7 @@ private function getNextJob($lastJobNo)
                     ]);
                 }
         
-                $details = Detail::where('inv_id', $id)->get();
+                $details = Detail::where('inv_id', $coupleInvoice->id)->get();
                 foreach ($details as $detail) {
                     $detail->update([
                     'lunas'=>'P',
