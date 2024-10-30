@@ -619,7 +619,6 @@ class InvoiceExtend extends Controller
             $item->update([
                 'invoice_no'=>$invoiceNo,
                 'job_no' => $job->job_no,
-                'order_service' => $bigOS->order,
             ]);
         }
 
@@ -678,7 +677,6 @@ class InvoiceExtend extends Controller
             $item->update([
                 'invoice_no'=>$invoiceNo,
                 'job_no' => $job->job_no,
-                'order_service' => $bigOS->order,
             ]);
         }
 
