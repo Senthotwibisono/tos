@@ -202,7 +202,7 @@ $(document).ready(function() {
                                 response.message, // Display success message from server
                                 'success'
                             ).then(() => {
-                                window.location.href = '/billing/import/delivey-system'; // Arahkan ke halaman beranda setelah penghapusan sukses
+                                window.location.reload(); // Arahkan ke halaman beranda setelah penghapusan sukses
                             });
                         } else {
                             Swal.fire(

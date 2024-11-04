@@ -1116,46 +1116,46 @@ private function getNextJob($lastJobNo)
     
     public function deliveryInvoiceDelete($id)
 {
-    // Retrieve the invoice data for the specified form ID
     try {
-        $invoice = InvoiceImport::where('form_id', $id)->get();
+        // Retrieve all invoices related to the form ID
+        $invoices = InvoiceImport::where('form_id', $id)->get();
     
         // Check if any invoice is already paid (not 'N' in 'lunas')
-        $paid = $invoice->first(function ($inv) {
-            return $inv->lunas !== 'N';
+        $paidInvoice = $invoices->first(function ($invoice) {
+            return $invoice->lunas !== 'N';
         });
 
-        // If there's a paid invoice, return an error message
-        if ($paid) {
+        // If there's a paid invoice, return an error response
+        if ($paidInvoice) {
             return response()->json(['message' => 'Data tidak bisa dihapus, ada invoice yang sudah lunas.', 'status' => 'error']);
         }
 
         // Delete the invoices
-        foreach ($invoice as $inv) {
-            $inv->delete();
+        foreach ($invoices as $invoice) {
+            $invoice->delete();
         }
 
-        // Delete the related details
-        $invoiceDetail = Detail::where('form_id', $id)->get();
-        foreach ($invoiceDetail as $detail) {
+        // Delete related details
+        $invoiceDetails = Detail::where('form_id', $id)->get();
+        foreach ($invoiceDetails as $detail) {
             $detail->delete();
         }
 
-        // Delete the container invoices and update the associated items
-        $containerInvoice = Container::where('form_id', $id)->get();
-        foreach ($containerInvoice as $cont) {
-            $item = Item::where('container_key', $cont->container_key)->first();
+        // Delete container invoices and reset related items
+        $containerInvoices = Container::where('form_id', $id)->get();
+        foreach ($containerInvoices as $container) {
+            $item = Item::where('container_key', $container->container_key)->first();
             if ($item) {
                 $item->update([
                     'selected_do' => 'N',
                     'os_id' => null,
                 ]);
             }
-            $cont->delete();
+            $container->delete();
         }
 
-        // Delete the form entry
-        $form = Form::where('id', $id)->first();
+        // Delete the form entry if it exists
+        $form = Form::find($id);
         if ($form) {
             $form->delete();
         }
@@ -1163,10 +1163,11 @@ private function getNextJob($lastJobNo)
         // Return a success response
         return response()->json(['message' => 'Data berhasil dihapus.', 'status' => 'success']);
     } catch (\Throwable $th) {
-        return response()->json(['message' => 'Oopss Something Wrong: ' . $th->getMessage(), 'status' => 'success']);
-        //throw $th;
+        // Return a more precise error response
+        return response()->json(['message' => 'An error occurred: ' . $th->getMessage(), 'status' => 'error']);
     }
 }
+
 
 
     // invoice
