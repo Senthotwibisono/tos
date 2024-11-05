@@ -155,13 +155,12 @@
                     data: 'id',
                     name: 'id',
                     className: 'text-center',
-                    render: function(data, row){
-                      const formId = row.form_id;
-                      return `<div class="button-container">
-                        <button type="button" data-id="${formId}" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>
-                        <button type="button" id="pay" data-id="${data}" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>
-                            </div>
-                        `;
+                    render: function(data, type, row, meta) {
+                        const formId = row.form_id; // Accessing form_id from the row data
+                        return `<div class="button-container">
+                            <button type="button" data-id="${formId}" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>
+                            <button type="button" id="pay" data-id="${data}" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>
+                        </div>`;
                     }
                 },
             ],
