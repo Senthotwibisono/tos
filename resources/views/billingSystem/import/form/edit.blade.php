@@ -33,19 +33,19 @@
             <div class="col-4">
               <div class="form-group">
                 <label for="">NPWP</label>
-                <input required type="text" class="form-control" id="npwp" value="{{$form->customer->npwp}}" name="npwp" placeholder="Pilih Customer Dahulu!.." readonly>
+                <input required type="text" class="form-control" id="npwp" value="{{$form->customer->npwp ?? ''}}" name="npwp" placeholder="Pilih Customer Dahulu!.." readonly>
               </div>
             </div>
             <div class="col-4">
               <div class="form-group">
                 <label for="">Expired Date</label>
-                <input required name="exp_date" id="exp_date" type="date" class="form-control flatpickr-range mb-3" value="{{$form->expired_date}}" placeholder="09/05/2023" readonly>
+                <input required name="exp_date" id="exp_date" type="date" class="form-control flatpickr-range mb-3" value="{{$form->expired_date ?? ''}}" placeholder="09/05/2023" readonly>
               </div>
             </div>
             <div class="col-12">
               <div class="form-group">
                 <label for="">Address</label>
-                <input required type="text" class="form-control" id="address" name="address" value="{{$form->customer->alamat}}" placeholder="Pilih Customer Dahulu!.." readonly>
+                <input required type="text" class="form-control" id="address" name="address" value="{{$form->customer->alamat ?? '' }}" placeholder="Pilih Customer Dahulu!.." readonly>
                 <!-- <textarea class="form-control" id="address" name="address" cols="10" rows="4"></textarea> -->
               </div>
             </div>
@@ -135,13 +135,13 @@
             <div class="col-12 col-md-4">
               <div class="form-group">
                 <label for="">Do Expired</label>
-                <input name="do_exp_date" id="do_exp_date" value="{{$form->doOnline->expired}}" required readonly type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023">
+                <input name="do_exp_date" id="do_exp_date" value="{{$form->doOnline->expired ?? ''}}" required readonly type="date" class="form-control flatpickr-range mb-3" placeholder="09/05/2023">
               </div>
             </div>
             <div class="col-12 col-md-4">
               <div class="form-group">
                 <label for="">Bill of Loading Number</label>
-                <input name="boln" id="boln" required readonly type="text" class="form-control" value="{{$form->doOnline->bl_no}}" placeholder="Bill Of Loading Number">
+                <input name="boln" id="boln" required readonly type="text" class="form-control" value="{{$form->doOnline->bl_no ?? ''}}" placeholder="Bill Of Loading Number">
               </div>
             </div>
 

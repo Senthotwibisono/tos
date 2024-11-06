@@ -23,4 +23,24 @@ class JobExtend extends Model
         'container_no',
         'ves_id',
     ];
+
+    public function Kapal()
+    {
+        return $this->belongsTo(VVoyage::class, 'ves_id');
+    }
+    
+    public function Item()
+    {
+        return $this->belongsTo(Item::class, 'container_key', 'container_key');
+    }
+    
+    public function Service()
+    {
+        return $this->belongsTo(OrderService::class, 'os_id', 'id');
+    }
+    
+    public function Invoice()
+    {
+        return $this->belongsTo(Extend::class, 'inv_id', 'id');
+    }
 }

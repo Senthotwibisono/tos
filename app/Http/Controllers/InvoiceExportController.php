@@ -1324,12 +1324,12 @@ class InvoiceExportController extends Controller
         $data['form'] = $data['inv']->form;
 
         // Ambil Job terkait dengan inv_id, hanya ambil 1 untuk pagination
-        $data['job'] = JobExport::where('inv_id', $id)->paginate(10);
+        $data['job'] = JobExport::with(['Kapal', 'Service', 'Item', 'Invoice'])->where('inv_id', $id)->paginate(10);
 
         // Set timezone dan ambil waktu sekarang
         date_default_timezone_set('Asia/Jakarta');
         $data['now'] = Carbon::now();
-        $data['formattedDate'] = $data['now']->format('l, d-m-Y');
+        $data['formattedDate'] = Carbon::now()->format('l, d-m-Y');
 
         // Ambil single job untuk mendapatkan informasi kapal
         $singleJob = JobExport::where('inv_id', $id)->first();

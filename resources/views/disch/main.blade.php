@@ -252,6 +252,16 @@
         }).then((result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
+                Swal.fire({
+                title: 'Processing...',
+                text: 'Please wait while we update the container',
+                icon: 'info',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                    willOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
 
                 $.ajax({
                     type: 'POST',
@@ -268,12 +278,9 @@
                                 text: response.message,
                               })
                               .then(() => {
-            // Memuat ulang halaman setelah berhasil menyimpan data
-            window.location.reload();
-        }).then(() => {
-            // Buka modal "success" setelah halaman dimuat ulang
-            
-        });
+                                // Memuat ulang halaman setelah berhasil menyimpan data
+                                window.location.reload();
+                            });
                             } else {
                               Swal.fire({
                                 icon: 'error',

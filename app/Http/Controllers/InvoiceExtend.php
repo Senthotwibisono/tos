@@ -757,7 +757,7 @@ class InvoiceExtend extends Controller
         $data['formattedDate'] = $data['now']->format('l, d-m-Y');
 
         // Ambil job terkait dengan inv_id, lakukan pagination
-        $data['job'] = JobExtend::where('inv_id', $id)->paginate(10);
+        $data['job'] = JobExtend::with(['Kapal', 'Service', 'Item', 'Invoice'])->where('inv_id', $id)->paginate(10);
 
         // Ambil data container yang dibutuhkan
         $data['cont'] = Item::whereIn('container_key', $data['job']->pluck('container_key'))->get()->keyBy('container_key');

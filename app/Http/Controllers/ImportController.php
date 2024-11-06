@@ -1218,15 +1218,8 @@ private function getNextJob($lastJobNo)
     public function JobInvoice($id)
     {
         $data['title'] = 'Job Number';
-        $data['inv'] = InvoiceImport::with('form')->where('id', $id)->first();
-        $data['form'] = Form::where('id', $data['inv']->form_id)->first();
-        date_default_timezone_set('Asia/Jakarta');
-        $data['now'] = Carbon::now();
-        $data['formattedDate'] = $data['now']->format('l, d-m-Y');
-        if ($data['inv']->extend == 'Y') {
-            return back()->with('error', 'Job Telah Di Perbarui, Silahkan Cek Menu Extend');
-        }
-        $data['job'] = JobImport::where('inv_id', $id)->paginate(10);
+        $data['formattedDate'] = Carbon::now()->format('l, d-m-Y');
+        $data['job'] = JobImport::with(['Kapal', 'Service', 'Item', 'Invoice'])->where('inv_id', $id)->paginate(10);
         $data['cont'] = Item::whereIn('container_key', $data['job']->pluck('container_key'))->get()->keyBy('container_key');
 
         foreach ($data['job'] as $jb) {

@@ -106,50 +106,7 @@
 @foreach($job as $jb)
 <body>
   @foreach($cont as $ct)
-  @if($ct->container_key == $jb->container_key)
-  <!-- <div class="section">
-
-    <div class="row">
-      <div class="card">
-        <div class="card-body">
-          <div class="row">
-
-            <div class="col-6">
-              <div class="text-center">
-                
-                <br>
-                {{$qrcodes[$jb->id]}}
-                <br>
-                <br>
-                <h4><strong>{{$ct->order_service}} Card Container</strong></h4>
-                <p>{{$ct->container_no}}</p>
-                <p>{{$ct->ctr_size}} / {{$ct->ctr_type}} / {{$ct->ctr_status}}</p>
-                <P><strong>Location in Yard</strong></P>
-                <p>{{$ct->yard_block}} / {{$ct->yard_slot}} / {{$ct->yard_row}} / {{$ct->yard_tier}}</p>
-                <p><strong>Vessel</strong></p>
-                <p>{{$ct->ves_name}}--{{$ct->voy_no}}</p>
-
-                <p>Active to {{$jb->active_to}} </p>
-                
-                <p>{{$inv->cust_name}}</p>
-
-              </div>
-
-            </div>
-            <div class="col-6">
-              <div class="text-center">
-                <h6>EQUIPMENT INTERCHANGE RECEIPT (EIR)</h6>
-                <img src="/images/EIR.png" class="img" alt="">
-                <h6>WAJIB MEMAKAI APD <br> SAAT TURUN TRUK</h6>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-  </div> -->
+  @if($jb->Item->container_key == $jb->container_key)
   <section class="row">
     <div class="col-12">
 
@@ -171,8 +128,8 @@
                     <h5 class="lead">No. Job </h5>
                   </div>
                   <div class="col-6">
-                    <h5 class="lead">: {{$inv->inv_no}}</h5>
-                    <h5 class="lead">: {{$inv->proforma_no}} </h5>
+                    <h5 class="lead">: {{$jb->Invoice->inv_no}}</h5>
+                    <h5 class="lead">: {{$jb->Invoice->proforma_no}} </h5>
                     <h5 class="lead">: {{$jb->job_no}}</h5>
                   </div>
               </div>
@@ -183,11 +140,11 @@
               <div class="row">
                 <div class="col-8 text-center">
                   <h3 class="bold">
-                    @if($form->service->order == "SP2")
+                    @if($jb->Invoice->Form->service->order == "SP2")
                       Kartu Export (Reciving Card)
-                    @elseif($form->service->order == "SPPS")
+                    @elseif($jb->Invoice->Form->service->order == "SPPS")
                       SURAT PENARIKAN PETIKEMAS STRIPPING (STUFFING)
-                    @elseif($form->service->order == "MTK" || $form->service->order == "MTI")
+                    @elseif($jb->Invoice->Form->service->order == "MTK" || $jb->Invoice->Form->service->order == "MTI")
                       Reciving MT
                     @else
                       Reciving Full
@@ -211,11 +168,11 @@
                       <h5 class="lead">No. Kendaraan </h5>
                     </div>
                     <div class="col-6">
-                      <h5 class="lead">: {{$ct->container_no}}</h5>
-                      <h5 class="lead">: {{$ct->ctr_size}}</h5>
-                      <h5 class="lead">: {{$ct->ves_name}}--{{$ct->voy_no}}</h5>
-                      <h5 class="lead">: {{$form->customer->name}}</h5>
-                      <h5 class="lead">: {{$ct->disch_port}}</h5>
+                      <h5 class="lead">: {{$jb->Item->container_no}}</h5>
+                      <h5 class="lead">: {{$jb->Item->ctr_size}}</h5>
+                      <h5 class="lead">: {{$kpaal->ves_name}}--{{$kpaal->voy_no}}</h5>
+                      <h5 class="lead">: {{$jb->Invoice->Form->customer->name}}</h5>
+                      <h5 class="lead">: {{$jb->Item->disch_port}}</h5>
                       <h5 class="lead">: </h5>
                     </div>
                   </div>
@@ -240,7 +197,7 @@
                       <h5 class="lead">O/H. O/W. Temp</h5>
                       <h5 class="lead">Tgl. Input</h5>
                       <h5 class="lead">
-                      @if($form->service->order == "SP2")
+                      @if($jb->Invoice->Form->service->order == "SP2")
                         Booking Number
                       @else
                         RO Number
@@ -251,16 +208,16 @@
                     </div>
                     <div class="col-6">
                       <h5 class="lead"><span class="rectangle"></span></h5>
-                      <h5 class="lead">:  {{$ct->over_height}} // {{$ct->over_weight}}</h5>
-                      <h5 class="lead">:  {{$ct->created_at}}</h5>
+                      <h5 class="lead">:  {{$jb->Item->over_height}} // {{$jb->Item->over_weight}}</h5>
+                      <h5 class="lead">:  {{$jb->Item->created_at}}</h5>
                       <h5 class="lead">:
-                      @if($form->service->order == "SP2")
-                        {{$ct->booking_no}}
+                      @if($jb->Invoice->Form->service->order == "SP2")
+                        {{$jb->Item->booking_no}}
                       @else
-                        {{$ct->ro_no}}
+                        {{$jb->Item->ro_no}}
                       @endif  
                        </h5>
-                      <h5 class="lead">:  {{$inv->order_at}}</h5>
+                      <h5 class="lead">:  {{$jb->Invoice->order_at}}</h5>
                       <h5 class="lead">:  {{$jb->active_to}}</h5>
                     </div>
                   </div>
@@ -309,34 +266,6 @@
                 </div>
               </div>
             </div>
-            
-          <!-- <div class="row pt-5">
-            <div class="col-5" style="margin-left: 50px;">
-              <h5 class="bold">PETUGAS LAPANGAN</h5>
-              <br>
-              <br>
-              <br>
-              <p><i>(Nama Jelas)</i></p>
-            </div>
-            <div class="col-5" style="margin-left: 100px;">
-              <p>PONTIANAK,</p>
-              <h5 class="bold">PT.INDO KONTAINER SARANA</h5>
-              <br>
-              <br>
-              <br>
-              <p><i>(Nama Jelas)</i></p>
-            </div>
-          </div>
-          <div class="row pt-5">
-            <div class="col-12 text-center">
-              <h3 class="bold">BERILAH TANDA YANG JELAS BILA TERDAPAT KERUSAKAN</h3>
-            </div>
-            <div class="col-12 mt-5">
-              <img src="/images/container.png" class="img" style="width: 100% !important; max-width:100% !important;" alt="">
-            </div>
-          </div>
-          
-        </div> -->
 
       </div>
     </div>

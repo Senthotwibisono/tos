@@ -809,7 +809,16 @@ function toggleYardSelect(displayValue) {
         }).then((result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
-
+                Swal.fire({
+                title: 'Processing...',
+                text: 'Please wait while we update the container',
+                icon: 'info',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                    willOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
                 $.ajax({
                     type: 'POST',
                     url: '/placement',

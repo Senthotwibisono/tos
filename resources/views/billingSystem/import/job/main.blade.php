@@ -105,51 +105,8 @@
 
 @foreach($job as $jb)
 <body>
-  @foreach($cont as $ct)
-  @if($ct->container_key == $jb->container_key)
-  <!-- <div class="section">
-
-    <div class="row">
-      <div class="card">
-        <div class="card-body">
-          <div class="row">
-
-            <div class="col-6">
-              <div class="text-center">
-                
-                <br>
-                {{$qrcodes[$jb->id]}}
-                <br>
-                <br>
-                <h4><strong>{{$ct->order_service}} Card Container</strong></h4>
-                <p>{{$ct->container_no}}</p>
-                <p>{{$ct->ctr_size}} / {{$ct->ctr_type}} / {{$ct->ctr_status}}</p>
-                <P><strong>Location in Yard</strong></P>
-                <p>{{$ct->yard_block}} / {{$ct->yard_slot}} / {{$ct->yard_row}} / {{$ct->yard_tier}}</p>
-                <p><strong>Vessel</strong></p>
-                <p>{{$ct->ves_name}}--{{$ct->voy_no}}</p>
-
-                <p>Active to {{$jb->active_to}} </p>
-                
-                <p>{{$inv->cust_name}}</p>
-
-              </div>
-
-            </div>
-            <div class="col-6">
-              <div class="text-center">
-                <h6>EQUIPMENT INTERCHANGE RECEIPT (EIR)</h6>
-                <img src="/images/EIR.png" class="img" alt="">
-                <h6>WAJIB MEMAKAI APD <br> SAAT TURUN TRUK</h6>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-  </div> -->
+  
+  
   <section class="row">
     <div class="col-12">
 
@@ -171,8 +128,8 @@
                     <h5 class="lead">No. Job </h5>
                   </div>
                   <div class="col-6">
-                    <h5 class="lead">: {{$inv->inv_no}}</h5>
-                    <h5 class="lead">: {{$inv->proforma_no}} </h5>
+                    <h5 class="lead">: {{$jb->Invoice->inv_no}}</h5>
+                    <h5 class="lead">: {{$jb->Invoice->proforma_no}} </h5>
                     <h5 class="lead">: {{$jb->job_no}}</h5>
                   </div>
               </div>
@@ -183,9 +140,9 @@
               <div class="row">
                 <div class="col-8 text-center">
                   <h3 class="bold">
-                    @if($form->service->order == "SP2")
+                    @if($jb->Invoice->Form->service->order == "SP2")
                       SURAT PENYERAHAN PETIKEMAS (SP2)</h3>
-                    @elseif($form->service->order == "SPPS")
+                    @elseif($jb->Invoice->Form->service->order == "SPPS")
                       SURAT PENARIKAN PETIKEMAS STRIPPING (SPPS)
                     @else
                       Perpanjangan
@@ -209,12 +166,12 @@
                       <h5 class="lead">No. Kendaraan </h5>
                     </div>
                     <div class="col-6">
-                      <h5 class="lead">: {{$ct->container_no}}</h5>
-                      <h5 class="lead">: {{$ct->ctr_size}}</h5>
-                      <h5 class="lead">: {{$ct->ves_name}}--{{$ct->voy_no}}</h5>
-                      <h5 class="lead">: {{$form->customer->name}}</h5>
-                      <h5 class="lead">: {{$ct->yard_block}} / {{$ct->yard_slot}} / {{$ct->yard_row}} / {{$ct->yard_tier}}</h5>
-                      <h5 class="lead">: {{$ct->disch_port}}</h5>
+                      <h5 class="lead">: {{$jb->Item->container_no}}</h5>
+                      <h5 class="lead">: {{$jb->Item->ctr_size}}</h5>
+                      <h5 class="lead">: {{$jb->Item->ves_name}}--{{$jb->Item->voy_no}}</h5>
+                      <h5 class="lead">: {{$jb->Invoice->Form->customer->name}}</h5>
+                      <h5 class="lead">: {{$jb->Item->yard_block}} / {{$jb->Item->yard_slot}} / {{$jb->Item->yard_row}} / {{$jb->Item->yard_tier}}</h5>
+                      <h5 class="lead">: {{$jb->Item->disch_port}}</h5>
                       <h5 class="lead">: </h5>
                     </div>
                   </div>
@@ -245,11 +202,11 @@
                     </div>
                     <div class="col-6">
                       <h5 class="lead"><span class="rectangle"></span></h5>
-                      <h5 class="lead">:  {{$ct->over_height}} // {{$ct->over_weight}}</h5>
-                      <h5 class="lead">:  {{$ct->disc_date}}</h5>
-                      <h5 class="lead">:  {{$form->doOnline->bl_no ?? ''}}</h5>
-                      <h5 class="lead">:  {{$form->doOnline->do_no ?? ''}}</h5>
-                      <h5 class="lead">:  {{$inv->order_at}}</h5>
+                      <h5 class="lead">:  {{$jb->Item->over_height}} // {{$jb->Item->over_weight}}</h5>
+                      <h5 class="lead">:  {{$jb->Item->disc_date}}</h5>
+                      <h5 class="lead">:  {{$jb->Invoice->Form->doOnline->bl_no ?? ''}}</h5>
+                      <h5 class="lead">:  {{$jb->Invoice->Form->doOnline->do_no ?? ''}}</h5>
+                      <h5 class="lead">:  {{$jb->Invoice->order_at}}</h5>
                       <h5 class="lead">:  {{$jb->active_to}}</h5>
                     </div>
                   </div>
@@ -377,8 +334,6 @@
     </div>
     </div>
   </section>
-  @endif
-  @endforeach
   <div class="page-break"></div>
 </body>
 @endforeach
