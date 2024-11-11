@@ -105,8 +105,6 @@
 
 @foreach($job as $jb)
 <body>
-  @foreach($cont as $ct)
-  @if($jb->Item->container_key == $jb->container_key)
   <section class="row">
     <div class="col-12">
 
@@ -170,7 +168,7 @@
                     <div class="col-6">
                       <h5 class="lead">: {{$jb->Item->container_no}}</h5>
                       <h5 class="lead">: {{$jb->Item->ctr_size}}</h5>
-                      <h5 class="lead">: {{$kpaal->ves_name}}--{{$kpaal->voy_no}}</h5>
+                      <h5 class="lead">: {{$kapal->ves_name}}--{{$kapal->voy_no}}</h5>
                       <h5 class="lead">: {{$jb->Invoice->Form->customer->name}}</h5>
                       <h5 class="lead">: {{$jb->Item->disch_port}}</h5>
                       <h5 class="lead">: </h5>
@@ -271,8 +269,7 @@
     </div>
     </div>
   </section>
-  @endif
-  @endforeach
+
   <div class="page-break"></div>
 </body>
 @endforeach

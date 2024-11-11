@@ -16,9 +16,18 @@ class GateMTcontroller extends Controller
     public function IndexIn()
     {
         $data['title'] = "Gate In Empty";
-        $data['containers'] = Item::where('ctr_intern_status', '=', '49')->whereNot('job_no', null)->whereHas('service', function($query) {
-            $query->where('order', '=', 'MTK');
-        })->get();
+        $data['containers'] = Item::where(function ($query) {
+            $query->where('ctr_intern_status', '=', '49')
+                  ->whereNotNull('job_no');
+        })
+        ->where(function ($query) {
+            $query->whereHas('service', function($query) {
+                      $query->where('order', '=', 'MTK');
+                  })
+                  ->orWhere('os_id', '=', 12);
+        })
+        ->get();
+    
 
         $data['confirmed'] = Item::where('ctr_intern_status', '=', '45')->get();
 
@@ -65,8 +74,13 @@ class GateMTcontroller extends Controller
                     'os_id'=>null,
                 ]);
             }
+            if ($item->os_id == 12) {
+                $ctr_intern_status = '49';
+            }else {
+                $ctr_intern_status = '09';
+            }
             $item->update([
-                'ctr_intern_status'=>'09',
+                'ctr_intern_status'=>$ctr_intern_status,
                 'truck_out_date'=>$request->truck_out_date,
                 'truck_no'=>$request->truck_no,
             ]);
