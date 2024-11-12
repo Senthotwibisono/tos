@@ -157,7 +157,7 @@ class ContainerController extends Controller
     {
       $data['title'] = "Report Container";
 
-      $query = Item::orderBy('ctr_i_e_t', 'desc')->orderBy('container_key', 'asc');
+      $query = Item::orderBy('ctr_i_e_t', 'desc')->orderBy('container_key', 'desc');
       $data['intern'] = Item::distinct('ctr_intern_status')->pluck('ctr_intern_status');
       $data['kapal'] = Kapal::all();
       $data['yards'] = Yard::distinct('YARD_BLOCK')->pluck('YARD_BLOCK');
@@ -253,7 +253,7 @@ class ContainerController extends Controller
     {
       $data['title'] = "Report Container";
 
-      $query = Item::where('ctr_active_yn', '=', 'Y')->orderBy('ctr_i_e_t', 'desc')->orderBy('container_key', 'asc');
+      $query = Item::where('ctr_active_yn', '=', 'Y')->orderBy('ctr_i_e_t', 'desc')->orderBy('container_key', 'desc');
       $data['intern'] = Item::distinct('ctr_intern_status')->pluck('ctr_intern_status');
       $data['kapal'] = Kapal::all();
       $data['yards'] = Yard::distinct('YARD_BLOCK')->pluck('YARD_BLOCK');

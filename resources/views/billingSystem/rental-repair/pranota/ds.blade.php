@@ -173,8 +173,8 @@
             </div>
             <div class="row p-3">
               <div class="col-6">
-                <p>Total Amount: </p>
                 <p>Admin :</p>
+                <p>Total Amount: </p>
                 <p>Discount {{ number_format($form->discount_ds, 2) }}% :</p>
                 <p>Tax (11%): </p>
                 <p>Grand Total: </p>
@@ -184,8 +184,8 @@
                 <p><strong>Rp. {{ number_format($admin, 0, ',', '.') }} ,00 ~</strong></p>
                 <p><strong>Rp. {{ number_format($invoice->pajak, 0, ',', '.') }}, 00 ~</strong></p>
                 <p><strong>Rp. {{ number_format($invoice->grand_total, 0, ',', '.') }},00 ~</strong></p> -->
-                <p><strong>Rp. {{ number_format($invoice->total, 2, ',', '.') }}</strong></p>
                 <p><strong>Rp. {{ number_format($admin, 2, ',', '.') }}</strong></p>
+                <p><strong>Rp. {{ number_format($invoice->total, 2, ',', '.') }}</strong></p>
                 <p><strong>Rp. {{ number_format($invoice->discount, 2, ',', '.') }}</strong></p>
                 <p><strong>Rp. {{ number_format($invoice->pajak, 2, ',', '.') }}</strong></p>
                 <p><strong>Rp. {{ number_format($invoice->grand_total, 2, ',', '.') }}</strong></p>
