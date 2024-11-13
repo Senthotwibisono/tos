@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Auth;
 use Carbon\Carbon;
 use App\Models\OrderService as OS;
@@ -1006,66 +1007,52 @@ class ImportController extends Controller
 
 private function getNextInvoiceDSK()
 {
-    // Mendapatkan nomor proforma terakhir
-    $latest = InvoiceImport::where('inv_type', 'DSK')->orderBy('inv_no', 'desc')->first();
-    
-    // Jika tidak ada proforma sebelumnya, kembalikan nomor proforma awal
-    if (!$latest) {
-        return 'DSK0000001';
-    }
+    return DB::transaction(function () {
+        $latest = InvoiceImport::where('inv_type', 'DSK')->lockForUpdate()->orderBy('inv_no', 'desc')->first();
 
-    // Mendapatkan nomor urut proforma terakhir
-    $lastInvoice = $latest->inv_no;
+        if (!$latest) {
+            return 'DSK0000001';
+        }
 
+        $lastNumber = (int)substr($latest->inv_no, 3);
+        $nextNumber = $lastNumber + 1;
 
-    // Mengekstrak angka dari nomor proforma terakhir
-    $lastNumber = (int)substr($lastInvoice, 3);
-
-    // Menambahkan 1 ke nomor proforma terakhir
-    $nextNumber = $lastNumber + 1;
-    // Menghasilkan nomor proforma berikutnya dengan format yang benar
-    return 'DSK' . str_pad($nextNumber, 7, '0', STR_PAD_LEFT);
+        return 'DSK' . str_pad($nextNumber, 7, '0', STR_PAD_LEFT);
+    });
 }
 
-private function getNextInvoiceDS()
-{
-    // Mendapatkan nomor proforma terakhir
-    $latest = InvoiceImport::where('inv_type', 'DS')->orderBy('inv_no', 'desc')->first();
-
-    // Jika tidak ada proforma sebelumnya, kembalikan nomor proforma awal
-    if (!$latest) {
-        return 'DS0000001';
+    private function getNextInvoiceDS()
+    {
+        return DB::transaction(function () {
+            $latest = InvoiceImport::where('inv_type', 'DS')->lockForUpdate()->orderBy('inv_no', 'desc')->first();
+        
+            if (!$latest) {
+                return 'DS0000001';
+            }
+        
+            $lastNumber = (int)substr($latest->inv_no, 2);
+            $nextNumber = $lastNumber + 1;
+        
+            return 'DS' . str_pad($nextNumber, 7, '0', STR_PAD_LEFT);
+        });
     }
 
-    // Mendapatkan nomor urut proforma terakhir
-    $lastInvoice = $latest->inv_no;
+    private function getNextJob($lastJobNo)
+    {
+        // Jika tidak ada nomor pekerjaan sebelumnya, kembalikan nomor pekerjaan awal
+        if (!$lastJobNo) {
+            return 'JOB0000001';
+        }
 
-    // Mengekstrak angka dari nomor proforma terakhir
-    $lastNumber = (int)substr($lastInvoice, 3);
+        // Mengekstrak angka dari nomor pekerjaan terakhir
+        $lastNumber = (int)substr($lastJobNo, 3);
 
-    // Menambahkan 1 ke nomor proforma terakhir
-    $nextNumber = $lastNumber + 1;
+        // Menambahkan 1 ke nomor pekerjaan terakhir
+        $nextNumber = $lastNumber + 1;
 
-    // Menghasilkan nomor proforma berikutnya dengan format yang benar
-    return 'DS' . str_pad($nextNumber, 7, '0', STR_PAD_LEFT);
-}
-
-private function getNextJob($lastJobNo)
-{
-    // Jika tidak ada nomor pekerjaan sebelumnya, kembalikan nomor pekerjaan awal
-    if (!$lastJobNo) {
-        return 'JOB0000001';
+        // Menghasilkan nomor pekerjaan berikutnya dengan format yang benar
+        return 'JOB' . str_pad($nextNumber, 7, '0', STR_PAD_LEFT);
     }
-
-    // Mengekstrak angka dari nomor pekerjaan terakhir
-    $lastNumber = (int)substr($lastJobNo, 3);
-
-    // Menambahkan 1 ke nomor pekerjaan terakhir
-    $nextNumber = $lastNumber + 1;
-
-    // Menghasilkan nomor pekerjaan berikutnya dengan format yang benar
-    return 'JOB' . str_pad($nextNumber, 7, '0', STR_PAD_LEFT);
-}
 
 
 
