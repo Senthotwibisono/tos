@@ -139,6 +139,7 @@
                   <thead>
                     <tr>
                       <td class="text-center"><strong>Keterangan</strong></td>
+                      <td class="text-center"><strong>Detik</strong></td>
                       <td class="text-center"><strong>Jumlah Container</strong></td>
                     </tr>
                   </thead>
@@ -146,6 +147,7 @@
                
                     <tr>
                       <td class="text-center">{{$form->service->name}}</td>
+                      <td class="text-center">{{$form->keterangan ?? '-'}}</td>
                       <td class="text-center">{{$form->palka}}</td>
                     </tr>
              
