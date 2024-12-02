@@ -376,7 +376,7 @@ class InvoiceExtend extends Controller
 
         $totalKotor = $results->sum('harga');
         $total = $totalKotor + $data['admin'];
-        $discount = ($total * $form->discount_ds) / 100;
+        $discount = $form->discount_ds;
         $pajak = (($total - $discount) * 11) / 100;
         $grandTotal = ($total - $discount) + $pajak;
 

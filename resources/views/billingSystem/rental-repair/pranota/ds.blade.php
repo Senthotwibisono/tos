@@ -185,7 +185,7 @@
                 <p><strong>Rp. {{ number_format($invoice->pajak, 0, ',', '.') }}, 00 ~</strong></p>
                 <p><strong>Rp. {{ number_format($invoice->grand_total, 0, ',', '.') }},00 ~</strong></p> -->
                 <p><strong>Rp. {{ number_format($admin, 2, ',', '.') }}</strong></p>
-                <p><strong>Rp. {{ number_format($invoice->total, 2, ',', '.') }}</strong></p>
+                <p><strong>Rp. {{ number_format($invoice->total + $admin, 2, ',', '.') }}</strong></p>
                 <p><strong>Rp. {{ number_format($invoice->discount, 2, ',', '.') }}</strong></p>
                 <p><strong>Rp. {{ number_format($invoice->pajak, 2, ',', '.') }}</strong></p>
                 <p><strong>Rp. {{ number_format($invoice->grand_total, 2, ',', '.') }}</strong></p>

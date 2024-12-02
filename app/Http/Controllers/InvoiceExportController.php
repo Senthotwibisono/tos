@@ -1565,12 +1565,15 @@ class InvoiceExportController extends Controller
         $containerInvoice = Container::where('form_id', $invoice->form_id)->get();
         foreach ($containerInvoice as $cont) {
             $item = Item::where('container_key', $cont->container_key)->first();
-            $item->update([
-                'selected_do'=>'N',
-                'os_id'=>null,
-                'job_no'=>null,
-                'invoice_no'=>null,
-            ]);
+            if ($item->invoice_no == $invoice->inv_no) {
+                # code...
+                $item->update([
+                    'selected_do'=>'N',
+                    'os_id'=>null,
+                    'job_no'=>null,
+                    'invoice_no'=>null,
+                ]);
+            }
         }
 
         return response()->json([

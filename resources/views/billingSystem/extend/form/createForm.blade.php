@@ -93,7 +93,6 @@
 
           <div class="row mt-5">
           <h5>Discount</h5>
-          <p>Di Isi dengan Persen (%)</p>
             <div class="col-sm-3">
               <label for="">Discount</label>
               <p>Di Isi dengan Nomial !!</p>

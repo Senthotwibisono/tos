@@ -356,7 +356,7 @@
             <div class="col-xs-12 col-6" style="text-align: right;">
               <p><strong>Rp. {{number_format ($invoice->admin), 0, ',', '.'}}, 00 ~</strong></p>
               <p><strong>Rp. {{number_format ($invoice->discount), 0, ',', '.'}}, 00 ~</strong></p>
-              <p><strong>Rp. {{number_format ($invoice->total), 0, ',', '.'}} ,00 ~</strong></p>
+              <p><strong>Rp. {{number_format ($invoice->total + $invoice->admin), 0, ',', '.'}} ,00 ~</strong></p>
               <p><strong>Rp. {{number_format ($invoice->pajak), 0, ',', '.'}}, 00 ~</strong></p>
               <p><strong>Rp.  {{number_format ($invoice->grand_total), 0, ',', '.'}},00 ~</strong></p>
 

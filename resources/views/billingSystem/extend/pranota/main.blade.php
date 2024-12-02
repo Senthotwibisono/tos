@@ -235,7 +235,7 @@ use Carbon\Carbon;
             <div class="col-xs-12 col-6">
               <p>Admin : </p>
               <p>Total Amount: </p>
-              <p>Discount {{ number_format($form->discount_ds, 2) }}%  :</p>
+              <p>Discount:</p>
               <p>Tax (11%): </p>
               <p>Grand Total: </p>
             </div>
