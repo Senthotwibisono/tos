@@ -131,6 +131,7 @@ class RentalController extends Controller
             'discount_dsk'=>$request->discount_dsk,
             'tarif'=>$request->tarif,
             'palka'=>$request->palka,
+            'keterangan' => $request->keterangan,
         ]);
 
     //   $service = OS::where('id', $invoice->os_id)->first();
@@ -200,6 +201,7 @@ class RentalController extends Controller
             'discount_ds'=>$request->discount_ds,
             'discount_dsk'=>$request->discount_dsk,
             'tarif'=>$request->tarif,
+            'keterangan' => $request->keterangan,
         ]);
 
         return redirect()->route('rental-repair-preinvoice', ['id' => $invoice->id])->with('success', 'Silahkan Lanjut ke Tahap Selanjutnya');

@@ -83,6 +83,11 @@
             <label for="">Tarif</label>
             <input type="number" class="form-control" name="tarif" value="{{$form->tarif}}">
           </div>
+          
+          <div class="col-12">
+            <label for="">Keterangan</label>
+            <input type="text" class="form-control" name="keterangan" value="{{$form->keterangan}}">
+          </div>
             
           
           

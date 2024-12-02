@@ -28,6 +28,7 @@ class InvoiceForm extends Model
         'discount_dsk',
         'tarif',
         'palka',
+        'keterangan',
         'user_id',
     ];
 

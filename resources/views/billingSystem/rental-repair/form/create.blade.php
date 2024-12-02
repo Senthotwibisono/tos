@@ -85,6 +85,11 @@
             <input type="number" class="form-control" name="tarif">
           </div>
           
+          <div class="col-12">
+            <label for="">Keterangan</label>
+            <input type="text" class="form-control" name="keterangan">
+          </div>
+          
           <!-- Discount -->
           <div class="row mt-5">
             <h5>Discount</h5>

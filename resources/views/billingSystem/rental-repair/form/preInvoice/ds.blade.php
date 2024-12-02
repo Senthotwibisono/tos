@@ -18,12 +18,14 @@
         <thead>
           <tr>
             <th>Keterangan</th>
+            <th>Detil</th>
             <th>Jumlah</th>
           </tr>
         </thead>
         <tbody>
         <tr>
           <td>{{$form->service->name}}</td>
+          <td>{{$form->keterangan ?? '-'}}</td>
           <td>{{$form->palka}}</td>
         </tr>
         </tbody>
