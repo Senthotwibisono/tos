@@ -27,7 +27,7 @@ class DischargeController extends Controller
   {
     $title = 'Confirm Disch';
     $subtitle = 'Discharge Confirm';
-    $confirmed = Item::where('ctr_intern_status', '=', 02,)->orderBy('update_time', 'desc')->get();
+    $confirmed = Item::where('ctr_intern_status', '=', 02,)->orderBy('update_time', 'desc')->limit(200)->get();
     $formattedData = [];
     $data = [];
 
@@ -74,7 +74,7 @@ class DischargeController extends Controller
   {
     $title = 'Confirm Disch';
     $subtitle = 'Discharge Confirm';
-    $confirmed = Item::where('ctr_intern_status', '=', 02,)->orderBy('update_time', 'desc')->get();
+    $confirmed = Item::where('ctr_intern_status', '=', 02,)->orderBy('update_time', 'desc')->limit(200)->get();
     $formattedData = [];
     $data = [];
 

@@ -62,7 +62,7 @@ class LoadController extends Controller
     //   ];
     // }
 
-    $data['loaded'] = Item::where('ctr_i_e_t', '=', 'E')->where('ctr_intern_status', '=', '56')->get();
+    $data['loaded'] = Item::where('ctr_i_e_t', '=', 'E')->where('ctr_intern_status', '=', '56')->limit(200)->get();
     $items = Item::where('ctr_i_e_t', '=', 'E')
     ->where(function ($query) {
         $query->where('ctr_intern_status', '=', 51)
@@ -134,7 +134,7 @@ class LoadController extends Controller
     //     'bay_tier' => $tem->bay_tier,
     //   ];
     // }
-    $data['loaded'] = Item::where('ctr_i_e_t', '=', 'E')->where('ctr_intern_status', '=', '56')->get();
+    $data['loaded'] = Item::where('ctr_i_e_t', '=', 'E')->where('ctr_intern_status', '=', '56')->limit(200)->get();
     $items = Item::where('ctr_i_e_t', '=', 'E')
     ->where(function ($query) {
         $query->where('ctr_intern_status', '=', 51)
