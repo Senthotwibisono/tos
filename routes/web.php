@@ -437,6 +437,7 @@ Route::get('/cetak-perBay', [DischargeView::class, 'cetakBay'])->name('dischCeta
 // Android
 Route::get('/android-dashboard', [AndroidController::class, 'index']);
 Route::get('/disch/confirm_disch', [DischargeController::class, 'index']);
+Route::get('/disch/dataTable', [DischargeController::class, 'dataTable']);
 Route::post('/search-container', [DischargeController::class, 'container']);
 Route::post('/get-container-key', [DischargeController::class, 'get_key']);
 Route::post('/confirm', [DischargeController::class, 'confirm']);
@@ -761,6 +762,7 @@ Route::post('/stuffing-confirm-out-placement-luar', [Stuffing::class, 'update_pl
 
 // Load
 Route::get('/load/confirm_load', [LoadController::class, 'index']);
+Route::get('/load/dataTable', [LoadController::class, 'dataTable']);
 Route::get('/load/confirm_load-android', [LoadController::class, 'android']);
 Route::post('/search-container', [LoadController::class, 'container']);
 Route::post('/get-container-key-load', [LoadController::class, 'get_key']);

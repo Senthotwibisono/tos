@@ -27,42 +27,6 @@ class LoadController extends Controller
   {
     $title = 'Confirm Load';
     $subtitle = 'Discharge Load';
-    $confirmed = Item::where('ctr_intern_status', '=', 56,)->orderBy('update_time', 'desc')->get();
-    $formattedData = [];
-    $data = [];
-
-    // foreach ($confirmed as $tem) {
-    //   $now = Carbon::now();
-    //   $discAt = Carbon::parse($tem->disc_date);
-
-    //   // Perhitungan selisih waktu
-    //   $diff = $discAt->diffForHumans($now);
-
-    //   // Jika selisih waktu kurang dari 1 hari, maka tampilkan format jam
-    //   if ($discAt->diffInDays($now) < 1) {
-    //     $diff = $discAt->diffForHumans($now, true);
-    //     $diff = str_replace(['hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
-    //   } else {
-    //     // Jika selisih waktu lebih dari 1 hari, maka tampilkan format hari dan jam
-    //     $diff = $discAt->diffForHumans($now, true);
-    //     $diff = str_replace(['days', 'day', 'hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['hari', 'hari', 'jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
-    //   }
-
-    //   $formattedData[] = [
-    //     'container_no' => $tem->container_no,
-    //     'cc_tt_no' => $tem->cc_tt_no,
-    //     'cc_tt_oper' => $tem->cc_tt_oper,
-    //     'disc_date' => $diff . ' yang lalu',
-    //     'ves_name' => $tem->ves_name,
-    //     'voy_no' => $tem->voy_no,
-    //     'bay_slot' => $tem->bay_slot,
-    //     'bay_row' => $tem->bay_row,
-    //     'bay_tier' => $tem->bay_tier,
-    //     'container_key' => $tem->container_key,
-    //   ];
-    // }
-
-    $data['loaded'] = Item::where('ctr_i_e_t', '=', 'E')->where('ctr_intern_status', '=', '56')->limit(200)->get();
     $items = Item::where('ctr_i_e_t', '=', 'E')
     ->where(function ($query) {
         $query->where('ctr_intern_status', '=', 51)
@@ -93,48 +57,55 @@ class LoadController extends Controller
     $alat = MasterAlat::where('category', '=', 'Bay')->get();
     $data['operator'] = Operator::where('role', '=', 'cc')->get();
 
-    return view('load.main', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'vessel_voyage', 'alat'), $data);
+    return view('load.main', compact('title', 'items', 'users', 'currentDateTimeString', 'vessel_voyage', 'alat'), $data);
   }
 
+
+  public function dataTable(Request $request)
+  {
+    $cont = Item::where('ctr_i_e_t', '=', 'E')->where('ctr_intern_status', '=', '56')->get();
+      return DataTables::of($cont)
+      ->addColumn('veseel', function($cont){
+        $ves = $cont->ves_name . ' || ' . $cont->voy_no;
+          return $ves ?? '-';
+      })
+      ->addColumn('container', function($cont){
+          return $cont->container_no ?? '-';
+      })
+      ->addColumn('slot', function($cont){
+          $slot = $cont->bay_slot ?? '';
+          $row = $cont->bay_row ?? '';
+          $tier = $cont->tier ?? '';
+
+          $bay = $slot . ' || ' . $row . ' || ' . $tier;
+
+          return $bay ?? '';
+      })
+      ->addColumn('alat', function($cont){
+          return $cont->cc_tt_no ?? '-';
+      })
+      ->addColumn('operator', function($cont){
+          return $cont->cc_tt_oper ?? '-';
+      })
+      ->addColumn('laod_date', function($cont){
+          return $cont->load_date ?? '-';
+      })
+      ->addColumn('action1', function($cont){
+        return '<button class="btn btn-outline-info EditBay" data-id="'.$cont->container_key.'">Edit Bay Plan</button>';
+      })
+      ->addColumn('action2', function($cont){
+        return '<button class="btn btn-outline-danger CancelBay" data-id="'.$cont->container_key.'">Cancel</button>';
+      })
+      ->rawColumns(['action1', 'action2'])
+      ->make(true);
+  }
   //android
   public function android()
   {
     $title = 'Confirm Load';
     $subtitle = 'Discharge Load';
-    $confirmed = Item::where('ctr_intern_status', '=', 56,)->orderBy('update_time', 'desc')->get();
     $formattedData = [];
     $data = [];
-
-    // foreach ($confirmed as $tem) {
-    //   $now = Carbon::now();
-    //   $discAt = Carbon::parse($tem->disc_date);
-
-    //   // Perhitungan selisih waktu
-    //   $diff = $discAt->diffForHumans($now);
-
-    //   // Jika selisih waktu kurang dari 1 hari, maka tampilkan format jam
-    //   if ($discAt->diffInDays($now) < 1) {
-    //     $diff = $discAt->diffForHumans($now, true);
-    //     $diff = str_replace(['hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
-    //   } else {
-    //     // Jika selisih waktu lebih dari 1 hari, maka tampilkan format hari dan jam
-    //     $diff = $discAt->diffForHumans($now, true);
-    //     $diff = str_replace(['days', 'day', 'hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['hari', 'hari', 'jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
-    //   }
-
-    //   $formattedData[] = [
-    //     'container_no' => $tem->container_no,
-    //     'cc_tt_no' => $tem->cc_tt_no,
-    //     'cc_tt_oper' => $tem->cc_tt_oper,
-    //     'disc_date' => $diff . ' yang lalu',
-    //     'ves_name' => $tem->ves_name,
-    //     'voy_no' => $tem->voy_no,
-    //     'bay_slot' => $tem->bay_slot,
-    //     'bay_row' => $tem->bay_row,
-    //     'bay_tier' => $tem->bay_tier,
-    //   ];
-    // }
-    $data['loaded'] = Item::where('ctr_i_e_t', '=', 'E')->where('ctr_intern_status', '=', '56')->limit(200)->get();
     $items = Item::where('ctr_i_e_t', '=', 'E')
     ->where(function ($query) {
         $query->where('ctr_intern_status', '=', 51)
@@ -165,7 +136,7 @@ class LoadController extends Controller
     $alat = MasterAlat::where('category', '=', 'Bay')->get();
     $data['operator'] = Operator::where('role', '=', 'cc')->get();
 
-    return view('load.android', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'vessel_voyage', 'alat'), $data);
+    return view('load.android', compact('title', 'items', 'users', 'currentDateTimeString', 'vessel_voyage', 'alat'), $data);
   }
 
   public function get_cont(Request $request)

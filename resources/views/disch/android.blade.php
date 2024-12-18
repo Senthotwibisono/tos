@@ -26,7 +26,7 @@
                     </svg> Confirmed</button>
             </div>
             <div class="card-body">
-                <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
+                <table class="table table-hover" id="tableDisc">
                     <thead>
                         <tr>
                             <th>NO</th>
@@ -36,17 +36,6 @@
                             <th>Disc At</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        @foreach($formattedData as $d)
-                        <tr>
-                            <td>{{$loop->iteration}}</td>
-                            <td>{{$d['container_no']}}</td>
-                            <td>{{$d['cc_tt_no']}}</td>
-                            <td>{{$d['cc_tt_oper']}}</td>
-                            <td>{{$d['disc_date']}}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
                 </table>
             </div>
         </div>
@@ -179,11 +168,26 @@
 </style>
 @endsection
 @section('custom_js')
-<script src="{{ asset('vendor/components/jquery/jquery.min.js') }}"></script>
+
 <script src="{{ asset('select2/dist/js/select2.full.min.js') }}"></script>
 <script src="{{asset('dist/assets/extensions/sweetalert2/sweetalert2.min.js')}}"></script>
 <script src="{{asset('dist/assets/js/pages/sweetalert2.js')}}"></script>
 
+<script>
+    $(document).ready(function(){
+        $('#tableDisc').DataTable({
+            precessing: true,
+            serverSide: true,
+            ajax: '/disch/dataTable',
+            columns: [
+                { data: 'container', name: 'container' },
+                { data: 'alat', name: 'alat' },
+                { data: 'operator', name: 'operator' },
+                { data: 'disc_date', name: 'disc_date' },
+            ]
+        })
+    });
+</script>
 
 <script>
    

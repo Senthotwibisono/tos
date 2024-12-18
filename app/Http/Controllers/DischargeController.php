@@ -12,10 +12,12 @@ use App\Models\ActAlat;
 use App\Models\Operator;
 use App\Models\ActOper;
 
+
 use GuzzleHttp\Client;
 
 use Auth;
 use Illuminate\Http\Request;
+use DataTables;
 
 class DischargeController extends Controller
 {
@@ -27,35 +29,9 @@ class DischargeController extends Controller
   {
     $title = 'Confirm Disch';
     $subtitle = 'Discharge Confirm';
-    $confirmed = Item::where('ctr_intern_status', '=', 02,)->orderBy('update_time', 'desc')->limit(200)->get();
     $formattedData = [];
     $data = [];
 
-    foreach ($confirmed as $tem) {
-      $now = Carbon::now();
-      $discAt = Carbon::parse($tem->disc_date);
-
-      // Perhitungan selisih waktu
-      $diff = $discAt->diffForHumans($now);
-
-      // Jika selisih waktu kurang dari 1 hari, maka tampilkan format jam
-      if ($discAt->diffInDays($now) < 1) {
-        $diff = $discAt->diffForHumans($now, true);
-        $diff = str_replace(['hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
-      } else {
-        // Jika selisih waktu lebih dari 1 hari, maka tampilkan format hari dan jam
-        $diff = $discAt->diffForHumans($now, true);
-        $diff = str_replace(['days', 'day', 'hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['hari', 'hari', 'jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
-      }
-
-      $formattedData[] = [
-        'container_no' => $tem->container_no,
-        'cc_tt_no' => $tem->cc_tt_no,
-        'cc_tt_oper' => $tem->cc_tt_oper,
-        'disc_date' => $diff . ' yang lalu',
-        'container_key' => $tem->container_key
-      ];
-    }
     $items = Item::where('ctr_intern_status', '=', 01)->get();
     $users = User::all();
     $data["active"] = "discharge";
@@ -69,40 +45,33 @@ class DischargeController extends Controller
     return view('disch.main', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'vessel_voyage', 'alat'), $data);
   }
 
+  public function dataTable(Request $request)
+  {
+      $cont = Item::where('ctr_intern_status', '=', 02,)->orderBy('update_time', 'desc')->get();
+      return DataTables::of($cont)
+      ->addColumn('container', function($cont){
+          return $cont->container_no ?? '-';
+      })
+      ->addColumn('alat', function($cont){
+          return $cont->cc_tt_no ?? '-';
+      })
+      ->addColumn('operator', function($cont){
+          return $cont->cc_tt_oper ?? '-';
+      })
+      ->addColumn('disc_date', function($cont){
+          return $cont->disc_date ?? '-';
+      })
+      ->make(true);
+  }
+
   //android
   public function android()
   {
     $title = 'Confirm Disch';
     $subtitle = 'Discharge Confirm';
-    $confirmed = Item::where('ctr_intern_status', '=', 02,)->orderBy('update_time', 'desc')->limit(200)->get();
     $formattedData = [];
     $data = [];
 
-    foreach ($confirmed as $tem) {
-      $now = Carbon::now();
-      $discAt = Carbon::parse($tem->disc_date);
-
-      // Perhitungan selisih waktu
-      $diff = $discAt->diffForHumans($now);
-
-      // Jika selisih waktu kurang dari 1 hari, maka tampilkan format jam
-      if ($discAt->diffInDays($now) < 1) {
-        $diff = $discAt->diffForHumans($now, true);
-        $diff = str_replace(['hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
-      } else {
-        // Jika selisih waktu lebih dari 1 hari, maka tampilkan format hari dan jam
-        $diff = $discAt->diffForHumans($now, true);
-        $diff = str_replace(['days', 'day', 'hours', 'hour', 'minutes', 'minutes', 'seconds', 'seconds'], ['hari', 'hari', 'jam', 'jam', 'menit', 'menit', 'detik', 'detik'], $diff);
-      }
-
-      $formattedData[] = [
-        'container_no' => $tem->container_no,
-        'cc_tt_no' => $tem->cc_tt_no,
-        'cc_tt_oper' => $tem->cc_tt_oper,
-        'disc_date' => $diff . ' yang lalu',
-        'container_key' => $tem->container_key
-      ];
-    }
     $items = Item::where('ctr_intern_status', '=', 01)->get();
     $users = User::all();
     $data["active"] = "discharge";

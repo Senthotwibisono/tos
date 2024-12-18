@@ -26,36 +26,18 @@
                     </svg> Load</button>
             </div>
             <div class="card-body">
-                <table class="dataTable-Load">
+                <table class="table table-hover" id="tableLoad">
                     <thead>
                         <tr>
-                            <th>NO</th>
                             <th>Vessel</th>
                             <th>Container No</th>
                             <th>BS || BR || BT</th>
                             <th>Crane Code</th>
                             <th>Operator</th>
                             <th>Load</th>
-                            <th>Action</th>
+                            <th colspan="2">Action</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        @foreach($loaded as $load)
-                        <tr>
-                            <td>{{$loop->iteration}}</td>
-                            <td>{{$load->ves_name}} || {{$load->voy_no}}</td>
-                            <td>{{$load->container_no}}</td>
-                            <td>{{$load->bay_slot}} || {{$load->bay_row}} || {{$load->bay_tier}}</td>
-                            <td>{{$load->cc_tt_no}}</td>
-                            <td>{{$load->cc_tt_oper}}</td>
-                            <td>{{$load->load_date}}</td>
-                            <td>
-                                <button class="btn btn-outline-info EditBay" data-id="{{$load->container_key}}">Edit Bay Plan</button>
-                                <button class="btn btn-outline-danger CancelBay" data-id="{{$load->container_key}}">Cancel</button>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
                 </table>
             </div>
         </div>
@@ -285,14 +267,23 @@
 <script src="{{asset('dist/assets/extensions/sweetalert2/sweetalert2.min.js')}}"></script>
 <script src="{{asset('dist/assets/js/pages/sweetalert2.js')}}"></script>
 <script>
-$(document).ready(function() {
-    // Initialize all tables with class 'dataTable-wrapper'
-    $('.dataTable-Load').each(function() {
-        $(this).DataTable();
+    $(document).ready(function(){
+        $('#tableLoad').DataTable({
+            precessing: true,
+            serverSide: true,
+            ajax: '/load/dataTable',
+            columns: [
+                { data: 'veseel', name: 'veseel' },
+                { data: 'container', name: 'container' },
+                { data: 'slot', name: 'slot' },
+                { data: 'alat', name: 'alat' },
+                { data: 'operator', name: 'operator' },
+                { data: 'laod_date', name: 'laod_date' },
+                { data: 'action1', name: 'action1' },
+                { data: 'action2', name: 'action2' },
+            ]
+        })
     });
-});
-
-
 </script>
 <script>
   @if(session('success'))
