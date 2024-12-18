@@ -35,7 +35,8 @@
                             <th>Crane Code</th>
                             <th>Operator</th>
                             <th>Load</th>
-                            <th colspan="2">Action</th>
+                            <th>Edit</th>
+                            <th>Cancel</th>
                         </tr>
                     </thead>
                 </table>
@@ -270,7 +271,7 @@
 <script>
     $(document).ready(function(){
         $('#tableLoad').DataTable({
-            precessing: true,
+            processing: true,
             serverSide: true,
             ajax: '/load/dataTable',
             columns: [

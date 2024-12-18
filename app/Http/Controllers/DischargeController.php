@@ -42,7 +42,7 @@ class DischargeController extends Controller
 
     $alat = MasterAlat::where('category', '=', 'Bay')->get();
     $data['operator'] = Operator::where('role', '=', 'cc')->get();
-    return view('disch.main', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'vessel_voyage', 'alat'), $data);
+    return view('disch.main', compact('title', 'items', 'users', 'currentDateTimeString', 'vessel_voyage', 'alat'), $data);
   }
 
   public function dataTable(Request $request)
@@ -82,7 +82,7 @@ class DischargeController extends Controller
 
     $alat = MasterAlat::where('category', '=', 'Bay')->get();
     $data['operator'] = Operator::where('role', '=', 'cc')->get();
-    return view('disch.android', compact('confirmed', 'formattedData', 'title', 'items', 'users', 'currentDateTimeString', 'vessel_voyage', 'alat'), $data);
+    return view('disch.android', compact('title', 'items', 'users', 'currentDateTimeString', 'vessel_voyage', 'alat'), $data);
   }
 
   public function get_cont(request $request)

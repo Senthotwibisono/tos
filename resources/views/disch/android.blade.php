@@ -176,7 +176,7 @@
 <script>
     $(document).ready(function(){
         $('#tableDisc').DataTable({
-            precessing: true,
+            processing: true,
             serverSide: true,
             ajax: '/disch/dataTable',
             columns: [

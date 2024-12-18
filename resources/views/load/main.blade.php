@@ -26,19 +26,22 @@
                     </svg> Load</button>
             </div>
             <div class="card-body">
-                <table class="table table-hover" id="tableLoad">
-                    <thead>
-                        <tr>
-                            <th>Vessel</th>
-                            <th>Container No</th>
-                            <th>BS || BR || BT</th>
-                            <th>Crane Code</th>
-                            <th>Operator</th>
-                            <th>Load</th>
-                            <th colspan="2">Action</th>
-                        </tr>
-                    </thead>
-                </table>
+                <div class="table">
+                    <table class="table table-hover" id="tableLoad">
+                        <thead>
+                            <tr>
+                                <th>Vessel</th>
+                                <th>Container No</th>
+                                <th>BS || BR || BT</th>
+                                <th>Crane Code</th>
+                                <th>Operator</th>
+                                <th>Load</th>
+                                <th>Edit</th>
+                                <th>Cancel</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
             </div>
         </div>
     </section>
@@ -269,7 +272,7 @@
 <script>
     $(document).ready(function(){
         $('#tableLoad').DataTable({
-            precessing: true,
+            processing: true,
             serverSide: true,
             ajax: '/load/dataTable',
             columns: [

@@ -16,6 +16,8 @@ use GuzzleHttp\Client;
 use Auth;
 use Illuminate\Http\Request;
 
+use DataTables;
+
 class LoadController extends Controller
 {
   //
@@ -63,42 +65,48 @@ class LoadController extends Controller
 
   public function dataTable(Request $request)
   {
-    $cont = Item::where('ctr_i_e_t', '=', 'E')->where('ctr_intern_status', '=', '56')->get();
+      $cont = Item::where('ctr_i_e_t', '=', 'E')
+                  ->where('ctr_intern_status', '=', '56');
+  
       return DataTables::of($cont)
-      ->addColumn('veseel', function($cont){
-        $ves = $cont->ves_name . ' || ' . $cont->voy_no;
-          return $ves ?? '-';
-      })
-      ->addColumn('container', function($cont){
-          return $cont->container_no ?? '-';
-      })
-      ->addColumn('slot', function($cont){
-          $slot = $cont->bay_slot ?? '';
-          $row = $cont->bay_row ?? '';
-          $tier = $cont->tier ?? '';
-
-          $bay = $slot . ' || ' . $row . ' || ' . $tier;
-
-          return $bay ?? '';
-      })
-      ->addColumn('alat', function($cont){
-          return $cont->cc_tt_no ?? '-';
-      })
-      ->addColumn('operator', function($cont){
-          return $cont->cc_tt_oper ?? '-';
-      })
-      ->addColumn('laod_date', function($cont){
-          return $cont->load_date ?? '-';
-      })
-      ->addColumn('action1', function($cont){
-        return '<button class="btn btn-outline-info EditBay" data-id="'.$cont->container_key.'">Edit Bay Plan</button>';
-      })
-      ->addColumn('action2', function($cont){
-        return '<button class="btn btn-outline-danger CancelBay" data-id="'.$cont->container_key.'">Cancel</button>';
-      })
-      ->rawColumns(['action1', 'action2'])
-      ->make(true);
+          ->addColumn('veseel', function($cont) {
+              // Gabungkan nama kapal dan nomor voyage
+              return $cont->ves_name . ' || ' . $cont->voy_no ?? '-';
+          })
+          ->addColumn('container', function($cont) {
+              // Pastikan nomor container tidak null
+              return $cont->container_no ?? '-';
+          })
+          ->addColumn('slot', function($cont) {
+              // Gabungkan slot, row, dan tier
+              $slot = $cont->bay_slot ?? '-';
+              $row = $cont->bay_row ?? '-';
+              $tier = $cont->tier ?? '-';
+  
+              return "{$slot} || {$row} || {$tier}";
+          })
+          ->addColumn('alat', function($cont) {
+              // Pastikan alat tidak null
+              return $cont->cc_tt_no ?? '-';
+          })
+          ->addColumn('operator', function($cont) {
+              // Pastikan operator tidak null
+              return $cont->cc_tt_oper ?? '-';
+          })
+          ->addColumn('laod_date', function($cont) {
+              // Format tanggal jika diperlukan
+              return $cont->load_date ?? '-';
+          })
+          ->addColumn('action1', function($cont){
+            return '<button class="btn btn-outline-info EditBay" data-id="'.$cont->container_key.'">Edit Bay Plan</button>';
+          })
+          ->addColumn('action2', function($cont){
+            return '<button class="btn btn-outline-danger CancelBay" data-id="'.$cont->container_key.'">Cancel</button>';
+          })
+          ->rawColumns(['slot', 'action1', 'action2']) // Jika ada kolom yang memerlukan rendering HTML
+          ->make(true);
   }
+  
   //android
   public function android()
   {
