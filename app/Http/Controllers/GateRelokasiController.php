@@ -24,7 +24,7 @@ class GateRelokasiController extends Controller
         $title = 'Gate Rlokasi';
         $item = Item::whereIn('ctr_intern_status', ['11', '15'])
         ->orWhere(function($query) {
-            $query->whereiN('ctr_intern_status', ['09', '49'])
+            $query->whereiN('ctr_intern_status', ['09', '49', '56'])
                   ->whereHas('service', function($query) {
                       $query->where('return_yn', 'Y')
                             ->whereNotIn('order', ['MTI', 'MTK']);
