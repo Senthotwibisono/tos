@@ -104,6 +104,15 @@ class LoadController extends Controller
             return '<button class="btn btn-outline-danger CancelBay" data-id="'.$cont->container_key.'">Cancel</button>';
           })
           ->rawColumns(['slot', 'action1', 'action2']) // Jika ada kolom yang memerlukan rendering HTML
+          ->filter(function ($query) use ($request) {
+            if ($search = $request->input('search.value')) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('ves_name', 'like', "%{$search}%")
+                      ->orWhere('voy_no', 'like', "%{$search}%")
+                      ->orWhere('container_no', 'like', "%{$search}%");
+                });
+            }
+        })
           ->make(true);
   }
   

@@ -175,7 +175,7 @@
             </div>
             <div class="row p-3">
               <div class="col-6">
-                <p>Admin :</p>
+                <p>Admin (NK):</p>
                 <p>Total Amount: </p>
                 <p>Discount {{ number_format($form->discount_ds, 2) }}% :</p>
                 <p>Tax (11%): </p>

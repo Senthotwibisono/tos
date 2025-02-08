@@ -26,20 +26,22 @@
                     </svg> Load</button>
             </div>
             <div class="card-body">
-                <table class="table table-hover" id="tableLoad">
-                    <thead>
-                        <tr>
-                            <th>Vessel</th>
-                            <th>Container No</th>
-                            <th>BS || BR || BT</th>
-                            <th>Crane Code</th>
-                            <th>Operator</th>
-                            <th>Load</th>
-                            <th>Edit</th>
-                            <th>Cancel</th>
-                        </tr>
-                    </thead>
-                </table>
+                <div class="table">
+                    <table class="table table-hover" id="tableLoad">
+                        <thead>
+                            <tr>
+                                <th>Vessel</th>
+                                <th>Container No</th>
+                                <th>BS || BR || BT</th>
+                                <th>Crane Code</th>
+                                <th>Operator</th>
+                                <th>Load</th>
+                                <th>Edit</th>
+                                <th>Cancel</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
             </div>
         </div>
     </section>
@@ -273,6 +275,7 @@
         $('#tableLoad').DataTable({
             processing: true,
             serverSide: true,
+            scrollX: true,
             ajax: '/load/dataTable',
             columns: [
                 { data: 'veseel', name: 'veseel' },
@@ -305,39 +308,40 @@
 </script>
 
 <script>
-    document.querySelectorAll('.CancelBay').forEach(button => {
-        button.addEventListener('click', function() {
-            const id = this.getAttribute('data-id');
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "Do you really want to cancel this container?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, cancel it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Membuat dan mengirimkan form POST secara dinamis
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = `/load/cancel${id}`;
+  document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('CancelBay')) {
+        const id = event.target.getAttribute('data-id');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you really want to cancel this container?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, cancel it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Membuat dan mengirimkan form POST secara dinamis
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/load/cancel${id}`; // Perbaiki format URL
 
-                    // Tambahkan token CSRF jika diperlukan (Laravel CSRF protection)
-                    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                    const inputCsrf = document.createElement('input');
-                    inputCsrf.type = 'hidden';
-                    inputCsrf.name = '_token';
-                    inputCsrf.value = csrfToken;
-                    form.appendChild(inputCsrf);
+                // Tambahkan token CSRF jika diperlukan (Laravel CSRF protection)
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                const inputCsrf = document.createElement('input');
+                inputCsrf.type = 'hidden';
+                inputCsrf.name = '_token';
+                inputCsrf.value = csrfToken;
+                form.appendChild(inputCsrf);
 
-                    // Tambahkan form ke body dan submit
-                    document.body.appendChild(form);
-                    form.submit();
-                }
-            });
+                // Tambahkan form ke body dan submit
+                document.body.appendChild(form);
+                form.submit();
+            }
         });
-    });
+    }
+});
+
 </script>
 
 <script>

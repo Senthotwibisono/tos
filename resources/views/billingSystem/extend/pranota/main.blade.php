@@ -233,7 +233,7 @@ use Carbon\Carbon;
           </div>
           <div class="row p-3">
             <div class="col-xs-12 col-6">
-              <p>Admin : </p>
+              <p>Admin (NK) : </p>
               <p>Total Amount: </p>
               <p>Discount:</p>
               <p>Tax (11%): </p>

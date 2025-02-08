@@ -53,7 +53,7 @@
     </style>
 </head>
 
-<body class="theme-dark" style="overflow-y: auto;">
+<body class="" style="overflow-y: auto;">
     <div class="container-fluid">
         <button onclick="goBack()" style="background: none; border: none;">
             <i class="bi bi-arrow-left" style="font-size: 50px; color: lightskyblue;"></i>
