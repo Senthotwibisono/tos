@@ -403,6 +403,7 @@ Route::get('/planning/schedule_schedule={ves_id}', [VesselController::class, 'ed
 Route::patch('/planning/schedule_update={ves_id}', [VesselController::class, 'update_schedule']);
 Route::delete('/planning/delete_schedule={ves_id}', [VesselController::class, 'delete_schedule']);
 Route::get('/refresh_counter', [VesselController::class, 'refreshCounter']);
+Route::post('/createBayManually', [VesselController::class, 'createBayManually']);
 
 Route::get('/android/vessel-main', [VesselController::class, 'androidDashboard']);
 Route::get('/android/vessel-create', [VesselController::class, 'androidCreate']);

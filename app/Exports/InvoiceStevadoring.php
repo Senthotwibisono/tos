@@ -67,7 +67,7 @@ class InvoiceStevadoring implements FromCollection, WithMapping, WithHeadings, S
             $invoice->proforma_no,
             $invoice->invoice_no,
             $invoice->cust_id,
-            $invoice->cust_name,
+            $invoice->cust_name ?? '-',
             $invoice->fax,
             $invoice->npwp,
             $invoice->alamat,

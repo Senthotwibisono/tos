@@ -100,7 +100,7 @@
                       </td>
                       @endif
                       <td>
-                        @if($inv->inv_type == 'DSK')
+                        @if($inv->inv_type == 'OSK')
                       <a type="button" href="/pranota/export-OSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
                         @else
                       <a type="button" href="/pranota/export-OS{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
@@ -115,7 +115,7 @@
                       </td>
                       @else
                       <td>
-                      @if($inv->inv_type == 'DSK')
+                      @if($inv->inv_type == 'OSK')
                       <a type="button" href="/invoice/export-OSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
                       @else  
                       <a type="button" href="/invoice/export-OS{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>

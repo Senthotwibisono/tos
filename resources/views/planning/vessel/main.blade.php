@@ -37,6 +37,7 @@
                             <th>Liner</th>
                             <th>Berth. Date</th>
                             <th>Dep. Date</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -58,6 +59,7 @@
                             <button type="button" class="btn icon btn-danger" onclick="confirmDelete(event)"> <i class="bi bi-x"></i></button>
 
                             <a href="/planning/schedule_schedule={{$voyage->ves_id}}" class="btn icon btn-primary"><i class="bi bi-pencil"></i></a>
+                            <button type="button" class="btn btn-success bayPlanCreate" data-id="{{$voyage->ves_id}}">create Bay Plan</button>
                             </form>
                         </tr>
                         @endforeach
@@ -75,6 +77,58 @@
 <script src="{{asset('dist/assets/extensions/sweetalert2/sweetalert2.min.js')}}"></script>    
     <script src="{{asset('dist/assets/js/pages/sweetalert2.js')}}"></script>
 
+    <script>
+    $(document).on('click', '.bayPlanCreate', function(){
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Apakah anda yakin menerapkan filter ini?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, update it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let ves_id = $(this).data('id'); // Ambil ID dari data-id
+
+                Swal.fire({
+                    title: 'Processing...',
+                    text: 'Please wait',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                // Kirim request POST menggunakan AJAX
+                $.ajax({
+                    url: '/createBayManually',
+                    type: 'POST',
+                    data: {
+                        ves_id: ves_id,
+                        _token: '{{ csrf_token() }}' // Pastikan CSRF token dikirim
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Bay Plan berhasil dibuat.',
+                            icon: 'success'
+                        }).then(() => {
+                            location.reload(); // Reload halaman setelah sukses
+                        });
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Gagal membuat Bay Plan. Silakan coba lagi.',
+                            icon: 'error'
+                        });
+                    }
+                });
+            }
+        });
+    });
+</script>
     <script>
     @if (session('success'))
         Swal.fire({

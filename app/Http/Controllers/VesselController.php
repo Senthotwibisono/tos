@@ -286,6 +286,64 @@ class VesselController extends Controller
         return redirect('/planning/vessel-schedule')->with('success', "Jadwal Berhasil Dibuat");
     }
 
+    public function createBayManually(Request $request)
+{
+    try {
+        $ves = VVoyage::find($request->ves_id);
+        
+        if (!$ves) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Voyage tidak ditemukan.',
+            ]);
+        }
+
+        $bay = ProfileTier::where('ves_code', $ves->ves_code)->get();
+
+        if ($bay->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Profile Kapal belum dibuat.',
+            ]);
+        }
+
+        foreach ($bay as $bayPlan) {
+            if ($bayPlan->active == 'Y') {
+                $oldShip = Ship::where('ves_id', $ves->ves_id)
+                    ->where('on_under', $bayPlan->on_under)
+                    ->where('bay_slot', $bayPlan->bay_slot)
+                    ->where('bay_row', $bayPlan->bay_row)
+                    ->where('bay_tier', $bayPlan->bay_tier)
+                    ->first();
+
+                if (!$oldShip) { // Perbaikan dari $oldShip->isEmpty()
+                    Ship::create([
+                        'on_under' => $bayPlan->on_under,
+                        'ves_id'   => $ves->ves_id,
+                        'ves_code' => $ves->ves_code,
+                        'voy_no'   => $ves->voy_out ?? '-', // Pastikan `voy_out` ada atau gunakan default
+                        'bay_slot' => $bayPlan->bay_slot,
+                        'bay_row'  => $bayPlan->bay_row,
+                        'bay_tier' => $bayPlan->bay_tier,
+                    ]);
+                }
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data berhasil diperbarui.',
+        ]);
+
+    } catch (\Throwable $th) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Terjadi kesalahan: ' . $th->getMessage(),
+        ]);
+    }
+}
+
+
     public function edit_schedule($ves_id){
         $title = 'Edit Schedule';
         $bongkar_import = Item::where('ves_id', $ves_id)->where('ctr_i_e_t', '=', 'I')->where('ctr_intern_status','!=', '01' )->count();
