@@ -20,7 +20,7 @@
                                     </ul>
                                 </div>
                             @endif
-                            <form class="form" method="post" action='/planning/vessel_schedule_store'>
+                            <form class="form" method="post" action='/planning/vessel_schedule_store' id="createForm">
                                 @CSRF
                                 <div class="row" style="border:1px solid blue;">
                                     <div class="col-md-6 col-12" >
@@ -264,87 +264,227 @@
                                             <button type="refresh" onclick="refreshData()" class="btn btn-light-success me-1 mb-1">Refresh</button>
                                         </div>
                                     </div> -->
-                                    <div class="table">
-                            <table class="table mb-0">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th><h4>Booking Information</h4></th>
-                                        <th>Import</th>
-                                        <th>Export</th>
-                                        <th>Action</th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="text-bold-500"><h5>Booking</h5></td>
-                                        <td><input type="number"   name="import_booking" class="form-control"></td>
-                                        <td ><input type="number" name="export_booking" class="form-control"></td>
-                                        <td>-</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-bold-500"><h5>Counter</h5></td>
-                                        <td><input type="number"   name="import_counter" class="form-control" disabled></td>
-                                        <td ><input type="number" name="export_counter" class="form-control" disabled></td>
-                                        <td>-</td>
-                                    </tr>
-                                    </tbody>
-                            </table>
-                        </div>
+                                    <div class="divider">
+                                        <div class="divider-text">
+                                            Booking Information
+                                        </div>
+                                    </div>
+                                    <div class="divider divider-left">
+                                        <div class="divider-text">
+                                            Booking
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Import</label>
+                                                <input type="number" class="form-control" name="import_booking" id="">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Export</label>
+                                                <input type="number" class="form-control" name="export_booking" id="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="divider divider-left">
+                                        <div class="divider-text">
+                                            Counter
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Import</label>
+                                                <input type="number" class="form-control" name="import_counter" id="">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Export</label>
+                                                <input type="number" class="form-control" name="export_counter" id="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="table">
+                                        <table class="table mb-0">
+                                            <thead class="thead-dark">
+                                                <tr>
+                                                    <th><h4>Booking Information</h4></th>
+                                                    <th>Import</th>
+                                                    <th>Export</th>
+                                                    <th>Action</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class=""><h5>Booking</h5></td>
+                                                    <td><input type="number"   name="import_booking" class="form-control"></td>
+                                                    <td ><input type="number" name="export_booking" class="form-control"></td>
+                                                    <td>-</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class=""><h5>Counter</h5></td>
+                                                    <td><input type="number"   name="import_counter" class="form-control" disabled></td>
+                                                    <td ><input type="number" name="export_counter" class="form-control" disabled></td>
+                                                    <td>-</td>
+                                                </tr>
+                                                </tbody>
+                                        </table>
+                                    </div> -->
                                     
 
                                     <hr>
-                                    
-                                    <div class="table">
-                            <table class="table mb-0">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th><h4>Time schedule</h4></th>
-                                        <th>Estimate</th>
-                                        <th>Actual</th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="text-bold-500"><h5>Arrival Date</h5></td>
-                                        <td><input type="datetime-local"   name="eta_date" class="form-control"></td>
-                                        <td ><input type="datetime-local" value="{{ $currentDateTimeString }}"  name="arrival_date" class="form-control"  disabled ></td>
-                                    </tr>
-                                    <!-- <tr>
-                                        <td class="text-bold-500"><h5>Anchorage Date</h5></td>
-                                        <td><input type="datetime-local"  name="est_anchorage_date" class="form-control"></td>
-                                        <td><input type="datetime-local" value="{{ $currentDateTimeString }}" name="act_anchorage_date" class="form-control" disabled ></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-bold-500"><h5>Pilot Date</h5></td>
-                                        <td><input type="datetime-local"  name="est_pilot_date" class="form-control"></td>
-                                        <td ><input type="datetime-local" value="{{ $currentDateTimeString }}" name="act_pilot_date" class="form-control" disabled ></td>
-                                    </tr>                                     -->
-                                    <tr>
-                                        <td class="text-bold-500"><h5>Waktu Sandar</h5></td>
-                                        <td><input type="datetime-local"  name="est_berthing_date" class="form-control"></td>
-                                        <td ><input type="datetime-local" value="{{ $currentDateTimeString }}" name="berthing_date" class="form-control" disabled > </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-bold-500"><h5>Mulai Kerja</h5></td>
-                                        <td><input type="datetime-local"  name="est_start_work_date" class="form-control"></td>
-                                        <td ><input type="datetime-local" value="{{ $currentDateTimeString }}" name="act_start_work_date" class="form-control" disabled ></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-bold-500"><h5>Selesai Kerja</h5></td>
-                                        <td><input type="datetime-local"  name="est_end_work_date" class="form-control"></td>
-                                        <td ><input type="datetime-local" value="{{ $currentDateTimeString }}" name="act_end_work_date" class="form-control" disabled ></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-bold-500"><h5>Deparature Date</h5></td>
-                                        <td><input type="datetime-local"  name="etd_date" class="form-control"></td>
-                                        <td ><input type="datetime-local" value="{{ $currentDateTimeString }}" name="deparature_date" class="form-control" disabled ></td>
-                                    </tr>
-                                   
-                                </tbody>
-                            </table>
-                        </div>
+                                    <div class="divider">
+                                        <div class="divider-text">
+                                            Time Schedule
+                                        </div>
+                                    </div>
+                                    <div class="divider divider-left">
+                                        <div class="divider-text">
+                                            Arrival Date
+                                        </div>
+                                    </div>
+                                    <div class="row d-flex align-items-end">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Estimate</label>
+                                                <input type="datetime-local" name="eta_date" class="form-control form-control-sm">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Actual</label>
+                                                <input type="datetime-local" value="{{ $currentDateTimeString }}"  name="arrival_date" class="form-control form-control-sm"  disabled >
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="divider divider-left">
+                                        <div class="divider-text">
+                                            Waktu Sandar
+                                        </div>
+                                    </div>
+                                    <div class="row d-flex align-items-end">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Estimate</label>
+                                                <input type="datetime-local"  name="est_berthing_date" class="form-control form-control-sm">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Actual</label>
+                                                <input type="datetime-local" value="{{ $currentDateTimeString }}" name="berthing_date" class="form-control form-control-sm" disabled >
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="divider divider-left">
+                                        <div class="divider-text">
+                                           Mulai Kerja
+                                        </div>
+                                    </div>
+                                    <div class="row d-flex align-items-end">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Estimate</label>
+                                                <input type="datetime-local"  name="est_start_work_date" class="form-control form-control-sm">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Actual</label>
+                                                <input type="datetime-local" value="{{ $currentDateTimeString }}" name="act_start_work_date" class="form-control form-control-sm" disabled >
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="divider divider-left">
+                                        <div class="divider-text">
+                                           Selesai Kerja
+                                        </div>
+                                    </div>
+                                    <div class="row d-flex align-items-end">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Estimate</label>
+                                                <input type="datetime-local"  name="est_end_work_date" class="form-control form-control-sm">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Actual</label>
+                                                <input type="datetime-local" value="{{ $currentDateTimeString }}" name="act_end_work_date" class="form-control form-control-sm" disabled >
+                                            </div>
+                                    </div>
+                                    <div class="divider divider-left">
+                                        <div class="divider-text">
+                                           Deparature Date
+                                        </div>
+                                    </div>
+                                    <div class="row d-flex align-items-end">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Estimate</label>
+                                                <input type="datetime-local"  name="etd_date" class="form-control form-control-sm">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Actual</label>
+                                                <input type="datetime-local" value="{{ $currentDateTimeString }}" name="deparature_date" class="form-control form-control-sm" disabled >
+                                            </div>
+                                    </div>
+                                    <!-- <div class="table table-responsive w-auto">
+                                        <table class="table table-sm mb-0">
+                                            <thead class="">
+                                                <tr>
+                                                    <th class="text-center">Time schedule</th>
+                                                    <th class="text-center">Estimate</th>
+                                                    <th class="text-center">Actual</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class=""><p>Arrival Date</p></td>
+                                                    <td><input type="datetime-local"   name="eta_date" class="form-control form-control-sm"></td>
+                                                    <td ><input type="datetime-local" value="{{ $currentDateTimeString }}"  name="arrival_date" class="form-control form-control-sm"  disabled ></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class=""><p>Anchorage Date</p></td>
+                                                    <td><input type="datetime-local"  name="est_anchorage_date" class="form-control form-control-sm"></td>
+                                                    <td><input type="datetime-local" value="{{ $currentDateTimeString }}" name="act_anchorage_date" class="form-control form-control-sm" disabled ></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class=""><p>Pilot Date</p></td>
+                                                    <td><input type="datetime-local"  name="est_pilot_date" class="form-control form-control-sm"></td>
+                                                    <td ><input type="datetime-local" value="{{ $currentDateTimeString }}" name="act_pilot_date" class="form-control form-control-sm" disabled ></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class=""><p>Waktu Sandar</p></td>
+                                                    <td><input type="datetime-local"  name="est_berthing_date" class="form-control form-control-sm"></td>
+                                                    <td ><input type="datetime-local" value="{{ $currentDateTimeString }}" name="berthing_date" class="form-control form-control-sm" disabled > </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class=""><p>Mulai Kerja</p></td>
+                                                    <td><input type="datetime-local"  name="est_start_work_date" class="form-control form-control-sm"></td>
+                                                    <td ><input type="datetime-local" value="{{ $currentDateTimeString }}" name="act_start_work_date" class="form-control form-control-sm" disabled ></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class=""><p>Selesai Kerja</p></td>
+                                                    <td><input type="datetime-local"  name="est_end_work_date" class="form-control form-control-sm"></td>
+                                                    <td ><input type="datetime-local" value="{{ $currentDateTimeString }}" name="act_end_work_date" class="form-control form-control-sm" disabled ></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class=""><p>Deparature Date</p></td>
+                                                    <td><input type="datetime-local"  name="etd_date" class="form-control form-control-sm"></td>
+                                                    <td ><input type="datetime-local" value="{{ $currentDateTimeString }}" name="deparature_date" class="form-control form-control-sm" disabled ></td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div> -->
                                     
 
                                     <!-- <div class="col-md-12 col-12">
@@ -397,8 +537,8 @@
                                     <hr>
                                     <hr>
                                     <div class="col-12 d-flex justify-content-end">
-                                        <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
-                                        <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button>
+                                        <button type="button"  id="submitButton" class="btn btn-primary me-1 mb-1">Submit</button>
+                                        <button type="button" class="btn btn-light-secondary me-1 mb-1">Reset</button>
                                     </div>
                                 </div>
                             </form>
@@ -413,10 +553,41 @@
 @endsection
 
 @section('custom_js')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Attach event listener to the update button
+        document.getElementById('submitButton').addEventListener('click', function (e) {
+            e.preventDefault(); // Prevent the default form submission
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js"></script>
+            // Show SweetAlert confirmation dialog
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, update it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                    title: 'Processing...',
+                    text: 'Please wait while we update the container',
+                    icon: 'info',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                        willOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    // Submit the form programmatically if confirmed
+                    document.getElementById('createForm').submit();
 
+                }
+            });
+        });
+    });
+</script>
 <script>
     $(function(){
         $.ajaxSetup({

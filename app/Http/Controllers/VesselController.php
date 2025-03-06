@@ -16,6 +16,8 @@ use App\Models\ProfileTier;
 use App\Models\Ship;
 use Carbon\Carbon;
 
+use Auth;
+
 
 class VesselController extends Controller
 {
@@ -282,8 +284,12 @@ class VesselController extends Controller
                 }
             }
         }
+        if (Auth::user()->role == 'admin') {
+            return redirect('/planning/vessel-schedule')->with('success', "Jadwal Berhasil Dibuat");
+        }else {
+            return redirect('/android/vessel-main')->with('success', "Jadwal Berhasil Dibuat");
+        }
 
-        return redirect('/planning/vessel-schedule')->with('success', "Jadwal Berhasil Dibuat");
     }
 
     public function createBayManually(Request $request)
@@ -417,7 +423,11 @@ class VesselController extends Controller
         ]);
     }
         
+    if (Auth::user()->role == 'admin') {
         return redirect('/planning/vessel-schedule')->with('success', "Jadwal Berhasil Diperbarui");
+    }else {
+        return redirect('/android/vessel-main')->with('success', "Jadwal Berhasil Diperbarui");
+    }
     }
 
 

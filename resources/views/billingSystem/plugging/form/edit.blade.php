@@ -9,7 +9,7 @@
 </div>
 <div class="page-content mb-5">
   <section class="row">
-    <form action="{{ route('plugging-create-update')}}" method="post" id="formSubmit" enctype="multipart/form-data">
+    <form action="{{ route('plugging-create-update')}}" method="post" id="updateForm" enctype="multipart/form-data">
       @CSRF
       <div class="card">
         <div class="card-body">
@@ -118,7 +118,7 @@
          
           <div class="row mt-5">
             <div class="col-12 text-right">
-            <button type="submit" class="btn btn-success">Submit</button>
+            <button type="button" id="updateButton" class="btn btn-success">Submit</button>
             <button type="button" class="btn btn-light-secondary" onclick="window.history.back();"><i class="bx bx-x d-block d-sm-none"></i><span class="d-none d-sm-block">Back</span></button>
             </div>
           </div>
@@ -131,6 +131,40 @@
 @endsection
 
 @section('custom_js')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Attach event listener to the update button
+        document.getElementById('updateButton').addEventListener('click', function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            // Show SweetAlert confirmation dialog
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, update it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Submit the form programmatically if confirmed
+                        Swal.fire({
+                        title: 'Processing...',
+                        text: 'Please wait while we update the container',
+                        icon: 'info',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                            willOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                    document.getElementById('updateForm').submit();
+                }
+            });
+        });
+    });
+</script>
 <script>
   $(function(){
         $.ajaxSetup({

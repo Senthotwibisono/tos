@@ -20,7 +20,7 @@
                                     </ul>
                                 </div>
                             @endif
-                            <form class="form" method="post" action='/planning/schedule_update={{$vessel_voyage->ves_id}}'>
+                            <form class="form" method="post" action='/planning/schedule_update={{$vessel_voyage->ves_id}}' id="updateForm">
                                 @CSRF
                                 @method('PATCH')
                                 <div class="row">
@@ -220,87 +220,232 @@
                                             <button type="refresh" onclick="refreshData()" class="btn btn-light-success me-1 mb-1">Refresh</button>
                                         </div>
                                     </div> -->
-                                    <div class="table">
-                            <table class="table mb-0" id="counter">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th><h4>Booking Information</h4></th>
-                                        <th>Import</th>
-                                        <th>Export</th>
-                                        <th>Action</th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="text-bold-500"><h5>Booking</h5></td>
-                                        <td><input type="number"   name="import_booking" value="{{$vessel_voyage->import_booking}}" class="form-control"></td>
-                                        <td ><input type="number" name="export_booking"  value="{{ $vessel_voyage->export_booking }}" class="form-control"></td>
-                                        <td>-</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-bold-500"><h5>Counter</h5></td>
-                                        <td><input type="number"   id="import_counter" name="import_counter" class="form-control" value="{{$bongkar_import}}" readonly></td>
-                                        <td ><input type="number"  id="export_counter" name="export_counter" class="form-control"  readonly></td>
-                                        <td><button id="refresh" type="button" class="btn btn-outline-warning me-1 mb-1">Refresh</button></td>
-                                    </tr>
-                                    </tbody>
-                            </table>
-                        </div>
+                                    <!-- <div class="table">
+                                        <table class="table mb-0" id="counter">
+                                            <thead class="thead-dark">
+                                                <tr>
+                                                    <th><h4>Booking Information</h4></th>
+                                                    <th>Import</th>
+                                                    <th>Export</th>
+                                                    <th>Action</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="text-bold-500"><h5>Booking</h5></td>
+                                                    <td><input type="number"   name="import_booking" value="{{$vessel_voyage->import_booking}}" class="form-control"></td>
+                                                    <td ><input type="number" name="export_booking"  value="{{ $vessel_voyage->export_booking }}" class="form-control"></td>
+                                                    <td>-</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-bold-500"><h5>Counter</h5></td>
+                                                    <td><input type="number"   id="import_counter" name="import_counter" class="form-control" value="{{$bongkar_import}}" readonly></td>
+                                                    <td ><input type="number"  id="export_counter" name="export_counter" class="form-control"  readonly></td>
+                                                    <td><button id="refresh" type="button" class="btn btn-outline-warning me-1 mb-1">Refresh</button></td>
+                                                </tr>
+                                                </tbody>
+                                        </table>
+                                    </div> -->
+
+                                    <div class="divider">
+                                        <div class="divider-text">
+                                            Booking Information
+                                        </div>
+                                    </div>
+                                    <div class="divider divider-left">
+                                        <div class="divider-text">
+                                            Booking
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Import</label>
+                                                <input type="number"   name="import_booking" value="{{$vessel_voyage->import_booking}}" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Export</label>
+                                                <input type="number" name="export_booking"  value="{{ $vessel_voyage->export_booking }}" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="divider divider-left">
+                                        <div class="divider-text">
+                                            Counter
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Import</label>
+                                                <input type="number"   id="import_counter" name="import_counter" class="form-control" value="{{$bongkar_import}}" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Export</label>
+                                                <input type="number"  id="export_counter" name="export_counter" class="form-control"  readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <button id="refresh" type="button" class="btn btn-outline-warning me-1 mb-1">Refresh</button>
+                                        </div>
+                                    </div>
                                     
 
                                     <hr>
                                     
-                                    <div class="table">
-                            <table class="table mb-0">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th><h4>Time schedule</h4></th>
-                                        <th>Estimate</th>
-                                        <th>Actual</th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="text-bold-500"><h5>Arrival Date</h5></td>
-                                        <td> <input type="datetime-local" id="first-name-vertical" class="form-control" name="ves_code" value="{{ $vessel_voyage->eta_date }}"  disabled></td>
-                                        <td ><input type="datetime-local"   name="arrival_date" class="form-control"    value="{{ $vessel_voyage->arrival_date }}"></td>
-                                    </tr>
-                                    <!-- <tr>
-                                        <td class="text-bold-500"><h5>Anchorage Date</h5></td>
-                                        <td> <input type="datetime-local" id="first-name-vertical" class="form-control" name="ves_code" value="{{ $vessel_voyage->est_anchorage_date }}"  disabled></td>
-                                        <td><input type="datetime-local"  name="act_anchorage_date" class="form-control" value="{{ $vessel_voyage->act_anchorage_date }}"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-bold-500"><h5>Pilot Date</h5></td>
-                                        <td><input type="datetime-local" id="first-name-vertical" class="form-control" name="ves_code" value="{{ $vessel_voyage->est_pilot_date }}"  disabled></td>
-                                        <td ><input type="datetime-local"  name="act_pilot_date" class="form-control" value="{{ $vessel_voyage->act_pilot_date }}" ></td>
-                                    </tr>                                     -->
-                                    <tr>
-                                        <td class="text-bold-500"><h5>Waktu Sndar</h5></td>
-                                        <td><input type="datetime-local" id="first-name-vertical" class="form-control" name="ves_code" value="{{ $vessel_voyage->est_berthing_date }}"  disabled></td>
-                                        <td ><input type="datetime-local"  name="berthing_date" class="form-control" value="{{ $vessel_voyage->berthing_date }}"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-bold-500"><h5>Mulai Kerja</h5></td>
-                                        <td><input type="datetime-local" id="first-name-vertical" class="form-control" name="ves_code" value="{{ $vessel_voyage->est_start_work_date }}"  disabled></td>
-                                        <td ><input type="datetime-local"  name="act_start_work_date" class="form-control" value="{{ $vessel_voyage->act_start_work_date }}"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-bold-500"><h5>Selesai Kerja</h5></td>
-                                        <td> <input type="datetime-local" id="first-name-vertical" class="form-control" name="ves_code" value="{{ $vessel_voyage->est_end_work_date }}"  disabled></td>
-                                        <td ><input type="datetime-local"  name="act_end_work_date" class="form-control" value="{{ $vessel_voyage->act_end_work_date }}"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-bold-500"><h5>Deparature Date</h5></td>
-                                        <td> <input type="datetime-local" id="first-name-vertical" class="form-control" name="ves_code" value="{{ $vessel_voyage->etd_date }}"  disabled></td>
-                                        <td ><input type="datetime-local"  name="deparature_date" class="form-control" value="{{ $vessel_voyage->deparature_date }}"></td>
-                                    </tr>
-                                   
-                                </tbody>
-                            </table>
-                        </div>
+                                    <!-- <div class="table">
+                                        <table class="table mb-0">
+                                            <thead class="thead-dark">
+                                                <tr>
+                                                    <th><h4>Time schedule</h4></th>
+                                                    <th>Estimate</th>
+                                                    <th>Actual</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class=""><h5>Arrival Date</h5></td>
+                                                    <td> <input type="datetime-local" id="first-name-vertical" class="form-control" name="ves_code" value="{{ $vessel_voyage->eta_date }}"  disabled></td>
+                                                    <td ><input type="datetime-local"   name="arrival_date" class="form-control"    value="{{ $vessel_voyage->arrival_date }}"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class=""><h5>Anchorage Date</h5></td>
+                                                    <td> <input type="datetime-local" id="first-name-vertical" class="form-control" name="ves_code" value="{{ $vessel_voyage->est_anchorage_date }}"  disabled></td>
+                                                    <td><input type="datetime-local"  name="act_anchorage_date" class="form-control" value="{{ $vessel_voyage->act_anchorage_date }}"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class=""><h5>Pilot Date</h5></td>
+                                                    <td><input type="datetime-local" id="first-name-vertical" class="form-control" name="ves_code" value="{{ $vessel_voyage->est_pilot_date }}"  disabled></td>
+                                                    <td ><input type="datetime-local"  name="act_pilot_date" class="form-control" value="{{ $vessel_voyage->act_pilot_date }}" ></td>
+                                                </tr>                                    
+                                                <tr>
+                                                    <td class=""><h5>Waktu Sndar</h5></td>
+                                                    <td><input type="datetime-local" id="first-name-vertical" class="form-control" name="ves_code" value="{{ $vessel_voyage->est_berthing_date }}"  disabled></td>
+                                                    <td ><input type="datetime-local"  name="berthing_date" class="form-control" value="{{ $vessel_voyage->berthing_date }}"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class=""><h5>Mulai Kerja</h5></td>
+                                                    <td><input type="datetime-local" id="first-name-vertical" class="form-control" name="ves_code" value="{{ $vessel_voyage->est_start_work_date }}"  disabled></td>
+                                                    <td ><input type="datetime-local"  name="act_start_work_date" class="form-control" value="{{ $vessel_voyage->act_start_work_date }}"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class=""><h5>Selesai Kerja</h5></td>
+                                                    <td> <input type="datetime-local" id="first-name-vertical" class="form-control" name="ves_code" value="{{ $vessel_voyage->est_end_work_date }}"  disabled></td>
+                                                    <td ><input type="datetime-local"  name="act_end_work_date" class="form-control" value="{{ $vessel_voyage->act_end_work_date }}"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class=""><h5>Deparature Date</h5></td>
+                                                    <td> <input type="datetime-local" id="first-name-vertical" class="form-control" name="ves_code" value="{{ $vessel_voyage->etd_date }}"  disabled></td>
+                                                    <td ><input type="datetime-local"  name="deparature_date" class="form-control" value="{{ $vessel_voyage->deparature_date }}"></td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div> -->
+
+                                    <div class="divider">
+                                        <div class="divider-text">
+                                            Time Schedule
+                                        </div>
+                                    </div>
+                                    <div class="divider divider-left">
+                                        <div class="divider-text">
+                                            Arrival Date
+                                        </div>
+                                    </div>
+                                    <div class="row d-flex align-items-end">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Estimate</label>
+                                                <input type="datetime-local" id="first-name-vertical" class="form-control" name="ves_code" value="{{ $vessel_voyage->eta_date }}"  disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Actual</label>
+                                                <input type="datetime-local"   name="arrival_date" class="form-control"    value="{{ $vessel_voyage->arrival_date }}">
+                                        </div>
+                                    </div>
+                                    <div class="divider divider-left">
+                                        <div class="divider-text">
+                                            Waktu Sandar
+                                        </div>
+                                    </div>
+                                    <div class="row d-flex align-items-end">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Estimate</label>
+                                                <input type="datetime-local" id="first-name-vertical" class="form-control" name="ves_code" value="{{ $vessel_voyage->est_berthing_date }}"  disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Actual</label>
+                                                <input type="datetime-local"  name="berthing_date" class="form-control" value="{{ $vessel_voyage->berthing_date }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="divider divider-left">
+                                        <div class="divider-text">
+                                           Mulai Kerja
+                                        </div>
+                                    </div>
+                                    <div class="row d-flex align-items-end">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Estimate</label>
+                                                <input type="datetime-local" id="first-name-vertical" class="form-control" name="ves_code" value="{{ $vessel_voyage->est_start_work_date }}"  disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Actual</label>
+                                                <input type="datetime-local"  name="act_start_work_date" class="form-control" value="{{ $vessel_voyage->act_start_work_date }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="divider divider-left">
+                                        <div class="divider-text">
+                                           Selesai Kerja
+                                        </div>
+                                    </div>
+                                    <div class="row d-flex align-items-end">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Estimate</label>
+                                                <input type="datetime-local" id="first-name-vertical" class="form-control" name="ves_code" value="{{ $vessel_voyage->est_end_work_date }}"  disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Actual</label>
+                                                <input type="datetime-local"  name="act_end_work_date" class="form-control" value="{{ $vessel_voyage->act_end_work_date }}">
+                                            </div>
+                                    </div>
+                                    <div class="divider divider-left">
+                                        <div class="divider-text">
+                                           Deparature Date
+                                        </div>
+                                    </div>
+                                    <div class="row d-flex align-items-end">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Estimate</label>
+                                                <input type="datetime-local" id="first-name-vertical" class="form-control" name="ves_code" value="{{ $vessel_voyage->etd_date }}"  disabled>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label for="">Actual</label>
+                                                <input type="datetime-local"  name="deparature_date" class="form-control" value="{{ $vessel_voyage->deparature_date }}">
+                                            </div>
+                                    </div>
                                     
 
                                     <!-- <div class="col-md-12 col-12">
@@ -353,8 +498,8 @@
                                     <hr>
                                     <hr>
                                     <div class="col-12 d-flex justify-content-end">
-                                        <button type="submit" class="btn btn-primary me-1 mb-1">Submit</button>
-                                        <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button>
+                                        <button type="button" id="updateButton" class="btn btn-primary me-1 mb-1">Submit</button>
+                                        <button type="button" class="btn btn-light-secondary me-1 mb-1">Reset</button>
                                     </div>
                                 </div>
                             </form>
@@ -388,5 +533,40 @@ $(document).on('click', '#refresh', function() {
     });
 });
 
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Attach event listener to the update button
+        document.getElementById('updateButton').addEventListener('click', function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            // Show SweetAlert confirmation dialog
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, update it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Submit the form programmatically if confirmed
+                        Swal.fire({
+                        title: 'Processing...',
+                        text: 'Please wait while we update the container',
+                        icon: 'info',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                            willOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                    document.getElementById('updateForm').submit();
+                }
+            });
+        });
+    });
 </script>
 @endsection

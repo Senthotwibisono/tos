@@ -8,7 +8,7 @@
   <p>Review Data Pranota Form & Kalkulasi</p>
 </div>
 <div class="page content mb-5">
-  <form action="{{ route('invoiceExport')}}" method="POST" enctype="multipart/form-data">
+  <form action="{{ route('invoiceExport')}}" method="POST" enctype="multipart/form-data" id="updateForm">
     @CSRF
     <input type="hidden" name="formId" value="{{$form->id}}">
     <div class="card">
@@ -119,7 +119,7 @@
         </div>
         <div class="row mt-3">
           <div class="col-12 text-right">
-            <button type="submit" class="btn btn-success"><i class="fa fa-check-circle"></i> Submit</button>
+            <button type="button" id="updateButton" class="btn btn-success"><i class="fa fa-check-circle"></i> Submit</button>
             <a href="/billing/export/reciving-editForm/{{$form->id}}" class="btn btn-primary text-white"><i class="fa fa-pen"></i> Edit</a>
             <!-- <a type="button" class="btn btn-primary" style="opacity: 50%;"><i class="fa fa-pen "></i> Edit</a> -->
             <a class="btn btn-danger Delete" data-id="{{$form->id}}"><i class="fa fa-close"></i> Batal</a>
@@ -134,6 +134,42 @@
 
 @endsection
 @section('custom_js')
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Attach event listener to the update button
+        document.getElementById('updateButton').addEventListener('click', function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            // Show SweetAlert confirmation dialog
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, update it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Submit the form programmatically if confirmed
+                        Swal.fire({
+                        title: 'Processing...',
+                        text: 'Please wait while we update the container',
+                        icon: 'info',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                            willOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                    document.getElementById('updateForm').submit();
+                }
+            });
+        });
+    });
+</script>
+
 <script>
 $(document).ready(function() {
     $('.Delete').on('click', function() {
