@@ -878,6 +878,7 @@ Route::post('/update/doOnline/{id?}', [MasterTarifController::class, 'doUpdate']
 // invoiceImport
 Route::get('/billing/import/delivey-system', [ImportController::class, 'billingMain'])->name('billinImportgMain');
 Route::get('/billing/import/delivery-dashboard', [ImportController::class, 'deliveryMenu'])->name('deliveryMenu');
+Route::get('/billing/import/formData', [ImportController::class, 'formImportData'])->name('formImportData');
 Route::get('/billing/import/delivery-editForm/{id?}', [ImportController::class, 'deliveryEdit'])->name('deliveryEdit');
 Route::delete('/billing/import/delivery-deleteForm/{id?}', [ImportController::class, 'deliveryDelete'])->name('deliveryDelete');
 Route::delete('/billing/import/delivery-deleteInvoice/{id?}', [ImportController::class, 'deliveryInvoiceDelete'])->name('deliveryInvoiceDelete');
@@ -922,6 +923,9 @@ Route::controller(InvoiceExportController::class)->group(function(){
   Route::get('/invoice/export/reciving-detail/{id?}', 'detilInvoice');
   Route::get('/invoice/export/report-unpaid', 'unpaidReport');
   Route::get('/invoice/export/report-piutang', 'piutangReport');
+  
+  // data Table
+  Route::get('/invoice/export/reciving-detail/table/dataTableExport', 'dataTableExport');
 });
 
 
@@ -1018,7 +1022,9 @@ Route::get('/invoice/report-export-all', [InvoiceExportController::class, 'Repor
 
 // Extend
 Route::get('/billing/import/extendIndex', [InvoiceExtend::class, 'index'])->name('index-extend');
+Route::get('/billing/import/extend/dataIndex', [InvoiceExtend::class, 'dataIndex'])->name('dataIndex');
 Route::get('/billing/import/extendIndexForm', [InvoiceExtend::class, 'ListForm'])->name('listForm-extend');
+Route::get('/billing/import/extendDataForm', [InvoiceExtend::class, 'extendDataForm'])->name('extendDataForm');
 Route::get('/billing/import/extendForm', [InvoiceExtend::class, 'form'])->name('extendForm');
 Route::get('/billing/import/extend-editForm/{id?}', [InvoiceExtend::class, 'EditForm']);
 Route::post('/billing/import/extend-updateFormImport', [InvoiceExtend::class, 'updateFormImport'])->name('updateFormImportExtend');
@@ -1147,6 +1153,7 @@ Route::post('/gate/gate-out/MT-confirm', [GateMTcontroller::class, 'ConfirmOut']
 // plugging
 // main
 Route::get('/plugging', [PluggingController::class, 'billingMain'])->name('plugging-main');
+Route::get('/plugging/dataTable', [PluggingController::class, 'dataTable']);
   // Tarif
 Route::get('/plugging/master-tarif', [MasterInvoiceController::class, 'indexMTplugging'])->name('plugging-tarif-index');
 Route::get('/plugging/master-tarifDetail-{id?}', [MasterInvoiceController::class, 'indexMTpluggingDetail'])->name('plugging-tarif-detail');
@@ -1179,6 +1186,7 @@ Route::post('/plugging/master-tarif-create-first', [MasterInvoiceController::cla
 // Rental-Repair
 // main
 Route::get('/renta&repair', [RentalController::class, 'billingMain'])->name('rental-repair-main');
+Route::get('/renta&repair/dataTable', [RentalController::class, 'dataTable']);
   // Tarif
 Route::get('/renta&repair/master-tarif', [MasterInvoiceController::class, 'indexMTrental'])->name('rental-repair-tarif-index');
 Route::get('/renta&repair/master-tarifDetail-{id?}', [MasterInvoiceController::class, 'indexMTrentalDetail'])->name('rental-repair-tarif-detail');

@@ -29,44 +29,20 @@
         <div class="card-body">
           <div class="row">
             <div class="col-12">
-              <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Customer</th>
-                    <th>Do Number</th>
-                    <th>Order Service</th>
-                    <th>Expired Date</th>
-                    <th>Bill Of Loading Number</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @foreach($formInvoiceImport as $form)
-                  <tr>
-                    <td>{{$loop->iteration}}</td>
-                    <td>{{$form->customer->name ?? ''}}</td>
-                    <td>{{$form->doOnline->do_no ?? ''}}</td>
-                    <td>{{$form->service->name ?? ''}}</td>
-                    <td>{{$form->expired_date ?? ''}}</td>
-                    <td>{{$form->doOnline->bl_no ?? ''}}</td>
-                    <td>
-                      <div class="row">
-                        <div class="col-4">
-                          <a href="/billing/import/delivery-editForm/{{$form->id}}" class="btn btn-outline-warning">Edit</a>
-                         </div>
-                         <div class="col-4">
-                          <form action="" method="post">
-                             @csrf
-                             <button type="button" class="btn btn-outline-danger">Delete</button>
-                           </form>
-                         </div>
-                      </div>
-                    </td>
-                  </tr>
-                  @endforeach
-                </tbody>
-              </table>
+              <div class="table">
+                <table class="table-hover" id="tableForm">
+                  <thead style="white-space: nowrap;">
+                    <tr>
+                      <th>Customer</th>
+                      <th>Do Number</th>
+                      <th>Order Service</th>
+                      <th>Expired Date</th>
+                      <th>Bill Of Loading Number</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -78,4 +54,23 @@
 @include('invoice.modal.modal')
 
 
+@endsection
+@section('custom_js')
+<script>
+  $(document).ready(function() {
+    $('#tableForm').DataTable({
+      processing: true,
+      serverSide: true,
+      ajax : '/billing/import/formData',
+      columns : [
+        { data:'customer', name: 'customer', className:'text-center'},
+        { data:'doOnline', name: 'doOnline', className:'text-center'},
+        { data:'service', name: 'service', className:'text-center'},
+        { data:'expired', name: 'expired', className:'text-center'},
+        { data:'blNo', name: 'blNo', className:'text-center'},
+        { data:'edit', name: 'edit', className:'text-center'},
+      ],
+    })
+  })
+</script>
 @endsection

@@ -24,6 +24,8 @@ use App\Exports\ReportExport;
 use App\Exports\ReportInvoice;
 use App\Exports\ReportInvoiceAllExport;
 
+use DataTables;
+
 
 use Auth;
 use Carbon\Carbon;
@@ -59,26 +61,106 @@ class InvoiceExportController extends Controller
     public function detilUnpaid()
     {
         $data['title'] = "Reciving Billing System (Unpaid Invoice)";
-        $data['unPaids'] = InvoiceExport::whereHas('service', function ($query) {
-            $query->where('ie', '=', 'E');
-        })->whereNot('form_id', '=', '')->where('lunas', '=', 'N')->orderBy('order_at', 'asc')->get();
         return view('billingSystem.export.billing.detil.unPaid', $data);
     }
    
     public function detilPiutang()
     {
         $data['title'] = "Reciving Billing System (Piutang Invoice)";
-        $data['piutangs'] = InvoiceExport::whereHas('service', function ($query) {
-            $query->where('ie', '=', 'E');
-        })->whereNot('form_id', '=', '')->where('lunas', '=', 'P')->orderBy('order_at', 'asc')->get();
         return view('billingSystem.export.billing.detil.piutang', $data);
     }
     public function detilInvoice($id)
     {
         $data['title'] = "Reciving Billing System (Piutang Invoice)";
         $data['os'] = OS::find($id);
-        $data['invoice'] = InvoiceExport::whereNot('form_id', '=', '')->where('os_id', $id)->orderBy('order_at', 'asc')->orderBy('lunas', 'asc')->get();
         return view('billingSystem.export.billing.detil.detil', $data);
+    }
+
+    public function dataTableExport(Request $request)
+    {
+        $invoice = InvoiceExport::whereHas('service', function ($query) {
+            $query->where('ie', '=', 'E');
+        })->whereNot('form_id', '=', '')->orderBy('order_at', 'desc');
+        
+        if ($request->has('type')) {
+            if ($request->type == 'unpaid') {
+                $invoice = InvoiceExport::whereHas('service', function ($query) {
+                    $query->where('ie', '=', 'E');
+                })->whereNot('form_id', '=', '')->where('lunas', '=', 'N')->orderBy('order_at', 'desc');
+            }
+
+            if ($request->type == 'piutang') {
+                $invoice = InvoiceExport::whereHas('service', function ($query) {
+                    $query->where('ie', '=', 'E');
+                })->whereNot('form_id', '=', '')->where('lunas', '=', 'P')->orderBy('order_at', 'desc');
+            }
+        }
+
+        if ($request->has('os_id')) {
+            $invoice = InvoiceExport::whereNot('form_id', '=', '')->where('os_id', $request->os_id)->orderBy('order_at', 'desc')->orderBy('lunas', 'asc');
+        }
+
+        $inv = $invoice->get();
+        return DataTables::of($inv)
+        ->addColumn('proforma', function($inv) {
+            return $inv->proforma_no ?? '-';
+        })
+        ->addColumn('customer', function($inv){
+            return $inv->cust_name ?? '-';
+        })
+        ->addColumn('service', function($inv){
+            return $inv->os_name ?? '-';
+        })
+        ->addColumn('type', function($inv){
+            return $inv->inv_type ?? '-';
+        })
+        ->addColumn('orderAt', function($inv){
+            return $inv->order_at ?? '-';
+        })
+        ->addColumn('status', function($inv){
+            if ($inv->lunas == 'N') {
+                return '<span class="badge bg-danger text-white">Not Paid</span>';
+            }elseif ($inv->lunas == 'P') {
+                return '<span class="badge bg-warning text-white">Piutang</span>';
+            }elseif ($inv->lunas == 'Y') {
+                return '<span class="badge bg-success text-white">Paid</span>';
+            }elseif ($inv->lunas == 'C') {
+                return '<span class="badge bg-danger text-white">Canceled</span>';
+            }
+        })
+        ->addColumn('pranota', function($inv){
+            return '<a type="button" href="/pranota/export-'.$inv->inv_type.$inv->id.'" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>';
+        })
+        ->addColumn('invoice', function($inv){
+            if ($inv->lunas == 'N') {
+                return '<span class="badge bg-info text-white">Paid First!!</span>';
+            }elseif ($inv->lunas == 'C') {
+                return '<span class="badge bg-danger text-white">Canceled</span>';
+            }else {
+                return '<a type="button" href="/invoice/export-'.$inv->inv_type.$inv->id.'" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>';
+            }
+        })
+        ->addColumn('job', function($inv){
+            if ($inv->lunas == 'N') {
+                return '<span class="badge bg-info text-white">Paid First!!</span>';
+            }elseif ($inv->lunas == 'C') {
+                return '<span class="badge bg-danger text-white">Canceled</span>';
+            }else {
+                return '<a type="button" href="/invoice/job/export-'.$inv->id.'" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>';
+            }
+        })
+        ->addColumn('action', function($inv){
+            return '<button type="button" id="pay" data-id="'.$inv->id.'" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>';
+        })
+        ->addColumn('delete', function($inv){
+            if ($inv->lunas == 'N') {
+                return '<button type="button" data-id="'.$inv->form_id.'" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>';
+            }else {
+                return '-';
+            }
+        })
+        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete'])
+        ->make(true);
     }
 
     public function deliveryMenuExport()

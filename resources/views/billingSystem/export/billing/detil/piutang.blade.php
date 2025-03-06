@@ -37,89 +37,25 @@
             <div class="row">
 
               <div class="col-12">
-                <table class="dataTable-wrapperEXP dataTable-loading no-footer sortable searchable fixed-columns" id="tableImp">
-                  <thead>
-                    <tr>
-                      <th>Proforma No</th>
-                      <th>Customer</th>
-                      <th>Order Service</th>
-                      <th>Tipe Invoice</th>
-                      <th>Dibuat Pada</th>
-                      <th>Status</th>
-                      <th>Pranota</th>
-                      <th>Invoice</th>
-                      <th>Job</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  @foreach($piutangs as $inv)
-                  <tr>
-                      <td>{{$inv->proforma_no}}</td>
-                      <td>{{$inv->cust_name}}</td>
-                      <td>{{$inv->os_name}}</td>
-                      <td>{{$inv->inv_type}}</td>
-                      <td>{{$inv->order_at}}</td>
-                      @if($inv->lunas == "N")
-                      <td>
-                      <span class="badge bg-danger text-white">Not Paid</span>
-                      </td>
-                      @elseif($inv->lunas == "P")
-                      <td>
-                      <span class="badge bg-warning text-white">Piutang</span>
-                      </td>
-                      @elseif($inv->lunas == "Y")
-                      <td>
-                      <span class="badge bg-success text-white">Paid</span>
-                      </td>
-                      @else
-                      <td>
-                      <span class="badge bg-danger text-white">Canceled</span>
-                      </td>
-                      @endif
-                      <td>
-                        @if($inv->inv_type == 'DSK')
-                      <a type="button" href="/pranota/export-OSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
-                        @else
-                      <a type="button" href="/pranota/export-OS{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
-                        @endif
-                      </td>
-                      @if($inv->lunas == "N")
-                      <td>
-                      <button type="button" href="/invoice/export-OSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white" disabled><i class="fa fa-dollar"></i></button>
-                      </td>
-                      <td>
-                      <button type="button" href="/invoice/job/export-{{$inv->id}}" target="_blank" class="btn btn-sm btn-info text-white" disabeled><i class="fa fa-ship"></i></button>
-                      </td>
-                      @else
-                      <td>
-                      @if($inv->inv_type == 'DSK')
-                      <a type="button" href="/invoice/export-OSK{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                      @else  
-                      <a type="button" href="/invoice/export-OS{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                      @endif
-                      </td>
-                      <td>
-                      <a type="button" href="/invoice/job/export-{{$inv->id}}" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>
-                      </td>
-                      @endif
-                      <td>
-                        <div class="row">
-
-                          <div class="col-5">
-                            <button type="button" id="pay" data-id="{{$inv->id}}" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>
-                          </div>
-                          @if($inv->lunas == "N")
-                          <div class="col-5">
-                            <button type="button" data-id="{{$inv->form_id}}" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>
-                          </div>
-                          @endif
-                        </div>
-                      </td> <!-- Tambahkan aksi sesuai kebutuhan -->
-                    </tr>
-                   @endforeach
-                  </tbody>
-                </table>
+                <div class="table">
+                  <table class="table-hover" id="pitangTable">
+                    <thead style="white-space: nowrap;">
+                      <tr>
+                        <th>Proforma No</th>
+                        <th>Customer</th>
+                        <th>Order Service</th>
+                        <th>Tipe Invoice</th>
+                        <th>Dibuat Pada</th>
+                        <th>Status</th>
+                        <th>Pranota</th>
+                        <th>Invoice</th>
+                        <th>Job</th>
+                        <th>Action</th>
+                        <th>Cancel</th>
+                      </tr>
+                    </thead>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
@@ -530,5 +466,33 @@ $(document).ready(function() {
       }
     });
   });
+</script>
+
+<script>
+  $(document).ready(function(){
+    $('#pitangTable').DataTable({
+      processing: true,
+      serverSide: true,
+      scrollY: '50hv',
+      scrollX: true,
+      ajax : {
+        url : '/invoice/export/reciving-detail/table/dataTableExport',
+        data: {type : 'piutang'}
+      },
+      columns: [
+        {data:'proforma', name:'proforma', classNmae:'text-center'},
+        {data:'customer', name:'customer', classNmae:'text-center'},
+        {data:'service', name:'service', classNmae:'text-center'},
+        {data:'type', name:'type', classNmae:'text-center'},
+        {data:'orderAt', name:'orderAt', classNmae:'text-center'},
+        {data:'status', name:'status', classNmae:'text-center'},
+        {data:'pranota', name:'pranota', classNmae:'text-center'},
+        {data:'invoice', name:'invoice', classNmae:'text-center'},
+        {data:'job', name:'job', classNmae:'text-center'},
+        {data:'action', name:'action', classNmae:'text-center'},
+        {data:'delete', name:'delete', classNmae:'text-center'},
+      ],
+    })
+  })
 </script>
 @endsection

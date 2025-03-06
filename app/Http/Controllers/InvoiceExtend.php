@@ -27,6 +27,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ReportExtend;
 use App\Exports\ReportInvoice;
 
+use DataTables;
+
 
 class InvoiceExtend extends Controller
 {
@@ -40,10 +42,88 @@ class InvoiceExtend extends Controller
     {
         $data['title'] = 'Delivery Extend';
         $data['service'] = OS::where('ie', '=' , 'X')->orderBy('id', 'asc')->get();
-        $data['invoice'] = Extend::orderBy('order_at', 'asc')->get();
-        $data['unPaids'] = Extend::whereNot('form_id', '=', '')->where('lunas', '=', 'N')->orderBy('order_at', 'asc')->get();
-        $data['piutangs'] = Extend::whereNot('form_id', '=', '')->where('lunas', '=', 'P')->orderBy('order_at', 'asc')->get();
         return view('billingSystem.extend.billing.main', $data);
+    }
+
+    public function dataIndex(Request $request)
+    {
+        $invoice = Extend::orderBy('order_at', 'asc');
+        if ($request->has('type')) {
+            if ($request->type == 'unpaid') {
+                $invoice = Extend::whereNot('form_id', '=', '')->where('lunas', '=', 'N')->orderBy('order_at', 'asc');
+            }
+
+            if ($request->type == 'piutang') {
+                $invoice = Extend::whereNot('form_id', '=', '')->where('lunas', '=', 'P')->orderBy('order_at', 'asc');
+            }
+        }
+
+        if ($request->has('os_id')) {
+            $invoice = Extend::where('os_id', $request->os_id)->orderBy('order_at', 'asc');
+        }
+
+        $inv = $invoice->get();
+
+        return DataTables::of($inv)
+        ->addColumn('proforma', function($inv) {
+            return $inv->proforma_no ?? '-';
+        })
+        ->addColumn('customer', function($inv){
+            return $inv->cust_name ?? '-';
+        })
+        ->addColumn('service', function($inv){
+            return $inv->os_name ?? '-';
+        })
+        ->addColumn('type', function($inv){
+            return $inv->inv_type ?? '-';
+        })
+        ->addColumn('orderAt', function($inv){
+            return $inv->order_at ?? '-';
+        })
+        ->addColumn('status', function($inv){
+            if ($inv->lunas == 'N') {
+                return '<span class="badge bg-danger text-white">Not Paid</span>';
+            }elseif ($inv->lunas == 'P') {
+                return '<span class="badge bg-warning text-white">Piutang</span>';
+            }elseif ($inv->lunas == 'Y') {
+                return '<span class="badge bg-success text-white">Paid</span>';
+            }elseif ($inv->lunas == 'C') {
+                return '<span class="badge bg-danger text-white">Canceled</span>';
+            }
+        })
+        ->addColumn('pranota', function($inv){
+            return '<a type="button" href="/pranota/extend-'.$inv->id.'" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>';
+        })
+        ->addColumn('invoice', function($inv){
+            if ($inv->lunas == 'N') {
+                return '<span class="badge bg-info text-white">Paid First!!</span>';
+            }elseif ($inv->lunas == 'C') {
+                return '<span class="badge bg-danger text-white">Canceled</span>';
+            }else {
+                return '<a type="button" href="/invoice/extend-'.$inv->id.'" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>';
+            }
+        })
+        ->addColumn('job', function($inv){
+            if ($inv->lunas == 'N') {
+                return '<span class="badge bg-info text-white">Paid First!!</span>';
+            }elseif ($inv->lunas == 'C') {
+                return '<span class="badge bg-danger text-white">Canceled</span>';
+            }else {
+                return '<a type="button" href="/invoice/job/extend-'.$inv->id.'" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>';
+            }
+        })
+        ->addColumn('action', function($inv){
+            return '<button type="button" id="pay" data-id="'.$inv->id.'" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>';
+        })
+        ->addColumn('delete', function($inv){
+            if ($inv->lunas == 'N') {
+                return '<button type="button" data-id="'.$inv->form_id.'" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>';
+            }else {
+                return '-';
+            }
+        })
+        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete'])
+        ->make(true);
     }
 
     public function ListForm()
@@ -53,6 +133,35 @@ class InvoiceExtend extends Controller
         
         return view('billingSystem.extend.form.listForm', $data);
     }
+
+    public function extendDataForm(Request $request)
+    {
+        $form = Form::where('done', '=', 'N')->where('i_e', '=', 'X')->get();
+
+        return DataTables::of($form)
+        ->addColumn('customer', function($form){
+            return $form->customer->name ?? '-';
+        })
+        ->addColumn('doOnline', function($form){
+            return $form->doOnline->do_no ?? '-';
+        })
+        ->addColumn('service', function($form){
+            return $form->service->name ?? '-';
+        })
+        ->addColumn('expired', function($form){
+            return $form->expired_date ?? '-';
+        })
+        ->addColumn('blNo', function($form){
+            return $form->doOnline->bl_no ?? '-';
+        })
+        ->addColumn('edit', function($form){
+            return '<a href="/billing/import/delivery-editForm/'.$form->id.'" class="btn btn-outline-warning">Edit</a>';
+        })
+        ->rawColumns(['edit'])
+        ->make(true);
+    }
+
+
     public function form()
     {
         $data['title'] = 'Extend Form';

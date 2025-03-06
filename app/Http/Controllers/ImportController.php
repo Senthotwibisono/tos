@@ -127,9 +127,34 @@ class ImportController extends Controller
     public function deliveryMenu()
     {
         $data['title'] = "Delivery Menu";
-        $data['formInvoiceImport'] = Form::where('i_e', 'I')->where('done', '=', 'N')->get();
-
         return view('billingSystem.import.form.main', $data);
+    }
+
+    public function formImportData(Request $request)
+    {
+        $form = Form::where('i_e', 'I')->where('done', '=', 'N')->get();
+
+        return DataTables::of($form)
+        ->addColumn('customer', function($form){
+            return $form->customer->name ?? '-';
+        })
+        ->addColumn('doOnline', function($form){
+            return $form->doOnline->do_no ?? '-';
+        })
+        ->addColumn('service', function($form){
+            return $form->service->name ?? '-';
+        })
+        ->addColumn('expired', function($form){
+            return $form->expired_date ?? '-';
+        })
+        ->addColumn('blNo', function($form){
+            return $form->doOnline->bl_no ?? '-';
+        })
+        ->addColumn('edit', function($form){
+            return '<a href="/billing/import/delivery-editForm/'.$form->id.'" class="btn btn-outline-warning">Edit</a>';
+        })
+        ->rawColumns(['edit'])
+        ->make(true);
     }
 
     public function deliveryEdit($id)

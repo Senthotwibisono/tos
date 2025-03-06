@@ -43,7 +43,7 @@
         </form>
       </div>
       <div class="card-header">
-      <h4>Report Plugging</h4>
+      <h4>Report Others</h4>
         <form action="{{ route('rental-repair-report')}}" method="GET" enctype="multipart/form-data">
           <div class="row">
             <div class="col-sm-3">
@@ -92,7 +92,7 @@
       <div class="col-12">
         <div class="card">
           <div class="card-header">
-            <h4 class="card-title">Tabel Data Billing Plugging (Belum Bayar)</h4>
+            <h4 class="card-title">Tabel Data Billing Others (Belum Bayar)</h4>
             <p>Rekap Data Billing</p>
           </div>
           <div class="card-body">
@@ -123,74 +123,24 @@
             <div class="row">
 
               <div class="col-12">
-                <table class="dataTable-wrapperEXP dataTable-loading no-footer sortable searchable fixed-columns" id="tableImp">
-                  <thead>
-                    <tr>
-                      <th>Proforma No</th>
-                      <th>Customer</th>
-                      <th>Order Service</th>
-                      <th>Tipe Invoice</th>
-                      <th>Dibuat Pada</th>
-                      <th>Status</th>
-                      <th>Pranota</th>
-                      <th>Invoice</th>
-                    
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  @foreach($unPaids as $inv)
-                    <tr>
-                      <td>{{$inv->proforma_no}}</td>
-                      <td>{{$inv->cust_name}}</td>
-                      <td>{{$inv->os_name}}</td>
-                      <td>{{$inv->inv_type}}</td>
-                      <td>{{$inv->order_at}}</td>
-                      @if($inv->lunas == "N")
-                      <td>
-                      <span class="badge bg-danger text-white">Not Paid</span>
-                      </td>
-                      @elseif($inv->lunas == "P")
-                      <td>
-                      <span class="badge bg-warning text-white">Piutang</span>
-                      </td>
-                     @elseif($inv->lunas == "Y")
-                      <td>
-                      <span class="badge bg-success text-white">Paid</span>
-                      </td>
-                      @else
-                      <td>
-                      <span class="badge bg-danger text-white">Canceled</span>
-                      </td>
-                      @endif
-                      <td>
-                      
-                      <a type="button" href="/renta&repair-pranota-{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
-                        
-                      </td>
-                      @if($inv->lunas == "N")
-                      <td>
-                      <button type="button" href="/renta&repair-invoice-K{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white" disabled><i class="fa fa-dollar"></i></button>
-                      </td>
-                     
-                      @else
-                      <td>
-                      
-                      <a type="button" href="/renta&repair-invoice-{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                      
-                      </td>
-                    
-                      @endif
-                      <td>
-                      <button type="button" id="pay" data-id="{{$inv->id}}" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>
-                      @if($inv->lunas == "N")
-                      <button type="button" data-id="{{$inv->form_id}}" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>
-                      @endif
-                      </td> <!-- Tambahkan aksi sesuai kebutuhan -->
-                    </tr>
-                   @endforeach
-                  </tbody>
-                </table>
+                <div class="table">
+                  <table class="table-hover" id="unpaidTable">
+                    <thead style="white-space: nowrap;">
+                      <tr>
+                        <th>Proforma No</th>
+                        <th>Customer</th>
+                        <th>Order Service</th>
+                        <th>Tipe Invoice</th>
+                        <th>Dibuat Pada</th>
+                        <th>Status</th>
+                        <th>Pranota</th>
+                        <th>Invoice</th>
+                        <th>Action</th>
+                        <th>Cancel</th>
+                      </tr>
+                    </thead>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
@@ -202,7 +152,7 @@
       <div class="col-12">
         <div class="card">
           <div class="card-header">
-            <h4 class="card-title">Tabel Data Billing Plugging (Piutang)</h4>
+            <h4 class="card-title">Tabel Data Billing Others (Piutang)</h4>
             <p>Rekap Data Billing</p>
           </div>
           <div class="card-body">
@@ -233,74 +183,24 @@
             <div class="row">
 
               <div class="col-12">
-                <table class="dataTable-wrapperEXP dataTable-loading no-footer sortable searchable fixed-columns" id="tableImp">
-                  <thead>
-                    <tr>
-                      <th>Proforma No</th>
-                      <th>Customer</th>
-                      <th>Order Service</th>
-                      <th>Tipe Invoice</th>
-                      <th>Dibuat Pada</th>
-                      <th>Status</th>
-                      <th>Pranota</th>
-                      <th>Invoice</th>
-                     
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  @foreach($piutangs as $inv)
-                    <tr>
-                      <td>{{$inv->proforma_no}}</td>
-                      <td>{{$inv->cust_name}}</td>
-                      <td>{{$inv->os_name}}</td>
-                      <td>{{$inv->inv_type}}</td>
-                      <td>{{$inv->order_at}}</td>
-                      @if($inv->lunas == "N")
-                      <td>
-                      <span class="badge bg-danger text-white">Not Paid</span>
-                      </td>
-                      @elseif($inv->lunas == "P")
-                      <td>
-                      <span class="badge bg-warning text-white">Piutang</span>
-                      </td>
-                     @elseif($inv->lunas == "Y")
-                      <td>
-                      <span class="badge bg-success text-white">Paid</span>
-                      </td>
-                      @else
-                      <td>
-                      <span class="badge bg-danger text-white">Canceled</span>
-                      </td>
-                      @endif
-                      <td>
-                      
-                      <a type="button" href="/renta&repair-pranota-{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
-                        
-                      </td>
-                      @if($inv->lunas == "N")
-                      <td>
-                      <button type="button" href="/renta&repair-invoice-K{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white" disabled><i class="fa fa-dollar"></i></button>
-                      </td>
-                     
-                      @else
-                      <td>
-                      
-                      <a type="button" href="/renta&repair-invoice-{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                      
-                      </td>
-                    
-                      @endif
-                      <td>
-                      <button type="button" id="pay" data-id="{{$inv->id}}" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>
-                      @if($inv->lunas == "N")
-                      <button type="button" data-id="{{$inv->form_id}}" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>
-                      @endif
-                      </td> <!-- Tambahkan aksi sesuai kebutuhan -->
-                    </tr>
-                   @endforeach
-                  </tbody>
-                </table>
+                <div class="table">
+                  <table class="table-hover" id="piutangTable">
+                    <thead style="white-space: nowrap;">
+                      <tr>
+                        <th>Proforma No</th>
+                        <th>Customer</th>
+                        <th>Order Service</th>
+                        <th>Tipe Invoice</th>
+                        <th>Dibuat Pada</th>
+                        <th>Status</th>
+                        <th>Pranota</th>
+                        <th>Invoice</th>
+                        <th>Action</th>
+                        <th>Cancel</th>
+                      </tr>
+                    </thead>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
@@ -365,76 +265,24 @@
             <div class="row">
 
               <div class="col-12">
-              <table class="dataTable-wrapperEXP dataTable-loading no-footer sortable searchable fixed-columns" id="tableEXP{{$loop->iteration}}">
-                  <thead>
-                    <tr>
-                      <th>Proforma No</th>
-                      <th>Customer</th>
-                      <th>Order Service</th>
-                      <th>Tipe Invoice</th>
-                      <th>Dibuat Pada</th>
-                      <th>Status</th>
-                      <th>Pranota</th>
-                      <th>Invoice</th>
-                     
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  @foreach($invoice as $inv)
-                    @if($inv->os_id == $os->id)
-                    <tr>
-                      <td>{{$inv->proforma_no}}</td>
-                      <td>{{$inv->cust_name}}</td>
-                      <td>{{$inv->os_name}}</td>
-                      <td>{{$inv->inv_type}}</td>
-                      <td>{{$inv->order_at}}</td>
-                      @if($inv->lunas == "N")
-                      <td>
-                      <span class="badge bg-danger text-white">Not Paid</span>
-                      </td>
-                      @elseif($inv->lunas == "P")
-                      <td>
-                      <span class="badge bg-warning text-white">Piutang</span>
-                      </td>
-                     @elseif($inv->lunas == "Y")
-                      <td>
-                      <span class="badge bg-success text-white">Paid</span>
-                      </td>
-                      @else
-                      <td>
-                      <span class="badge bg-danger text-white">Canceled</span>
-                      </td>
-                      @endif
-                      <td>
-                      
-                      <a type="button" href="/renta&repair-pranota-{{$inv->id}}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>
-                        
-                      </td>
-                      @if($inv->lunas == "N")
-                      <td>
-                      <button type="button" href="/renta&repair-invoice-K{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white" disabled><i class="fa fa-dollar"></i></button>
-                      </td>
-                     
-                      @else
-                      <td>
-                      
-                      <a type="button" href="/renta&repair-invoice-{{$inv->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
-                      
-                      </td>
-                    
-                      @endif
-                      <td>
-                      <button type="button" id="pay" data-id="{{$inv->id}}" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>
-                      @if($inv->lunas == "N")
-                      <button type="button" data-id="{{$inv->form_id}}" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>
-                      @endif
-                      </td> <!-- Tambahkan aksi sesuai kebutuhan -->
-                    </tr>
-                    @endif
-                   @endforeach
-                  </tbody>
-                </table>
+                <div class="table">
+                  <table class="table-hover" id="invoiceTable-{{$os->id}}">
+                    <thead style="white-space: nowrap;">
+                      <tr>
+                        <th>Proforma No</th>
+                        <th>Customer</th>
+                        <th>Order Service</th>
+                        <th>Tipe Invoice</th>
+                        <th>Dibuat Pada</th>
+                        <th>Status</th>
+                        <th>Pranota</th>
+                        <th>Invoice</th>
+                        <th>Action</th>
+                        <th>Cancel</th>
+                      </tr>
+                    </thead>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
@@ -838,5 +686,82 @@ $(document).ready(function() {
       }
     });
   });
+</script>
+
+<script>
+  $(document).ready(function(){
+    $('#unpaidTable').DataTable({
+      processing: true,
+      serverSide: true,
+      scrollY: '50hv',
+      scrollX: true,
+      ajax : {
+        url : '/renta&repair/dataTable',
+        data: {type : 'unpaid'}
+      },
+      columns: [
+        {data:'proforma', name:'proforma', classNmae:'text-center'},
+        {data:'customer', name:'customer', classNmae:'text-center'},
+        {data:'service', name:'service', classNmae:'text-center'},
+        {data:'type', name:'type', classNmae:'text-center'},
+        {data:'orderAt', name:'orderAt', classNmae:'text-center'},
+        {data:'status', name:'status', classNmae:'text-center'},
+        {data:'pranota', name:'pranota', classNmae:'text-center'},
+        {data:'invoice', name:'invoice', classNmae:'text-center'},
+        {data:'action', name:'action', classNmae:'text-center'},
+        {data:'delete', name:'delete', classNmae:'text-center'},
+      ],
+    })
+
+
+    $('#piutangTable').DataTable({
+      processing: true,
+      serverSide: true,
+      scrollY: '50hv',
+      scrollX: true,
+      ajax : {
+        url : '/renta&repair/dataTable',
+        data: {type : 'piutang'}
+      },
+      columns: [
+        {data:'proforma', name:'proforma', classNmae:'text-center'},
+        {data:'customer', name:'customer', classNmae:'text-center'},
+        {data:'service', name:'service', classNmae:'text-center'},
+        {data:'type', name:'type', classNmae:'text-center'},
+        {data:'orderAt', name:'orderAt', classNmae:'text-center'},
+        {data:'status', name:'status', classNmae:'text-center'},
+        {data:'pranota', name:'pranota', classNmae:'text-center'},
+        {data:'invoice', name:'invoice', classNmae:'text-center'},
+        {data:'action', name:'action', classNmae:'text-center'},
+        {data:'delete', name:'delete', classNmae:'text-center'},
+      ],
+    })
+
+    @foreach($service as $os)
+      $('#invoiceTable-{{$os->id}}').DataTable({
+        processing: true,
+        serverSide: true,
+        scrollY: '50hv',
+        scrollX: true,
+        ajax : {
+          url : '/renta&repair/dataTable',
+          data: {os_id : '{{$os->id}}'}
+        },
+        columns: [
+          {data:'proforma', name:'proforma', classNmae:'text-center'},
+          {data:'customer', name:'customer', classNmae:'text-center'},
+          {data:'service', name:'service', classNmae:'text-center'},
+          {data:'type', name:'type', classNmae:'text-center'},
+          {data:'orderAt', name:'orderAt', classNmae:'text-center'},
+          {data:'status', name:'status', classNmae:'text-center'},
+          {data:'pranota', name:'pranota', classNmae:'text-center'},
+          {data:'invoice', name:'invoice', classNmae:'text-center'},
+          {data:'action', name:'action', classNmae:'text-center'},
+          {data:'delete', name:'delete', classNmae:'text-center'},
+        ],
+      })
+    @endforeach
+    
+  })
 </script>
 @endsection
