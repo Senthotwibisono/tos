@@ -79,7 +79,7 @@ class CustomerImportController extends CustomerMainController
 
     public function formData()
     {
-        $form = Form::with(['customer', 'Kapal', 'doOnline', 'service'])->where('i_e', 'I')->where('done', '=', 'N');
+        $form = $this->form->with(['customer', 'Kapal', 'doOnline', 'service'])->where('i_e', 'I')->where('done', '=', 'N');
         return DataTables::of($form)->make(true);
     }
 
@@ -129,6 +129,9 @@ class CustomerImportController extends CustomerMainController
         $mui = MUI::where('user_id', $this->userId)->get();
         $customerId = $mui->pluck('customer_id')->toArray();
         $data['customer'] = Customer::whereIn('id', $customerId)->get();
+
+        $data['expired'] = Carbon::now()->addDays(4)->format('Y-m-d');
+        // dd($data['expired']);
         // dd($mui, $customerId, $data['customer']);
         
 

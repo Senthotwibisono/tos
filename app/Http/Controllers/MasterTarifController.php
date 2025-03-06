@@ -7,6 +7,8 @@ use App\Models\OrderService as OS;
 use App\Models\OSDetail;
 use App\Models\MasterTarif as MT;
 use App\Models\Customer;
+use App\Models\Item;
+use App\Models\VVoyage;
 use App\Models\DOonline;
 use Auth;
 use Carbon\Carbon;
@@ -201,6 +203,9 @@ class MasterTarifController extends Controller
         $data['title'] = "DO Online Check";
         $data['doOnline'] = DOonline::get();
 
+        $data['vessels'] = VVoyage::where('deparature_date', '>=', Carbon::now())->orderBy('ves_id', 'desc')->get();
+
+        // dd($data['vessels']);
         return view('billingSystem.do.main', $data);
     }
 
@@ -279,6 +284,60 @@ class MasterTarifController extends Controller
             return redirect()->back()->with('success', 'Data Berhasil di Update.');
         }else {
             return redirect()->back()->with('error', 'Something Wrong, Call the Admin.');
+        }
+    }
+
+    public function createDoManual(Request $request)
+    {
+        $idKapal = $request->id_kapal;
+        // dd($idKapal);
+        $data['title'] = 'Create DO Online Manual';
+        $data['items'] = Item::where('ves_id', $idKapal)->whereIn('ctr_intern_status', ['01', '02', '03'])->get();
+        $data['customers'] = Customer::get();
+
+        // dd($request->all());
+
+        return view('billingSystem.do.createManual', $data);
+    }
+
+    public function postManual(Request $request)
+    {
+        // dd($request->all());
+
+        $oldDo = DOonline::where('do_no', $request->do_no)->first();
+        if ($oldDo) {
+            return redirect()->back()->with('error', 'Nomor Do telah digunakan');
+        }
+
+        try {
+            $containers = $request->container;
+
+            // Pastikan nilai container tidak kosong dan dalam bentuk array
+            if (empty($containers) || !is_array($containers)) {
+                return redirect()->back()->with('error', 'Pilih minimal satu container.');
+            }
+            
+            if ($request->expired <= Carbon::now()) {
+                return redirect()->back()->with('error', 'Ooops, Tanggal Expired tidak boleh lebih kecil dari hari ini');
+            }
+
+            $containersJson = json_encode($containers);
+
+            $do = DOonline::create([
+                'do_no' => $request->do_no,
+                'bl_no' => $request->bl_no,
+                'expired' => $request->expired,
+                'customer_code' => $request->customer,
+                'created_at' => Carbon::now(),
+                'created_by' => Auth::user()->name,
+                'active' => 'Y',
+                'container_no'=>$containersJson,
+            ]);
+
+            return redirect('/billing/dock-DO')->with('success', 'Data Berhasil di Buat');
+
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Something Wrong : ' . $th->getMessage());
         }
     }
 

@@ -16,6 +16,7 @@ use App\Models\InvoiceImport as Import;
 use App\Models\InvoiceExport as Export;
 use App\Models\Extend as Extend;
 use App\Models\OrderService as OS;
+use App\Models\InvoiceForm as Form;
 
 
 class CustomerMainController extends Controller
@@ -24,6 +25,7 @@ class CustomerMainController extends Controller
     protected $import;
     protected $export;
     protected $extend;
+    protected $form;
    
     public function __construct()
     {
@@ -34,6 +36,7 @@ class CustomerMainController extends Controller
             $this->import = Import::where('user_id', Auth::user()->id);
             $this->export = Export::where('user_id', Auth::user()->id);
             $this->extend = Extend::where('user_id', Auth::user()->id);
+            $this->form = Form::where('user_id', Auth::user()->id);
             return $next($request);
         });
 

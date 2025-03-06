@@ -875,6 +875,11 @@ Route::post('/billing/dock-DO/delete', [MasterTarifController::class, 'deleteDo'
 Route::get('/edit/doOnline/{id?}', [MasterTarifController::class, 'doEdit'])->name('doEdit');
 Route::post('/update/doOnline/{id?}', [MasterTarifController::class, 'doUpdate'])->name('doUpdate');
 
+Route::controller(MasterTarifController::class)->group(function(){
+  Route::get('/billing/do/createManual', 'createDoManual');
+  Route::post('/billing/do/postManual', 'postManual');
+});
+
 // invoiceImport
 Route::get('/billing/import/delivey-system', [ImportController::class, 'billingMain'])->name('billinImportgMain');
 Route::get('/billing/import/delivery-dashboard', [ImportController::class, 'deliveryMenu'])->name('deliveryMenu');

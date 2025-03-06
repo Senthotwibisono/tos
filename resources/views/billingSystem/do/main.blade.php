@@ -26,6 +26,7 @@
                 <a href="/do/create" type="button" class="btn btn-success">
                   Create Do Online
                 </a>
+                <a href="#" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#addManual">Create Manual</a>
               </div>
             </div>
           </div>
@@ -103,9 +104,51 @@
   </section>
 </div>
 
+<!-- Modal Pilih Kapal -->
+<div class="modal fade" id="addManual" tabindex="-1" aria-labelledby="selectShipModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="selectShipModalLabel">Pilih Kapal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label for="shipSelect">Pilih ID Kapal:</label>
+                <select id="shipSelect" class="form-select customSelect select2" style="width: 100 %;">
+                    <option value="" selected disabled>Pilih Kapal</option>
+                    @foreach($vessels as $ves)  <!-- Pastikan variable ini dikirim dari controller -->
+                        <option value="{{ $ves->ves_id }}">{{ $ves->ves_name }} || {{ $ves->voy_out }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" id="confirmShipSelection">Lanjutkan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @endsection
 @section('custom_js')
+<script>
+    document.getElementById('confirmShipSelection').addEventListener('click', function () {
+        let selectedShipId = document.getElementById('shipSelect').value;
 
+        if (!selectedShipId) {
+            Swal.fire({
+                title: 'Pilih Kapal!',
+                text: 'Harap pilih ID kapal terlebih dahulu sebelum melanjutkan.',
+                icon: 'warning'
+            });
+            return;
+        }
+
+        // Redirect ke halaman dengan parameter ID kapal
+        window.location.href = "/billing/do/createManual?id_kapal=" + selectedShipId;
+    });
+</script>
 <script>
     $(document).ready(function() {
         $('#doTable').DataTable({

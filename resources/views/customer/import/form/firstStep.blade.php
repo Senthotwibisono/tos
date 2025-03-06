@@ -40,8 +40,8 @@
             </div>
             <div class="col-4">
               <div class="form-group">
-                <label for="">Expired Date</label>
-                <input required name="exp_date" id="exp_date" type="date" class="form-control flatpickr-range mb-3" value="{{$form->expired_date ?? null}}" placeholder="09/05/2023" readonly>
+                <label for="">Rencana Keluar</label>
+                <input required name="exp_date" id="exp_date" type="date" class="form-control flatpickr-range mb-3" value="{{ $expired ?? null}}" placeholder="09/05/2023" readonly>
               </div>
             </div>
             <div class="col-12">

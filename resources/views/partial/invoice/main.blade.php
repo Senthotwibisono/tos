@@ -255,4 +255,23 @@ new simpleDatatables.DataTable('#table2');
 
 </script>
 
+<script>
+    $(document).ready(function() {
+        $(".customSelect").select2({
+        dropdownParent: $('#addManual .modal-content')
+        });
+
+        $(".editSelect").select2({
+        dropdownParent: $('#editCust .modal-content')
+        });
+        $(".customSelectWMS").select2({
+        dropdownParent: $('#addTarifWMS .modal-content')
+        });
+
+        $(".editSelectWMS").select2({
+        dropdownParent: $('#editCustWMS .modal-content')
+        });
+    });
+    </script>
+
 </html>
