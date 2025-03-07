@@ -103,7 +103,7 @@ class RentalController extends Controller
             }
         })
         ->addColumn('pranota', function($inv){
-            return '<a type="button" href="//renta&repair-pranota-'.$inv->id.'" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>';
+            return '<a type="button" href="/renta&repair-pranota-'.$inv->id.'" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>';
         })
         ->addColumn('invoice', function($inv){
             if ($inv->lunas == 'N') {
@@ -111,7 +111,7 @@ class RentalController extends Controller
             }elseif ($inv->lunas == 'C') {
                 return '<span class="badge bg-danger text-white">Canceled</span>';
             }else {
-                return '<a type="button" href="//renta&repair-invoice-'.$inv->id.'" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>';
+                return '<a type="button" href="/renta&repair-invoice-'.$inv->id.'" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>';
             }
         })
         ->addColumn('job', function($inv){
