@@ -891,6 +891,7 @@ Route::post('/billing/import/delivery-updateFormImport', [ImportController::clas
 Route::get('/billing/import/delivery-form', [ImportController::class, 'deliveryForm'])->name('deliveryForm');
 Route::get('/get-customer-data', [ImportController::class, 'getCust'])->name('getCust');
 Route::get('/get-doOnline-data', [ImportController::class, 'getDOdata'])->name('getDOdata');
+Route::get('/get-doOnline-manual', [ImportController::class, 'doManual'])->name('doManual');
 Route::get('/get-dokumenImport-data', [ImportController::class, 'getDokImport'])->name('getDokImport');
 
 Route::post('/billing/import/delivey-system/beforeCreate', [ImportController::class, 'beforeCreate'])->name('beforeCreate');
@@ -1252,5 +1253,10 @@ Route::post('/renta&repair/master-tarif-create-first', [MasterInvoiceController:
     Route::get('/customer-import/formData', 'formData');
     Route::post('/customer-import/formStoreFirst', 'formStoreFirst');
     Route::get('/customer-import/formFirstStepId={id?}', 'firstStepIndex');
+    Route::post('/customer-import/storeFormStep1', 'storeFormStep1');
+    Route::get('/customer-import/preinvoice/{id?}', 'preinvoice');
+    Route::post('/customer-import/createInvoice', 'createInvoice');
+    Route::post('/customer-import/deleteInvoice/{formId?}', 'deleteInvoice');
+
   });
 

@@ -21,4 +21,9 @@ class OSDetail extends Model
         'kode',
         'massa',
     ];
+
+    public function MItem()
+    {
+        return $this->belongsTo(MItem::class, 'master_item_id', 'id');
+    }
 }

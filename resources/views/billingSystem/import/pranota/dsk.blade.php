@@ -194,6 +194,7 @@
                   <tr class="line">
                     <!-- <td><strong>#</strong></td> -->
                     <td class="text-right"><strong>Keterangan</strong></td>
+                    <td class="text-right"><strong>Status Container</strong></td>
                     <td class="text-right"><strong>Jumlah Container</strong></td>
                     <td class="text-right"><strong>Hari</strong></td>
                     <td class="text-right"><strong>Tarif Satuan</strong></td>
@@ -204,6 +205,7 @@
                 @foreach ($details as $detail)
                 <tr>
                     <td class="text-right">{{ $detail->master_item_name }}</td>
+                    <td class="text-right">{{ $detail->ctr_status ?? '-' }}</td>
                     <td class="text-right">{{ $detail->jumlah }}</td>
                     <td class="text-right">{{ $detail->jumlah_hari }}</td>
                     <td class="text-right">{{ $detail->tarif }}</td>

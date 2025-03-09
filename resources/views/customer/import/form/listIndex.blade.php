@@ -14,7 +14,7 @@
         <div class="card-header">
             <form action="/customer-import/formStoreFirst" method="post">
                 @csrf
-              <button type="submit" class="btn btn-success"> <i class="fa-solid fa-plus"></i>Tambah Extend Form</button>
+              <button type="submit" class="btn btn-success"> <i class="fa-solid fa-plus"></i>Tambah Form</button>
             </form>
         </div>
         <div class="card-body">

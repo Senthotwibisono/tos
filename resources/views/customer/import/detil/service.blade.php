@@ -1,18 +1,21 @@
 @extends('customer.import.detil.main')
 @section('table')
 
-<div class="table-responsive">
-    <table class="unpaidImport table table-hover">
-        <thead>
+<div class="table">
+    <table class="table-hover" id="unpaidImport">
+        <thead style="white-space: nowrap;">
             <tr>
-                <th class="text-center">Pranota No</th>
-                <th class="text-center">Customer</th>
-                <th class="text-center">Order Service</th>
-                <th class="text-center">Type</th>
-                <th class="text-center">Created At</th>
-                <th class="text-center">Pranota</th>
-                <th class="text-center">Invoice</th>
-                <th class="text-center">Job</th>
+                <th>Proforma No</th>
+                <th>Customer</th>
+                <th>Order Service</th>
+                <th>Tipe Invoice</th>
+                <th>Dibuat Pada</th>
+                <th>Status</th>
+                <th>Pranota</th>
+                <th>Invoice</th>
+                <th>Job</th>
+                <th>Action</th>
+                <th>Cancel</th>
             </tr>
         </thead>
     </table>
@@ -26,58 +29,30 @@
     $(document).ready(function() {
     var osId ="{{$osId}}"; // Ambil osId dari hidden input
 
-    $('.unpaidImport').DataTable({
+    $('#unpaidImport').DataTable({
         processing: true,
         serverSide: true,
+        scrollY: '50hv',
+        scrollX: true,
         ajax: {
             url: '/customer-import/serviceData',
             type: 'GET',
             data: {
-                osId: osId // Kirimkan osId sebagai parameter
+                os_id: osId // Kirimkan osId sebagai parameter
             }
         },
         columns: [
-            { data: 'proforma_no', name: 'proforma_no', className: 'text-center' },
-            { data: 'customer.name', name: 'customer.name', className: 'text-center' },
-            { data: 'service.name', name: 'service.name', className: 'text-center' },
-            { data: 'inv_type', name: 'inv_type', className: 'text-center' },
-            { data: 'order_at', name: 'order_at', className: 'text-center' },
-            { 
-                data: 'id',
-                name: 'id',
-                className: 'text-center',
-                render: function(data, type, row) {
-                    if (row.inv_type === 'DSK') {
-                        return `<a href="/pranota/import-DSK${data}" type="button" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>`;
-                    } else if (row.inv_type === 'DS') {
-                        return `<a href="/pranota/import-DS${data}" type="button" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>`;
-                    } else {
-                        return data;
-                    }
-                }
-            },
-            {
-                data: 'id',
-                name: 'id',
-                className: 'text-center',
-                render: function(data, type, row) {
-                    if (row.inv_type === 'DSK') {
-                        return `<a href="/invoice/import-DSK${data}" type="button" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>`;
-                    } else if (row.inv_type === 'DS') {
-                        return `<a href="/invoice/import-DS${data}" type="button" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>`;
-                    } else {
-                        return data;
-                    }
-                }
-            },
-            {
-                data: 'id',
-                name: 'id',
-                className: 'text-center',
-                render: function(data, type, row) {
-                    return `<a type="button" href="/invoice/job/import-${data}" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>`;
-                }
-            },
+            {data:'proforma', name:'proforma', classNmae:'text-center'},
+            {data:'customer', name:'customer', classNmae:'text-center'},
+            {data:'service', name:'service', classNmae:'text-center'},
+            {data:'type', name:'type', classNmae:'text-center'},
+            {data:'orderAt', name:'orderAt', classNmae:'text-center'},
+            {data:'status', name:'status', classNmae:'text-center'},
+            {data:'pranota', name:'pranota', classNmae:'text-center'},
+            {data:'invoice', name:'invoice', classNmae:'text-center'},
+            {data:'job', name:'job', classNmae:'text-center'},
+            {data:'action', name:'action', classNmae:'text-center'},
+            {data:'delete', name:'delete', classNmae:'text-center'},
         ],
         pageLength: 50
     });

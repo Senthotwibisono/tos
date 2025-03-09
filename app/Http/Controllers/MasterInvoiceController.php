@@ -120,33 +120,57 @@ class MasterInvoiceController extends Controller
             'depo_return'=>$request->depo_return,
         ]);
         $osd = OSDetail::where('os_id', $os->id)->get();
-            foreach ($osd as $detail) {
-                $detail->update([
-                    'os_name'=>$request->name,
-                ]);
-            }
+        foreach ($osd as $detail) {
+            $detail->update([
+                'os_name'=>$request->name,
+            ]);
+        }
 
         return redirect()->back()->with('success', 'Data Berhasil di Perbaharui');
     }
 
     public function osDetailDSK(Request $request)
     {
-        $mtId = $request->master_item_id;
-        
-        foreach ($mtId as $id) {
-            $mItem = MItem::where('id', $id)->first();
+        $mtIds = $request->master_item_id;
+
+        foreach ($mtIds as $id) {
+            $mItem = MItem::find($id);
+
+            if (!$mItem) {
+                return redirect()->back()->with('error', 'Master Item tidak ditemukan');
+            }
+
             $newDSK = OSDetail::create([
-                'os_id'=>$request->os_id,
-                'os_name'=>$request->os_name,
+                'os_id' => $request->os_id,
+                'os_name' => $request->os_name,
                 'type' => $request->type,
-                'master_item_id'=>$id,
-                'master_item_name'=>$mItem->name,
-                'kode'=>$mItem->kode,
-                'massa'=>$mItem->massa,
+                'master_item_id' => $id,
+                'master_item_name' => $mItem->name,
+                'kode' => $mItem->kode,
+                'massa' => $mItem->massa,
             ]);
+
+            $masterTarifs = MT::where('os_id', $request->os_id)->get();
+
+            foreach ($masterTarifs as $tarif) {
+                $tarifDetil = MTDetail::where('master_tarif_id', $tarif->id)
+                    ->where('master_item_id', $id)
+                    ->exists(); // Use `exists()` to check existence efficiently
+
+                if (!$tarifDetil) {
+                    MTDetail::create([
+                        'master_tarif_id' => $tarif->id,
+                        'master_item_id' => $newDSK->master_item_id,
+                        'master_item_name' => $newDSK->master_item_name,
+                        'count_by' => $mItem->count_by ?? null, // Ensure 'count_by' exists
+                    ]);
+                }
+            }
         }
-        return redirect()->back()->with('success', 'Data Berhasil di Perbaharui');
+
+        return redirect()->back()->with('success', 'Data Berhasil diperbaharui');
     }
+
 
     public function osDetailDS(Request $request)
     {
@@ -163,6 +187,23 @@ class MasterInvoiceController extends Controller
                 'kode'=>$mItem->kode,
                 'massa'=>$mItem->massa,
             ]);
+
+            $masterTarifs = MT::where('os_id', $request->os_id)->get();
+
+            foreach ($masterTarifs as $tarif) {
+                $tarifDetil = MTDetail::where('master_tarif_id', $tarif->id)
+                    ->where('master_item_id', $id)
+                    ->exists(); // Use `exists()` to check existence efficiently
+
+                if (!$tarifDetil) {
+                    MTDetail::create([
+                        'master_tarif_id' => $tarif->id,
+                        'master_item_id' => $newDSK->master_item_id,
+                        'master_item_name' => $newDSK->master_item_name,
+                        'count_by' => $mItem->count_by ?? null, // Ensure 'count_by' exists
+                    ]);
+                }
+            }
         }
         return redirect()->back()->with('success', 'Data Berhasil di Perbaharui');
     }
@@ -170,14 +211,19 @@ class MasterInvoiceController extends Controller
     public function buangDetail(Request $request)
     {
         $detail = OSDetail::where('id', $request->id)->first();
+        $masterTarifs = MT::where('os_id', $detail->os_id)->get();
+        foreach ($masterTarifs as $tarif) {
+            $tarifDetails = MTDetail::where('master_tarif_id', $tarif->id)->where('master_item_id', $detail->master_item_id)->delete();
+        }
         $detail->delete();
+
         return redirect()->back()->with('success', 'Data Berhasil di Hapus');
     }
 
     public function indexMTimport(Request $request)
     {
         $data['title'] = "Mater Tarif Import";
-        $data ['orderService'] = OS::whereNot('ie', '=', 'E')->orderBy('ie', 'asc')->get();
+        $data ['orderService'] = OS::where('ie', '=', 'I')->orderBy('ie', 'asc')->get();
         $data ['masterTarif'] = MT::get();
         return view('billingSystem.import.master-tarif.main', $data);
     }

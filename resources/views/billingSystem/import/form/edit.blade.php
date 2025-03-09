@@ -39,7 +39,7 @@
             <div class="col-4">
               <div class="form-group">
                 <label for="">Expired Date</label>
-                <input required name="exp_date" id="exp_date" type="date" class="form-control flatpickr-range mb-3" value="{{$form->expired_date ?? ''}}" placeholder="09/05/2023" readonly>
+                <input required name="exp_date" id="exp_date" type="date" class="form-control flatpickr-range mb-3" value="{{ isset($form->expired_date) ? \Carbon\Carbon::parse($form->expired_date)->format('Y-m-d') : null }}" placeholder="09/05/2023" readonly>
               </div>
             </div>
             <div class="col-12">

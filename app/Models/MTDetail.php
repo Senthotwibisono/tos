@@ -19,4 +19,9 @@ class MTDetail extends Model
         'tarif',
         'count_by',
     ];
+
+    public function MItem()
+    {
+        return $this->belongsTo(MItem::class, 'master_item_id', 'id');
+    }
 }

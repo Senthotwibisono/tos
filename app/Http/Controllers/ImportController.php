@@ -182,11 +182,11 @@ class ImportController extends Controller
         $disc = Item::whereIn('container_key', $newContainer)->orderBy('disc_date', 'asc')->get();
         $singleCont = $disc->first();
         $discDate = Carbon::parse($singleCont->disc_date);
-        // dd($disc, $discDate);
         $expDate = Carbon::parse($request->exp_date);
         $expDate->addDay(2);
         $interval = $discDate->diff($expDate);
         $jumlahHari = $interval->days;
+        // dd($disc, $discDate, $jumlahHari);
         // dd($jumlahHari);
         if($jumlahHari >= 6 ){
             return redirect()->back()->with('error', 'Melebihi Kuota Massa 1 !!');
@@ -331,6 +331,102 @@ class ImportController extends Controller
             'data'    => $do,
             'cont'    => $cont,
             'expired' => $expiryDateFormatted,
+        ]);
+    }
+
+
+    public function doManual(Request $request)
+    {   
+
+        $do_no = $request->doNo;
+        $do = DOonline::where('do_no', $do_no)->first();
+
+        if (empty($request->customerId)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pilih Customer Dahulu !!',
+            ]);
+        }
+        
+        $customer = Customer::find($request->customerId);
+        if ($do->customer_code != $customer->code) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Nomor DO tidak sesuai dengan Customer yang anda pilih !!',
+            ]);
+        }
+
+        if ($do->expired <= Carbon::now()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'DO kadaluarsa, harap perbarui expired DO !!',
+            ]);
+        }
+
+        // var_dump($do);
+
+        if (!$do) {
+            return response()->json([
+                'success' => false,
+                'message' => 'DO not found!',
+            ]);
+        }
+
+        $ves = $request->ves;
+        if (empty($ves)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pilih Vessel Service Dahulu !!',
+            ]);
+        }
+
+        $os = $request->os;
+        if (empty($os)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pilih Order Service Dahulu !!',
+            ]);
+        }
+
+        $doCont = json_decode($do->container_no, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE || !is_array($doCont) || empty($doCont)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid container data!',
+            ]);
+        }
+
+        if ($os != 4 && $os != 5) {
+            $cont = Item::whereIn('container_no', $doCont)
+                ->whereIn('ctr_intern_status', ['03', '04', '10', '09', '14'])
+                ->where('selected_do', '=', 'N')
+                ->where('ves_id', $ves)
+                ->get();
+        } else {
+            $cont = Item::whereIn('container_no', $doCont)
+                ->where('ctr_intern_status', '=', '15')
+                ->where('selected_do', '=', 'N')
+                ->where('ves_id', 'PELINDO')
+                ->get();
+        }
+
+        $discDate = $cont->min('disc_date');
+        $discDateFormat = Carbon::parse($discDate)->format('Y-m-d');
+
+        if ($cont->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Container Belum Dapat Di Pilih !!',
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'updated successfully!',
+            'data'    => $do,
+            'cont'    => $cont,
+            'discDate' => $discDateFormat,
         ]);
     }
 

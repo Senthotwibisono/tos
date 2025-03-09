@@ -41,9 +41,19 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
+                Swal.fire({
+                title: 'Processing...',
+                text: 'Please wait while we update the container',
+                icon: 'info',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                    willOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
                 $.ajax({
-                    url: '/billing/import/delivery-deleteInvoice/' + formId, // Ganti dengan endpoint penghapusan Anda
-                    type: 'DELETE',
+                    url: '/customer-import/deleteInvoice/' + formId, // Ganti dengan endpoint penghapusan Anda
+                    type: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}' // Sertakan token CSRF untuk keamanan
                     },

@@ -5,14 +5,16 @@ namespace App\Http\Controllers\customer\import;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\customer\CustomerMainController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\InvoiceImport as Import;
 use App\Models\OrderService as OS;
+use App\Models\MasterTarif as MT;
+use App\Models\OSDetail;
+use App\Models\MTDetail;
 use App\Models\InvoiceForm as Form;
 use App\Models\ImportDetail as Detail; 
 use App\Models\ContainerInvoice as Container;
-use App\Models\OSDetail;
-use App\Models\MTDetail;
 use App\Models\MasterUserInvoice as MUI;
 use App\Models\Customer;
 use App\Models\DOonline;
@@ -66,8 +68,91 @@ class CustomerImportController extends CustomerMainController
 
     public function dataService(Request $request)
     {
-        $unpaids = $this->import->with(['customer', 'service', 'form'])->where('os_id', $request->osId)->where('lunas', 'P'); // Removed `query()`
-        return DataTables::of($unpaids)->make(true);
+       
+
+        $invoice = $this->import->whereHas('service', function ($query) {
+            $query->where('ie', '=', 'I');
+        })->whereNot('form_id', '=', '')->orderBy('order_at', 'desc');
+        
+        if ($request->has('type')) {
+            if ($request->type == 'unpaid') {
+                $invoice = $this->import->whereHas('service', function ($query) {
+                    $query->where('ie', '=', 'I');
+                })->whereNot('form_id', '=', '')->where('lunas', '=', 'N')->orderBy('order_at', 'desc');
+            }
+
+            if ($request->type == 'piutang') {
+                $invoice = $this->import->whereHas('service', function ($query) {
+                    $query->where('ie', '=', 'I');
+                })->whereNot('form_id', '=', '')->where('lunas', '=', 'P')->orderBy('order_at', 'desc');
+            }
+        }
+
+        if ($request->has('os_id')) {
+            $invoice = $this->import->whereNot('form_id', '=', '')->where('os_id', $request->os_id)->orderBy('order_at', 'desc')->orderBy('lunas', 'asc');
+        }
+
+        $inv = $invoice->get();
+        return DataTables::of($inv)
+        ->addColumn('proforma', function($inv) {
+            return $inv->proforma_no ?? '-';
+        })
+        ->addColumn('customer', function($inv){
+            return $inv->cust_name ?? '-';
+        })
+        ->addColumn('service', function($inv){
+            return $inv->os_name ?? '-';
+        })
+        ->addColumn('type', function($inv){
+            return $inv->inv_type ?? '-';
+        })
+        ->addColumn('orderAt', function($inv){
+            return $inv->order_at ?? '-';
+        })
+        ->addColumn('status', function($inv){
+            if ($inv->lunas == 'N') {
+                return '<span class="badge bg-danger text-white">Not Paid</span>';
+            }elseif ($inv->lunas == 'P') {
+                return '<span class="badge bg-warning text-white">Piutang</span>';
+            }elseif ($inv->lunas == 'Y') {
+                return '<span class="badge bg-success text-white">Paid</span>';
+            }elseif ($inv->lunas == 'C') {
+                return '<span class="badge bg-danger text-white">Canceled</span>';
+            }
+        })
+        ->addColumn('pranota', function($inv){
+            return '<a type="button" href="/pranota/import-'.$inv->inv_type.$inv->id.'" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>';
+        })
+        ->addColumn('invoice', function($inv){
+            if ($inv->lunas == 'N') {
+                return '<span class="badge bg-info text-white">Paid First!!</span>';
+            }elseif ($inv->lunas == 'C') {
+                return '<span class="badge bg-danger text-white">Canceled</span>';
+            }else {
+                return '<a type="button" href="/invoice/import-'.$inv->inv_type.$inv->id.'" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>';
+            }
+        })
+        ->addColumn('job', function($inv){
+            if ($inv->lunas == 'N') {
+                return '<span class="badge bg-info text-white">Paid First!!</span>';
+            }elseif ($inv->lunas == 'C') {
+                return '<span class="badge bg-danger text-white">Canceled</span>';
+            }else {
+                return '<a type="button" href="/invoice/job/import-'.$inv->id.'" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>';
+            }
+        })
+        ->addColumn('action', function($inv){
+            return '<button type="button" id="pay" data-id="'.$inv->id.'" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>';
+        })
+        ->addColumn('delete', function($inv){
+            if ($inv->lunas == 'N') {
+                return '<button type="button" data-id="'.$inv->form_id.'" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>';
+            }else {
+                return '-';
+            }
+        })
+        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete'])
+        ->make(true);
     }
 
     public function formList()
@@ -136,5 +221,292 @@ class CustomerImportController extends CustomerMainController
         
 
         return view('customer.import.form.firstStep', $data);
+    }
+
+    public function storeFormStep1(Request $request)
+    {
+        
+        $selctedCont = Item::whereIn('container_key', $request->container)->get();
+        
+        $disc = Carbon::parse($request->disc_date);
+        $expired = Carbon::parse($request->exp_date);
+
+        $interval = $disc->diff($expired);
+        $jumlahHari = ($interval->days) + 1;
+
+        $massa2 = null;
+        $massa3 = null;
+
+        if ($jumlahHari > 5) {
+            $massa2 = min($jumlahHari -5, 5);
+
+            if ($jumlahHari > 10) {
+                $massa3 = $jumlahHari -10;
+            }
+        }
+        // dd($request->all(), $disc, $expired, $interval, $jumlahHari, $massa2, $massa3);
+
+        try {
+            $doOnline = DOonline::find($request->do_number_auto);
+            $cust = Customer::find($request->customer);
+
+            if ($doOnline->customer_code != $cust->code) {
+                return redirect()->back()->with('error', 'Nomor DO dengan Cutomer tidak singkron');
+            }
+
+            $form = Form::find($request->form_id);
+            $form->update([
+                'expired_date' => $request->exp_date,
+                'os_id' => $request->order_service,
+                'cust_id' => $request->customer,
+                'do_id' => $request->do_number_auto,
+                'ves_id' => $request->ves_id,
+                'disc_date' => $request->disc_date,
+                'massa2' => $massa2,
+                'massa3' => $massa3,
+            ]);
+
+            $oldContainer = Container::where('form_id', $form->id)->delete();
+
+            foreach ($selctedCont as $item) {
+                $newCont = Container::create([
+                    'container_key'=>$item->container_key,
+                    'container_no'=>$item->container_no,
+                    'ctr_size'=>$item->ctr_size,
+                    'ctr_status'=>$item->ctr_status,
+                    'form_id'=>$form->id,
+                    'ves_id'=>$item->ves_id,
+                    'ves_name'=>$item->ves_name,
+                    'ctr_type'=>$item->ctr_type,
+                    'ctr_intern_status'=>$item->ctr_intern_status,
+                    'gross'=>$item->gross,
+                ]);
+            }
+
+            return redirect('/customer-import/preinvoice/'.$form->id)->with('success', 'Silahkan lanjutkan ke tahap berikut nya');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Opsss somtheing wrong : ' . $th->getMessage());
+        }
+        
+    }
+
+    public function preinvoice($id)
+    {
+        $form = Form::find($id);
+        $data['title'] = "Preinvoice Import| " . $form->Service->name;
+        $data['form'] = $form;
+
+        $containers = Container::where('form_id', $form->id)->get();
+        $data['listContainers'] = $containers;
+
+        $service = OS::find($form->os_id);
+        $serviceDetail = OSDetail::where('os_id', $service->id)->orderBy('master_item_name', 'asc')->get();
+
+        $serviceDSK = $serviceDetail->where('type', 'DSK');
+        $data['serviceDSK'] = $serviceDSK;
+        $data['dsk'] = $serviceDSK->isNotEmpty() ? 'Y' : 'N'; 
+
+        $serviceDS = $serviceDetail->where('type', 'DS');
+        $data['serviceDS'] = $serviceDS;
+        $data['ds'] = $serviceDSK->isNotEmpty() ? 'Y' : 'N';
+
+        $data['size'] = $containers->pluck('ctr_size')->unique();
+        $data['status'] = $containers->pluck('ctr_status')->unique();
+
+        $tarif = MT::where('os_id', $service->id)->select('ctr_size', 'ctr_status')->get();
+        $checkTarif = $tarif->toArray();
+        $invalidContainer = $containers->filter(function($container) use ($checkTarif){
+            return !in_array(['ctr_size'=>$container->ctr_size, 'ctr_status'=>$container->ctr_status], $checkTarif);
+        });
+        if ($invalidContainer->isNotEmpty()) {
+            $invalidContainerNumber = $invalidContainer->pluck('container_no')->implode(', ');
+            return redirect()->back()->with('error', 'Hubungi Admin, terdapat container yang belum memiliki master tarif :' . $invalidContainerNumber);
+        }
+        $groupContainer = $containers->unique('ctr_size', 'ctr_status')->pluck('ctr_size', 'ctr_status');
+        $data['sizes'] = $containers->pluck('ctr_size')->unique();
+        $data['statuses'] = $containers->pluck('ctr_status')->unique();
+        $data['groupContainer'] = $groupContainer;
+
+        $data['tarif'] = MT::where('os_id', $service->id)->get();
+        $data['tarifDetail'] = MTDetail::whereIn('master_tarif_id', $data['tarif']->pluck('id'))->get();
+        // dd($service, $data['dsk'], $data['size'], $data['status'], $checkTarif, $invalidContainer);
+
+        return view('customer.import.form.preinvoice', $data)->with('success', 'Seilahkan lanjutkan ke tahap berikut nya');
+    }
+
+    public function createInvoice(Request $request)
+    {
+        // dd($request->all());
+
+        $form = Form::find($request->formId);
+        $service = OS::find($form->os_id);
+        $containers = Container::where('form_id', $form->id)->get();
+        $groupContainer = $containers->unique('ctr_size', 'ctr_status')->pluck('ctr_size', 'ctr_status');
+        $sizes = $containers->pluck('ctr_size')->unique();
+        $statuses = $containers->pluck('ctr_status')->unique();
+
+        $serviceDetail = OSDetail::where('os_id', $service->id)->get();
+        $tarif = MT::where('os_id', $service->id)->get();
+        $tarifDetail = MTDetail::whereIn('master_tarif_id', $tarif->pluck('id'))->get();
+        try {
+            if ($serviceDetail->where('type', 'DSK')->isNotEmpty()) {
+                $this->processInvoice($request, $form, $service, $containers, $groupContainer, $sizes, $statuses, $serviceDetail->where('type', 'DSK'), $tarif, $tarifDetail, 'DSK');
+            }
+    
+            if ($serviceDetail->where('type', 'DS')->isNotEmpty()) {
+                $this->processInvoice($request, $form, $service, $containers, $groupContainer, $sizes, $statuses, $serviceDetail->where('type', 'DS'), $tarif, $tarifDetail, 'DS');
+            }
+
+            $form->update(['done'=>'Y']);
+            foreach ($containers as $cont) {
+                $item = Item::find($cont->container_key);
+                $item->selected_do = 'Y';
+                $item->os_id = $form->os_id;
+                $item->order_service = $service->order;
+                $item->save();
+            }
+
+            return redirect('/customer-import/unpaid')->with('success', 'Invoice berhasil di buat');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Something Wrong : '.$th->getMessage());
+        }
+    }
+
+    private function processInvoice($request, $form, $service, $containers, $groupContainer, $sizes, $statuses, $serviceDetails, $tarif, $tarifDetail, $type)
+    {
+        DB::transaction(function () use ($request, $form, $service, $containers, $groupContainer, $sizes, $statuses, $serviceDetails, $tarif, $tarifDetail, $type) {
+            $header = $this->createInvoiceHeader($request, $form, $service, $type);
+
+            foreach ($sizes as $size) {
+                foreach ($statuses as $status) {
+                    $jumlahCont = $containers->where('ctr_size', $size)->where('ctr_status', $status)->count();
+                    if ($jumlahCont > 0) {
+                        foreach ($serviceDetails as $detail) {
+                            $this->createInvoiceDetail($header, $form, $detail, $tarif, $tarifDetail, $size, $status, $jumlahCont);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private function createInvoiceHeader($request, $form, $service, $type)
+    {
+        return Import::create([
+            'form_id' => $form->id,
+            'inv_type' => $type,
+            'proforma_no' => $this->getNextProformaNumber(),
+            'cust_id' => $form->customer->id,
+            'cust_name' => $form->customer->name,
+            'fax' => $form->customer->fax,
+            'npwp' => $form->customer->npwp,
+            'alamat' => $form->customer->alamat,
+            'os_id' => $service->id,
+            'os_name' => $service->name,
+            'total' => $request->input("total$type"),
+            'admin' => $request->input("admin$type"),
+            'pajak' => $request->input("ppn$type"),
+            'grand_total' => $request->input("grandTotal$type"),
+            'order_by' => Auth::user()->name,
+            'order_at' => Carbon::now(),
+            'disc_date' => $form->disc_date,
+            'expired_date' => $form->expired_date,
+            'do_no' => $form->doOnline->do_no,
+            'user_id' => Auth::user()->id,
+            'lunas' => 'N',
+        ]);
+    }
+
+    private function createInvoiceDetail($header, $form, $detail, $tarif, $tarifDetail, $size, $status, $jumlahCont)
+    {
+        $selectedTarif = $tarif->where('ctr_size', $size)->where('ctr_status', $status)->first();
+        $tarifDSK = $tarifDetail->where('master_tarif_id', $selectedTarif->id)->where('master_item_id', $detail->master_item_id)->first();
+
+        $jumlahHari = $this->calculateDays($form, $detail);
+        $kode = ($detail->kode != 'PASSTRUCK') ? $detail->kode . $size : 'PASSTRUCK';
+        $harga = $jumlahCont * $jumlahHari * $tarifDSK->tarif;
+        // dd($detail);
+        Detail::create([
+            'inv_id' => $header->id,
+            'inv_type' => $header->inv_type,
+            'keterangan' => $form->service->name,
+            'ukuran' => ($detail->MItem->count_by != 'O') ? $size : '0',
+            'ctr_status' => ($detail->MItem->count_by != 'O') ? $status : '-',
+            'jumlah' => ($detail->MItem->count_by != 'O') ? $jumlahCont : 1,
+            'satuan' => 'unit',
+            'expired_date' => $form->expired_date,
+            'order_date' => $header->order_at,
+            'lunas' => 'N',
+            'cust_id' => $form->cust_id,
+            'cust_name' => $form->customer->name,
+            'os_id' => $form->os_id,
+            'jumlah_hari' => 0,
+            'master_item_id' => $detail->master_item_id,
+            'master_item_name' => $detail->master_item_name,
+            'kode' => $kode,
+            'tarif' => $tarifDSK->tarif,
+            'total' => $harga,
+            'form_id' => $form->id,
+            'count_by' => $detail->MItem->count_by,
+        ]);
+    }
+
+    private function calculateDays($form, $detail)
+    {
+        if ($detail->MItem->count_by == 'T') {
+            return ($detail->MItem->massa == 3) ? $form->massa3 : (($detail->MItem->massa == 2) ? $form->massa2 : 1);
+        }
+        return 1;
+    }
+
+
+    private function getNextProformaNumber()
+    {
+        $latestProforma = Import::orderBy('proforma_no', 'desc')->first();
+
+        if (!$latestProforma) {
+            return 'P0000001';
+        }
+
+        $lastProformaNumber = $latestProforma->proforma_no;
+        $lastNumber = (int)substr($lastProformaNumber, 1);
+        $nextNumber = $lastNumber + 1;
+        return 'P' . str_pad($nextNumber, 7, '0', STR_PAD_LEFT);
+    }
+
+    public function deleteInvoice($formId)
+    {
+        try {
+            $form = Form::find($formId);
+            $header = Import::where('form_id', $formId)->delete();
+            $detil = Detail::where('form_Id', $formId)->delete();
+    
+            $containerInvoice = Container::where('form_id')->get();
+    
+            foreach ($containerInvoice as $cont) {
+                $item = Item::find($cont->container_key);
+                $item->update([
+                    'selectd_do' => 'N',
+                    'os_id' => null,
+                    'order_service' => null,
+                ]);
+            }
+    
+            Container::where('form_id')->delete();
+    
+            $form->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data Berhasil Dihapus'
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something Wrong : '.$th->getMessage(),
+            ]);
+            
+        }
+        
     }
 }

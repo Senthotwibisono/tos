@@ -18,6 +18,7 @@ class ImportDetail extends Model
         'inv_type',
         'keterangan',
         'ukuran',
+        'ctr_status',
         'jumlah',
         'satuan',
         'expired_date',
