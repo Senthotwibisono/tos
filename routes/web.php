@@ -1029,6 +1029,12 @@ Route::get('/invoice/report-extend-all', [InvoiceExtend::class, 'ReportExcelAll'
 Route::get('/invoice/report-export-all', [InvoiceExportController::class, 'ReportExcelAll'])->name('report-invoice-export-All');
 
 
+// Edit Impor
+Route::controller(ImportController::class)->group(function(){
+  Route::get('/invoice/import/edit-{form_id?}', 'editInvoice');
+  Route::post('/invoice/import/updateInvoice', 'updateInvoice');
+});
+
 // Extend
 Route::get('/billing/import/extendIndex', [InvoiceExtend::class, 'index'])->name('index-extend');
 Route::get('/billing/import/extend/dataIndex', [InvoiceExtend::class, 'dataIndex'])->name('dataIndex');

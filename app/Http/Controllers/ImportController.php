@@ -216,7 +216,10 @@ class ImportController extends Controller
             $herf = '/bukti_bayar/import/'; 
             return '<a href="javascript:void(0)" onclick="openWindow(\''.$herf.$inv->id.'\')" class="btn btn-sm btn-info"><i class="fa fa-eye"></i></a>';
         })
-        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete', 'payFlag', 'viewPhoto'])
+        ->addColumn('editInvoice', function($inv){
+            return '<a href="/invoice/import/edit-'.$inv->form_id.'" target="_blank" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></a>';
+        })
+        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete', 'payFlag', 'viewPhoto', 'editInvoice'])
         ->make(true);
     }
 
@@ -1795,5 +1798,123 @@ private function getNextInvoiceDSK()
             'success' => true,
             'message' => 'Invoice Berhasil di Cancel!',
         ]);
+    }
+
+    public function editInvoice($form_id)
+    {
+        $form = Form::find($form_id);
+
+        $data['title'] = 'Edit Invoice Import';
+        
+        $invoice = InvoiceImport::where('form_id', $form->id)->get();
+
+        $data['singleInvoice'] = $invoice->first();
+
+        $data['customers'] = Customer::get();
+        $data['vesels'] = VVoyage::get();
+        $data['form'] = $form;
+
+        $data['expired'] = Carbon::parse($data['singleInvoice']->disc_Date)->addDays(4);
+
+        $data['services'] = OS::where('ie', 'I')->get();
+        $data['flagDSK'] = 'N';
+        $data['flagDS'] = 'N';
+
+        $dsk = $invoice->where('inv_type', 'DSK')->first();
+        if ($dsk) {
+            $data['flagDSK'] = 'Y';
+            $data['dsk'] = $dsk;
+        }
+        $ds = $invoice->where('inv_type', 'DS')->first();
+        if ($ds) {
+            $data['flagDS'] = 'Y';
+            $data['ds'] = $ds;
+        }
+        // dd($invoice);
+
+        return view('billingSystem.import.billing.edit.index', $data);
+    }
+
+    public function updateInvoice(Request $request)
+    {
+        // dd($request->all());
+
+        try {
+            //code...
+            $form = Form::find($request->form_id);
+            $form->update([
+                'os_id' => $request->os_id,
+                'ves_id' => $request->ves_id,
+                'cust_id' => $request->cust_id,
+            ]);
+    
+            $customer = Customer::find($request->cust_id);
+            $headers = InvoiceImport::where('form_id', $form->id)->get();
+            foreach ($headers as $header) {
+                $header->update([
+                    'os_id' => $form->os_id ?? null,
+                    'cust_id' => $form->cust_id ?? null,
+                    'cust_name' => $customer->name ?? null, 
+                    'fax' => $request->fax ?? null, 
+                    'npwp' => $request->npwp ?? null, 
+                    'alamat' => $request->alamat ?? null, 
+                ]);
+            }
+            // ([
+            //     'os_id' => $form->os_id ?? null,
+            //     'cust_id' => $form->cust_id ?? null,
+            //     'cust_name' => $customer->name ?? null, 
+            //     'fax' => $request->fax ?? null, 
+            //     'npwp' => $request->npwp ?? null, 
+            //     'alamat' => $request->alamat ?? null, 
+            // ]);
+
+            $details = Detail::where('form_id', $form->id)->get();
+            foreach ($details as $detil) {
+                $detil->update([
+                    'cust_id' => $request->cust_id,
+                    'cust_name' => $customer->name,
+                ]);
+            }
+    
+            // $detil = Detail::where('form_id', $form->id)->update([
+            //     'cust_id' => $request->cust_id,
+            //     'cust_name' => $customer->name,
+            // ]);
+    
+            $dsk = InvoiceImport::where('form_id', $form->id)->where('inv_type', 'DSK')->first();
+            if ($dsk) {
+                $dsk->update([
+                    'total' => $request->totalDSK, 
+                    'admin' => $request->adminDSK, 
+                    'discount' => $request->discountDSK, 
+                    'pajak' => $request->pajakDSK, 
+                    'grand_total' => $request->grand_totalDSK, 
+                    'order_at' => $request->order_atDSK,
+                    'piutang_at' => $request->piutang_atDSK, 
+                    'lunas_at' => $request->lunas_atDSK, 
+                    'invoice_date' => $request->invoice_dateDSK, 
+                ]);
+            }
+    
+            $ds = InvoiceImport::where('form_id', $form->id)->where('inv_type', 'DS')->first();
+            if ($ds) {
+                $ds->update([
+                    'total' => $request->totalDS, 
+                    'admin' => $request->adminDS, 
+                    'discount' => $request->discountDS, 
+                    'pajak' => $request->pajakDS, 
+                    'grand_total' => $request->grand_totalDS, 
+                    'order_at' => $request->order_atDS,
+                    'piutang_at' => $request->piutang_atDS, 
+                    'lunas_at' => $request->lunas_atDS, 
+                    'invoice_date' => $request->invoice_dateDS, 
+                ]);
+            }
+            return redirect()->back()->with('success', 'Data Berhasil di perbarui');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Something Wrong In : ' . $th->getMessage());
+            //throw $th;
+        }
     }
 }

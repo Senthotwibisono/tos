@@ -52,6 +52,7 @@
                                 <th>Invoice</th>
                                 <th>Job</th>
                                 <th>Action</th>
+                                <th>Edit</th>
                                 <th>Cancel</th>
                             </tr>
                         </thead>
@@ -152,6 +153,7 @@
               {data:'invoice', name:'invoice', classNmae:'text-center'},
               {data:'job', name:'job', classNmae:'text-center'},
               {data:'action', name:'action', classNmae:'text-center'},
+              {data:'editInvoice', name:'editInvoice', classNmae:'text-center'},
               {data:'delete', name:'delete', classNmae:'text-center'},
           ],
           pageLength: 10
