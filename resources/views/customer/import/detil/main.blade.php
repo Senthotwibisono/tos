@@ -58,13 +58,24 @@
                         _token: '{{ csrf_token() }}' // Sertakan token CSRF untuk keamanan
                     },
                     success: function(response) {
-                        Swal.fire(
-                            'Dihapus!',
-                            'Data berhasil dihapus.',
-                            'success'
-                        ).then(() => {
-                            window.location.reload(); // Arahkan ke halaman beranda setelah penghapusan sukses
-                        });
+                        console.log(response);
+                            if (response.success) {
+                              Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.message,
+                              })
+                              .then(() => {
+                                // Memuat ulang halaman setelah berhasil menyimpan data
+                                window.location.reload();
+                            });
+                            } else {
+                              Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.message,
+                              });
+                            }
                     },
                     error: function(xhr) {
                         console.error(xhr.responseText);

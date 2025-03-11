@@ -68,8 +68,6 @@ class CustomerImportController extends CustomerMainController
 
     public function dataService(Request $request)
     {
-       
-
         $invoice = $this->import->whereHas('service', function ($query) {
             $query->where('ie', '=', 'I');
         })->whereNot('form_id', '=', '')->orderBy('order_at', 'desc');
@@ -142,7 +140,28 @@ class CustomerImportController extends CustomerMainController
             }
         })
         ->addColumn('action', function($inv){
-            return '<button type="button" id="pay" data-id="'.$inv->id.'" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>';
+            if ($inv->lunas == 'N' || $inv->lunas == 'P') {
+                return '<button type="button" id="pay" data-id="'.$inv->id.'" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>';
+            }elseif ($inv->lunas == 'Y') {
+                return '<span class="badge bg-success text-white">Paid</span>';
+            }else {
+                return '<span class="badge bg-danger text-white">Canceled</span>';
+            }
+        })
+        ->addColumn('payFlag', function($inv){
+            if ($inv->lunas == 'N') {
+                if ($inv->pay_flag == 'Y') {
+                    return '<div class="spinner-border text-primary" role="status">
+                            
+                        </div> <span class="">Waiting Approved</span>';
+                }elseif ($inv->pay_flag == 'C') {
+                    return '<span class="badge bg-danger text-white">Di Tolak</span>';
+                }else {
+                    return '-';
+                }
+            }else {
+                return '-';
+            }
         })
         ->addColumn('delete', function($inv){
             if ($inv->lunas == 'N') {
@@ -151,7 +170,7 @@ class CustomerImportController extends CustomerMainController
                 return '-';
             }
         })
-        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete'])
+        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete', 'payFlag'])
         ->make(true);
     }
 
@@ -478,21 +497,28 @@ class CustomerImportController extends CustomerMainController
     {
         try {
             $form = Form::find($formId);
-            $header = Import::where('form_id', $formId)->delete();
-            $detil = Detail::where('form_Id', $formId)->delete();
-    
-            $containerInvoice = Container::where('form_id')->get();
-    
-            foreach ($containerInvoice as $cont) {
-                $item = Item::find($cont->container_key);
-                $item->update([
-                    'selectd_do' => 'N',
-                    'os_id' => null,
-                    'order_service' => null,
+            $headerLunas = Import::where('form_id', $form->id)->whereIn('lunas', ['Y', 'P'])->get();
+            // var_dump($headerLunas);
+            // die();
+            if ($headerLunas->isNotEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Opsss sudah ada invoice yang di bayarkan, harap hubungi admin untuk pembatalan secara manual',
                 ]);
             }
+           
+    
+            $containerInvoice = Container::where('form_id', $form->id)->get();
+
+            $item = Item::whereIn('container_key', $containerInvoice->pluck('container_key'))->update([
+                'selected_do' => 'N',
+                'os_id' => null,
+                'order_service' => null,
+            ]);
     
             Container::where('form_id')->delete();
+            $header = Import::where('form_id', $formId)->delete();
+            $detil = Detail::where('form_Id', $formId)->delete();
     
             $form->delete();
 
@@ -509,4 +535,53 @@ class CustomerImportController extends CustomerMainController
         }
         
     }
+
+    public function payButton($id)
+    {
+        // var_dump($id);
+        // die();
+        try {
+            //code...
+            $import = Import::find($id);
+    
+            return response()->json([
+                'success' => true,
+                'data' => $import,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Oopss something wrong : ' . $th->getMessage(),
+            ]);
+        }
+    }
+
+    public function payImportFromCust(Request $request)
+    {
+        // Hapus `dd($request->all());` setelah debugging
+        if (!$request->hasFile('bukti_bayar')) {
+            return back()->with('error', 'Anda Wajib Memasukkan Bukti Pembayaran');
+        }
+
+        $import = Import::find($request->id);
+        if (!$import) {
+            return back()->with('error', 'Data Import tidak ditemukan');
+        }
+
+        foreach ($request->file('bukti_bayar') as $photo) {
+            $fileName = time() . '_' . $photo->getClientOriginalName(); // Tambahkan timestamp untuk menghindari nama duplikat
+            $filePath = 'bukti_bayar/import/' . $import->id;
+
+            // Simpan ke storage
+            $photo->storeAs($filePath, $fileName, 'public');
+
+            // Simpan ke database
+           $import->update([
+            'pay_flag' => 'Y',
+           ]);
+        }
+
+        return back()->with('success', 'Bukti pembayaran berhasil diunggah');
+    }
+
 }

@@ -34,7 +34,7 @@ class RedirectIfAuthenticated
     protected function getRedirectTo($user)
     {
         if ($user->hasRole('admin')) {
-            return '/';
+            return '/dashboard';
         } elseif ($user->hasRole('android')) {
             return '/android-dashboard';
         }elseif ($user->hasRole('customer')) {

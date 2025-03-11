@@ -22,7 +22,7 @@
       </a>
     </li>
     <li class="menu-item">
-      <a href="#" class="menu-link">
+      <a href="/customer-extend" class="menu-link">
         <i class="fa-solid fa-clock"></i>
         Extend
       </a>

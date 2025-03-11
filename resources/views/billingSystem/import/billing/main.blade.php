@@ -712,4 +712,10 @@ $(document).ready(function() {
     });
   });
 </script>
+
+<script>
+    function openWindow(url) {
+        window.open(url, '_blank', 'width=600,height=800');
+    }
+</script>
 @endsection

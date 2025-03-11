@@ -68,6 +68,9 @@ use App\Http\Controllers\customer\RegisterCustomerController;
 use App\Http\Controllers\customer\CustomerMainController;
 use App\Http\Controllers\customer\profile\CustomerProfileController;
 use App\Http\Controllers\customer\import\CustomerImportController;
+use App\Http\Controllers\customer\extend\CustomerExtendController;
+
+use Illuminate\Support\Facades\Storage;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -644,7 +647,7 @@ route::resource('yard/rowtier', YardrotController::class);
 route::post('yards/rowtier/get_rowtier', [YardrotController::class, 'get_rowtier'])->name('rowtier.get_rowtier');
 
 //Routes Spatie
-Route::middleware('role:admin')->get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
+Route::middleware(['auth', 'redirect.authenticated'])->get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 
 // Profil
 Route::get('/profile', [ProfileControllers::class, 'index']);
@@ -1230,9 +1233,20 @@ Route::post('/renta&repair/master-tarif-create-first', [MasterInvoiceController:
     Route::post('/invoice/customer/register/editPost', 'editPost');
   });
 
+  Route::get('/bukti_bayar/import/{id}', function ($id) {
+    $path = "public/bukti_bayar/import/{$id}";
+    if (!Storage::exists($path)) {
+        abort(404, "Folder tidak ditemukan");
+    }
+
+    $files = Storage::files($path);
+    return view('list-photos', compact('files', 'id'));
+  });
+
   Route::controller(CustomerMainController::class)->group(function(){
     Route::get('/customer-dashboard', 'dashboardIndex');
     Route::get('/customer-import', 'Import');
+    Route::get('/customer-extend', 'Extend');
   });
  
   Route::controller(CustomerProfileController::class)->group(function(){
@@ -1257,6 +1271,28 @@ Route::post('/renta&repair/master-tarif-create-first', [MasterInvoiceController:
     Route::get('/customer-import/preinvoice/{id?}', 'preinvoice');
     Route::post('/customer-import/createInvoice', 'createInvoice');
     Route::post('/customer-import/deleteInvoice/{formId?}', 'deleteInvoice');
+    Route::get('/customer-import/payButton/{id?}', 'payButton');
+    Route::post('/customer-import/payImportFromCust', 'payImportFromCust');
+
+  });
+
+  Route::prefix('/customer-extend')->group(function(){
+    Route::controller(CustomerExtendController::class)->group(function(){
+      Route::get('/formList', 'formList');
+      Route::get('/formData', 'formData');
+      Route::post('/formStoreFirst', 'formStoreFirst');
+      Route::get('/formFirstStepId={id?}', 'firstStepIndex');
+      Route::post('/storeFormStep1', 'storeFormStep1');
+      Route::get('/preinvoice/{id?}', 'preinvoice');
+      Route::post('/createInvoice', 'createInvoice');
+      Route::post('/deleteInvoice/{formId?}', 'deleteInvoice');
+      Route::get('/payButton/{id?}', 'payButton');
+      Route::post('/payImportFromCust', 'payImportFromCust');
+
+      // Additional
+      Route::get('/getOldInvoice', 'getOldInvoice');
+      Route::get('/oldInvoiceData', 'oldInvoiceData');
+    });
 
   });
 

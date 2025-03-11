@@ -116,11 +116,108 @@ class ImportController extends Controller
 
     public function dataService(Request $request)
     {
-        $unpaids = InvoiceImport::whereNotNull('form_id')
-        ->where('os_id', $request->osId)
-        ->orderBy('order_at', 'asc')
-        ->orderBy('lunas', 'asc');
-        return DataTables::of($unpaids)->make(true);
+        $invoice = InvoiceImport::whereHas('service', function ($query) {
+            $query->where('ie', '=', 'I');
+        })->whereNot('form_id', '=', '')->orderBy('order_at', 'desc');
+        
+        if ($request->has('type')) {
+            if ($request->type == 'unpaid') {
+                $invoice = InvoiceImport::whereHas('service', function ($query) {
+                    $query->where('ie', '=', 'I');
+                })->whereNot('form_id', '=', '')->where('lunas', '=', 'N')->orderBy('order_at', 'desc');
+            }
+
+            if ($request->type == 'piutang') {
+                $invoice = InvoiceImport::whereHas('service', function ($query) {
+                    $query->where('ie', '=', 'I');
+                })->whereNot('form_id', '=', '')->where('lunas', '=', 'P')->orderBy('order_at', 'desc');
+            }
+        }
+
+        if ($request->has('os_id')) {
+            $invoice = InvoiceImport::whereNot('form_id', '=', '')->where('os_id', $request->os_id)->orderBy('order_at', 'desc')->orderBy('lunas', 'asc');
+        }
+
+        $inv = $invoice->get();
+        return DataTables::of($inv)
+        ->addColumn('proforma', function($inv) {
+            return $inv->proforma_no ?? '-';
+        })
+        ->addColumn('customer', function($inv){
+            return $inv->cust_name ?? '-';
+        })
+        ->addColumn('service', function($inv){
+            return $inv->os_name ?? '-';
+        })
+        ->addColumn('type', function($inv){
+            return $inv->inv_type ?? '-';
+        })
+        ->addColumn('orderAt', function($inv){
+            return $inv->order_at ?? '-';
+        })
+        ->addColumn('status', function($inv){
+            if ($inv->lunas == 'N') {
+                return '<span class="badge bg-danger text-white">Not Paid</span>';
+            }elseif ($inv->lunas == 'P') {
+                return '<span class="badge bg-warning text-white">Piutang</span>';
+            }elseif ($inv->lunas == 'Y') {
+                return '<span class="badge bg-success text-white">Paid</span>';
+            }elseif ($inv->lunas == 'C') {
+                return '<span class="badge bg-danger text-white">Canceled</span>';
+            }
+        })
+        ->addColumn('pranota', function($inv){
+            return '<a type="button" href="/pranota/import-'.$inv->inv_type.$inv->id.'" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>';
+        })
+        ->addColumn('invoice', function($inv){
+            if ($inv->lunas == 'N') {
+                return '<span class="badge bg-info text-white">Paid First!!</span>';
+            }elseif ($inv->lunas == 'C') {
+                return '<span class="badge bg-danger text-white">Canceled</span>';
+            }else {
+                return '<a type="button" href="/invoice/import-'.$inv->inv_type.$inv->id.'" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>';
+            }
+        })
+        ->addColumn('job', function($inv){
+            if ($inv->lunas == 'N') {
+                return '<span class="badge bg-info text-white">Paid First!!</span>';
+            }elseif ($inv->lunas == 'C') {
+                return '<span class="badge bg-danger text-white">Canceled</span>';
+            }else {
+                return '<a type="button" href="/invoice/job/import-'.$inv->id.'" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>';
+            }
+        })
+        ->addColumn('action', function($inv){
+            return '<button type="button" id="pay" data-id="'.$inv->id.'" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>';
+        })
+        ->addColumn('payFlag', function($inv){
+            if ($inv->lunas == 'N') {
+                if ($inv->pay_flag == 'Y') {
+                    return '<div class="spinner-border text-primary" role="status">
+                            
+                        </div> <span class="">Waiting Approved</span>';
+                }elseif ($inv->pay_flag == 'C') {
+                    return '<span class="badge bg-danger text-white">Di Tolak</span>';
+                }else {
+                    return '-';
+                }
+            }else {
+                return '-';
+            }
+        })
+        ->addColumn('delete', function($inv){
+            if ($inv->lunas == 'N') {
+                return '<button type="button" data-id="'.$inv->form_id.'" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>';
+            }else {
+                return '-';
+            }
+        })
+        ->addColumn('viewPhoto', function($inv){
+            $herf = '/bukti_bayar/import/'; 
+            return '<a href="javascript:void(0)" onclick="openWindow(\''.$herf.$inv->id.'\')" class="btn btn-sm btn-info"><i class="fa fa-eye"></i></a>';
+        })
+        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete', 'payFlag', 'viewPhoto'])
+        ->make(true);
     }
 
 
@@ -1670,10 +1767,6 @@ private function getNextInvoiceDSK()
         // die;
         $invoice->update([
             'lunas' => 'C',
-            'total'=> 0,
-            'discount'=> 0,
-            'pajak'=> 0,
-            'grand_total'=> 0,
             
         ]);
 
@@ -1681,10 +1774,6 @@ private function getNextInvoiceDSK()
         foreach ($details as $detail) {
             $detail->update([
             'lunas'=>'C',
-            'jumlah'=>0,
-            'jumlah_hari'=> 0,
-            'tarif'=>0,
-            'total'=>0,
             ]);
         }
 

@@ -150,4 +150,26 @@ class CustomerMainController extends Controller
 
         return view('customer.import.index', $data);
     }
+
+    public function Extend()
+    {
+        $data['title'] = 'Invoice Perpanjangan, ' . Auth::user()->name;
+        $data['orderService'] = OS::where('ie', '=' , 'X')->orderBy('id', 'asc')->get();
+
+        $data['extendTotal'] = (clone $this->extend)->count();
+        $data['extendPaid'] = (clone $this->extend)->where('lunas', '=', 'Y')->count();
+        $data['extendUnpaid'] = (clone $this->extend)->whereNotIn('lunas', ['Y', 'C'])->count();
+        $data['extendCanceled'] = (clone $this->extend)->where('lunas', '=', 'C')->count();
+        $data['invoice'] = (clone $this->extend);
+
+        $data['extendUnpaid'] = (clone $this->extend)->where('lunas', '=', 'N')->count();
+        $data['extendUnpaidAmount'] = (clone $this->extend)->where('lunas', '=', 'N')->sum('grand_total');
+        
+        $data['extendPiutang'] = (clone $this->extend)->where('lunas', '=', 'P')->count();
+        $data['extendPiutangAmount'] = (clone $this->extend)->where('lunas', '=', 'P')->sum('grand_total');
+
+        $data['extendCanceled'] = (clone $this->extend)->where('lunas', '=', 'C')->count();
+
+        return view('customer.extend.index', $data);
+    }
 }

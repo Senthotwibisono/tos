@@ -37,23 +37,25 @@
             <div class="row">
 
               <div class="col-12">
-                <div class="table table-responsive">
-                  <table class="table table-hover" id="piutangTable">
-                    <thead>
-                      <tr>
-                        <th>Proforma No</th>
-                        <th>Customer</th>
-                        <th>Order Service</th>
-                        <th>Tipe Invoice</th>
-                        <th>Dibuat Pada</th>
-                        <th>Status</th>
-                        <th>Pranota</th>
-                        <th>Invoice</th>
-                        <th>Job</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                  </table>
+                <div class="table">
+                    <table class="table-hover" id="unpaidImport">
+                        <thead style="white-space: nowrap;">
+                            <tr>
+                                <th>Bukti Bayar</th>
+                                <th>Proforma No</th>
+                                <th>Customer</th>
+                                <th>Order Service</th>
+                                <th>Tipe Invoice</th>
+                                <th>Dibuat Pada</th>
+                                <th>Status</th>
+                                <th>Pranota</th>
+                                <th>Invoice</th>
+                                <th>Job</th>
+                                <th>Action</th>
+                                <th>Cancel</th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
               </div>
             </div>
@@ -126,100 +128,37 @@
 @section('custom_js')
 <script>
   $(document).ready(function() {
-    $('#piutangTable').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: '/invoice/import/delivery-data/piutang', // Endpoint to fetch $piutangs data
-        columns: [
-            { data: 'proforma_no', name: 'proforma_no', className: 'text-center' },
-            { data: 'cust_name', name: 'cust_name', className: 'text-center' },
-            { data: 'os_name', name: 'os_name', className: 'text-center' },
-            { data: 'inv_type', name: 'inv_type', className: 'text-center' },
-            { data: 'order_at', name: 'order_at', className: 'text-center' },
-            {
-                data: 'lunas',
-                name: 'lunas',
-                className: 'text-center',
-                render: function(data, type, row) {
-                    let badgeClass = '';
-                    let badgeText = '';
-                    switch (data) {
-                        case 'N':
-                            badgeClass = 'bg-danger text-white';
-                            badgeText = 'Not Paid';
-                            break;
-                        case 'P':
-                            badgeClass = 'bg-warning text-white';
-                            badgeText = 'Piutang';
-                            break;
-                        case 'Y':
-                            badgeClass = 'bg-success text-white';
-                            badgeText = 'Paid';
-                            break;
-                        default:
-                            badgeClass = 'bg-danger text-white';
-                            badgeText = 'Canceled';
-                            break;
-                    }
-                    return `<span class="badge ${badgeClass}">${badgeText}</span>`;
-                }
-            },
-            {
-                data: 'inv_type',
-                name: 'inv_type',
-                className: 'text-center',
-                render: function(data, type, row) {
-                    const link = data === 'DSK' ? `/pranota/import-DSK${row.id}` : `/pranota/import-DS${row.id}`;
-                    return `<a href="${link}" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>`;
-                }
-            },
-            {
-                data: 'lunas',
-                name: 'lunas',
-                className: 'text-center',
-                render: function(data, type, row) {
-                    if (data === 'N') {
-                        return `<button class="btn btn-sm btn-primary text-white" disabled><i class="fa fa-dollar"></i></button>`;
-                    } else {
-                        const link = row.inv_type === 'DSK' ? `/invoice/import-DSK${row.id}` : `/invoice/import-DS${row.id}`;
-                        return `<a href="${link}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>`;
-                    }
-                }
-            },
-            {
-                data: 'id',
-                name: 'id',
-                className: 'text-center',
-                render: function(data, type, row) {
-                    if (row.lunas === 'N') {
-                        return `<button class="btn btn-sm btn-info text-white" disabled><i class="fa fa-ship"></i></button>`;
-                    } else {
-                        return `<a href="/invoice/job/import-${data}" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>`;
-                    }
-                }
-            },
-            {
-                data: 'id',
-                name: 'id',
-                className: 'text-center',
-                render: function(data, type, row) {
-                    return `<div class="row">
-                                <div class="col-5">
-                                    <button type="button" id="pay" data-id="${data}" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>
-                                </div>
-                                ${row.lunas === 'N' ? `
-                                <div class="col-5">
-                                    <button type="button" data-id="${row.form_id}" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>
-                                </div>` : ''}
-                            </div>`;
-                }
-            }
-        ],
-        pageLength: 25
-    });
-});
+      $('#unpaidImport').DataTable({
+          processing: true,
+          serverSide: true,
+          scrollY: '50hv',
+          scrollX: true,
+          ajax: {
+              url: '/invoice/import/delivery-data/service',
+              type: 'GET',
+              data: {
+                  type: 'piutang' // Kirimkan osId sebagai parameter
+              }
+          },
+          columns: [
+              {data:'viewPhoto', name:'viewPhoto', classNmae:'text-center'},
+              {data:'proforma', name:'proforma', classNmae:'text-center'},
+              {data:'customer', name:'customer', classNmae:'text-center'},
+              {data:'service', name:'service', classNmae:'text-center'},
+              {data:'type', name:'type', classNmae:'text-center'},
+              {data:'orderAt', name:'orderAt', classNmae:'text-center'},
+              {data:'status', name:'status', classNmae:'text-center'},
+              {data:'pranota', name:'pranota', classNmae:'text-center'},
+              {data:'invoice', name:'invoice', classNmae:'text-center'},
+              {data:'job', name:'job', classNmae:'text-center'},
+              {data:'action', name:'action', classNmae:'text-center'},
+              {data:'delete', name:'delete', classNmae:'text-center'},
+          ],
+          pageLength: 10
+      });
+  });
 </script>
-<script>
+<!-- <script>
 $(document).ready(function() {
 
     // Event delegation for delete button
@@ -273,9 +212,8 @@ $(document).ready(function() {
         });
     });
 });
-
 </script>
-<!-- <script>
+<script>
 $(document).ready(function() {
     $('.Delete').on('click', function() {
         var formId = $(this).data('id'); // Ambil ID dari data-id atribut
@@ -568,5 +506,11 @@ $(document).ready(function() {
       }
     });
   });
+</script>
+
+<script>
+    function openWindow(url) {
+        window.open(url, '_blank', 'width=600,height=800');
+    }
 </script>
 @endsection

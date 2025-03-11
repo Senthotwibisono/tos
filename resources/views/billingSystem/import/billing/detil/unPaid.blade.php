@@ -39,20 +39,25 @@
             <div class="row">
 
               <div class="col-12">
-                <div class="table table-responsive">
-                  <table class="table table-hover" id="tableImp">
-                    <thead>
-                      <tr>
-                        <th>Proforma No</th>
-                        <th>Customer</th>
-                        <th>Order Service</th>
-                        <th>Tipe Invoice</th>
-                        <th>Dibuat Pada</th>
-                        <th>Pranota</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                  </table>
+                <div class="table">
+                    <table class="table-hover" id="unpaidImport">
+                        <thead style="white-space: nowrap;">
+                            <tr>
+                                <th>Bukti Bayar</th>
+                                <th>Proforma No</th>
+                                <th>Customer</th>
+                                <th>Order Service</th>
+                                <th>Tipe Invoice</th>
+                                <th>Dibuat Pada</th>
+                                <th>Status</th>
+                                <th>Pranota</th>
+                                <th>Invoice</th>
+                                <th>Job</th>
+                                <th>Action</th>
+                                <th>Cancel</th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
               </div>
             </div>
@@ -124,49 +129,36 @@
 
 @section('custom_js')
 <script>
-    $(document).ready(function() {
-        $('#tableImp').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: '/invoice/import/delivery-data/unpaid',
-            columns: [
-                { data: 'proforma_no', name: 'proforma_no', className: 'text-center' },
-                { data: 'cust_name', name: 'cust_name', className: 'text-center' },
-                { data: 'os_name', name: 'os_name', className: 'text-center' },
-                { data: 'inv_type', name: 'inv_type', className: 'text-center' },
-                { data: 'order_at', name: 'order_at', className: 'text-center' },
-                { 
-                    data: 'id',
-                    name: 'id',
-                    className: 'text-center',
-                    render: function(data, type, row) {
-                        // Cek nilai `inv_type` untuk menentukan rute yang sesuai
-                        if (row.inv_type === 'DSK') {
-                            return `<a href="/pranota/import-DSK${data}" type="button" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>`;
-                        } else if (row.inv_type === 'DS') {
-                            return `<a href="/pranota/import-DS${data}"type="button" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>`;
-                        } else {
-                            // Jika `inv_type` tidak cocok, tampilkan data tanpa link
-                            return data;
-                        }
-                    }
-                },
-                {
-                    data: 'id',
-                    name: 'id',
-                    className: 'text-center',
-                    render: function(data, type, row, meta) {
-                        const formId = row.form_id; // Accessing form_id from the row data
-                        return `<div class="button-container">
-                            <button type="button" data-id="${formId}" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>
-                            <button type="button" id="pay" data-id="${data}" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>
-                        </div>`;
-                    }
-                },
-            ],
-            pageLength: 50
-        });
-    });
+  $(document).ready(function() {
+      $('#unpaidImport').DataTable({
+          processing: true,
+          serverSide: true,
+          scrollY: '50hv',
+          scrollX: true,
+          ajax: {
+              url: '/invoice/import/delivery-data/service',
+              type: 'GET',
+              data: {
+                  type: 'unpaid' // Kirimkan osId sebagai parameter
+              }
+          },
+          columns: [
+              {data:'viewPhoto', name:'viewPhoto', classNmae:'text-center'},
+              {data:'proforma', name:'proforma', classNmae:'text-center'},
+              {data:'customer', name:'customer', classNmae:'text-center'},
+              {data:'service', name:'service', classNmae:'text-center'},
+              {data:'type', name:'type', classNmae:'text-center'},
+              {data:'orderAt', name:'orderAt', classNmae:'text-center'},
+              {data:'status', name:'status', classNmae:'text-center'},
+              {data:'pranota', name:'pranota', classNmae:'text-center'},
+              {data:'invoice', name:'invoice', classNmae:'text-center'},
+              {data:'job', name:'job', classNmae:'text-center'},
+              {data:'action', name:'action', classNmae:'text-center'},
+              {data:'delete', name:'delete', classNmae:'text-center'},
+          ],
+          pageLength: 10
+      });
+  });
 </script>
 <script>
 $(document).ready(function() {
@@ -524,5 +516,11 @@ $(document).ready(function() {
       }
     });
   });
+</script>
+
+<script>
+    function openWindow(url) {
+        window.open(url, '_blank', 'width=600,height=800');
+    }
 </script>
 @endsection
