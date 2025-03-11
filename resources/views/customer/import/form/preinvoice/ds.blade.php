@@ -1,6 +1,6 @@
 <div class="col-12">
   <h4 class="card-title">
-    Invoice DSK 
+    Invoice DS
   </h4>
 </div>
 <div class="col-12">
@@ -56,7 +56,7 @@
                           @elseif ($tarifDS->MItem->massa ?? 0 == 2)
                               @php
                                 $hari = $form->massa2; 
-                                $hariHitung = $form->massa2; 
+                                $hariHitung = $form->massa2 ?? 0; 
                               @endphp
                           @else
                               @php

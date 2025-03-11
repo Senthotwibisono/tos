@@ -28,7 +28,7 @@ class MasterTarifController extends Controller
     public function import()
     {
         $data['title'] = "Mater Tarif Import";
-        $data ['orderService'] = OS::where('ie', '=', 'I')->get();
+        $data ['orderService'] = OS::whereIn('ie', '=', ['I', 'X'])->get();
         $data ['masterTarif'] = MT::get();
         return view('billingSystem.import.master-tarif.main', $data);
     }
@@ -292,7 +292,7 @@ class MasterTarifController extends Controller
         $idKapal = $request->id_kapal;
         // dd($idKapal);
         $data['title'] = 'Create DO Online Manual';
-        $data['items'] = Item::where('ves_id', $idKapal)->whereIn('ctr_intern_status', ['01', '02', '03'])->get();
+        $data['items'] = Item::where('ves_id', $idKapal)->whereIn('ctr_intern_status', ['01', '02', '03'])->where('selected_do', 'N')->get();
         $data['customers'] = Customer::get();
 
         // dd($request->all());

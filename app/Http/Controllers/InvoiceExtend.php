@@ -122,7 +122,11 @@ class InvoiceExtend extends Controller
                 return '-';
             }
         })
-        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete'])
+        ->addColumn('viewPhoto', function($inv){
+            $herf = '/bukti_bayar/extend/'; 
+            return '<a href="javascript:void(0)" onclick="openWindow(\''.$herf.$inv->id.'\')" class="btn btn-sm btn-info"><i class="fa fa-eye"></i></a>';
+        })
+        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete', 'viewPhoto'])
         ->make(true);
     }
 

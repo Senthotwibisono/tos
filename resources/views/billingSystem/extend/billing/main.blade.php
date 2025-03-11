@@ -123,6 +123,7 @@
                   <table class="table-hover" id="unpaidTable">
                     <thead style="white-space: nowrap;">
                       <tr>
+                        <th>Bukti Bayar</th>
                         <th>Proforma No</th>
                         <th>Customer</th>
                         <th>Order Service</th>
@@ -184,6 +185,7 @@
                   <table class="table-hover" id="piutangTable">
                     <thead style="white-space: nowrap;">
                       <tr>
+                        <th>Bukti Bayar</th>
                         <th>Proforma No</th>
                         <th>Customer</th>
                         <th>Order Service</th>
@@ -248,6 +250,7 @@
                   <table class="table-hover" id="invoiceTable-{{$os->id}}">
                     <thead style="white-space: nowrap;">
                       <tr>
+                        <th>Bukti Bayar</th>
                         <th>Proforma No</th>
                         <th>Customer</th>
                         <th>Order Service</th>
@@ -643,6 +646,7 @@ $(document).ready(function() {
         data: {type : 'unpaid'}
       },
       columns: [
+        {data:'viewPhoto', name:'viewPhoto', classNmae:'text-center'},
         {data:'proforma', name:'proforma', classNmae:'text-center'},
         {data:'customer', name:'customer', classNmae:'text-center'},
         {data:'service', name:'service', classNmae:'text-center'},
@@ -668,6 +672,7 @@ $(document).ready(function() {
         data: {type : 'piutang'}
       },
       columns: [
+        {data:'viewPhoto', name:'viewPhoto', classNmae:'text-center'},
         {data:'proforma', name:'proforma', classNmae:'text-center'},
         {data:'customer', name:'customer', classNmae:'text-center'},
         {data:'service', name:'service', classNmae:'text-center'},
@@ -693,6 +698,7 @@ $(document).ready(function() {
           data: {os_id : '{{$os->id}}'}
         },
         columns: [
+          {data:'viewPhoto', name:'viewPhoto', classNmae:'text-center'},
           {data:'proforma', name:'proforma', classNmae:'text-center'},
           {data:'customer', name:'customer', classNmae:'text-center'},
           {data:'service', name:'service', classNmae:'text-center'},
@@ -709,5 +715,11 @@ $(document).ready(function() {
     @endforeach
     
   })
+</script>
+
+<script>
+    function openWindow(url) {
+        window.open(url, '_blank', 'width=600,height=800');
+    }
 </script>
 @endsection

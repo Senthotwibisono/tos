@@ -1243,6 +1243,16 @@ Route::post('/renta&repair/master-tarif-create-first', [MasterInvoiceController:
     return view('list-photos', compact('files', 'id'));
   });
 
+  Route::get('/bukti_bayar/extend/{id}', function ($id) {
+    $path = "public/bukti_bayar/extend/{$id}";
+    if (!Storage::exists($path)) {
+        abort(404, "Folder tidak ditemukan");
+    }
+
+    $files = Storage::files($path);
+    return view('list-photos', compact('files', 'id'));
+  });
+
   Route::controller(CustomerMainController::class)->group(function(){
     Route::get('/customer-dashboard', 'dashboardIndex');
     Route::get('/customer-import', 'Import');
@@ -1291,7 +1301,16 @@ Route::post('/renta&repair/master-tarif-create-first', [MasterInvoiceController:
 
       // Additional
       Route::get('/getOldInvoice', 'getOldInvoice');
-      Route::get('/oldInvoiceData', 'oldInvoiceData');
+      Route::get('/getOldInvoiceById', 'getOldInvoiceById');
+      Route::get('/oldInvoiceData', 'oldInvoiceData')->name('customer.oldInvoiceData');
+
+      // view
+      Route::get('/unpaid', 'indexUnpaid');
+      Route::get('/unpaidData', 'dataUnpaid');
+      Route::get('/piutang', 'indexPiutang');
+      Route::get('/piutangData', 'dataPiutang');
+      Route::get('/service', 'indexService');
+      Route::get('/serviceData', 'dataService');
     });
 
   });

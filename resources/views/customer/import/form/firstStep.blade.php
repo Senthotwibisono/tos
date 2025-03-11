@@ -41,7 +41,7 @@
             <div class="col-3">
               <div class="form-group">
                 <label for="">Tanggal Discharge</label>
-                <input required name="disc_date" id="disc_date" type="date"  value="{{ isset($form->disc_date) ? \Carbon\Carbon::parse($form->disc_date)->format('Y-m-d') : null }}" class="form-control flatpickr-range mb-3" placeholder="09/05/2023">
+                <input required name="disc_date" id="disc_date" type="date"  value="{{ isset($form->disc_date) ? \Carbon\Carbon::parse($form->disc_date)->format('Y-m-d') : null }}" class="form-control flatpickr-range mb-3" placeholder="09/05/2023" readonly>
               </div>
             </div>
             <div class="col-3">

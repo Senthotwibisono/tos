@@ -8,7 +8,7 @@
   <p>Review Data Pranota Form & Kalkulasi</p>
 </div>
 <div class="page content mb-5">
-  <form action="/customer-import/createInvoice" method="POST" enctype="multipart/form-data" id="updateForm">
+  <form action="/customer-extend/createInvoice" method="POST" enctype="multipart/form-data" id="updateForm">
     @CSRF
     <input type="hidden" name="formId" value="{{$form->id}}">
     <div class="card">
@@ -54,9 +54,9 @@
           </div>
           <div class="col-6">
             <div class="form-group">
-              <label for="">DO Number</label>
-              <input type="text" class="form-control" readonly value="{{$form->doOnline->do_no}}">
-              <input type="hidden" class="form-control" name="do_id" readonly value="{{$form->doOnline->id}}">
+              <label for="">Old Invoice</label>
+              <input type="text" class="form-control" readonly value="{{$form->oldInv->inv_no}}">
+              <input type="hidden" class="form-control" name="do_id" readonly value="{{$form->oldInv->id}}">
             </div>
           </div>
           <div class="col-6">
@@ -109,10 +109,10 @@
         </div>
         <div class="row mt-3">
               @if($dsk == 'Y')
-               @include('customer.import.form.preinvoice.dsk')
+               @include('customer.extend.form.preinvoice.dsk')
               @endif     
               @if($ds == 'Y')
-               @include('customer.import.form.preinvoice.ds')
+               @include('customer.extend.form.preinvoice.ds')
               @endif     
         </div>
         <div class="row mt-3">
@@ -121,7 +121,7 @@
             <!-- <button class="btn btn-primary text-white opacity-50" data-toggle="tooltip" data-placement="top" title="Still on Development!">
               <a><i class="fa fa-pen"></i> Edit</a>
             </button> -->
-            <a href="/customer-import/formFirstStepId={{$form->id}}" class="btn btn-primary text-white"><i class="fa fa-pen"></i> Edit</a>
+            <a href="/customer-extend/formFirstStepId={{$form->id}}" class="btn btn-primary text-white"><i class="fa fa-pen"></i> Edit</a>
             <!-- <a onclick="cancelAddCustomer();" type="button" class="btn btn-warning"><i class="fa fa-close"></i> Batal</a> -->
             <a class="btn btn-danger Delete" data-id="{{$form->id}}"><i class="fa fa-close"></i> Batal</a>
           </div>
@@ -154,16 +154,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Submit the form programmatically if confirmed
-                        Swal.fire({
-                        title: 'Processing...',
-                        text: 'Please wait while we update the container',
-                        icon: 'info',
-                        allowOutsideClick: false,
-                        showConfirmButton: false,
-                            willOpen: () => {
-                                Swal.showLoading();
-                            }
-                        });
+                        showLoading();
                     document.getElementById('updateForm').submit();
                 }
             });
@@ -186,23 +177,25 @@ $(document).ready(function() {
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                swal.showLoading();
+                showLoading();
                 $.ajax({
-                    url: '/billing/import/delivery-deleteForm/' + formId, // Ganti dengan endpoint penghapusan Anda
-                    type: 'DELETE',
+                    url: '/customer-extend/deleteInvoice/' + formId, // Ganti dengan endpoint penghapusan Anda
+                    type: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}' // Sertakan token CSRF untuk keamanan
                     },
                     success: function(response) {
+                      hideLoading();
                         Swal.fire(
                             'Dihapus!',
-                            'Data berhasil dihapus.',
+                            response.message,
                             'success'
                         ).then(() => {
-                            window.location.href = '/customer-import/formList', 'formList'; // Arahkan ke halaman beranda setelah penghapusan sukses
+                            window.location.href = '/customer-extend/formList', 'formList'; // Arahkan ke halaman beranda setelah penghapusan sukses
                         });
                     },
                     error: function(xhr) {
+                      hideLoading();
                         console.error(xhr.responseText);
                         Swal.fire(
                             'Gagal!',

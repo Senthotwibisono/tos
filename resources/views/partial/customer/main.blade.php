@@ -162,6 +162,39 @@
   </script>
   @endif
 
+  @if (\Session::has('error'))
+  <script type="text/javascript">
+    // Add CSRF token to the headers
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
+    var successMessage = "{!! \Session::get('error') !!}";
+
+    if (successMessage) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: successMessage,
+      }).then(function() {
+        // Make an AJAX request to unset session variable
+        $.ajax({
+          url: "{{ route('unset-session', ['key' => 'error']) }}",
+          type: 'POST',
+          success: function(response) {
+            console.log('Success session unset');
+            // {{logger('Success session unset')}} -> call func logger in helper
+          },
+          error: function(error) {
+            console.log('Error unsetting session', error);
+          }
+        });
+      });
+    }
+  </script>
+  @endif
+
 </body>
 
 <!-- <script>
@@ -264,6 +297,146 @@ new simpleDatatables.DataTable('#table2');
     $("#beacukaiChecking").val("true");
   })
 
+</script>
+
+<script>
+    function createLoading() {
+        let loadingOverlay = document.createElement("div");
+        loadingOverlay.id = "loadingOverlay";
+        loadingOverlay.style.position = "fixed";
+        loadingOverlay.style.top = "0";
+        loadingOverlay.style.left = "0";
+        loadingOverlay.style.width = "100%";
+        loadingOverlay.style.height = "100%";
+        loadingOverlay.style.background = "rgba(0, 0, 0, 0.5)";
+        loadingOverlay.style.display = "flex";
+        loadingOverlay.style.justifyContent = "center";
+        loadingOverlay.style.alignItems = "center";
+        loadingOverlay.style.zIndex = "9999";
+        let spinner = document.createElement("div");
+        spinner.style.width = "50px";
+        spinner.style.height = "50px";
+        spinner.style.border = "5px solid #f3f3f3";
+        spinner.style.borderTop = "5px solid #3498db";
+        spinner.style.borderRadius = "50%";
+        spinner.style.animation = "spin 1s linear infinite";
+        // Tambahkan animasi CSS ke dalam JavaScript
+        let style = document.createElement("style");
+        style.innerHTML = `
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+        loadingOverlay.appendChild(spinner);
+        document.body.appendChild(loadingOverlay);
+    }
+    function showLoading() {
+        if (!document.getElementById("loadingOverlay")) {
+            createLoading();
+        }
+    }
+    function hideLoading() {
+        let loadingOverlay = document.getElementById("loadingOverlay");
+        if (loadingOverlay) {
+            loadingOverlay.remove();
+        }
+    }
+
+    showLoading();
+    window.onload = function(){
+      hideLoading();
+    };
+</script>
+
+<script>
+  const Pop = {
+    notif: function ({ icon = 'info', title = '', text = '' }) {
+        return new Promise((resolve) => {
+            // Hapus elemen lama jika ada
+            const existingSwal = document.getElementById('customSwalOverlay');
+            if (existingSwal) existingSwal.remove();
+
+            // Buat elemen overlay
+            const overlay = document.createElement('div');
+            overlay.id = 'customSwalOverlay';
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100%';
+            overlay.style.height = '100%';
+            overlay.style.background = 'rgba(0, 0, 0, 0.5)';
+            overlay.style.display = 'flex';
+            overlay.style.justifyContent = 'center';
+            overlay.style.alignItems = 'center';
+            overlay.style.zIndex = '9999';
+
+            // Buat modal box
+            const modal = document.createElement('div');
+            modal.style.background = 'white';
+            modal.style.padding = '20px';
+            modal.style.borderRadius = '8px';
+            modal.style.boxShadow = '0px 0px 10px rgba(0, 0, 0, 0.2)';
+            modal.style.textAlign = 'center';
+            modal.style.maxWidth = '300px';
+            modal.style.animation = 'fadeIn 0.3s';
+
+            // Tambahkan ikon (opsional)
+            const iconElement = document.createElement('div');
+            iconElement.style.fontSize = '40px';
+            iconElement.style.marginBottom = '10px';
+
+            if (icon === 'success') {
+                iconElement.innerHTML = '✅';
+            } else if (icon === 'error') {
+                iconElement.innerHTML = '❌';
+            } else if (icon === 'warning') {
+                iconElement.innerHTML = '⚠️';
+            } else {
+                iconElement.innerHTML = 'ℹ️';
+            }
+
+            // Tambahkan title
+            const titleElement = document.createElement('h2');
+            titleElement.innerText = title;
+            titleElement.style.margin = '0 0 10px';
+
+            // Tambahkan text
+            const textElement = document.createElement('p');
+            textElement.innerText = text;
+
+            // Tambahkan tombol
+            const button = document.createElement('button');
+            button.innerText = 'OK';
+            button.style.padding = '8px 16px';
+            button.style.border = 'none';
+            button.style.background = '#007bff';
+            button.style.color = 'white';
+            button.style.borderRadius = '5px';
+            button.style.cursor = 'pointer';
+            button.style.marginTop = '10px';
+            button.onclick = () => {
+                overlay.remove();
+                resolve();
+            };
+
+            // Susun elemen ke dalam modal
+            modal.appendChild(iconElement);
+            modal.appendChild(titleElement);
+            modal.appendChild(textElement);
+            modal.appendChild(button);
+            overlay.appendChild(modal);
+            document.body.appendChild(overlay);
+        });
+    }
+};
+</script>
+
+<script>
+    function openWindow(url) {
+        window.open(url, '_blank', 'width=600,height=800');
+    }
 </script>
 
 </html>

@@ -22,7 +22,7 @@
 
 <div class="page-content mb-5">
   <section class="row">
-    <form action="/customer-import/storeFormStep1" method="POST" id="updateForm" enctype="multipart/form-data">
+    <form action="/customer-extend/storeFormStep1" method="POST" id="updateForm" enctype="multipart/form-data">
       @CSRF
       <div class="card">
         <div class="card-body">
@@ -51,14 +51,14 @@
             </div>
             <div class="col-3">
               <div class="form-group">
-                <label for="">Tanggal Discharge</label>
-                <input required name="disc_date" id="disc_date" type="date"  value="{{ isset($form->disc_date) ? \Carbon\Carbon::parse($form->disc_date)->format('Y-m-d') : null }}" class="form-control flatpickr-range mb-3" placeholder="09/05/2023">
+                <label for="">Perpanjangan Dari</label>
+                <input required name="disc_date" id="disc_date" type="date"  value="{{ isset($form->disc_date) ? \Carbon\Carbon::parse($form->disc_date)->format('Y-m-d') : null }}" class="form-control flatpickr-range mb-3" placeholder="09/05/2023" readonly>
               </div>
             </div>
             <div class="col-3">
               <div class="form-group">
-                <label for="">Rencana Keluar</label>
-                <input required name="exp_date" id="exp_date" type="date" class="form-control flatpickr-range mb-3" value="{{ isset($form->expired_date) ? \Carbon\Carbon::parse($form->expired_date)->format('Y-m-d') : null ?? $expired ?? null}}" placeholder="09/05/2023">
+                <label for="">Perpanjangan Sampai</label>
+                <input required name="exp_date" id="exp_date" type="date" class="form-control flatpickr-range mb-3" value="{{ isset($form->expired_date) ? \Carbon\Carbon::parse($form->expired_date)->format('Y-m-d') : null }}" placeholder="09/05/2023">
               </div>
             </div>
             <div class="col-12">
@@ -83,13 +83,8 @@
             <div class="col-6">
               <div class="form-group">
                 <label>Vessel Service</label>
-                <select name="ves_id" class="js-example-basic-multiple form-select" required id="vessel">
-                  <option value="" default selected disabled>Pilih Salah Satu..</option>
-                 @foreach($ves as $os)
-                 <option value="{{$os->ves_id}}" {{$form->ves_id == $os->ves_id ? 'selected' : ''}}>{{$os->ves_name}}--{{$os->voy_out}}</option>
-                 @endforeach
-                 <option value="PRLINDO">Relokasi Pelindo</option>
-                </select>
+                <input type="text" name="" id="vessel" class="form-control"  value="{{$form->kapal->ves_name ?? '-'}}/{{$form->kapal->voy_in ?? '-'}}-{{$form->kapal->voy_out ?? '-'}}" readonly>
+                <input type="hidden" name="ves_id" id="vesselId" class="form-control">
               </div>
             </div>
           </div>
@@ -106,6 +101,7 @@
                     <select name="oldInvoice" id="oldInvoice" class="form-select select2" placeholder="Masukan beberapa Karakter Terlebih Dahulu">
                         <option disabled selected value>Pilih Satu</option>
                     </select> 
+                    <input type="hidden" id="oldFomrId" name="oldFormId" value="{{$form->oldInv->form_id ?? ''}}">
                 </div>
               </div>
           </div>
@@ -131,6 +127,8 @@
             </div>
           </div>
 
+          <input type="hidden" name="tipe" id="tipe" value="{{$form->tipe ?? ''}}">
+
           <!-- <div class="row mt-5">
           <h5>Discount</h5>
           <p>Di Isi dengan Persen (%)</p>
@@ -150,7 +148,7 @@
           </div>
          </div> -->
 
-          <div class="row mt-5">
+          <!-- <div class="row mt-5">
             <div class="col-12">
               <h5>Beacukai Information</h5>
               <p>Please Select Domestic Service first</p>
@@ -170,7 +168,7 @@
                 <label class="mb-2" for="">Document Number <span class="badge bg-warning">Maximum 6 Characters </span></label>
                 <div class="input-group mb-3">
                   <input placeholder="396956/KPU.01/2021" type="text" class="form-control" name="documentNumber" id="documentNumber" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
-                  <!-- <a onclick="checkBeacukaiImport();" class="btn btn-primary" type="button" id="beacukaicheck"><i class="fa fa-magnifying-glass"></i> Check</a> -->
+                  <a onclick="checkBeacukaiImport();" class="btn btn-primary" type="button" id="beacukaicheck"><i class="fa fa-magnifying-glass"></i> Check</a>
                   <button type="button" class="btn btn-primary cekDokumen" id="cekDokumen"><i class="fa fa-magnifying-glass"></i> Check</button>
                 </div>
               </div>
@@ -189,7 +187,7 @@
 
               </div>
             </div>
-          </div>
+          </div> -->
           <div class="row mt-5">
             <div class="col-12 text-right">
             <button type="button" id="updateButton" class="btn btn-success">Submit</button>
@@ -214,10 +212,67 @@ $(function(){
   
   // OldInvoiceChange
   $(function(){
-    $('#oldInvoice').on('change', function(){
-      let oldId = $('#oldInvoice').val();
-      console.log('id terpilih adalah : ' + oldId);
+    $('#oldInvoice').on('select2:select', function(e){
+      var oldId = e.params.data.id; 
+      var formId = e.params.data.formId;
 
+      console.log('ID:', oldId, 'Form ID:', formId);
+      showLoading();
+      $.ajax({
+          type: 'get',
+          url: "{{ route('customer.oldInvoiceData') }}",
+          data : {
+            oldId : oldId,
+            formId : formId},
+          cache: false,
+                
+          success: function(response) {
+            hideLoading();
+              console.log(response);
+              if (response.success) {
+                  Swal.fire({
+                      icon: 'success',
+                      title: 'Saved!',
+                      timer: 2000, // Waktu tampilan SweetAlert (ms)
+                      showConfirmButton: false
+                  }).then(() => {
+                      $('#customer').val(response.data.cust_id).trigger('change');
+                      $('#orderService').val(response.service.id).trigger('change');
+                      $('#vessel').val((response.vessel.ves_name) + ' / ' + (response.vessel.voy_in) + ' - ' + (response.vessel.voy_out));
+                      $('#vesselId').val(response.vessel.ves_id);
+                      $('#disc_date').val(response.discDate);
+                      $('#oldFomrId').val(response.data.form_id);
+                      $('#tipe').val(response.tipe);
+                      $('#containerSelector').empty();
+                  
+                      $.each(response.cont, function(index, item) {
+                          $('#containerSelector').append($('<option>', {
+                              value: item.container_key,
+                              text: item.container_no,
+                              selected: 'selected'
+                          }));
+                      });
+                  });
+              } else {
+                  Swal.fire({
+                      icon: 'error',
+                      title: 'Error',
+                      text: response.message
+                  }).then(() => {
+                      window.location.reload();
+                  });
+              }
+          },
+          error: function(data) {
+            hideLoading();
+              console.log('error:', data);
+              Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.',
+              });
+          }
+      })
     })
   })
 
@@ -241,17 +296,7 @@ $(function(){
                 confirmButtonText: 'Yes, update it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Submit the form programmatically if confirmed
-                        Swal.fire({
-                        title: 'Processing...',
-                        text: 'Please wait while we update the container',
-                        icon: 'info',
-                        allowOutsideClick: false,
-                        showConfirmButton: false,
-                            willOpen: () => {
-                                Swal.showLoading();
-                            }
-                        });
+                      showLoading();
                     document.getElementById('updateForm').submit();
                 }
             });
@@ -351,24 +396,29 @@ $(function(){
     });
 </script>
 
-<script>
+<!-- <script>
 document.addEventListener("DOMContentLoaded", function() {
     let discDateInput = document.getElementById("disc_date");
     let expDateInput = document.getElementById("exp_date");
 
     function updateExpDateMin() {
-        let discDate = new Date(discDateInput.value);
-        if (!isNaN(discDate.getTime())) {
+        let discDateValue = discDateInput.value;
+
+        if (discDateValue) {
+            let discDate = new Date(discDateValue);
             let minExpDate = new Date(discDate);
             minExpDate.setDate(minExpDate.getDate() + 4);
             
             let minDateStr = minExpDate.toISOString().split("T")[0];
             expDateInput.min = minDateStr;
 
-            // Jika tanggal exp_date saat ini kurang dari batas min, reset nilainya
-            if (expDateInput.value < minDateStr) {
+            // Hanya reset exp_date jika kosong atau lebih kecil dari batas min
+            if (!expDateInput.value || expDateInput.value < minDateStr) {
                 expDateInput.value = minDateStr;
             }
+        } else {
+            // Jika disc_date kosong, hapus batasan min di exp_date
+            expDateInput.min = "";
         }
     }
 
@@ -377,41 +427,77 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Jalankan saat halaman dimuat (jika disc_date sudah ada)
     updateExpDateMin();
+    const observer = new MutationObserver(() => {
+    updateExpDateMin();
 });
-</script>
+
+observer.observe(document.getElementById('disc_date'), { attributes: true, attributeFilter: ['value'] });
+});
+</script> -->
 
 <script>
-    $(document).ready(function() {
-        $('#oldInvoice').select2({
-            theme: "bootstrap-5", // Jika pakai Bootstrap 5
-            placeholder: "Pilih Old Invoice",
-            allowClear: true,
-            ajax: {
-                url: '/customer-extend/getOldInvoice', // Route yang menangani permintaan data
-                dataType: 'json',
-                delay: 250, // Menunda permintaan untuk menghindari terlalu banyak request
-                data: function(params) {
-                    return {
-                        search: params.term, // Mengambil keyword pencarian
-                        page: params.page || 1 // Paginasi
-                    };
-                },
-                processResults: function(response) {
-                    return {
-                        results: $.map(response.data, function(item) {
-                            return {
-                                id: item.id,
-                                text: item.inv_no // Sesuaikan dengan kolom yang ingin ditampilkan
-                            };
-                        }),
-                        pagination: {
-                            more: response.more
-                        }
-                    };
-                },
-                cache: true
+$(document).ready(function() {
+    $('#oldInvoice').select2({
+        theme: "bootstrap-5",
+        placeholder: "Pilih Old Invoice",
+        allowClear: true,
+        ajax: {
+            url: '/customer-extend/getOldInvoice',
+            dataType: 'json',
+            delay: 250,
+            data: function(params) {
+                return {
+                    search: params.term,
+                    page: params.page || 1
+                };
+            },
+            processResults: function(response) {
+                return {
+                    results: $.map(response.data, function(item) {
+                        return {
+                            id: item.id, // ID utama
+                            text: item.inv_no, // Teks yang ditampilkan di dropdown
+                            formId: item.form_id // Properti tambahan
+                        };
+                    }),
+                    pagination: {
+                        more: response.more
+                    }
+                };
+            },
+            cache: true
+        }
+    });
+
+    // **Set default selected jika form->do_id sudah ada**
+    let selectedId = "{{ $form->id }}"; // Ambil nilai dari PHP
+    if (selectedId) {
+        $.ajax({
+            type: 'GET',
+            url: '/customer-extend/getOldInvoiceById', // Buat endpoint untuk mengambil data berdasarkan ID
+            data: { id: selectedId },
+            dataType: 'json',
+            success: function(response) {
+                let selectedData = {
+                    id: response.id,
+                    text: response.inv_no, // Sesuaikan dengan kolom di response
+                    formId: response.form_id
+                };
+
+                let option = new Option(selectedData.text, selectedData.id, true, true);
+                $(option).attr('data-formId', response.form_id);
+                $('#oldInvoice').append(option);
             }
         });
+    }
+
+    // Tangkap saat opsi dipilih
+    $('#oldInvoice').on('select2:select', function(e) {
+        var id = e.params.data.id; 
+        var formId = e.params.data.formId;
+
+        console.log('ID:', id, 'Form ID:', formId);
     });
+});
 </script>
 @endsection

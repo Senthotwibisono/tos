@@ -223,7 +223,7 @@ class MasterInvoiceController extends Controller
     public function indexMTimport(Request $request)
     {
         $data['title'] = "Mater Tarif Import";
-        $data ['orderService'] = OS::where('ie', '=', 'I')->orderBy('ie', 'asc')->get();
+        $data ['orderService'] = OS::whereIn('ie', ['I', 'X'])->orderBy('ie', 'asc')->get();
         $data ['masterTarif'] = MT::get();
         return view('billingSystem.import.master-tarif.main', $data);
     }

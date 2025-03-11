@@ -38,6 +38,7 @@ class Extend extends Model
         'discount',
         'invoice_date',
         'user_id',
+        'pay_flag',
     ];
     
     public function customer()

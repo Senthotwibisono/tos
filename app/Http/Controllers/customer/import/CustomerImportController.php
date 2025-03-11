@@ -250,9 +250,16 @@ class CustomerImportController extends CustomerMainController
         $disc = Carbon::parse($request->disc_date);
         $expired = Carbon::parse($request->exp_date);
 
+        if ($expired == null || $disc >= $expired) {
+            return redirect()->back()->with('error', 'Rencana Keluar Harus Lebih Besar');
+        }
+
         $interval = $disc->diff($expired);
         $jumlahHari = ($interval->days) + 1;
 
+        if ($jumlahHari <= 4) {
+            return redirect()->back()->with('error', 'Rencana Keluar Minimal 5 hari Setelah Disc Date');
+        }
         $massa2 = null;
         $massa3 = null;
 
@@ -327,7 +334,7 @@ class CustomerImportController extends CustomerMainController
 
         $serviceDS = $serviceDetail->where('type', 'DS');
         $data['serviceDS'] = $serviceDS;
-        $data['ds'] = $serviceDSK->isNotEmpty() ? 'Y' : 'N';
+        $data['ds'] = $serviceDS->isNotEmpty() ? 'Y' : 'N';
 
         $data['size'] = $containers->pluck('ctr_size')->unique();
         $data['status'] = $containers->pluck('ctr_status')->unique();

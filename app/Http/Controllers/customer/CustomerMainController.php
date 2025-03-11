@@ -124,6 +124,7 @@ class CustomerMainController extends Controller
         $extendUnpaid = $extend->where('lunas', '=', 'N');
         $data['extendUnpaid'] = $extendUnpaid->count();
         $data['extendUnpaidAmount'] = $extendUnpaid->sum('grand_total');
+        $data['extendTotalAmount'] = $extend->sum('grand_total');
 
         
         return view('customer.main', $data);
