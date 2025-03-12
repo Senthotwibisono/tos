@@ -236,7 +236,7 @@ use Carbon\Carbon;
               <p>Admin (NK) : </p>
               <p>Total Amount: </p>
               <p>Discount:</p>
-              <p>Tax (11%): </p>
+              <p>PPN : </p>
               <p>Grand Total: </p>
             </div>
             <div class="col-xs-12 col-6" style="text-align: right;">

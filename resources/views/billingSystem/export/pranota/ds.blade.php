@@ -220,7 +220,7 @@
                 <p>Admin (NK) :</p>
                 <p>Total Amount: </p>
                 <p>Discount :</p>
-                <p>Tax (11%): </p>
+                <p>PPN : </p>
                 <p>Grand Total: </p>
               </div>
               <div class="col-6 text-right">

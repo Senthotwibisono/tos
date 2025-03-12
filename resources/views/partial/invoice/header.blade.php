@@ -45,6 +45,31 @@
     border-radius: 50%;
     overflow: hidden;
   }
+
+  .submenu {
+      display: none;
+      position: absolute;
+      background-color: white;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+  }
+
+  .menu-item.has-sub:hover .submenu,
+  .menu-item.has-sub.active .submenu {
+      display: block;
+  }
+
+  @media (max-width: 768px) {
+      .submenu {
+          position: relative;
+          display: none;
+          width: 100%;
+      }
+
+      .menu-item.has-sub.active .submenu {
+          display: block;
+      }
+  }
 </style>
 @if(View::hasSection('custom_styles'))
 @yield('custom_styles')
