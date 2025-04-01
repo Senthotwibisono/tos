@@ -197,6 +197,7 @@
                         <th>Job</th>
                         <th>Action</th>
                         <th>Cancel</th>
+                        <th>Edit</th>
                       </tr>
                     </thead>
                   </table>
@@ -262,6 +263,7 @@
                         <th>Job</th>
                         <th>Action</th>
                         <th>Cancel</th>
+                        <th>Edit</th>
                       </tr>
                     </thead>
                   </table>
@@ -684,6 +686,7 @@ $(document).ready(function() {
         {data:'job', name:'job', classNmae:'text-center'},
         {data:'action', name:'action', classNmae:'text-center'},
         {data:'delete', name:'delete', classNmae:'text-center'},
+        {data:'edit', name:'edit', classNmae:'text-center'},
       ],
     })
 
@@ -710,6 +713,7 @@ $(document).ready(function() {
           {data:'job', name:'job', classNmae:'text-center'},
           {data:'action', name:'action', classNmae:'text-center'},
           {data:'delete', name:'delete', classNmae:'text-center'},
+          {data:'edit', name:'edit', classNmae:'text-center'},
         ],
       })
     @endforeach

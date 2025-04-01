@@ -126,7 +126,16 @@ class InvoiceExtend extends Controller
             $herf = '/bukti_bayar/extend/'; 
             return '<a href="javascript:void(0)" onclick="openWindow(\''.$herf.$inv->id.'\')" class="btn btn-sm btn-info"><i class="fa fa-eye"></i></a>';
         })
-        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete', 'viewPhoto'])
+        ->addColumn('edit', function($inv){
+            if ($inv->lunas == 'Y') {
+                return '<a href="/billing/import/extenx-edit/'.$inv->id.'" class="btn btn-warning"><i class="fas fa-pencil"></i></a>';
+            } elseif ($inv->lunas == 'P') {
+                return '<a href="/billing/import/extenx-edit/'.$inv->id.'" class="btn btn-warning"><i class="fas fa-pencil"></i></a>';
+            } else {
+                return '';
+            }
+        })
+        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete', 'viewPhoto', 'edit'])
         ->make(true);
     }
 
@@ -1120,6 +1129,74 @@ public function ReportExcelPiutang(Request $request)
         $fileName = 'ReportInvoiceExtend-' . $startDate . '-' . $endDate . '.xlsx';
 
       return Excel::download(new ReportInvoice($invoice), $fileName);
+    }
+
+    public function editInvoice($id)
+    {
+        $data['header'] = Extend::find($id);
+        $data['detils'] = Detail::where('inv_id', $id)->get();
+        $data['form'] = Form::find($data['header']->form_id);
+        $data['containers'] = Container::where('form_id', $data['form']->id)->get();
+        $data['title'] = 'Edit Invoice' . (($data['header']->inv_no) ? $data['header']->inv_no : $data['header']->proforma_no);
+
+        $data['customers'] = Customer::get();
+        $data['nomorContainers'] = $data['containers']->pluck('container_no')->implode(', ');
+        // dd($data);
+        return view('billingSystem.extend.invoice.edit', $data);
+    }
+
+    public function updateDetil(Request $request)
+    {
+        $detil = Detail::find($request->detilId);
+        // dd($detil);
+        if ($detil) {
+            $detil->update([
+                'jumlah_hari' => $request->jumlah_hari,
+                'total' => $request->total,
+            ]);
+            return redirect()->back()->with('success', 'Data berhasil disimpan');
+        }else {
+            return redirect()->back()->with('error', 'Opss terjadi kesalahan');
+        }
+    }
+
+    public function updateInvoiceHeader($id, Request $request)
+    {
+        $header = Extend::find($id);
+        try {
+            $customer = Customer::find($request->cust_id);
+            // dd($customer);
+            $header->update([
+                'cust_id' => $request->cust_id,
+                'cust_name' => $customer->name,
+                'fax' => $customer->fax,
+                'npwp' => $customer->npwp,
+                'alamat' => $customer->alamat,
+                'order_at' => $request->order_at,
+                'piutang_at' => $request->piutang_at,
+                'lunas_at' => $request->lunas_at,
+                'expired_date' => $request->expired_date,
+                'total' => $request->total,
+                'admin' => $request->admin,
+                'pajak' => $request->pajak,
+                'discount' => $request->discount,
+                'grand_total' => $request->grand_total,
+            ]);
+
+            $detil = Detail::where('inv_id', $id)->update([
+                'cust_id' => $customer->id,
+                'cust_name' =>$customer->name,
+            ]);
+
+            $job = JobExtend::where('inv_id', $id)->update([
+                'active_to' => $request->expired_date,
+            ]);
+
+            return back()->with('success', 'Data berhasil disimpan');
+            
+        } catch (\Throwable $th) {
+            return back()->with('error', 'Something Wrong in : ' . $th->getMessage());
+        }
     }
 }
 

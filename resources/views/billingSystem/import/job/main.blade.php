@@ -203,7 +203,7 @@
                     <div class="col-6">
                       <h5 class="lead"><span class="rectangle"></span></h5>
                       <h5 class="lead">:  {{$jb->Item->over_height}} // {{$jb->Item->over_weight}}</h5>
-                      <h5 class="lead">:  {{$jb->Item->disc_date}}</h5>
+                      <h5 class="lead">:  {{$jb->Invoice->disc_date}}</h5>
                       <h5 class="lead">:  {{$jb->Invoice->Form->doOnline->bl_no ?? ''}}</h5>
                       <h5 class="lead">:  {{$jb->Invoice->Form->doOnline->do_no ?? ''}}</h5>
                       <h5 class="lead">:  {{$jb->Invoice->order_at}}</h5>

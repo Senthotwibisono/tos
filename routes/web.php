@@ -1044,7 +1044,9 @@ Route::get('/billing/import/extendForm', [InvoiceExtend::class, 'form'])->name('
 Route::get('/billing/import/extend-editForm/{id?}', [InvoiceExtend::class, 'EditForm']);
 Route::post('/billing/import/extend-updateFormImport', [InvoiceExtend::class, 'updateFormImport'])->name('updateFormImportExtend');
 Route::delete('/billing/import/extend-deleteInvoice/{id?}', [InvoiceExtend::class, 'extendInvoiceDelete'])->name('extendInvoiceDelete');
-
+Route::get('/billing/import/extenx-edit/{id?}', [InvoiceExtend::class, 'editInvoice']);
+Route::post('/billing/import/extend-updateDetil', [InvoiceExtend::class, 'updateDetil']);
+Route::post('/billing/import/extend-update/{id?}', [InvoiceExtend::class, 'updateInvoiceHeader']);
 // 
 Route::post('/billing/import/extendPost', [InvoiceExtend::class, 'postForm'])->name('extendPostForm');
 // 
