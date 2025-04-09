@@ -69,6 +69,10 @@ use App\Http\Controllers\customer\CustomerMainController;
 use App\Http\Controllers\customer\profile\CustomerProfileController;
 use App\Http\Controllers\customer\import\CustomerImportController;
 use App\Http\Controllers\customer\extend\CustomerExtendController;
+use App\Http\Controllers\customer\export\CoparnCustomerController;
+use App\Http\Controllers\customer\export\CustomerExportController;
+
+use App\Http\Controllers\invoice\ServiceController;
 
 use Illuminate\Support\Facades\Storage;
 /*
@@ -1233,6 +1237,14 @@ Route::post('/renta&repair/master-tarif-create-first', [MasterInvoiceController:
   Route::post('/renta&repair-cancel', [RentalController::class, 'Cancel'])->name('CancelRentalRepair');
   Route::get('/renta&repair/osData', [RentalController::class, 'getOrder'])->name('rental-osData');
 
+// Service Invoice
+Route::prefix('/invoiceService')->controller(ServiceController::class)->group(function(){
+  Route::prefix('/import')->group(function(){
+    Route::get('/indexImport', 'indexImport')->name('invoiceService.tracking.indexImport');
+  });
+});
+
+
   Route::controller(RegisterCustomerController::class)->group(function(){
     Route::get('/invoice/customer/register', 'index');
     Route::get('/invoice/customer/register/createIndex', 'createIndex');
@@ -1265,6 +1277,7 @@ Route::post('/renta&repair/master-tarif-create-first', [MasterInvoiceController:
     Route::get('/customer-dashboard', 'dashboardIndex');
     Route::get('/customer-import', 'Import');
     Route::get('/customer-extend', 'Extend');
+    Route::get('/customer-export', 'Export');
   });
  
   Route::controller(CustomerProfileController::class)->group(function(){
@@ -1322,4 +1335,25 @@ Route::post('/renta&repair/master-tarif-create-first', [MasterInvoiceController:
     });
 
   });
+
+  Route::prefix('/customer-export')->group(function(){
+    Route::prefix('/coparn')->controller(CoparnCustomerController::class)->group(function(){
+      Route::get('/index', 'index')->name('customer.coparn.index');
+      Route::get('/data', 'dataCoparn')->name('customer.coparn.dataIndex');
+      Route::get('/edit/{id?}', 'editCoparn')->name('customer.coparn.editCoparn');
+      Route::post('/storeSingle', 'storeSingle')->name('customer.coparn.storeSingle');
+      Route::post('/deleteCoparn', 'deleteCoparn')->name('customer.coparn.deleteCoparn');
+
+      Route::post('/storeFile', 'storeFile')->name('customer.coparn.storeFile');
+    });
+    Route::controller(CustomerExportController::class)->group(function(){
+      Route::get('/detil', 'indexDetail')->name('customer.export.indexDetail');
+      Route::get('/data', 'dataDetail')->name('customer.export.dataDetail');
+      Route::prefix('/form')->group(function(){
+        Route::get('/index', 'indexForm')->name('customer.export.indexForm');
+        Route::get('/data', 'dataForm')->name('customer.export.dataForm');
+      });
+    });
+  }); 
+  
 

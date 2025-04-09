@@ -112,6 +112,8 @@ class item extends Model
         'booking_no',
         'alat_yard',
         'os_id',
+        'created_by',
+        'customer_code',
     ];
 
     public function job()
@@ -136,5 +138,10 @@ class item extends Model
     public function CtrInv()
     {
         return $this->hasOne(ContainerInvoice::class, 'container_key');
+    }
+
+    public function craeted()
+    {
+        return $this->belongsTo(User::class, 'created_by', 'id');
     }
 }

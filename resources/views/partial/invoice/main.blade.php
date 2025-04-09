@@ -26,32 +26,27 @@
             </div>
           </div>
         </div>
-        <nav class="main-navbar">
-          @include('partial.invoice.navbar')
-        </nav>
+        <div class="container-fluid px-0">
+          <nav class="main-navbar w-100">
+            @include('partial.invoice.navbar')
+          </nav>
+        </div>
 
       </header>
 
-      <div class="content-wrapper container">
-      @if(session('success'))
-          <div class="alert alert-success">
-              {{ session('success') }}
-          </div>
-      @endif
-      @if(session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
-@endif
-
+        <div class="content-wrapper container">
+          @if(session('success'))
+              <div class="alert alert-success">
+                  {{ session('success') }}
+              </div>
+          @endif
+          @if(session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+          @endif
         @yield('content')
-
       </div>
-
-      <!-- <footer>
-        @include('partial.invoice.footer')
-      </footer> -->
-      <!-- adding commmited message  -->
     </div>
   </div>
   <script src="{{asset('dist/assets/js/bootstrap.js')}}"></script>
@@ -87,22 +82,17 @@
   <script>
     new simpleDatatables.DataTable('#table3');
     new simpleDatatables.DataTable('#table4');
-  new simpleDatatables.DataTable('#table5');
-  new simpleDatatables.DataTable('#table6');
-  new simpleDatatables.DataTable('#table7');
-  new simpleDatatables.DataTable('#table8');
-  new simpleDatatables.DataTable('#table9');
-  new simpleDatatables.DataTable('#table10');
+    new simpleDatatables.DataTable('#table5');
+    new simpleDatatables.DataTable('#table6');
+    new simpleDatatables.DataTable('#table7');
+    new simpleDatatables.DataTable('#table8');
+    new simpleDatatables.DataTable('#table9');
+    new simpleDatatables.DataTable('#table10');
   </script>
   <script>
     new simpleDatatables.DataTable('#tableLain');
   </script>
-
-  <!-- select 2 js  -->
   <script src="{{ asset('select2/dist/js/select2.min.js') }}"></script>
-  <!-- <link rel="stylesheet" href="{{ asset('select2/dist/css/select2.min.js') }}"> -->
-
-
   <!-- flatpickr js -->
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
@@ -185,18 +175,6 @@
   @endif
 
 </body>
-
-<!-- <script>
-new simpleDatatables.DataTable('#table2');
-  new simpleDatatables.DataTable('#table3');
-  new simpleDatatables.DataTable('#table4');
-  new simpleDatatables.DataTable('#table5');
-  new simpleDatatables.DataTable('#table6');
-  new simpleDatatables.DataTable('#table7');
-  new simpleDatatables.DataTable('#table8');
-  new simpleDatatables.DataTable('#table9');
-  new simpleDatatables.DataTable('#table10');
-</script> -->
 
 <script>
   $(document).ready(function() {

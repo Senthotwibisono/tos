@@ -15,12 +15,26 @@
       </a>
     </li>
     
-    <li class="menu-item">
-      <a href="#" class="menu-link">
+    <li class="menu-item has-sub">
+      <a type="button" class="menu-link">
         <i class="fa-solid fa-ship"></i>
         Muat
       </a>
+      <div class="submenu">
+        <div class="submenu-group-wrapper">
+          <ul class="submenu-group">
+            <li class="submenu-item">
+              <a href="/customer-export" class="submenu-link">Create Invoice</a>
+            </li>
+            <li class="submenu-item">
+              <a href="{{ route('customer.coparn.index')}}" class="submenu-link">Upload Coparn</a>
+            </li>
+            
+          </ul>
+        </div>
+      </div>
     </li>
+
     <li class="menu-item">
       <a href="/customer-extend" class="menu-link">
         <i class="fa-solid fa-clock"></i>

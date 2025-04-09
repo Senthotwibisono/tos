@@ -132,7 +132,7 @@ class CustomerMainController extends Controller
 
     public function Import()
     {
-        $data['title'] = 'Invoice Muat, ' . Auth::user()->name;
+        $data['title'] = 'Invoice Bongkar, ' . Auth::user()->name;
         $data['orderService'] = OS::where('ie', '=' , 'I')->orderBy('id', 'asc')->get();
 
         $data['importTotal'] = (clone $this->import)->count();
@@ -150,6 +150,28 @@ class CustomerMainController extends Controller
         $data['importCanceled'] = (clone $this->import)->where('lunas', '=', 'C')->count();
 
         return view('customer.import.index', $data);
+    }
+
+    public function Export()
+    {
+        $data['title'] = 'Invoice Muat, ' . Auth::user()->name;
+        $data['orderService'] = OS::where('ie', '=' , 'E')->orderBy('id', 'asc')->get();
+
+        $data['exportTotal'] = (clone $this->export)->count();
+        $data['exportPaid'] = (clone $this->export)->where('lunas', '=', 'Y')->count();
+        $data['exportUnpaid'] = (clone $this->export)->whereNotIn('lunas', ['Y', 'C'])->count();
+        $data['exportCanceled'] = (clone $this->export)->where('lunas', '=', 'C')->count();
+        $data['invoice'] = (clone $this->export);
+
+        $data['exportUnpaid'] = (clone $this->export)->where('lunas', '=', 'N')->count();
+        $data['exportUnpaidAmount'] = (clone $this->export)->where('lunas', '=', 'N')->sum('grand_total');
+        
+        $data['exportPiutang'] = (clone $this->export)->where('lunas', '=', 'P')->count();
+        $data['exportPiutangAmount'] = (clone $this->export)->where('lunas', '=', 'P')->sum('grand_total');
+
+        $data['exportCanceled'] = (clone $this->export)->where('lunas', '=', 'C')->count();
+
+        return view('customer.export.index', $data);
     }
 
     public function Extend()
