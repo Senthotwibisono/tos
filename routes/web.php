@@ -72,6 +72,8 @@ use App\Http\Controllers\customer\extend\CustomerExtendController;
 use App\Http\Controllers\customer\export\CoparnCustomerController;
 use App\Http\Controllers\customer\export\CustomerExportController;
 
+use App\Http\Controllers\customer\TransactionController;
+
 use App\Http\Controllers\invoice\ServiceController;
 
 use Illuminate\Support\Facades\Storage;
@@ -1239,6 +1241,7 @@ Route::post('/renta&repair/master-tarif-create-first', [MasterInvoiceController:
 
 // Service Invoice
 Route::prefix('/invoiceService')->controller(ServiceController::class)->group(function(){
+  Route::get('/jadwalKapal', 'jadwalKapal')->name('invoiceService.tracking.jadwalKapal');
   Route::prefix('/import')->group(function(){
     Route::get('/indexImport', 'indexImport')->name('invoiceService.tracking.indexImport');
   });
@@ -1349,11 +1352,33 @@ Route::prefix('/invoiceService')->controller(ServiceController::class)->group(fu
     Route::controller(CustomerExportController::class)->group(function(){
       Route::get('/detil', 'indexDetail')->name('customer.export.indexDetail');
       Route::get('/data', 'dataDetail')->name('customer.export.dataDetail');
+      Route::post('/cancel', 'cancelInvoice')->name('customer.export.cancelInvoice');
       Route::prefix('/form')->group(function(){
         Route::get('/index', 'indexForm')->name('customer.export.indexForm');
         Route::get('/data', 'dataForm')->name('customer.export.dataForm');
+        Route::post('/create', 'createForm')->name('customer.export.createForm');
+        Route::post('/delete', 'deleteForm')->name('customer.export.deleteForm');
+
+        Route::get('/firstStepIndex-{id?}', 'firstStepIndex');
+        Route::post('/firstStepPost', 'firstStepPost')->name('customer.export.firstStepPost');
+
+        // Preinvoice
+        Route::get('/preinvoice-{id?}', 'preinvoice');
+        Route::post('/createInvoice', 'createInvoice')->name('customer.export.createInvoice');
+      });
+
+      Route::prefix('/transaction')->group(function(){
+          Route::get('/searchToPay-{id?}', 'searchToPay');
+          Route::post('/createVA', 'createVA')->name('customer.export.createVA');
       });
     });
-  }); 
+  });
+  
+  Route::prefix('/pembayaran')->controller(TransactionController::class)->group(function(){
+    Route::get('/list-va', 'indexList')->name('pembayaran.va.indexList');
+    Route::get('/list-dataVA', 'dataList')->name('pembayaran.va.dataList');
+    Route::post('/list-cancelVA', 'cancelVA')->name('pembayaran.va.cancelVA');
+    Route::get('/virtual_account-{id}', 'indexVA');
+  });
   
 

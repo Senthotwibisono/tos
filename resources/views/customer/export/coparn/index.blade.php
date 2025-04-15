@@ -9,6 +9,43 @@
     <div class="page-content">
         <div class="card mb-3">
             <div class="card-header">
+                <div class="text-center">
+                    <h4><b>Jadwal Kapal Tersedia</b></h4>
+                </div>
+            </div>
+            <div class="card-body">
+                <table id="table1">
+                    <thead>
+                        <tr>
+                            <th>Vessel Name</th>
+                            <th>Vessel Code</th>
+                            <th>Agent</th>
+                            <th>Owner</th>
+                            <th>Voy In</th>
+                            <th>Voy Out</th>
+                            <th>Arrival Date</th>
+                            <th>Clossing Time</th>
+                            <th>Estimate Departure Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($vessels as $ves)
+                            <td>{{$ves->ves_name ?? '-'}}</td>
+                            <td>{{$ves->ves_code ?? '-'}}</td>
+                            <td>{{$ves->agent ?? '-'}}</td>
+                            <td>{{$ves->voyage_owner ?? '-'}}</td>
+                            <td>{{$ves->voy_in ?? '-'}}</td>
+                            <td>{{$ves->voy_out ?? '-'}}</td>
+                            <td>{{$ves->arrival_date ?? '-'}}</td>
+                            <td>{{$ves->clossing_date ?? '-'}}</td>
+                            <td>{{$ves->etd_date ?? '-'}}</td>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-header">
                 <div class="row">
                     <div class="col-auto">
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#singleModal">upload Single</button>
@@ -444,51 +481,68 @@
 </script>
 
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Delegasi event ke tabel
+        $('#tableData').on('click', '.btn-delete-coparn', function (e) {
+            deleteCoparn(e);
+        });
+    });
     async function deleteCoparn(event) {
         const id = event.target.getAttribute('data-id');
         const containerNo = event.target.getAttribute('data-no');
         console.log(id);
+        if (!id || id === null) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Sorry',
+                text: 'Terjadi kesalahan dalam rendering data, coba beberapa saat lagi ya!!',
+            }).then(() => {
+                $('#tableData').DataTable().ajax.reload();
+            });
+        }
         Swal.fire({
             icon: 'warning',
             title: 'Apakah anda yakin untuk menghapus?',
             text: 'Data container ' + containerNo + ' akan terhapus secara permanen, apakah anda yakin?',
             showCancelButton: true,
         }).then( async (result) => {
-            showLoading();
-            const urlDelete = '{{ route('customer.coparn.deleteCoparn')}}';
-            const response = await fetch(urlDelete, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}" // ✅ Include CSRF token for Laravel
-                },
-                body: new URLSearchParams({ container_key: id })
-            });
-            console.log(response);
-            hideLoading();
-            if (response.ok) {
-                var hasil = await response.json();
-                if (hasil.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Suksesss!',
-                        text: hasil.message,
-                    }).then (() => {
-                        location.reload();
-                    });
+            if (result.isConfirmed) {                
+                showLoading();
+                const urlDelete = '{{ route('customer.coparn.deleteCoparn')}}';
+                const response = await fetch(urlDelete, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}" // ✅ Include CSRF token for Laravel
+                    },
+                    body: new URLSearchParams({ container_key: id })
+                });
+                console.log(response);
+                hideLoading();
+                if (response.ok) {
+                    var hasil = await response.json();
+                    if (hasil.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Suksesss!',
+                            text: hasil.message,
+                        }).then (() => {
+                            location.reload();
+                        });
+                    }else{
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Something wrong in : ',
+                            text: hasil.message,
+                        });
+                    }
                 }else{
                     Swal.fire({
                         icon: 'error',
                         title: 'Something wrong in : ',
-                        text: hasil.message,
+                        text: response.statusText,
                     });
                 }
-            }else{
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Something wrong in : ',
-                    text: response.statusText,
-                });
             }
         });
     }

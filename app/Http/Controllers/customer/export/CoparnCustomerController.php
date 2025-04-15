@@ -44,7 +44,7 @@ class CoparnCustomerController extends CustomerMainController
             return '<button type="button" id="editButton" data-id="'.$items->container_key.'" class="btn btn-warning" onclick="editItem(event)"><i class="fas fa-pencil"></i></button>';
         })
         ->addColumn('delete', function($items){
-            return '<button type="button" id="deleteButton" data-id="'.$items->container_key.'" data-no="'.$items->container_no.'" class="btn btn-danger" onclick="deleteCoparn(event)"><i class="fas fa-trash"></i></button>';
+            return '<button type="button" class="btn btn-danger btn-delete-coparn" data-id="'.$items->container_key.'" data-no="'.$items->container_no.'"><i class="fas fa-trash"></i></button>';
         })
         ->addColumn('uid', function($items){
             return $items->craeted->name ?? '-';
@@ -78,7 +78,7 @@ class CoparnCustomerController extends CustomerMainController
                 'ves_id'=>$request->ves_id,
                 'ves_code'=>$ves->ves_code,
                 'ves_name'=>$ves->ves_name,
-                'voy_no'=>$ves->voy_no,
+                'voy_no'=>$ves->voy_out,
                 'disch_port'=>$request->disch_port,
                 'load_port'=>$request->load_port,
                 'container_no'=>$request->container_no,

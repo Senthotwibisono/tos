@@ -9,6 +9,7 @@ use Auth;
 use Carbon\Carbon;
 
 use App\Models\VMaster;
+use App\Models\VVoyage;
 class ServiceController extends Controller
 {
     public function __construct() {
@@ -21,5 +22,11 @@ class ServiceController extends Controller
 
         $data['vessels'] = VMaster::get();
         return view('billingSystem.service.tracking.index', $data);
+    }
+
+    public function jadwalKapal()
+    {
+        $data['vessels'] = VVoyage::where('clossing_date','>=', Carbon::now())->get();
+        return view('billingSystem.service.customer.jadwalKapal', $data);
     }
 }

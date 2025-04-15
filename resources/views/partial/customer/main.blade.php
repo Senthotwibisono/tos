@@ -432,7 +432,19 @@ new simpleDatatables.DataTable('#table2');
     }
 };
 </script>
+<script>
+ window.addEventListener("beforeunload", function () {
+        showLoading();
+    });
 
+    // Tampilkan loading saat halaman mulai dimuat
+    showLoading();
+
+    // Sembunyikan loading setelah halaman benar-benar termuat
+    window.onload = function () {
+        hideLoading();
+    };
+</script>
 <script>
     function openWindow(url) {
         window.open(url, '_blank', 'width=600,height=800');
