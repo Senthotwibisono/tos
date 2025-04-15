@@ -16,6 +16,7 @@ use App\Models\Customer;
 use App\Models\MasterUserInvoice as MUI;
 
 use App\Models\InvoiceExport as Export;
+use App\Models\InvoiceHeaderStevadooring;
 use App\Models\JobExport;
 use App\Models\InvoiceImport as Import;
 use App\Models\Extend;
@@ -205,11 +206,17 @@ class TransactionController extends Controller
     private function getInvoiceNoOSK()
     {
         $latest = Export::where('inv_type', 'OSK')->orderBy('inv_no', 'desc')->first();
-        if (!$latest) {
+        $latestStev = InvoiceHeaderStevadooring::orderBy('invoice_no', 'desc')->first();
+        if (!$latest && !$latestStev) {
             return 'OSK0000001';
         }
-        $lastInvoice = $latest->inv_no;
-        $lastNumber = (int)substr($lastInvoice, 3);
+        $lastExportInvoice = $latest ? $latest->inv_no : null;
+        $lastStevInvoice = $latestStev ? $latestStev->invoice_no : null;
+
+        $lastExportNumber = $lastExportInvoice ? (int)substr($lastExportInvoice, 3) : 0;
+        $lastStevNumber = $lastStevInvoice ? (int)substr($lastStevInvoice, 3) : 0;
+
+        $lastNumber = max($lastExportNumber, $lastStevNumber);
         $nextNumber = $lastNumber + 1;
         return 'OSK' . str_pad($nextNumber, 7, '0', STR_PAD_LEFT);
     }
