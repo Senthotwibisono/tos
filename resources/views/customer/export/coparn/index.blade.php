@@ -30,6 +30,7 @@
                     </thead>
                     <tbody>
                         @foreach($vessels as $ves)
+                        <tr>
                             <td>{{$ves->ves_name ?? '-'}}</td>
                             <td>{{$ves->ves_code ?? '-'}}</td>
                             <td>{{$ves->agent ?? '-'}}</td>
@@ -39,6 +40,7 @@
                             <td>{{$ves->arrival_date ?? '-'}}</td>
                             <td>{{$ves->clossing_date ?? '-'}}</td>
                             <td>{{$ves->etd_date ?? '-'}}</td>
+                        </tr>
                         @endforeach
                     </tbody>
                 </table>
