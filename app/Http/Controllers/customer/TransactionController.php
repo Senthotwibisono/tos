@@ -16,6 +16,7 @@ use App\Models\Customer;
 use App\Models\MasterUserInvoice as MUI;
 
 use App\Models\InvoiceExport as Export;
+use App\Models\ExportDetail;
 use App\Models\InvoiceHeaderStevadooring;
 use App\Models\JobExport;
 use App\Models\InvoiceImport as Import;
@@ -209,67 +210,72 @@ class TransactionController extends Controller
         $detils = RefDetail::where('va_id', $va->id)->get();
         // var_dump(json_encode($detils));
         // die();
-        foreach ($detils as $detil) {
-            $export = Export::find($detil->inv_id);
-            // var_dump($export->inv_type);
-            // die();
-            if ($export->inv_type == 'OSK') {
-                $noInvoice = $this->getInvoiceNoOSK();
-            } elseif ($export->inv_type == 'OS') {
-                $noInvoice = $this->getInvoiceNoOS();
-            } else {
-                return false;
-            }
-
-            $containerInvoice = Container::where('form_id', $export->form_id)->get();
-            $bigOS = OS::where('id', $export->os_id)->first();
-            foreach ($containerInvoice as $cont) {
-                $lastJobNo = JobExport::orderBy('id', 'desc')->value('job_no');
-                $jobNo = $this->getNextJob($lastJobNo);
-                $job = JobExport::where('inv_id', $export->id)->where('container_key', $cont->container_key)->first();
-                if (!$job) {
-                    $job = DB::transaction(function() use($export, $jobNo, $cont){
-                        return JobExport::create([
-                            'inv_id'=>$export->id,
-                            'job_no'=>$jobNo,
-                            'os_id'=>$export->os_id,
-                            'os_name'=>$export->os_name,
-                            'cust_id'=>$export->cust_id,
-                            'active_to'=>$export->expired_date,
-                            'container_key'=>$cont->container_key,
-                            'container_no'=>$cont->container_no,
-                            'ves_id'=>$cont->ves_id,
+        try {
+            foreach ($detils as $detil) {
+                $export = Export::find($detil->inv_id);
+                // var_dump($export->inv_type);
+                // die();
+                if ($export->inv_type == 'OSK') {
+                    $noInvoice = $this->getInvoiceNoOSK();
+                } elseif ($export->inv_type == 'OS') {
+                    $noInvoice = $this->getInvoiceNoOS();
+                } else {
+                    return false;
+                }
+    
+                $containerInvoice = Container::where('form_id', $export->form_id)->get();
+                $bigOS = OS::where('id', $export->os_id)->first();
+                foreach ($containerInvoice as $cont) {
+                    $lastJobNo = JobExport::orderBy('id', 'desc')->value('job_no');
+                    $jobNo = $this->getNextJob($lastJobNo);
+                    $job = JobExport::where('inv_id', $export->id)->where('container_key', $cont->container_key)->first();
+                    if (!$job) {
+                        $job = DB::transaction(function() use($export, $jobNo, $cont){
+                            return JobExport::create([
+                                'inv_id'=>$export->id,
+                                'job_no'=>$jobNo,
+                                'os_id'=>$export->os_id,
+                                'os_name'=>$export->os_name,
+                                'cust_id'=>$export->cust_id,
+                                'active_to'=>$export->expired_date,
+                                'container_key'=>$cont->container_key,
+                                'container_no'=>$cont->container_no,
+                                'ves_id'=>$cont->ves_id,
+                            ]);
+                        });
+                    }
+                    $item = Item::where('container_key', $cont->container_key)->first();
+                    DB::transaction(function() use($item, $job, $bigOS, $noInvoice){
+                        $item->update([
+                            'invoice_no'=>$noInvoice,
+                            'job_no' => $job->job_no,
+                            'order_service' => $bigOS->order,
                         ]);
                     });
                 }
-                $item = Item::where('container_key', $cont->container_key)->first();
-                DB::transaction(function() use($item, $job, $bigOS, $noInvoice){
-                    $item->update([
-                        'invoice_no'=>$noInvoice,
-                        'job_no' => $job->job_no,
-                        'order_service' => $bigOS->order,
-                    ]);
-                });
-            }
-
-            $exportDetils = ExportDetail::where('inv_id', $export->id)->get();
-            foreach ($exportDetils as $detilE) {
-                DB::transaction(function() use($detilE, $noInvoice) {
-                    $detilE->update([
+    
+                $exportDetils = ExportDetail::where('inv_id', $export->id)->get();
+                foreach ($exportDetils as $detilE) {
+                    DB::transaction(function() use($detilE, $noInvoice) {
+                        $detilE->update([
+                            'lunas' => 'Y',
+                            'inv_no'=>$noInvoice,
+                        ]);
+                    });
+                }
+                
+                DB::transaction(function() use($export, $noInvoice){
+                    $export->update([
                         'lunas' => 'Y',
                         'inv_no'=>$noInvoice,
+                        'lunas_at'=> Carbon::now(),
+                        'invoice_date'=> Carbon::now(),
                     ]);
                 });
             }
-            
-            DB::transaction(function() use($export, $noInvoice){
-                $export->update([
-                    'lunas' => 'Y',
-                    'inv_no'=>$noInvoice,
-                    'lunas_at'=> Carbon::now(),
-                    'invoice_date'=> Carbon::now(),
-                ]);
-            });
+        } catch (\Throwable $th) {
+            // dd($th->getMessage());
+
         }
         // return $va;
     }

@@ -220,7 +220,7 @@ class PaymentController extends Controller
                         'type' => 'response_payment',
                         'success' => false,
                         'status' => '30',
-                        'message' => 'Jumlah Paymetn tidak valid',
+                        'message' => 'Jumlah Payment tidak valid',
                         'trxid' => $request->trxid,
                     ]);
                 }
