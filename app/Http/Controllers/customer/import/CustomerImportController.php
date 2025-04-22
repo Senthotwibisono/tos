@@ -20,6 +20,9 @@ use App\Models\Customer;
 use App\Models\DOonline;
 use App\Models\Item;
 
+use App\Models\Payment\RefNumber as VA;
+use App\Models\Payment\RefDetail;
+
 use App\Models\JobImport;
 use App\Models\VVoyage;
 
@@ -29,44 +32,159 @@ use Auth;
 use Carbon\Carbon;
 class CustomerImportController extends CustomerMainController
 {
-    public function indexUnpaid()
-    {
-        $data['title'] = 'Import Unpaid List';
+    // public function indexUnpaid()
+    // {
+    //     $data['title'] = 'Import Unpaid List';
 
-        return view('customer.import.detil.unpaid', $data);
-    }
+    //     return view('customer.import.detil.unpaid', $data);
+    // }
 
-    public function dataUnpaid(Request $request)
-    {
-        $unpaids = $this->import->with(['customer', 'service', 'form'])->where('lunas', 'N'); // Removed `query()`
-        return DataTables::of($unpaids)->make(true);
-    }
+    // public function dataUnpaid(Request $request)
+    // {
+    //     $unpaids = $this->import->with(['customer', 'service', 'form'])->where('lunas', 'N'); // Removed `query()`
+    //     return DataTables::of($unpaids)->make(true);
+    // }
 
-    public function indexPiutang()
-    {
-        $data['title'] = 'Import Piutang List';
+    // public function indexPiutang()
+    // {
+    //     $data['title'] = 'Import Piutang List';
 
-        return view('customer.import.detil.piutang', $data);
-    }
+    //     return view('customer.import.detil.piutang', $data);
+    // }
 
-    public function dataPiutang(Request $request)
-    {
-        // var_dump($request->osId);
-        // die();
-        $unpaids = $this->import->with(['customer', 'service', 'form'])->where('lunas', 'P'); // Removed `query()`
-        return DataTables::of($unpaids)->make(true);
-    }
+    // public function dataPiutang(Request $request)
+    // {
+    //     // var_dump($request->osId);
+    //     // die();
+    //     $unpaids = $this->import->with(['customer', 'service', 'form'])->where('lunas', 'P'); // Removed `query()`
+    //     return DataTables::of($unpaids)->make(true);
+    // }
     
-    public function indexService(Request $request)
-    {
-        $os = OS::find($request->id);
-        $data['title'] = 'Import '.$os->name.' List'; 
+    // public function indexService(Request $request)
+    // {
+    //     $os = OS::find($request->id);
+    //     $data['title'] = 'Import '.$os->name.' List'; 
 
-        $data['osId'] = $os->id;
-        return view('customer.import.detil.service', $data);
+    //     $data['osId'] = $os->id;
+    //     return view('customer.import.detil.service', $data);
+    // }
+
+    // public function dataService(Request $request)
+    // {
+    //     $invoice = $this->import->whereHas('service', function ($query) {
+    //         $query->where('ie', '=', 'I');
+    //     })->whereNot('form_id', '=', '')->orderBy('order_at', 'desc');
+        
+    //     if ($request->has('type')) {
+    //         if ($request->type == 'unpaid') {
+    //             $invoice = $this->import->whereHas('service', function ($query) {
+    //                 $query->where('ie', '=', 'I');
+    //             })->whereNot('form_id', '=', '')->where('lunas', '=', 'N')->orderBy('order_at', 'desc');
+    //         }
+
+    //         if ($request->type == 'piutang') {
+    //             $invoice = $this->import->whereHas('service', function ($query) {
+    //                 $query->where('ie', '=', 'I');
+    //             })->whereNot('form_id', '=', '')->where('lunas', '=', 'P')->orderBy('order_at', 'desc');
+    //         }
+    //     }
+
+    //     if ($request->has('os_id')) {
+    //         $invoice = $this->import->whereNot('form_id', '=', '')->where('os_id', $request->os_id)->orderBy('order_at', 'desc')->orderBy('lunas', 'asc');
+    //     }
+
+    //     $inv = $invoice->get();
+    //     return DataTables::of($inv)
+    //     ->addColumn('proforma', function($inv) {
+    //         return $inv->proforma_no ?? '-';
+    //     })
+    //     ->addColumn('customer', function($inv){
+    //         return $inv->cust_name ?? '-';
+    //     })
+    //     ->addColumn('service', function($inv){
+    //         return $inv->os_name ?? '-';
+    //     })
+    //     ->addColumn('type', function($inv){
+    //         return $inv->inv_type ?? '-';
+    //     })
+    //     ->addColumn('orderAt', function($inv){
+    //         return $inv->order_at ?? '-';
+    //     })
+    //     ->addColumn('status', function($inv){
+    //         if ($inv->lunas == 'N') {
+    //             return '<span class="badge bg-danger text-white">Not Paid</span>';
+    //         }elseif ($inv->lunas == 'P') {
+    //             return '<span class="badge bg-warning text-white">Piutang</span>';
+    //         }elseif ($inv->lunas == 'Y') {
+    //             return '<span class="badge bg-success text-white">Paid</span>';
+    //         }elseif ($inv->lunas == 'C') {
+    //             return '<span class="badge bg-danger text-white">Canceled</span>';
+    //         }
+    //     })
+    //     ->addColumn('pranota', function($inv){
+    //         return '<a type="button" href="/pranota/import-'.$inv->inv_type.$inv->id.'" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>';
+    //     })
+    //     ->addColumn('invoice', function($inv){
+    //         if ($inv->lunas == 'N') {
+    //             return '<span class="badge bg-info text-white">Paid First!!</span>';
+    //         }elseif ($inv->lunas == 'C') {
+    //             return '<span class="badge bg-danger text-white">Canceled</span>';
+    //         }else {
+    //             return '<a type="button" href="/invoice/import-'.$inv->inv_type.$inv->id.'" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>';
+    //         }
+    //     })
+    //     ->addColumn('job', function($inv){
+    //         if ($inv->lunas == 'N') {
+    //             return '<span class="badge bg-info text-white">Paid First!!</span>';
+    //         }elseif ($inv->lunas == 'C') {
+    //             return '<span class="badge bg-danger text-white">Canceled</span>';
+    //         }else {
+    //             return '<a type="button" href="/invoice/job/import-'.$inv->id.'" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>';
+    //         }
+    //     })
+    //     ->addColumn('action', function($inv){
+    //         if ($inv->lunas == 'N' || $inv->lunas == 'P') {
+    //             return '<button type="button" id="pay" data-id="'.$inv->id.'" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>';
+    //         }elseif ($inv->lunas == 'Y') {
+    //             return '<span class="badge bg-success text-white">Paid</span>';
+    //         }else {
+    //             return '<span class="badge bg-danger text-white">Canceled</span>';
+    //         }
+    //     })
+    //     ->addColumn('payFlag', function($inv){
+    //         if ($inv->lunas == 'N') {
+    //             if ($inv->pay_flag == 'Y') {
+    //                 return '<div class="spinner-border text-primary" role="status">
+                            
+    //                     </div> <span class="">Waiting Approved</span>';
+    //             }elseif ($inv->pay_flag == 'C') {
+    //                 return '<span class="badge bg-danger text-white">Di Tolak</span>';
+    //             }else {
+    //                 return '-';
+    //             }
+    //         }else {
+    //             return '-';
+    //         }
+    //     })
+    //     ->addColumn('delete', function($inv){
+    //         if ($inv->lunas == 'N') {
+    //             return '<button type="button" data-id="'.$inv->form_id.'" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>';
+    //         }else {
+    //             return '-';
+    //         }
+    //     })
+    //     ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete', 'payFlag'])
+    //     ->make(true);
+    // }
+
+    public function indexData()
+    {
+        $data['title'] = 'List Data Invoice Import';
+
+        return view('customer.import.detil.listInvoice', $data);
     }
 
-    public function dataService(Request $request)
+    public function listData(Request $request)
     {
         $invoice = $this->import->whereHas('service', function ($query) {
             $query->where('ie', '=', 'I');
@@ -78,18 +196,18 @@ class CustomerImportController extends CustomerMainController
                     $query->where('ie', '=', 'I');
                 })->whereNot('form_id', '=', '')->where('lunas', '=', 'N')->orderBy('order_at', 'desc');
             }
-
+        
             if ($request->type == 'piutang') {
                 $invoice = $this->import->whereHas('service', function ($query) {
                     $query->where('ie', '=', 'I');
                 })->whereNot('form_id', '=', '')->where('lunas', '=', 'P')->orderBy('order_at', 'desc');
             }
         }
-
+        
         if ($request->has('os_id')) {
             $invoice = $this->import->whereNot('form_id', '=', '')->where('os_id', $request->os_id)->orderBy('order_at', 'desc')->orderBy('lunas', 'asc');
         }
-
+        
         $inv = $invoice->get();
         return DataTables::of($inv)
         ->addColumn('proforma', function($inv) {
@@ -141,7 +259,7 @@ class CustomerImportController extends CustomerMainController
         })
         ->addColumn('action', function($inv){
             if ($inv->lunas == 'N' || $inv->lunas == 'P') {
-                return '<button type="button" id="pay" data-id="'.$inv->id.'" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>';
+                return '<button type="button" id="pay" data-id="'.$inv->id.'" class="btn btn-sm btn-success" onClick="searchToPay(this)"><i class="fa fa-cogs"></i></button>';
             }elseif ($inv->lunas == 'Y') {
                 return '<span class="badge bg-success text-white">Paid</span>';
             }else {
@@ -163,14 +281,16 @@ class CustomerImportController extends CustomerMainController
                 return '-';
             }
         })
-        ->addColumn('delete', function($inv){
+        ->addColumn('cancel', function($inv){
             if ($inv->lunas == 'N') {
-                return '<button type="button" data-id="'.$inv->form_id.'" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>';
-            }else {
-                return '-';
+                return '<button type="button" data-id="'.$inv->form_id.'" class="btn btn-sm btn-danger" onClick="cancelInvoice(this)">Cancel</button>';
+            } elseif (in_array($inv->lunas, ['Y', 'P'])) {
+                return '<span class="badge bg-info text-white">Paid</span>';
+            } else {
+                return '<span class="badge bg-danger text-white">Canceled</span>';
             }
         })
-        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete', 'payFlag'])
+        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'cancel', 'payFlag'])
         ->make(true);
     }
 
@@ -392,7 +512,7 @@ class CustomerImportController extends CustomerMainController
                 $item->save();
             }
 
-            return redirect('/customer-import/unpaid')->with('success', 'Invoice berhasil di buat');
+            return redirect('/customer-import/indexData')->with('success', 'Invoice berhasil di buat');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Something Wrong : '.$th->getMessage());
         }
@@ -504,13 +624,13 @@ class CustomerImportController extends CustomerMainController
     {
         try {
             $form = Form::find($formId);
-            $headerLunas = Import::where('form_id', $form->id)->whereIn('lunas', ['Y', 'P'])->get();
+            $headerLunas = Import::where('form_id', $form->id)->get();
             // var_dump($headerLunas);
             // die();
             if ($headerLunas->isNotEmpty()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Opsss sudah ada invoice yang di bayarkan, harap hubungi admin untuk pembatalan secara manual',
+                    'message' => 'Pranota sudah terbit, tidak dapat hapus invoice',
                 ]);
             }
            
@@ -589,6 +709,223 @@ class CustomerImportController extends CustomerMainController
         }
 
         return back()->with('success', 'Bukti pembayaran berhasil diunggah');
+    }
+
+    public function cancelInvoice(Request $request)
+    {
+        // var_dump($request->all());
+        // die();
+
+        $headers = Import::where('form_id', $request->formId)->get();
+        $checkLunas = $headers->whereIn('lunas', ['Y', 'P']);
+        if ($checkLunas->isNotEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak dapat melakukan pembatalan, sudah ada invoice yang lunas',
+            ]);
+        }
+        try {
+            foreach ($headers as $header) {
+                $detils = Detail::where('inv_id', $header->id)->get();
+                if ($detils->isNotEmpty()) {
+                        foreach ($detils as $detil) {
+                            $detil->update([
+                                'lunas' => 'C',
+                            ]);
+                        }
+                }
+                $header->update([
+                    'lunas' => 'C',
+                ]);
+                $va = VA::where('virtual_account', $header->va)->first();
+                if ($va) {
+                    $va->update([
+                        'status' => 'C',
+                        'lunas_time' => Carbon::now(),
+                    ]);
+                }
+            }
+
+            $containers = Container::where('form_id', $request->formId)->get();
+            if ($containers->isNotEmpty()) {
+                foreach ($containers as $container) {
+                    $item = Item::find($container->container_key);
+                    if ($item) {
+                        $item->update([
+                            'selected_do' => 'N',
+                            'os_id' => null,
+                            'order_service' => null,
+                        ]);
+                    }
+                }
+            }
+        
+            return response()->json([
+                'success' => true,
+                'message' => 'Data updated',
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage(),
+            ]);
+        }
+
+    }
+
+    public function searchToPay(Request $request)
+    {
+        $import = Import::find($request->id);
+        $anotherInvoice = Import::where('form_id', $import->form_id)->whereNot('id', $import->id)->where('lunas', 'N')->first();
+        if ($import) {
+            return response()->json([
+                'success' => true,
+                'data' => $import,
+                'another' => ($anotherInvoice) ? true : false,
+                'anotherData' => ($anotherInvoice) ? $anotherInvoice : null,
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data not Found',
+            ]);
+        }
+    }
+
+    public function createVA(Request $request)
+    {
+        // Checking VA
+        $checking = $this->checkingOldVA($request);
+        if ($checking) {
+            return $checking;
+        }
+
+        $import = Import::find($request->id);
+        $billingAmount = $import->grand_total;
+        if ($request->couple == 'Y') {
+            $otheExport = Import::where('form_id', $import->form_id)->whereNot('id', $import->id)->first();
+            $billingAmount += $otheExport->grand_total;
+        }
+        
+        try {
+            $newVa = DB::transaction(function() use($billingAmount, $import){
+                return VA::create([
+                    'virtual_account' => $this->virtualAccount(),
+                    'expired_va' => Carbon::now()->addHours(3),
+                    'invoice_type' => 'Import',
+                    'customer_name' => $import->cust_name,
+                    'customer_id' => $import->cust_id,
+                    'description' => $import->os_name,
+                    'billing_amount' => $billingAmount,
+                    'status' => 'N',
+                    'user_id' => Auth::user()->id,
+                    'created_at' => Carbon::now(),
+                ]);
+            });
+            $this->createVaDetail($newVa, $request);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'VA Berhasil dibuat',
+                'data' => $newVa,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something Wrong in : ' . $th->getMessage(),
+            ]);
+        }   
+    }
+
+    private function virtualAccount()
+    {
+        $prefix = '56732'; // kode perusahaan/bank Mandiri
+        do {
+            // Generate 16 digit angka random
+            $randomDigits = str_pad(mt_rand(0, 99999999999), 11, '0', STR_PAD_LEFT);
+            $generateVa = $prefix . $randomDigits;
+        } while (VA::where('virtual_account', $generateVa)->exists());
+
+        return $generateVa;
+    }
+
+    private function createVaDetail($newVa, $request)
+    {
+        $import = Import::find($request->id);
+        DB::transaction(function() use($newVa, $import){
+            RefDetail::create([
+                'va_id' => $newVa->id,
+                'inv_id' => $import->id,
+                'invoice_ie' => 'I',
+                'proforma_no' => $import->proforma_no,
+                'invoice_type' => $import->inv_type,
+                'amount' => $import->grand_total,
+            ]);
+
+            $import->update([
+                'va' => $newVa->virtual_account,
+            ]);
+        });
+
+        if ($request->couple == 'Y') {
+            $otheExport = Import::where('form_id', $import->form_id)->whereNot('id', $import->id)->first();
+            if ($otheExport) {
+                DB::transaction(function() use($newVa, $otheExport){
+                    RefDetail::create([
+                        'va_id' => $newVa->id,
+                        'inv_id' => $otheExport->id,
+                        'invoice_ie' => 'I',
+                        'proforma_no' => $otheExport->proforma_no,
+                        'invoice_type' => $otheExport->inv_type,
+                        'amount' => $otheExport->grand_total,
+                    ]);
+                    $otheExport->update([
+                        'va' => $newVa->virtual_account,
+                    ]);
+                });
+            }
+        }
+    }
+
+    private function checkingOldVA($request)
+    {
+        $import = Import::find($request->id);
+        $oldVa = VA::where('virtual_account', $import->va)->first();
+        if ($oldVa && !in_array($oldVa->status, ['C', 'Y'])) {
+            if (Carbon::parse($oldVa->expired_va)->greaterThan(Carbon::now())) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'VA untuk invoice yg anda pilih masih aktif, dengan nomor VA : ' . $oldVa->virtual_account,
+                    'status' => 30,
+                    'data' => $oldVa,
+                ]);
+            }
+            
+            $oldVa->update([
+                'status' => 'E',
+            ]);
+        }
+
+        if ($request->couple == 'Y') {
+           $otheExport = Import::where('form_id', $import->form_id)->whereNot('id', $import->id)->first();
+           $otherOldVa = VA::where('virtual_account', $otheExport->va)->first();
+           if ($otherOldVa && !in_array($otherOldVa->status, ['C', 'Y'])) {
+                if (Carbon::parse($otherOldVa->expired_va)->greaterThan(Carbon::now())) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'VA untuk invoice yg anda pilih masih aktif, dengan nomor VA : ' . $otherOldVa->virtual_account,
+                        'status' => 30,
+                        'data' => $otherOldVa,
+                    ]);
+                }
+
+                $otherOldVa->update([
+                    'status' => 'E',
+                ]);
+            }
+        }
+
+        return null;
     }
 
 }

@@ -32,30 +32,149 @@ use Carbon\Carbon;
 
 class CustomerExtendController extends CustomerMainController
 {
-    public function indexUnpaid()
-    {
-        $data['title'] = 'Perpanjangan Unpaid List';
+    // public function indexUnpaid()
+    // {
+    //     $data['title'] = 'Perpanjangan Unpaid List';
 
-        return view('customer.extend.detil.unpaid', $data);
+    //     return view('customer.extend.detil.unpaid', $data);
+    // }
+
+    // public function indexPiutang()
+    // {
+    //     $data['title'] = 'Perpanjangan Piutang List';
+
+    //     return view('customer.extend.detil.piutang', $data);
+    // }
+
+    // public function indexService(Request $request)
+    // {
+    //     $os = OS::find($request->id);
+    //     $data['title'] = 'Perpanjangan '.$os->name.' List'; 
+
+    //     $data['osId'] = $os->id;
+    //     return view('customer.extend.detil.service', $data);
+    // }
+
+    // public function dataService(Request $request)
+    // {
+    //     $invoice = $this->extend->whereHas('service', function ($query) {
+    //         $query->where('ie', '=', 'X');
+    //     })->whereNot('form_id', '=', '')->orderBy('order_at', 'desc');
+        
+    //     if ($request->has('type')) {
+    //         if ($request->type == 'unpaid') {
+    //             $invoice = $this->extend->whereHas('service', function ($query) {
+    //                 $query->where('ie', '=', 'X');
+    //             })->whereNot('form_id', '=', '')->where('lunas', '=', 'N')->orderBy('order_at', 'desc');
+    //         }
+
+    //         if ($request->type == 'piutang') {
+    //             $invoice = $this->extend->whereHas('service', function ($query) {
+    //                 $query->where('ie', '=', 'X');
+    //             })->whereNot('form_id', '=', '')->where('lunas', '=', 'P')->orderBy('order_at', 'desc');
+    //         }
+    //     }
+
+    //     if ($request->has('os_id')) {
+    //         $invoice = $this->extend->whereNot('form_id', '=', '')->where('os_id', $request->os_id)->orderBy('order_at', 'desc')->orderBy('lunas', 'asc');
+    //     }
+
+    //     $inv = $invoice->get();
+    //     return DataTables::of($inv)
+    //     ->addColumn('proforma', function($inv) {
+    //         return $inv->proforma_no ?? '-';
+    //     })
+    //     ->addColumn('customer', function($inv){
+    //         return $inv->cust_name ?? '-';
+    //     })
+    //     ->addColumn('service', function($inv){
+    //         return $inv->os_name ?? '-';
+    //     })
+    //     ->addColumn('type', function($inv){
+    //         return $inv->inv_type ?? '-';
+    //     })
+    //     ->addColumn('orderAt', function($inv){
+    //         return $inv->order_at ?? '-';
+    //     })
+    //     ->addColumn('status', function($inv){
+    //         if ($inv->lunas == 'N') {
+    //             return '<span class="badge bg-danger text-white">Not Paid</span>';
+    //         }elseif ($inv->lunas == 'P') {
+    //             return '<span class="badge bg-warning text-white">Piutang</span>';
+    //         }elseif ($inv->lunas == 'Y') {
+    //             return '<span class="badge bg-success text-white">Paid</span>';
+    //         }elseif ($inv->lunas == 'C') {
+    //             return '<span class="badge bg-danger text-white">Canceled</span>';
+    //         }
+    //     })
+    //     ->addColumn('pranota', function($inv){
+    //         return '<a type="button" href="/pranota/extend-'.$inv->id.'" target="_blank" class="btn btn-sm btn-warning text-white"><i class="fa fa-file"></i></a>';
+    //     })
+    //     ->addColumn('invoice', function($inv){
+    //         if ($inv->lunas == 'N') {
+    //             return '<span class="badge bg-info text-white">Paid First!!</span>';
+    //         }elseif ($inv->lunas == 'C') {
+    //             return '<span class="badge bg-danger text-white">Canceled</span>';
+    //         }else {
+    //             return '<a type="button" href="/invoice/extend-'.$inv->id.'" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>';
+    //         }
+    //     })
+    //     ->addColumn('job', function($inv){
+    //         if ($inv->lunas == 'N') {
+    //             return '<span class="badge bg-info text-white">Paid First!!</span>';
+    //         }elseif ($inv->lunas == 'C') {
+    //             return '<span class="badge bg-danger text-white">Canceled</span>';
+    //         }else {
+    //             return '<a type="button" href="/invoice/job/import-'.$inv->id.'" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>';
+    //         }
+    //     })
+    //     ->addColumn('action', function($inv){
+    //         if ($inv->lunas == 'N' || $inv->lunas == 'P') {
+    //             return '<button type="button" id="pay" data-id="'.$inv->id.'" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>';
+    //         }elseif ($inv->lunas == 'Y') {
+    //             return '<span class="badge bg-success text-white">Paid</span>';
+    //         }else {
+    //             return '<span class="badge bg-danger text-white">Canceled</span>';
+    //         }
+    //     })
+    //     ->addColumn('payFlag', function($inv){
+    //         if ($inv->lunas == 'N') {
+    //             if ($inv->pay_flag == 'Y') {
+    //                 return '<div class="spinner-border text-primary" role="status">
+                            
+    //                     </div> <span class="">Waiting Approved</span>';
+    //             }elseif ($inv->pay_flag == 'C') {
+    //                 return '<span class="badge bg-danger text-white">Di Tolak</span>';
+    //             }else {
+    //                 return '-';
+    //             }
+    //         }else {
+    //             return '-';
+    //         }
+    //     })
+    //     ->addColumn('delete', function($inv){
+    //         if ($inv->lunas == 'N') {
+    //             return '<button type="button" data-id="'.$inv->form_id.'" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>';
+    //         }else {
+    //             return '-';
+    //         }
+    //     })
+    //     ->addColumn('viewPhoto', function($inv){
+    //         $herf = '/bukti_bayar/extend/'; 
+    //         return '<a href="javascript:void(0)" onclick="openWindow(\''.$herf.$inv->id.'\')" class="btn btn-sm btn-info"><i class="fa fa-eye"></i></a>';
+    //     })
+    //     ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete', 'payFlag', 'viewPhoto'])
+    //     ->make(true);
+    // }
+
+    public function listIndex()
+    {
+        $data['title'] = "List Invoice Extend (Perpanjangan)";
+
+        return view('customer.extend.detil.listIndex', $data);
     }
 
-    public function indexPiutang()
-    {
-        $data['title'] = 'Perpanjangan Piutang List';
-
-        return view('customer.extend.detil.piutang', $data);
-    }
-
-    public function indexService(Request $request)
-    {
-        $os = OS::find($request->id);
-        $data['title'] = 'Perpanjangan '.$os->name.' List'; 
-
-        $data['osId'] = $os->id;
-        return view('customer.extend.detil.service', $data);
-    }
-
-    public function dataService(Request $request)
+    public function listData(Request $request)
     {
         $invoice = $this->extend->whereHas('service', function ($query) {
             $query->where('ie', '=', 'X');
@@ -67,18 +186,18 @@ class CustomerExtendController extends CustomerMainController
                     $query->where('ie', '=', 'X');
                 })->whereNot('form_id', '=', '')->where('lunas', '=', 'N')->orderBy('order_at', 'desc');
             }
-
+        
             if ($request->type == 'piutang') {
                 $invoice = $this->extend->whereHas('service', function ($query) {
                     $query->where('ie', '=', 'X');
                 })->whereNot('form_id', '=', '')->where('lunas', '=', 'P')->orderBy('order_at', 'desc');
             }
         }
-
+        
         if ($request->has('os_id')) {
             $invoice = $this->extend->whereNot('form_id', '=', '')->where('os_id', $request->os_id)->orderBy('order_at', 'desc')->orderBy('lunas', 'asc');
         }
-
+        
         $inv = $invoice->get();
         return DataTables::of($inv)
         ->addColumn('proforma', function($inv) {
@@ -154,7 +273,7 @@ class CustomerExtendController extends CustomerMainController
         })
         ->addColumn('delete', function($inv){
             if ($inv->lunas == 'N') {
-                return '<button type="button" data-id="'.$inv->form_id.'" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>';
+                return '<button type="button" data-id="'.$inv->form_id.'" class="btn btn-sm btn-danger" onClick="cancelInvoice(this)">Cacnel</i></button>';
             }else {
                 return '-';
             }
@@ -177,7 +296,15 @@ class CustomerExtendController extends CustomerMainController
     public function formData(Request $request)
     {
         $form = $this->form->with(['customer', 'Kapal', 'doOnline', 'service'])->where('i_e', 'X')->where('done', '=', 'N');
-        return DataTables::of($form)->make(true);
+        return DataTables::of($form)
+        ->addColumn('edit', function($form){
+            return '<a href="/customer-extend/formFirstStepId='.$form->id.'" class="btn btn-warning"><i class="fas fa-pencil"></i></a>';
+        })
+        ->addColumn('delete', function($form){
+            return '<button class="btn btn-danger" data-id="'.$form->id.'" onClick="deleteForm(this)">Delete</button>';
+        })
+        ->rawColumns(['edit', 'delete'])
+        ->make(true);
     }
 
     public function formStoreFirst(Request $request)
@@ -498,31 +625,25 @@ class CustomerExtendController extends CustomerMainController
         return view('customer.extend.form.preinvoice', $data)->with('success', 'Seilahkan lanjutkan ke tahap berikut nya');
     }
 
-    public function deleteInvoice($formId)
+    public function deleteInvoice(Request $request)
     {
+        $formId = $request->formId;
         try {
             $form = Form::find($formId);
-            $headerLunas = Extend::where('form_id', $form->id)->whereIn('lunas', ['Y', 'P'])->get();
+            $headerLunas = Extend::where('form_id', $form->id)->get();
             // var_dump($headerLunas);
             // die();
             if ($headerLunas->isNotEmpty()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Opsss sudah ada invoice yang di bayarkan, harap hubungi admin untuk pembatalan secara manual',
+                    'message' => 'Opsss sudah ada Pranota yang terbit, handa hanya dapat melakukan cancel invoice',
                 ]);
             }
            
     
             $containerInvoice = Container::where('form_id', $form->id)->get();
-
-            $item = Item::whereIn('container_key', $containerInvoice->pluck('container_key'))->update([
-                'os_id' => $form->oldInv->os_id,
-                'order_service' => $form->oldInv->service->order,
-            ]);
     
             Container::where('form_id')->delete();
-            $header = Extend::where('form_id', $formId)->delete();
-            $detil = Detail::where('form_Id', $formId)->delete();
     
             $form->delete();
 
@@ -726,5 +847,13 @@ class CustomerExtendController extends CustomerMainController
 
         return back()->with('success', 'Bukti pembayaran berhasil diunggah');
     }
+
+    // public function cancelInvoice(Request $request)
+    // {
+    //     $headers = Extend::where('form_id', $request->formId)->get();
+    //     if ($headers->isNotEmpty()) {
+            
+    //     } 
+    // }
 
 }

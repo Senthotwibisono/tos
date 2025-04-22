@@ -64,20 +64,20 @@
                         <td class="text-white">Unpaid</td>
                         <td class="text-center text-white">{{$importUnpaid}}</td>
                         <td class="text-center text-white">Rp. {{number_format($importUnpaidAmount ?? '0'), 2, ',', '.'}}</td>
-                        <td class="text-center"><a href="/customer-import/unpaid" class="text-white">See more...</a></td>
+                        <td class="text-center"><a href="{{route('customer.import.indexData')}}" class="text-white">See more...</a></td>
                     </tr>
                     <tr style="background-color: yellow;">
                         <td>Piutang</td>
                         <td class="text-center">{{$importPiutang}}</td>
                         <td class="text-center">Rp. {{number_format($importPiutangAmount ?? '0'), 2, ',', '.'}}</td>
-                        <td class="text-center"><a href="/customer-import/piutang">See more...</a></td>
+                        <td class="text-center"><a href="{{route('customer.import.indexData')}}">See more...</a></td>
                     </tr>
                     @foreach($orderService as $os)
                     <tr>
                         <td>{{$os->name}}</td>
                         <td class="text-center">{{$invoice->where('os_id', $os->id)->count() ?? ''}}</td>
                         <td class="text-center">Rp. {{number_format($invoice->where('os_id', $os->id)->sum('grand_total') ?? ''), 2, ',', '.'}}</td>
-                        <td class="text-center"><a href="/customer-import/service?id={{ $os->id }}">See more...</a></td>
+                        <td class="text-center"><a href="{{route('customer.import.indexData')}}">See more...</a></td>
                     </tr>
                     @endforeach
                     <tr style="background-color: maroon;">

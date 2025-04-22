@@ -116,6 +116,7 @@ class ImportController extends Controller
 
     public function dataService(Request $request)
     {
+        ini_set('memory_limit', '2048M');
         $invoice = InvoiceImport::whereHas('service', function ($query) {
             $query->where('ie', '=', 'I');
         })->whereNot('form_id', '=', '')->orderBy('order_at', 'desc');

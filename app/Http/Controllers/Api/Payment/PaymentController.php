@@ -148,7 +148,7 @@ class PaymentController extends Controller
                     return response()->json([
                         'type' => 'response_inquiry',
                         'success' => false,
-                        'status' => 10,
+                        'status' => 88,
                         'message' => ($va->status == 'C') ? 'VA Status : Canceled' : 'VA Status Paid',
                         'trxid' => $request->trxid,
                     ]);
@@ -208,7 +208,7 @@ class PaymentController extends Controller
                     return response()->json([
                         'type' => 'response_payment',
                         'success' => false,
-                        'status' => 10,
+                        'status' => 88,
                         'message' => ($va->status == 'C') ? 'VA Status : Canceled' : 'VA Status Paid',
                         'trxid' => $request->trxid,
                     ]);

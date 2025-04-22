@@ -16,8 +16,11 @@ use App\Models\Customer;
 use App\Models\MasterUserInvoice as MUI;
 
 use App\Models\InvoiceExport as Export;
+use App\Models\ExportDetail;
 use App\Models\JobExport;
 use App\Models\InvoiceImport as Import;
+use App\Models\ImportDetail;
+use App\Models\JobImport;
 use App\Models\Extend;
 use App\Models\InvoiceForm as Form;
 use App\Models\ContainerInvoice as Container;
@@ -126,8 +129,79 @@ class TransactionController extends Controller
                 \Log::error('Payment failed for VA ID ' . $va->id . ': ' . $th->getMessage());
                 return false;
             }
+        } elseif (in_array($va->invoice_type, ['Import', 'IMPORT'])) {
+            try {
+                $this->payImport($va);
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
         }
         return true;
+    }
+
+    private function payImport($va)
+    {
+        $detils = RefDetail::where('va_id', $va->id)->get();
+        foreach ($detils as $detil) {
+            $import = Import::find($detil->inv_id);
+            if ($import->inv_type == 'DSK') {
+                $noInvoice = $this->getInvoiceNoDSK();
+            } elseif ($import->inv_type == 'DS') {
+                $noInvoice = $this->getInvoiceNoDS();
+            } else {
+                return false;
+            }
+
+            $containerInvoice = Container::where('form_id', $import->form_id)->get();
+            $bigOS = OS::where('id', $import->os_id)->first();
+            foreach ($containerInvoice as $cont) {
+                $lastJobNo = JobImport::orderBy('id', 'desc')->value('job_no');
+                $jobNo = $this->getNextJob($lastJobNo);
+                $job = JobImport::where('inv_id', $import->id)->where('container_key', $cont->container_key)->first();
+                if (!$job) {
+                    $job = DB::transaction(function() use($import, $jobNo, $cont){
+                        return JobImport::create([
+                            'inv_id'=>$import->id,
+                            'job_no'=>$jobNo,
+                            'os_id'=>$import->os_id,
+                            'os_name'=>$import->os_name,
+                            'cust_id'=>$import->cust_id,
+                            'active_to'=>$import->expired_date,
+                            'container_key'=>$cont->container_key,
+                            'container_no'=>$cont->container_no,
+                            'ves_id'=>$cont->ves_id,
+                        ]);
+                    });
+                }
+                $item = Item::where('container_key', $cont->container_key)->first();
+                DB::transaction(function() use($item, $job, $bigOS, $noInvoice){
+                    $item->update([
+                        'invoice_no'=>$noInvoice,
+                        'job_no' => $job->job_no,
+                        'order_service' => $bigOS->order,
+                    ]);
+                });
+            }
+
+            $importDetils = ImportDetail::where('inv_id', $import->id)->get();
+            foreach ($importDetils as $detilI) {
+                DB::transaction(function() use($detilI, $noInvoice) {
+                    $detilI->update([
+                        'lunas' => 'Y',
+                        'inv_no'=>$noInvoice,
+                    ]);
+                });
+            }
+            
+            DB::transaction(function() use($import, $noInvoice){
+                $import->update([
+                    'lunas' => 'Y',
+                    'inv_no'=>$noInvoice,
+                    'lunas_at'=> Carbon::now(),
+                    'invoice_date'=> Carbon::now(),
+                ]);
+            });
+        }
     }
 
     private function payExport($va)
@@ -177,6 +251,16 @@ class TransactionController extends Controller
                     ]);
                 });
             }
+
+            $exportDetils = ExportDetail::where('inv_id', $export->id)->get();
+            foreach ($exportDetils as $detilE) {
+                DB::transaction(function() use($detilE, $noInvoice) {
+                    $detilE->update([
+                        'lunas' => 'Y',
+                        'inv_no'=>$noInvoice,
+                    ]);
+                });
+            }
             
             DB::transaction(function() use($export, $noInvoice){
                 $export->update([
@@ -212,6 +296,36 @@ class TransactionController extends Controller
         $lastNumber = (int)substr($lastInvoice, 3);
         $nextNumber = $lastNumber + 1;
         return 'OSK' . str_pad($nextNumber, 7, '0', STR_PAD_LEFT);
+    }
+
+    private function getInvoiceNoDSK()
+    {
+        return DB::transaction(function () {
+            $latest = Import::where('inv_type', 'DSK')->lockForUpdate()->orderBy('inv_no', 'desc')->first();
+            if (!$latest) {
+                return 'DSK0000001';
+            }
+            $lastNumber = (int)substr($latest->inv_no, 3);
+            $nextNumber = $lastNumber + 1;
+
+            return 'DSK' . str_pad($nextNumber, 7, '0', STR_PAD_LEFT);
+        });
+    }
+
+    private function getInvoiceNoDS()
+    {
+        return DB::transaction(function () {
+            $latest = Import::where('inv_type', 'DS')->lockForUpdate()->orderBy('inv_no', 'desc')->first();
+        
+            if (!$latest) {
+                return 'DS0000001';
+            }
+        
+            $lastNumber = (int)substr($latest->inv_no, 2);
+            $nextNumber = $lastNumber + 1;
+        
+            return 'DS' . str_pad($nextNumber, 7, '0', STR_PAD_LEFT);
+        });
     }
 
     private function getNextJob($lastJobNo)

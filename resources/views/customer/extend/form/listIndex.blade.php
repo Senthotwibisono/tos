@@ -22,7 +22,8 @@
                 <table class="table table-hover" id="formList">
                     <thead>
                         <tr>
-                            <th>Action</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
                             <th>Customer</th>
                             <th>Do Number</th>
                             <th>Order Service</th>
@@ -46,19 +47,8 @@
             serverSide: true,
             ajax: '/customer-extend/formData',
             columns: [
-                {
-                    data: 'id',
-                    name: 'id',
-                    className: 'text-center',
-                    render: function(data, row){
-                        const formId = row.id;
-                        return `<div class="button-container">
-                            <button class="btn btn-danger Delete" data-id="${data}"><i class="fa fa-trash"></i> Delete</button>
-                            <a href="/customer-extend/formFirstStepId=${data}" class="btn btn-warning"><i class="fa fa-pencil"></i></a>
-                            </div>
-                        `;
-                    }
-                },
+                {name:'edit', data:'edit', className:'text-center'},
+                {name:'delete', data:'delete', className:'text-center'},
                 { data: 'customer.name', name: 'customer.name', className: 'text-center',
                     render: function(data, row){
                         return data ? data : '';
@@ -90,48 +80,43 @@
 </script>
 
 <script>
-$(document).ready(function() {
-    $('#formList').on('click', '.Delete', function() {
-        var formId = $(this).data('id'); // Ambil ID dari data-id atribut
-
+    async function deleteForm(event) {
         Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Anda tidak akan bisa mengembalikan ini!",
             icon: 'warning',
+            title: 'Are you sure?',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
+        }).then( async(result) => {
             if (result.isConfirmed) {
-                $.ajax({
-                    url: '/billing/extend/delivery-deleteForm/' + formId, // Ganti dengan endpoint penghapusan Anda
-                    type: 'DELETE',
-                    data: {
-                        _token: '{{ csrf_token() }}' // Sertakan token CSRF untuk keamanan
+                const formId = event.getAttribute('data-id');
+                showLoading();
+                const url = '{{route('customer.extend.deleteInvoice')}}';
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                     },
-                    success: function(response) {
-                        Swal.fire(
-                            'Dihapus!',
-                            'Data berhasil dihapus.',
-                            'success'
-                        ).then(() => {
-                            window.location.reload(); // Arahkan ke halaman beranda setelah penghapusan sukses
-                        });
-                    },
-                    error: function(xhr) {
-                        console.error(xhr.responseText);
-                        Swal.fire(
-                            'Gagal!',
-                            'Terjadi kesalahan saat menghapus data.',
-                            'error'
-                        );
-                    }
+                    body: JSON.stringify({ formId: formId }),
                 });
+                hideLoading();
+                const hasil = await response.json();
+                if (hasil.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        text: hasil.message,
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        text: hasil.message,
+                    }).then(() => {
+                        location.reload();
+                    });
+                }
             }
         });
-    });
-});
+    }
 </script>
 @endsection

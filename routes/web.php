@@ -1296,6 +1296,13 @@ Route::prefix('/invoiceService')->controller(ServiceController::class)->group(fu
     Route::get('/customer-import/service', 'indexService');
     Route::get('/customer-import/serviceData', 'dataService');
 
+    Route::get('/customer-import/indexData', 'indexData')->name('customer.import.indexData');
+    Route::get('/customer-import/listData', 'listData')->name('customer.import.listData');
+    Route::post('/customer-import/cancelInvoice', 'cancelInvoice')->name('customer.import.cancelInvoice');
+
+    Route::post('/customer-import/searchToPay', 'searchToPay')->name('customer.import.searchToPay');
+    Route::post('/customer-import/createVA', 'createVA')->name('customer.import.createVA');
+
     // Form
     Route::get('/customer-import/formList', 'formList');
     Route::get('/customer-import/formData', 'formData');
@@ -1312,14 +1319,14 @@ Route::prefix('/invoiceService')->controller(ServiceController::class)->group(fu
 
   Route::prefix('/customer-extend')->group(function(){
     Route::controller(CustomerExtendController::class)->group(function(){
-      Route::get('/formList', 'formList');
+      Route::get('/formList', 'formList')->name('customer.extend.formList');
       Route::get('/formData', 'formData');
       Route::post('/formStoreFirst', 'formStoreFirst');
       Route::get('/formFirstStepId={id?}', 'firstStepIndex');
       Route::post('/storeFormStep1', 'storeFormStep1');
       Route::get('/preinvoice/{id?}', 'preinvoice');
       Route::post('/createInvoice', 'createInvoice');
-      Route::post('/deleteInvoice/{formId?}', 'deleteInvoice');
+      Route::post('/deleteInvoice', 'deleteInvoice')->name('customer.extend.deleteInvoice');
       Route::get('/payButton/{id?}', 'payButton');
       Route::post('/payImportFromCust', 'payImportFromCust');
 
@@ -1335,6 +1342,11 @@ Route::prefix('/invoiceService')->controller(ServiceController::class)->group(fu
       Route::get('/piutangData', 'dataPiutang');
       Route::get('/service', 'indexService');
       Route::get('/serviceData', 'dataService');
+
+      Route::get('/listIndex', 'listIndex')->name('customer.extend.listIndex');
+      Route::get('/listData', 'listData')->name('customer.extend.listData');
+
+      Route::post('/cancelInvoice', 'cancelInvoice')->name('customer.extend.cancelInvoice');
     });
 
   });
