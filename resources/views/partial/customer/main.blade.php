@@ -444,6 +444,12 @@ new simpleDatatables.DataTable('#table2');
     window.onload = function () {
         hideLoading();
     };
+
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted) {
+            hideLoading();
+        }
+    });
 </script>
 <script>
     function openWindow(url) {

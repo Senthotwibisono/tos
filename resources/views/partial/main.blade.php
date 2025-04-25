@@ -250,6 +250,12 @@
     window.onload = function () {
         hideLoading();
     };
+
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted) {
+            hideLoading();
+        }
+    });
 </script>
     <!-- <script src="{{ asset('query-ui/jquery-ui.js') }}"></script>
     <script src="{{ asset('query-ui/jquery-ui.min.js') }}" type="text/javascript"></script>

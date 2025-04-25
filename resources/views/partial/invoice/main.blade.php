@@ -323,6 +323,12 @@
     window.onload = function () {
         hideLoading();
     };
+
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted) {
+            hideLoading();
+        }
+    });
 </script>
 
 </html>
