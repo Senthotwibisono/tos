@@ -69,6 +69,35 @@
     </div>
 </section>
 
+<div class="modal fade" id="payModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable modal-lg"role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Payment Form</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"> <i data-feather="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="">Poforma No</label>
+                            <input type="text" name="proforma_no" id="proforma_no_edit" class="form-control" readonly>
+                            <input type="hidden" name="id" id="id_edit" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Grand Total</label>
+                            <input type="text" name="grand_total" id="grand_total_edit" class="form-control" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i> <span class="d-none d-sm-block">Close</span> </button>
+                <button type="button" id="updateButton" class="btn btn-primary ml-1" onClick="createVA()"> <i class="bx bx-check d-block d-sm-none"></i> <span class="d-none d-sm-block">Submit</span> </button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('custom_js')
@@ -175,6 +204,94 @@ $(document).ready(function() {
                         text: response.statusMessage,
                     }).then(() => {
                         location.reload();
+                    });
+                }
+            }
+        });
+    }
+</script>
+
+<script>
+    async function payExtend(event) {
+        const id = event.getAttribute('data-id');
+        console.log(id);
+        showLoading();
+        const url = '/customer-extend/transaction/searchToPay-'+id;
+        const response = await fetch(url);
+        console.log(response);
+        hideLoading();
+        if (response.ok) {
+            const result = await response.json();
+            console.log(result);
+            if (result.success) {
+                $('#payModal').modal('show');
+                $('#payModal #proforma_no_edit').val(result.data.proforma_no);
+                $('#payModal #id_edit').val(result.data.id);
+                $('#payModal #grand_total_edit').val(result.data.grand_total);
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: result.message,
+                });
+            }
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: response.statusText,
+            });
+        }
+    }
+
+    async function createVA() {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Anda Yakin?',
+            text: 'VA Akan terbit dan memiliki waktu 3 Jam sampai pembayaran!',
+            showCancelButton: true,
+        }).then( async (result) => {
+            if (result.isConfirmed) {
+                const id = document.getElementById('id_edit').value;
+                showLoading();
+
+                const url = '{{ route('customer.extend.createVA')}}';
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    },
+                    body: JSON.stringify({ id: id }),
+                })
+                hideLoading();
+                if (response.ok) {
+                    const hasil = await response.json();
+                    if (hasil.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                        }).then(() => {
+                            window.open('/pembayaran/virtual_account-' + hasil.data.id, '_blank', 'width=800,height=600');
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: hasil.message,
+                        }).then(() => {
+                            if (hasil.status === 30) {
+                                window.open('/pembayaran/virtual_account-' + hasil.data.id, '_blank', 'width=800,height=600');
+                            } else {
+                                window.location.reload();
+                            }
+                        });
+                    }
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: response.status,
+                        text: response.statusText,
                     });
                 }
             }

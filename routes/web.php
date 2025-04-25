@@ -1347,6 +1347,11 @@ Route::prefix('/invoiceService')->controller(ServiceController::class)->group(fu
       Route::get('/listData', 'listData')->name('customer.extend.listData');
 
       Route::post('/cancelInvoice', 'cancelInvoice')->name('customer.extend.cancelInvoice');
+
+      Route::prefix('/transaction')->group(function(){
+        Route::get('/searchToPay-{id?}', 'searchToPay');
+        Route::post('/createVA', 'createVA')->name('customer.extend.createVA');
+    });
     });
 
   });

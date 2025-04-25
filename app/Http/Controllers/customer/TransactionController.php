@@ -23,6 +23,8 @@ use App\Models\InvoiceImport as Import;
 use App\Models\ImportDetail;
 use App\Models\JobImport;
 use App\Models\Extend;
+use App\Models\ExtendDetail;
+use App\Models\JobExtend;
 use App\Models\InvoiceForm as Form;
 use App\Models\ContainerInvoice as Container;
 use App\Models\Item;
@@ -134,8 +136,18 @@ class TransactionController extends Controller
             try {
                 $this->payImport($va);
             } catch (\Throwable $th) {
-                //throw $th;
+                \Log::error('Payment failed for VA ID ' . $va->id . ': ' . $th->getMessage());
+                return false;
             }
+        } elseif (in_array($va->invoice_type, ['EXTEND', 'Extend'])) {
+            try {
+                $this->payExtend($va);
+            } catch (\Throwable $th) {
+                \Log::error('Payment failed for VA ID ' . $va->id . ': ' . $th->getMessage());
+                return false;
+            }
+        } else {
+            return false;
         }
         return true;
     }
@@ -280,6 +292,75 @@ class TransactionController extends Controller
         // return $va;
     }
 
+    private function payExtend($va)
+    {
+        $detils = RefDetail::where('va_id', $va->id)->get();
+        // var_dump(json_encode($detils));
+        // die();
+        try {
+            foreach ($detils as $detil) {
+                $extend = Extend::find($detil->inv_id);
+                // var_dump($extend);
+                // die();
+                $noInvoice = $this->getNextInvoiceExtend();
+    
+                $containerInvoice = Container::where('form_id', $extend->form_id)->get();
+                $bigOS = OS::where('id', $extend->os_id)->first();
+                foreach ($containerInvoice as $cont) {
+                    $lastJobNo = JobExtend::orderBy('id', 'desc')->value('job_no');
+                    $jobNo = $this->getNextJobPerpanjangan($lastJobNo);
+                    $job = JobExtend::where('inv_id', $extend->id)->where('container_key', $cont->container_key)->first();
+                    if (!$job) {
+                        $job = DB::transaction(function() use($extend, $jobNo, $cont){
+                            return JobExtend::create([
+                                'inv_id'=>$extend->id,
+                                'job_no'=>$jobNo,
+                                'os_id'=>$extend->os_id,
+                                'os_name'=>$extend->os_name,
+                                'cust_id'=>$extend->cust_id,
+                                'active_to'=>$extend->expired_date,
+                                'container_key'=>$cont->container_key,
+                                'container_no'=>$cont->container_no,
+                                'ves_id'=>$cont->ves_id,
+                            ]);
+                        });
+                    }
+                    $item = Item::where('container_key', $cont->container_key)->first();
+                    DB::transaction(function() use($item, $job, $bigOS, $noInvoice){
+                        $item->update([
+                            'invoice_no'=>$noInvoice,
+                            'job_no' => $job->job_no,
+                            'order_service' => $bigOS->order,
+                        ]);
+                    });
+                }
+    
+                $extendDetils = ExtendDetail::where('inv_id', $extend->id)->get();
+                foreach ($extendDetils as $detilE) {
+                    DB::transaction(function() use($detilE, $noInvoice) {
+                        $detilE->update([
+                            'lunas' => 'Y',
+                            'inv_no'=>$noInvoice,
+                        ]);
+                    });
+                }
+                
+                DB::transaction(function() use($extend, $noInvoice){
+                    $extend->update([
+                        'lunas' => 'Y',
+                        'inv_no'=>$noInvoice,
+                        'lunas_at'=> Carbon::now(),
+                        'invoice_date'=> Carbon::now(),
+                    ]);
+                });
+            }
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+            return false;
+
+        }
+    }
+
     private function getInvoiceNoOS()
     {
         $latest = Export::where('inv_type', 'OS')->orderBy('inv_no', 'desc')->first();
@@ -348,5 +429,29 @@ class TransactionController extends Controller
         $lastNumber = (int)substr($lastJobNo, 3);
         $nextNumber = $lastNumber + 1;
         return 'JOB' . str_pad($nextNumber, 7, '0', STR_PAD_LEFT);
+    }
+
+    private function getNextJobPerpanjangan($lastJobNo)
+    {
+        if (!$lastJobNo) {
+            return 'JOBP0000001';
+        }
+        $lastNumber = (int)substr($lastJobNo, 4);
+        $nextNumber = $lastNumber + 1;
+
+        // Menghasilkan nomor pekerjaan berikutnya dengan format yang benar
+        return 'JOBP' . str_pad($nextNumber, 7, '0', STR_PAD_LEFT);
+    }
+
+    private function getNextInvoiceExtend()
+    {
+        $latest = Extend::orderBy('inv_no', 'desc')->first();
+        if (!$latest) {
+            return 'P0000001';
+        }
+        $lastInvoice = $latest->inv_no;
+        $lastNumber = (int)substr($lastInvoice, 5);
+        $nextNumber = $lastNumber + 1;
+        return 'P' . str_pad($nextNumber, 7, '0', STR_PAD_LEFT);
     }
 }

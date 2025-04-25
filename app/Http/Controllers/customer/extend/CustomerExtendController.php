@@ -21,6 +21,9 @@ use App\Models\Customer;
 use App\Models\DOonline;
 use App\Models\Item;
 
+use App\Models\Payment\RefNumber as VA;
+use App\Models\Payment\RefDetail;
+
 use App\Models\JobImport;
 use App\Models\JobExtend;
 use App\Models\VVoyage;
@@ -249,7 +252,7 @@ class CustomerExtendController extends CustomerMainController
         })
         ->addColumn('action', function($inv){
             if ($inv->lunas == 'N' || $inv->lunas == 'P') {
-                return '<button type="button" id="pay" data-id="'.$inv->id.'" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>';
+                return '<button type="button" id="pay" data-id="'.$inv->id.'" class="btn btn-sm btn-success pay" onClick="payExtend(this)"><i class="fa fa-cogs"></i></button>';
             }elseif ($inv->lunas == 'Y') {
                 return '<span class="badge bg-success text-white">Paid</span>';
             }else {
@@ -855,5 +858,115 @@ class CustomerExtendController extends CustomerMainController
             
     //     } 
     // }
+
+
+    public function searchToPay(Request $request)
+    {
+        $extend = Extend::find($request->id);
+        if ($extend) {
+            return response()->json([
+                'success' => true,
+                'data' => $extend,
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data not Found',
+            ]);
+        }
+    }
+
+    public function createVA(Request $request)
+    {
+        // Checking VA
+        $checking = $this->checkingOldVA($request);
+        if ($checking) {
+            return $checking;
+        }
+
+        $extend = Extend::find($request->id);
+        $billingAmount = $extend->grand_total;
+        
+        try {
+            $newVa = DB::transaction(function() use($billingAmount, $extend){
+                return VA::create([
+                    'virtual_account' => $this->virtualAccount(),
+                    'expired_va' => Carbon::now()->addHours(3),
+                    'invoice_type' => 'Extend',
+                    'customer_name' => $extend->cust_name,
+                    'customer_id' => $extend->cust_id,
+                    'description' => $extend->os_name,
+                    'billing_amount' => $billingAmount,
+                    'status' => 'N',
+                    'user_id' => Auth::user()->id,
+                    'created_at' => Carbon::now(),
+                ]);
+            });
+            $this->createVaDetail($newVa, $request);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'VA Berhasil dibuat',
+                'data' => $newVa,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something Wrong in : ' . $th->getMessage(),
+            ]);
+        }   
+    }
+
+    private function virtualAccount()
+    {
+        $prefix = '56732'; // kode perusahaan/bank Mandiri
+        do {
+            // Generate 16 digit angka random
+            $randomDigits = str_pad(mt_rand(0, 99999999999), 11, '0', STR_PAD_LEFT);
+            $generateVa = $prefix . $randomDigits;
+        } while (VA::where('virtual_account', $generateVa)->exists());
+
+        return $generateVa;
+    }
+
+    private function createVaDetail($newVa, $request)
+    {
+        $extend = Extend::find($request->id);
+        DB::transaction(function() use($newVa, $extend){
+            RefDetail::create([
+                'va_id' => $newVa->id,
+                'inv_id' => $extend->id,
+                'invoice_ie' => 'X',
+                'proforma_no' => $extend->proforma_no,
+                'invoice_type' => $extend->inv_type,
+                'amount' => $extend->grand_total,
+            ]);
+
+            $extend->update([
+                'va' => $newVa->virtual_account,
+            ]);
+        });
+    }
+
+    private function checkingOldVA($request)
+    {
+        $extend = Extend::find($request->id);
+        $oldVa = VA::where('virtual_account', $extend->va)->first();
+        if ($oldVa && !in_array($oldVa->status, ['C', 'Y'])) {
+            if (Carbon::parse($oldVa->expired_va)->greaterThan(Carbon::now())) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'VA untuk invoice yg anda pilih masih aktif, dengan nomor VA : ' . $oldVa->virtual_account,
+                    'status' => 30,
+                    'data' => $oldVa,
+                ]);
+            }
+            
+            $oldVa->update([
+                'status' => 'E',
+            ]);
+        }
+        return null;
+    }
 
 }
