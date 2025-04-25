@@ -158,7 +158,7 @@
                     @include('container.detail.table', $containers)
                 </div>
                 <div class="card-footer">
-                    <a href="/container/sortByVes/export/{{$id}}?{{ http_build_query($_GET) }}"" class="btn btn-success float-end">Export to Excel</a>
+                    <a href="/container/sortByVes/export/{{$id}}?{{ http_build_query($_GET) }}" class="btn btn-success float-end">Export to Excel</a>
                     <!-- <a href=""></a> -->
                 </div>
             </div>

@@ -256,6 +256,9 @@
             hideLoading();
         }
     });
+
+    setTimeout(hideLoading, 5000);
+    
 </script>
     <!-- <script src="{{ asset('query-ui/jquery-ui.js') }}"></script>
     <script src="{{ asset('query-ui/jquery-ui.min.js') }}" type="text/javascript"></script>
