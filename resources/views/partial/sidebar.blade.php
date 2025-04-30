@@ -37,9 +37,9 @@
             <li class="submenu-item @if(Request::is('planning/bayplan_import')) active @endif">
                 <a href="/planning/bayplan_import">Bay Plan Import</a>
             </li>
-            <li class="submenu-item @if(Request::is('planning/ship_planning')) active @endif">
+            <!-- <li class="submenu-item @if(Request::is('planning/ship_planning')) active @endif">
                 <a href="/planning/ship_planning">Ship Planning</a>
-            </li>
+            </li> -->
             <li class="submenu-item @if(Request::is('planning/shifting/main')) active @endif">
                 <a href="{{route('index-shifting')}}">shifting</a>
             </li>
@@ -511,6 +511,10 @@
             <li class="submenu-item @if(Request::is('system/role') || Request::is('system/role/addrole') || Request::is('system/edit_role=*')) active @endif">
                 <a href="/system/role">Role</a>
             </li>
+            <li class="submenu-item @if(Request::is('system/permission/*')) active @endif">
+                <a href="{{route('system.permission.index')}}">Permission</a>
+            </li>
+
         </ul>
     </li>
 

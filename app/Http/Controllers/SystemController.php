@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Hash;
 use Auth;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Permission;
+
+use DataTables;
 
 use Illuminate\Http\Request;
 
@@ -138,5 +141,46 @@ class SystemController extends Controller
     {
         User::destroy($id);
         return back();
+    }
+
+    public function indexPermisson()
+    {
+        $data['title'] = 'Permission Index';
+
+        return view('system.permission.index', $data);
+    }
+
+    public function dataPermission(Request $request)
+    {
+        $perm = Permission::get();
+        
+        return DataTables::of($perm)
+        ->make(true);
+    }
+
+    public function createPermisson(Request $request)
+    {
+        // var_dump($request->all());
+        try {
+            $permission = Permission::create($request->all());
+            return response()->json([
+                'success' => true,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage(),
+            ]);
+        }
+    }
+
+    public function assignedIndex($id)
+    {  
+        $user = User::find($id);
+        $data['users'] = $user;
+        $data['title'] = 'Assigned Permission for ' . $user->name;
+        $data['permission'] = Permission::get();
+
+        return view('system.user.assignedPermission', $data);
     }
 }

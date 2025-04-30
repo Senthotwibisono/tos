@@ -98,6 +98,7 @@
                             @method('DELETE')
                             <button type="submit" class="btn icon btn-danger"> <i class="bi bi-x"></i></button>
                             <a href="/system/edit_user={{$user->id}}" class="btn icon btn-primary"><i class="bi bi-pencil"></i></a>
+                            <a href="{{route('system.user.indexPermission', ['id' => $user->id] )}}" class="btn btn-info">Assigned Permission</a>
                             </form>
                             </td>
                         </tr>

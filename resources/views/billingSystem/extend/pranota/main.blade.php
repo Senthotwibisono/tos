@@ -156,12 +156,11 @@ use Carbon\Carbon;
               </div>
               <div class="col-xs-12 col-12">
                 <address>
-                <strong>Metode Pembayaran</strong><br>
-                  Nama Bank : <strong>MANDIRI</strong> <br>
-                  Pemilik Rekening :  <strong>PT. INDO KONTAINER SARANA</strong><br>
-                  Kode Bank : <strong>008</strong><br>
-                  Nomor Rekening : <strong>1460002771975</strong><br>
-                  <!-- h.elaine@gmail.com<br> -->
+                  <strong>Metode Pembayaran</strong><br>
+                  Nama Bank: <strong>MANDIRI</strong> <br>
+                  Pemilik Rekening: <strong>PT. DEPO INDO KONTAINER SARANA</strong><br>
+                  Kode Bank: <strong>008</strong><br>
+                  Nomor Rekening: <strong>1460021308742</strong><br>
                 </address>
                 <address>
                   <strong>Veesel</strong><br>
