@@ -15,7 +15,7 @@
                 <div class="card-content">
                   <div class="card-body">
 
-                    <form class="form" method="post" action='/planning/bayplan_import'>
+                    <form class="form" method="post" action='/planning/bayplan_importPost'>
                       @CSRF
 
                       <div class="row">

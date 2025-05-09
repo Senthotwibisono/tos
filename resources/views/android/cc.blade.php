@@ -51,19 +51,24 @@
                 <div class="buttons">
                     <div class="child">
                         <div class="child">
+                            @can ('Discharge')
                             <div style="width: 300px;">
                                 <div style="float: left; margin-right: 20px;">
                                     <lottie-player src="https://assets10.lottiefiles.com/packages/lf20_7hgsy40v.json" background="#FFFFFF" speed="1" width="100" height="100" loop autoplay></lottie-player>
                                     <a href="/disch/android" style="text-align: justify;" class="btn btn-primary rounded-pill">Confirm Disch</a>
                                 </div>
                             </div>
+                            @endif
+
                             <div class="child">
+                                @can ('Load')
                                 <div style="width: 300px;">
                                     <div style="float: left; margin-right: 20px;">
                                         <lottie-player src="https://assets10.lottiefiles.com/packages/lf20_7hgsy40v.json" background="#FFFFFF" speed="1" width="100" height="100" loop autoplay></lottie-player>
                                         <a href="/load/confirm_load-android" style="text-align: justify;" class="btn btn-primary rounded-pill">Confirm Load</a>
                                     </div>
                                 </div>
+                                @endif
                                 <!--</div>
                                             <div style="width: 300px;">
                                                 <div style="float: left; margin-right: 20px;">

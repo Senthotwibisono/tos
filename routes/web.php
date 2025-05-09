@@ -389,6 +389,7 @@ Route::delete('/system/delete_role={id}', [SystemController::class, 'delete_role
 
 Route::prefix('/system/user/assignedPermission')->controller(SystemController::class)->group(function(){
   Route::get('/index-{id?}', 'assignedIndex')->name('system.user.indexPermission');
+  Route::post('/post-{id?}', 'assignPermissionPost')->name('system.user.postAssignedPermission');
 });
 
 
@@ -404,8 +405,19 @@ Route::prefix('/system/permisson')->controller(SystemController::class)->group(f
   Route::post('/create', 'createPermisson')->name('system.permission.create');
 });
 
-Route::get('/planning/vessel-schedule', [VesselController::class, 'index']);
-Route::get('/planning/create-schedule', [VesselController::class, 'create']);
+
+Route::middleware('permission:Vessel Schedule')->group(function(){
+  Route::get('/planning/vessel-schedule', [VesselController::class, 'index']);
+  Route::get('/planning/create-schedule', [VesselController::class, 'create']);
+  Route::get('/android/vessel-main', [VesselController::class, 'androidDashboard']);
+  Route::get('/android/vessel-create', [VesselController::class, 'androidCreate']);
+  Route::get('/android/editVessel={ves_id}', [VesselController::class, 'androidEdit']);
+  Route::post('/planning/vessel_schedule_store', [VesselController::class, 'schedule_store'])->name('/planning/vessel_schedule_store');
+  Route::get('/planning/schedule_schedule={ves_id}', [VesselController::class, 'edit_schedule']);
+  Route::patch('/planning/schedule_update={ves_id}', [VesselController::class, 'update_schedule']);
+  Route::delete('/planning/delete_schedule={ves_id}', [VesselController::class, 'delete_schedule']);
+});
+// VesselController
 Route::post('/getvessel', [VesselController::class, 'getvessel'])->name('getvessel');
 Route::post('/getvessel_agent', [VesselController::class, 'getvessel_agent'])->name('getvessel_agent');
 Route::post('/getvessel_liner', [VesselController::class, 'getvessel_liner'])->name('getvessel_linert');
@@ -425,27 +437,27 @@ Route::delete('/planning/delete_schedule={ves_id}', [VesselController::class, 'd
 Route::get('/refresh_counter', [VesselController::class, 'refreshCounter']);
 Route::post('/createBayManually', [VesselController::class, 'createBayManually']);
 
-Route::get('/android/vessel-main', [VesselController::class, 'androidDashboard']);
-Route::get('/android/vessel-create', [VesselController::class, 'androidCreate']);
-Route::get('/android/editVessel={ves_id}', [VesselController::class, 'androidEdit']);
-
-Route::get('/planning/bayplan_import', [BayplanImportController::class, 'index']);
+// Baplei
+Route::middleware('permission:Baplei')->group(function(){
+  Route::get('/planning/bayplan_import', [BayplanImportController::class, 'index']);
+  Route::post('/planning/bayplan_importPost', [BayplanImportController::class, 'store']);
+  Route::post('/planning/bayplan_pelindo', [BayplanImportController::class, 'pelindo']);
+  Route::get('/planning/edit_bayplanimport_{container_key}', [BayplanImportController::class, 'edit']);
+  Route::post('/planning/update_bayplanimport', [BayplanImportController::class, 'update_bayplanimport']);
+  Route::delete('/planning/delete_item={container_key}', [BayplanImportController::class, 'delete_item']);
+  Route::get('/planning/bayplan_import', [BayplanImportController::class, 'index']);
+});
 Route::post('/getsize', [BayplanImportController::class, 'size']);
 Route::post('/gettype', [BayplanImportController::class, 'type']);
 Route::post('/getcode', [BayplanImportController::class, 'code']);
 Route::post('/getname', [BayplanImportController::class, 'name']);
 Route::post('/getvoy', [BayplanImportController::class, 'voy']);
 Route::post('/getagent', [BayplanImportController::class, 'agent']);
-Route::post('/planning/bayplan_import', [BayplanImportController::class, 'store']);
-Route::post('/planning/bayplan_pelindo', [BayplanImportController::class, 'pelindo']);
-Route::get('/planning/edit_bayplanimport_{container_key}', [BayplanImportController::class, 'edit']);
 Route::post('/getsize_edit', [BayplanImportController::class, 'size_edit']);
 Route::post('/gettype_edit', [BayplanImportController::class, 'type_edit']);
 Route::post('/get-iso-type', [BayplanImportController::class, 'get_iso_type']);
 Route::post('/get-iso-size', [BayplanImportController::class, 'get_iso_size']);
 Route::post('/get-ves-name', [BayplanImportController::class, 'get_ves_name']);
-Route::post('/planning/update_bayplanimport', [BayplanImportController::class, 'update_bayplanimport']);
-Route::delete('/planning/delete_item={container_key}', [BayplanImportController::class, 'delete_item']);
 
 //kotak-kotak
 Route::get('/disch/view-vessel/{vessel?}/{bay?}', [DischargeView::class, 'index']);
@@ -455,13 +467,19 @@ Route::get('/get-container', [DischargeView::class, 'get_container']);
 Route::get('/cetak-perKapal', [DischargeView::class, 'cetakKapal'])->name('dischCetakKapal');
 Route::get('/cetak-perBay', [DischargeView::class, 'cetakBay'])->name('dischCetakBay');
 
-// Android
-Route::get('/android-dashboard', [AndroidController::class, 'index']);
-Route::get('/disch/confirm_disch', [DischargeController::class, 'index']);
+
+Route::middleware('permission:Discharge')->group(function(){
+  Route::get('/disch/confirm_disch', [DischargeController::class, 'index']);
+  Route::post('/confirm', [DischargeController::class, 'confirm']);
+  Route::get('/disch/android', [DischargeController::class, 'android']);
+});
 Route::get('/disch/dataTable', [DischargeController::class, 'dataTable']);
 Route::post('/search-container', [DischargeController::class, 'container']);
 Route::post('/get-container-key', [DischargeController::class, 'get_key']);
-Route::post('/confirm', [DischargeController::class, 'confirm']);
+Route::post('/get-con-disch', [DischargeController::class, 'get_cont']);
+
+// Android
+Route::get('/android-dashboard', [AndroidController::class, 'index']);
 Route::get('/redirect', [AndroidController::class, 'redirectToRole'])->name('redirect');
 
 
@@ -473,26 +491,6 @@ Route::get('/android-yard', [AndroidController::class, 'yard_android']);
 
 // Android user cc
 Route::get('/android-cc', [AndroidController::class, 'cc_android']);
-
-
-//tampilan android
-Route::get('/disch/android', [DischargeController::class, 'android']);
-Route::get('/yard/android', [PlacementController::class, 'android']);
-Route::get('/stripping/android', [Stripping::class, 'android']);
-Route::get('/delivery/android-in', [Gati::class, 'android']);
-Route::get('/delivery/android-out', [Gato::class, 'android']);
-Route::get('/stuffing/android', [Stuffing::class, 'android']);
-
-Route::get('/yard/placement', [PlacementController::class, 'index']);
-Route::post('/placement', [PlacementController::class, 'place']);
-Route::post('/placementMT-Relokasi', [PlacementController::class, 'placeRelokasiMT']);
-Route::post('/dapet-tipe', [PlacementController::class, 'get_tipe']);
-Route::post('/container-tipe', [PlacementController::class, 'tipe_container']);
-Route::post('/placement/changedToMty-{container_key}', [PlacementController::class, 'change']);
-Route::post('/placement/changed-status', [PlacementController::class, 'place_mty']);
-Route::post('/get-con-plc', [PlacementController::class, 'get_cont']);
-
-
 
 Route::get('/yard/yard-view/android', [YardrotController::class, 'Android']);
 
@@ -561,22 +559,43 @@ route::post('yards/rowtier/get_rowtier_android', [YardrotController::class, 'get
 Route::post('/getSlot', [YardrotController::class, 'get_slot'])->name('get.slot');
 
 
+// Gate
+Route::middleware('permission:Gate')->group(function(){
+  Route::get('/delivery/android-in', [Gati::class, 'android']);
+  Route::get('/delivery/android-out', [Gato::class, 'android']);
+  Route::get('/delivery/gate-in', [Gati::class, 'index']);
+  Route::post('/gati-data_container', [Gati::class, 'data_container']);
+  Route::post('/gati-del', [Gati::class, 'gati_del']);
+  Route::post('/gati-del/update-truck', [Gati::class, 'update_truck']);
+  Route::get('/gati-del/edit-{container_key}', [Gati::class, 'edit_truck']);
+  Route::get('/delivery/gate-out', [Gato::class, 'index']);
+  Route::post('/gato-data_container', [Gato::class, 'data_container']);
+  Route::post('/gato-del', [Gato::class, 'gato_del']);
+  Route::get('/reciving/gate-in-android', [Gati::class, 'android_rec']);
+  Route::get('/gati-data_container-rec', [Gati::class, 'get_data_reciving']);
+  Route::post('/gati-rec', [Gati::class, 'gati_rec']);
+  Route::post('/gati-iso-rec', [Gati::class, 'gati_iso_rec']);
+  Route::get('/reciving/gate-out', [Gato::class, 'index_rec']);
+  Route::get('/reciving/gate-out-android', [Gato::class, 'android_rec']);
+  Route::post('/gato-data_container', [Gato::class, 'data_container']);
+  Route::post('/gato-rec', [Gato::class, 'gato_rec']);
+  Route::get('/reciving/gate-in', [Gati::class, 'index_rec']);
+  Route::post('/get-con-gatiDel', [Gati::class, 'get_cont']);
+  Route::get('/stuffing/gate-in', [Gati::class, 'index_stuf']);
+  Route::post('/stuf-gate-in', [Gati::class, 'gati_stuf']);
+  Route::post('/stuf-gate-in-full', [Gati::class, 'gati_stuf_full']);
+  Route::post('/gati-stuf-data', [Gati::class, 'gati_stuffing_data']);
+  Route::get('/stuffing/gate-out', [Gato::class, 'index_stuf_out']);
+  Route::post('/stuf-gate-out', [Gato::class, 'gato_stuf']);
+  // Android
+  Route::get('/stuffing/gate-in-stuffing-android', [Gati::class, 'stuf_android']);
+  Route::get('/stuffing/gate-out-stuffing-android', [Gato::class, 'stuff_android_out']);
+  Route::get('/delivery/balik-relokasi', [GateRelokasiController::class, 'index']);
+  Route::post('/gate-relokasi', [GateRelokasiController::class, 'permit']);
+  Route::get('/delivery/balik-relokasi-android', [GateRelokasiController::class, 'android']);
+  Route::post('/relokasi-data_container', [GateRelokasiController::class, 'data_container']);
+});
 
-Route::get('/planning/bayplan_import', [BayplanImportController::class, 'index']);
-
-
-Route::get('/stripping', [Stripping::class, 'index']);
-Route::post('/get-stripping', [Stripping::class, 'get_stripping']);
-Route::post('/stripping-place', [Stripping::class, 'stripping_place']);
-
-Route::get('/delivery/gate-in', [Gati::class, 'index']);
-Route::post('/gati-data_container', [Gati::class, 'data_container']);
-Route::post('/gati-del', [Gati::class, 'gati_del']);
-Route::post('/gati-del/update-truck', [Gati::class, 'update_truck']);
-Route::get('/gati-del/edit-{container_key}', [Gati::class, 'edit_truck']);
-Route::get('/delivery/gate-out', [Gato::class, 'index']);
-Route::post('/gato-data_container', [Gato::class, 'data_container']);
-Route::post('/gato-del', [Gato::class, 'gato_del']);
 
 
 // history
@@ -605,27 +624,35 @@ Route::group([
   })->name('hist.blank');
   Route::resource('/hist', HistoryController::class);
 });
-//role master Port
-Route::get('/master/port', [MasterController::class, 'port']);
-Route::post('/master/port_store', [MasterController::class, 'port_store'])->name('/master/port_store');
-Route::post('/master/port_edit_store', [MasterController::class, 'port_edit_store'])->name('/master/port_edit_store');
-Route::delete('/master/delete_port={port}', [MasterController::class, 'delete_port']);
-Route::get('/master/edit_port', [MasterController::class, 'edit_port']);
-
-//role master Vessel
-Route::get('/master/vessel', [MasterController::class, 'vessel']);
-Route::post('/master/vessel_store', [MasterController::class, 'vessel_store'])->name('/master/vessel_store');
-Route::post('/master/vessel_edit_store', [MasterController::class, 'vessel_edit_store'])->name('/master/vessel_edit_store');
-Route::delete('/master/delete_vessel={vessel}', [MasterController::class, 'delete_vessel']);
-Route::get('/master/edit_vessel', [MasterController::class, 'edit_vessel']);
 
 
-//role master VesBerthsel
-Route::get('/master/berth', [MasterController::class, 'berth']);
-Route::post('/master/berth_store', [MasterController::class, 'berth_store'])->name('/master/berth_store');
-Route::post('/master/berth_edit_store', [MasterController::class, 'berth_edit_store'])->name('/master/berth_edit_store');
-Route::delete('/master/delete_berth={berth_no}', [MasterController::class, 'delete_berth']);
-Route::get('/master/edit_berth', [MasterController::class, 'edit_berth']);
+// Master
+Route::middleware('permission:Mater Port')->group(function(){
+  //role master Port
+  Route::get('/master/port', [MasterController::class, 'port']);
+  Route::post('/master/port_store', [MasterController::class, 'port_store'])->name('/master/port_store');
+  Route::post('/master/port_edit_store', [MasterController::class, 'port_edit_store'])->name('/master/port_edit_store');
+  Route::delete('/master/delete_port={port}', [MasterController::class, 'delete_port']);
+  Route::get('/master/edit_port', [MasterController::class, 'edit_port']);
+});
+
+Route::middleware('permission:Master Vessel')->group(function(){
+  //role master Vessel
+  Route::get('/master/vessel', [MasterController::class, 'vessel']);
+  Route::post('/master/vessel_store', [MasterController::class, 'vessel_store'])->name('/master/vessel_store');
+  Route::post('/master/vessel_edit_store', [MasterController::class, 'vessel_edit_store'])->name('/master/vessel_edit_store');
+  Route::delete('/master/delete_vessel={vessel}', [MasterController::class, 'delete_vessel']);
+  Route::get('/master/edit_vessel', [MasterController::class, 'edit_vessel']);
+});
+
+Route::middleware('permission:Master Berth')->group(function(){
+  //role master VesBerthsel
+  Route::get('/master/berth', [MasterController::class, 'berth']);
+  Route::post('/master/berth_store', [MasterController::class, 'berth_store'])->name('/master/berth_store');
+  Route::post('/master/berth_edit_store', [MasterController::class, 'berth_edit_store'])->name('/master/berth_edit_store');
+  Route::delete('/master/delete_berth={berth_no}', [MasterController::class, 'delete_berth']);
+  Route::get('/master/edit_berth', [MasterController::class, 'edit_berth']);
+});
 
 
 //role Vessel Servicel
@@ -635,29 +662,32 @@ Route::post('/master/service_edit_store', [MasterController::class, 'service_edi
 Route::delete('/master/delete_service={service_id}', [MasterController::class, 'delete_service']);
 Route::get('/master/edit_service', [MasterController::class, 'edit_service']);
 
+Route::middleware('permission:Master Iso Code')->group(function(){
+  //role ISO Code
+  Route::get('/master/isocode', [MasterController::class, 'isocode']);
+  Route::post('/master/isocode_store', [MasterController::class, 'isocode_store'])->name('/master/isocode_store');
+  Route::post('/master/isocode_edit_store', [MasterController::class, 'isocode_edit_store'])->name('/master/isocode_edit_store');
+  Route::delete('/master/delete_isocode={iso_code}', [MasterController::class, 'delete_isocode']);
+  Route::get('/master/edit_isocode', [MasterController::class, 'edit_isocode']);
+});
 
-//role ISO Code
-Route::get('/master/isocode', [MasterController::class, 'isocode']);
-Route::post('/master/isocode_store', [MasterController::class, 'isocode_store'])->name('/master/isocode_store');
-Route::post('/master/isocode_edit_store', [MasterController::class, 'isocode_edit_store'])->name('/master/isocode_edit_store');
-Route::delete('/master/delete_isocode={iso_code}', [MasterController::class, 'delete_isocode']);
-Route::get('/master/edit_isocode', [MasterController::class, 'edit_isocode']);
+Route::middleware('permission:Master Yard')->group(function(){
+  //role Yard Block
+  Route::get('/master/block', [MasterController::class, 'block']);
+  Route::post('/master/block_store', [MasterController::class, 'block_store'])->name('/master/block_store');
+  Route::get('/master/edit_block', [MasterController::class, 'edit_block']);
+  Route::get('/master/block/addSlot-{YARD_BLOCK}', [MasterController::class, 'slot']);
+  Route::post('/master/block/createSlot', [MasterController::class, 'create_slot']);
+});
 
-
-
-//role Yard Block
-Route::get('/master/block', [MasterController::class, 'block']);
-Route::post('/master/block_store', [MasterController::class, 'block_store'])->name('/master/block_store');
-Route::get('/master/edit_block', [MasterController::class, 'edit_block']);
-Route::get('/master/block/addSlot-{YARD_BLOCK}', [MasterController::class, 'slot']);
-Route::post('/master/block/createSlot', [MasterController::class, 'create_slot']);
-
-//role EDI Baplie recievr
-Route::get('/edi/receiveedi', [EdiController::class, 'receiveedi']);
-Route::post('/edi/receiveeditxt_store', [EdiController::class, 'receiveeditxt_store'])->name('/edi/receiveeditxt_store');
-Route::delete('/edi/delete_itembayplan={container_key}', [EdiController::class, 'delete_itembayplan']);
-Route::get('/edi/edit_itembayplan', [EdiController::class, 'edit_itembayplan']);
-
+Route::middleware('permission:EDI')->group(function(){
+  //role EDI Baplie recievr
+  Route::get('/edi/receiveedi', [EdiController::class, 'receiveedi']);
+  Route::post('/edi/receiveeditxt_store', [EdiController::class, 'receiveeditxt_store'])->name('/edi/receiveeditxt_store');
+  Route::delete('/edi/delete_itembayplan={container_key}', [EdiController::class, 'delete_itembayplan']);
+  Route::get('/edi/edit_itembayplan', [EdiController::class, 'edit_itembayplan']);
+  Route::post('/upload', [EdiController::class, 'upload'])->name('upload.submit');
+});
 
 
 route::resource('yard/rowtier', YardrotController::class);
@@ -670,6 +700,7 @@ Route::middleware(['auth', 'redirect.authenticated'])->get('/', [App\Http\Contro
 Route::get('/profile', [ProfileControllers::class, 'index']);
 Route::post('/update_profile_photo', [ProfileControllers::class, 'profil']);
 
+// Report
 Route::get('/planning/report', [ReportCont::class, 'index'])->name('report.index');
 Route::post('/review-get-ves', [ReportCont::class, 'get_ves'])->name('report.get-ves');
 Route::post('/review-get-bay', [ReportCont::class, 'get_bay'])->name('report.get-bay');
@@ -684,10 +715,10 @@ Route::get('/realisasi-get-container', [ReportCont::class, 'get_container_bongka
 Route::get('/generate-pdf-bongkar', [ReportCont::class, 'generatePDF_bongkar'])->name('realisasi-bongkar.generate-pdf-bongkar');
 
 
-Route::post('/upload', [EdiController::class, 'upload'])->name('upload.submit');
 
-Route::post('/get-con-disch', [DischargeController::class, 'get_cont']);
-Route::post('/get-con-gatiDel', [Gati::class, 'get_cont']);
+
+
+
 
 //Reports
 // Disch
@@ -719,16 +750,8 @@ Route::get('/generate-report-gato-del', [ReportController::class, 'generateREPT_
 //Export
 
 //gate
-Route::get('/reciving/gate-in', [Gati::class, 'index_rec']);
-Route::get('/reciving/gate-in-android', [Gati::class, 'android_rec']);
-Route::get('/gati-data_container-rec', [Gati::class, 'get_data_reciving']);
-Route::post('/gati-rec', [Gati::class, 'gati_rec']);
-Route::post('/gati-iso-rec', [Gati::class, 'gati_iso_rec']);
 
-Route::get('/reciving/gate-out', [Gato::class, 'index_rec']);
-Route::get('/reciving/gate-out-android', [Gato::class, 'android_rec']);
-Route::post('/gato-data_container', [Gato::class, 'data_container']);
-Route::post('/gato-rec', [Gato::class, 'gato_rec']);
+
 
 
 //Ship Plan
@@ -752,46 +775,63 @@ Route::post('profile-kapal/stores', [ProfileKapal::class, 'stores']);
 
 
 // Stuffing
-Route::get('/stuffing/gate-in', [Gati::class, 'index_stuf']);
-Route::post('/stuf-gate-in', [Gati::class, 'gati_stuf']);
-Route::post('/stuf-gate-in-full', [Gati::class, 'gati_stuf_full']);
-Route::post('/gati-stuf-data', [Gati::class, 'gati_stuffing_data']);
+Route::middleware('permission:Stuffing')->group(function(){
+  Route::get('/stuffing/android', [Stuffing::class, 'android']);
+  Route::get('/stuffing', [Stuffing::class, 'index']);
+  Route::get('/stuffing-android', [Stuffing::class, 'android']);
+  Route::post('/get-stuffing', [Stuffing::class, 'get_stuffing']);
+  Route::post('/get-vessel-in-stuffing', [Stuffing::class, 'get_vessel']);
+  Route::post('/stuffing-place', [Stuffing::class, 'stuffing_place']);
+  Route::post('/stuffing-confirm-out', [Stuffing::class, 'confirm_out']);
+  Route::get('/stuffing/stuffingDalam/modal-{ro_no}', [Stuffing::class, 'choose_container']);
+  Route::get('/stuffing/stuffingLuar/modal-{ro_id_gati}', [Stuffing::class, 'choose_container_luar']);
+  Route::get('/stuffing/detailCont-{ro_no}', [Stuffing::class, 'detail_cont']);
+  Route::get('/stuffing/detailContLuar-{ro_id_gati}', [Stuffing::class, 'detail_cont_luar']);
+  Route::get('/stuffing/luar/placeCont-{ro_id_gati}', [Stuffing::class, 'place_cont_luar']);
+  Route::get('/stuffing/viewCont-{container_key}', [Stuffing::class, 'view_cont']);
+  Route::post('/stuffing-confirm-out-placement-luar', [Stuffing::class, 'update_place_cont_luar']);
+});
 
+// Trucking
+Route::get('/yard/trucking', [TruckingController::class, 'index']);
+Route::get('/yard/trucking-android', [TruckingController::class, 'android']);
+Route::post('/trucking-get-truck', [TruckingController::class, 'get_truck']);
+Route::post('/trucking', [TruckingController::class, 'trucking']);
 
-Route::get('/stuffing/gate-out', [Gato::class, 'index_stuf_out']);
-Route::post('/stuf-gate-out', [Gato::class, 'gato_stuf']);
+// Stripping
+Route::middleware('permission:Stripping')->group(function(){
+  Route::get('/stripping/android', [Stripping::class, 'android']);
+  Route::get('/stripping', [Stripping::class, 'index']);
+  Route::post('/get-stripping', [Stripping::class, 'get_stripping']);
+  Route::post('/stripping-place', [Stripping::class, 'stripping_place']);
+});
 
-// Android
-Route::get('/stuffing/gate-in-stuffing-android', [Gati::class, 'stuf_android']);
-Route::get('/stuffing/gate-out-stuffing-android', [Gato::class, 'stuff_android_out']);
-
-
-Route::get('/stuffing', [Stuffing::class, 'index']);
-Route::get('/stuffing-android', [Stuffing::class, 'android']);
-Route::post('/get-stuffing', [Stuffing::class, 'get_stuffing']);
-Route::post('/get-vessel-in-stuffing', [Stuffing::class, 'get_vessel']);
-Route::post('/stuffing-place', [Stuffing::class, 'stuffing_place']);
-Route::post('/stuffing-confirm-out', [Stuffing::class, 'confirm_out']);
-Route::get('/stuffing/stuffingDalam/modal-{ro_no}', [Stuffing::class, 'choose_container']);
-Route::get('/stuffing/stuffingLuar/modal-{ro_id_gati}', [Stuffing::class, 'choose_container_luar']);
-Route::get('/stuffing/detailCont-{ro_no}', [Stuffing::class, 'detail_cont']);
-Route::get('/stuffing/detailContLuar-{ro_id_gati}', [Stuffing::class, 'detail_cont_luar']);
-Route::get('/stuffing/luar/placeCont-{ro_id_gati}', [Stuffing::class, 'place_cont_luar']);
-Route::get('/stuffing/viewCont-{container_key}', [Stuffing::class, 'view_cont']);
-
-Route::post('/stuffing-confirm-out-placement-luar', [Stuffing::class, 'update_place_cont_luar']);
+// Placement
+Route::middleware('permission:Placement')->group(function(){
+  Route::get('/yard/android', [PlacementController::class, 'android']);
+  Route::get('/yard/placement', [PlacementController::class, 'index']);
+  Route::post('/placement', [PlacementController::class, 'place']);
+  Route::post('/placementMT-Relokasi', [PlacementController::class, 'placeRelokasiMT']);
+  Route::post('/dapet-tipe', [PlacementController::class, 'get_tipe']);
+  Route::post('/container-tipe', [PlacementController::class, 'tipe_container']);
+  Route::post('/placement/changedToMty-{container_key}', [PlacementController::class, 'change']);
+  Route::post('/placement/changed-status', [PlacementController::class, 'place_mty']);
+  Route::post('/get-con-plc', [PlacementController::class, 'get_cont']);
+});
 
 // Load
-Route::get('/load/confirm_load', [LoadController::class, 'index']);
-Route::get('/load/dataTable', [LoadController::class, 'dataTable']);
-Route::get('/load/confirm_load-android', [LoadController::class, 'android']);
-Route::post('/search-container', [LoadController::class, 'container']);
-Route::post('/get-container-key-load', [LoadController::class, 'get_key']);
-Route::post('/confirm-load', [LoadController::class, 'confirm']);
-Route::post('/get-con-load', [LoadController::class, 'get_cont']);
-Route::get('/get-con/bay-edit/{id?}', [LoadController::class, 'bay_edit']);
-Route::post('/load/updateBay', [LoadController::class, 'bay_update'])->name('updateBayLoad');
-Route::post('/load/cancel{id?}', [LoadController::class, 'cancelBay']);
+Route::middleware('permission:Load')->group(function(){
+  Route::get('/load/confirm_load', [LoadController::class, 'index']);
+  Route::get('/load/dataTable', [LoadController::class, 'dataTable']);
+  Route::get('/load/confirm_load-android', [LoadController::class, 'android']);
+  Route::post('/search-container', [LoadController::class, 'container']);
+  Route::post('/get-container-key-load', [LoadController::class, 'get_key']);
+  Route::post('/confirm-load', [LoadController::class, 'confirm']);
+  Route::post('/get-con-load', [LoadController::class, 'get_cont']);
+  Route::get('/get-con/bay-edit/{id?}', [LoadController::class, 'bay_edit']);
+  Route::post('/load/updateBay', [LoadController::class, 'bay_update'])->name('updateBayLoad');
+  Route::post('/load/cancel{id?}', [LoadController::class, 'cancelBay']);
+});
 
 //BeaCukai
 Route::get('/bea/req-dok', [BeaController::class, 'index']);
@@ -843,16 +883,8 @@ Route::get('/bea-cukai-sevice/dok-hold-p2', [BCGatterController::class, 'documen
 Route::post('/release-cont-p2', [BCGatterController::class, 'release_p2']);
 
 // Gate Relokasi
-Route::get('/delivery/balik-relokasi', [GateRelokasiController::class, 'index']);
-Route::post('/gate-relokasi', [GateRelokasiController::class, 'permit']);
-Route::get('/delivery/balik-relokasi-android', [GateRelokasiController::class, 'android']);
-Route::post('/relokasi-data_container', [GateRelokasiController::class, 'data_container']);
 
-// Trucking
-Route::get('/yard/trucking', [TruckingController::class, 'index']);
-Route::get('/yard/trucking-android', [TruckingController::class, 'android']);
-Route::post('/trucking-get-truck', [TruckingController::class, 'get_truck']);
-Route::post('/trucking', [TruckingController::class, 'trucking']);
+
 
 
 // detail-cont Yard Row

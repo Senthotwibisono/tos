@@ -51,22 +51,29 @@
                 <div class="buttons">
                     <div class="child">
                         <div class="child">
+                            @can ('Placement')
                             <div style="width: 300px;">
                                 <div style="float: left; margin-right: 20px;">
                                     <lottie-player src="https://assets9.lottiefiles.com/packages/lf20_fi0ty9ak.json" background="#FFFFFF" speed="1" width="100" height="100" loop autoplay></lottie-player>
                                     <a href="/yard/android" class="btn btn-secondary rounded-pill">Placement Container</a>
                                 </div>
                             </div>
+                            @endif
+
                             <div style="width: 300px;">
+                                @can ('Stripping')
                                 <div style="float: left; margin-right: 20px;">
                                     <lottie-player src="https://assets6.lottiefiles.com/packages/lf20_EmRVgS9kej.json" background="#FFFFFF" speed="1" width="100" height="100" loop autoplay></lottie-player>
                                     <a href="/stripping/android" class="btn btn-info rounded-pill">Stripping</a>
                                 </div>
+                                @endif
                                 <div style="width: 300px;">
+                                    @can('Stuffing')
                                     <div style="float: left; margin-right: 20px;">
                                         <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_oqt1izjh.json" background="#FFFFFF" speed="1" width="100" height="100" loop autoplay></lottie-player>
                                         <a href="/stuffing/android" class="btn btn-warning rounded-pill">Stuffing</a>
                                     </div>
+                                    @endif
                                     <div style="width: 300px;">
                                         <div style="float: left; margin-right: 20px;">
                                             <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_oqt1izjh.json" background="#FFFFFF" speed="1" width="100" height="100" loop autoplay></lottie-player>

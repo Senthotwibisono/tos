@@ -39,11 +39,11 @@ class LoginController extends Controller
             } elseif ($user->hasRole('android'))
                 return '/android-dashboard';
             elseif ($user->hasRole('gate')) {
-                return '/android-gate';
+                return '/android-dashboard';
             } elseif ($user->hasRole('yard')) {
-                return '/android-yard';
+                return '/android-dashboard';
             } elseif ($user->hasRole('cc')) {
-                return '/android-cc';
+                return '/android-dashboard';
             }
             elseif ($user->hasRole('BeaCukai')) {
                 return '/bea-cukai-sevice';
@@ -73,11 +73,11 @@ class LoginController extends Controller
         } elseif ($user->hasRole('android')) {
             return redirect('/android-dashboard');
         } elseif ($user->hasRole('gate')) {
-            return redirect('/android-gate');
+            return redirect('/android-dashboard');
         } elseif ($user->hasRole('yard')) {
-            return redirect('/android-yard');
+            return redirect('/android-dashboard');
         } elseif ($user->hasRole('cc')) {
-            return redirect('/android-cc');
+            return redirect('/android-dashboard');
         } elseif ($user->hasRole('BeaCukai')) {
             return redirect('/bea-cukai-sevice');
         } elseif ($user->hasRole('customer')) {

@@ -183,4 +183,15 @@ class SystemController extends Controller
 
         return view('system.user.assignedPermission', $data);
     }
+
+    public function assignPermissionPost($id, Request $request)
+    {
+        $user = User::findOrFail($id);
+
+        // Sinkronisasi permission berdasarkan ID atau nama
+        $user->syncPermissions($request->permissions);
+
+        // Redirect atau response JSON
+        return redirect()->back()->with('success', 'Permissions updated successfully!');
+    }
 }

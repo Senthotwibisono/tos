@@ -40,7 +40,7 @@ class RedirectIfAuthenticated
         }elseif ($user->hasRole('customer')) {
             return '/customer-dashboard';
         } else {
-            return '/default-page';
+            return '/android-dashboard';
         }
     }
 }

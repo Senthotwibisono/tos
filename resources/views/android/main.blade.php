@@ -42,6 +42,7 @@
                 <h4 class="card-title">Menu</h4>
             </div>
             <div class="card-body">
+                @can('Vessel Schedule')
                 <div class="col-12">
                     <div style="width: 250px;">
                         <div style="float: left; margin-right: 60px;">
@@ -50,7 +51,9 @@
                         </div>
                     </div>
                 </div>
+                @endif
 
+                @if (auth()->user()->hasAnyPermission(['Load', 'Discharge']))
                 <div class="col-12">
                     <div style="width: 250px;">
                         <div style="float: left; margin-right: 60px;">
@@ -59,6 +62,9 @@
                         </div>
                     </div>
                 </div>
+                @endif
+
+                @if(auth()->user()->hasAnyPermission(['Placement', 'Stripping', 'Stuffing']))
                 <div class="col-12">
                     <div style="width: 250px;">
                         <div style="float: left; margin-right: 40px;">
@@ -67,6 +73,9 @@
                         </div>
                     </div>
                 </div>
+                @endif
+
+                @can('Gate')
                 <div class="col-12">
                     <div style="width: 250px;">
                         <div style="float: left; margin-right: 40px;">
@@ -75,6 +84,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
             </div>
         </div>
     </div>

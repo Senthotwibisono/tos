@@ -13,7 +13,7 @@
     <div class="page-content">
     <div class="card">
         <div class="card-body">
-                <form action="/user/permission-post/{{$users->id}}" method="post">
+                <form action="{{route('system.user.postAssignedPermission', ['id' => $users->id])}}" method="post">
                     @csrf
                     <table class="table table-bordered">
                         <thead>
