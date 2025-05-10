@@ -379,31 +379,34 @@ Route::prefix('receiving')->group(function () {
 
 Auth::routes();
 
-Route::get('/system/user', [SystemController::class, 'user'])->name('system.user.main');
-Route::get('/system/role', [SystemController::class, 'role'])->name('system.role.main');
-Route::get('/system/role/addrole', [SystemController::class, 'createrole'])->name('system.role.cretae');
-Route::post('/system/role/rolestore', [SystemController::class, 'rolestore']);
-Route::get('/system/edit_role={id}', [SystemController::class, 'edit_role'])->name('system.role.edit');
-Route::patch('/system/role_update={id}', [SystemController::class, 'update_role']);
-Route::delete('/system/delete_role={id}', [SystemController::class, 'delete_role']);
 
-Route::prefix('/system/user/assignedPermission')->controller(SystemController::class)->group(function(){
-  Route::get('/index-{id?}', 'assignedIndex')->name('system.user.indexPermission');
-  Route::post('/post-{id?}', 'assignPermissionPost')->name('system.user.postAssignedPermission');
+Route::middleware('permission:User')->group(function(){
+  Route::get('/system/user', [SystemController::class, 'user'])->name('system.user.main');
+  Route::get('/system/role', [SystemController::class, 'role'])->name('system.role.main');
+  Route::get('/system/role/addrole', [SystemController::class, 'createrole'])->name('system.role.cretae');
+  Route::post('/system/role/rolestore', [SystemController::class, 'rolestore']);
+  Route::get('/system/edit_role={id}', [SystemController::class, 'edit_role'])->name('system.role.edit');
+  Route::patch('/system/role_update={id}', [SystemController::class, 'update_role']);
+  Route::delete('/system/delete_role={id}', [SystemController::class, 'delete_role']);
+  
+  Route::prefix('/system/user/assignedPermission')->controller(SystemController::class)->group(function(){
+    Route::get('/index-{id?}', 'assignedIndex')->name('system.user.indexPermission');
+    Route::post('/post-{id?}', 'assignPermissionPost')->name('system.user.postAssignedPermission');
+  });
+  Route::get('/system/user/create_user', [SystemController::class, 'create_user'])->name('system.user.cretae');
+  Route::post('/system/user_store', [SystemController::class, 'user_store']);
+  Route::get('/system/edit_user={id}', [SystemController::class, 'edit_user'])->name('system.user.edit');
+  Route::patch('/system/user_update={id}', [SystemController::class, 'update_user']);
+  Route::delete('/system/delete_user={id}', [SystemController::class, 'delete_user']);
+  // Permission
+  Route::prefix('/system/permisson')->controller(SystemController::class)->group(function(){
+    Route::get('/index', 'indexPermisson')->name('system.permission.index');
+    Route::get('/data', 'dataPermission')->name('system.permission.data');
+    Route::post('/create', 'createPermisson')->name('system.permission.create');
+  });
 });
 
 
-Route::get('/system/user/create_user', [SystemController::class, 'create_user'])->name('system.user.cretae');
-Route::post('/system/user_store', [SystemController::class, 'user_store']);
-Route::get('/system/edit_user={id}', [SystemController::class, 'edit_user'])->name('system.user.edit');
-Route::patch('/system/user_update={id}', [SystemController::class, 'update_user']);
-Route::delete('/system/delete_user={id}', [SystemController::class, 'delete_user']);
-// Permission
-Route::prefix('/system/permisson')->controller(SystemController::class)->group(function(){
-  Route::get('/index', 'indexPermisson')->name('system.permission.index');
-  Route::get('/data', 'dataPermission')->name('system.permission.data');
-  Route::post('/create', 'createPermisson')->name('system.permission.create');
-});
 
 
 Route::middleware('permission:Vessel Schedule')->group(function(){
@@ -1287,6 +1290,14 @@ Route::prefix('/invoiceService')->controller(ServiceController::class)->group(fu
   Route::get('/jadwalKapal', 'jadwalKapal')->name('invoiceService.tracking.jadwalKapal');
   Route::prefix('/import')->group(function(){
     Route::get('/indexImport', 'indexImport')->name('invoiceService.tracking.indexImport');
+  });
+});
+
+
+Route::middleware('permission:User')->group(function(){
+  Route::prefix('/invoiceService')->controller(SystemController::class)->group(function(){
+    Route::get('/indexUser', 'invoiceUserIndex')->name('invoiceService.system.userIndex');
+    Route::get('/dataUser', 'invoiceUserData')->name('invoiceService.system.userData');
   });
 });
 

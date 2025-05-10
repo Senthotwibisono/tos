@@ -179,7 +179,7 @@ class SystemController extends Controller
         $user = User::find($id);
         $data['users'] = $user;
         $data['title'] = 'Assigned Permission for ' . $user->name;
-        $data['permission'] = Permission::get();
+        $data['permission'] = Permission::whereNot('id', 21)->get();
 
         return view('system.user.assignedPermission', $data);
     }
@@ -193,5 +193,38 @@ class SystemController extends Controller
 
         // Redirect atau response JSON
         return redirect()->back()->with('success', 'Permissions updated successfully!');
+    }
+
+
+    public function invoiceUserIndex()
+    {
+        $data['title'] = 'User Control & Management';
+
+        return view('billingSystem.system.user-index', $data);
+    }
+
+    public function invoiceUserData(Request $request)
+    {
+        $users = User::get();
+
+        return DataTables::of($users)
+        ->addColumn('profile', function($users){
+            $imgSrc = $users->profile 
+                ? asset('profil/' . $users->profile) 
+            : asset('dist/assets/images/faces/1.jpg');
+            
+            $html = '
+                <div class="round-image" id="uploaded_view" data-bs-toggle="modal" data-bs-target="#galleryModal-' . $users->id . '">
+                    <img class="w-100 active" src="' . $imgSrc . '" data-bs-target="#Gallerycarousel" data-bs-slide-to="0">
+                </div>
+            ';
+
+            return $html;
+        })
+        ->addColumn('roles', function($users){
+            return $users->roles->implode('name', ', ');
+        })
+        ->rawColumns(['profile'])
+        ->make(true);
     }
 }

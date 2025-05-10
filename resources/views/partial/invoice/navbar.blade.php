@@ -190,6 +190,9 @@
             <li class="submenu-item ">
               <a href="{{ route('invoiceService.tracking.indexImport')}}" class='submenu-link'>Tracking Container Import</a>
             </li>
+            <li class="submenu-item ">
+              <a href="{{ route('invoiceService.system.userIndex')}}" class='submenu-link'>Invoice User Management</a>
+            </li>
           </ul>
         </div>
       </div>
