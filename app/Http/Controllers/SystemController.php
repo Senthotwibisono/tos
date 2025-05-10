@@ -179,7 +179,7 @@ class SystemController extends Controller
         $user = User::find($id);
         $data['users'] = $user;
         $data['title'] = 'Assigned Permission for ' . $user->name;
-        $data['permission'] = Permission::whereNot('id', 21)->get();
+        $data['permission'] = Permission::whereNot('id', 21)->whereNotBetween('id', [36,51])->get();
 
         return view('system.user.assignedPermission', $data);
     }
@@ -187,11 +187,30 @@ class SystemController extends Controller
     public function assignPermissionPost($id, Request $request)
     {
         $user = User::findOrFail($id);
+        $requestedPermissions = collect($request->permissions ?? [])
+        ->map(fn($id) => (int) $id)
+        ->filter(fn($id) => $id < 36 || $id > 51);
 
-        // Sinkronisasi permission berdasarkan ID atau nama
-        $user->syncPermissions($request->permissions);
+        // Ambil permission ID saat ini, hanya yang <36 atau >51
+        $currentPermissionIds = $user->permissions
+            ->pluck('id')
+            ->filter(fn($id) => $id < 36 || $id > 51);
 
-        // Redirect atau response JSON
+        // Hitung selisih: yang perlu ditambah dan dicabut
+        $toAdd = $requestedPermissions->diff($currentPermissionIds);
+        $toRemove = $currentPermissionIds->diff($requestedPermissions);
+
+        // Tambah permission baru
+        if ($toAdd->isNotEmpty()) {
+            $permissionsToAdd = Permission::whereIn('id', $toAdd)->get();
+            $user->givePermissionTo($permissionsToAdd);
+        }
+
+        // Cabut permission yang tidak lagi dipilih
+        if ($toRemove->isNotEmpty()) {
+            $permissionsToRemove = Permission::whereIn('id', $toRemove)->get();
+            $user->revokePermissionTo($permissionsToRemove);
+        }
         return redirect()->back()->with('success', 'Permissions updated successfully!');
     }
 
@@ -199,6 +218,7 @@ class SystemController extends Controller
     public function invoiceUserIndex()
     {
         $data['title'] = 'User Control & Management';
+        $data['roles'] = Role::all();
 
         return view('billingSystem.system.user-index', $data);
     }
@@ -224,7 +244,118 @@ class SystemController extends Controller
         ->addColumn('roles', function($users){
             return $users->roles->implode('name', ', ');
         })
-        ->rawColumns(['profile'])
+        ->addColumn('edit', function($users) {
+            return '<button type="button" data-id="'.$users->id.'" class="btn btn-warning" onClick="editUser(this)"><i class="fas fa-pencil"></i></button>';
+        })
+        ->addColumn('permission', function($users){
+            $url = route('invoiceService.system.assignIndex', ['id' => $users->id]);
+            return '<a href="' . $url . '" class="btn btn-info">Assigned User</a>';
+        })
+        ->rawColumns(['profile', 'edit', 'permission'])
         ->make(true);
+    }
+
+    public function invoiceUserEdit(Request $request)
+    {
+        $user = User::with('roles')->findOrFail($request->id);
+        // var_dump($user);
+        if ($user) {
+            return response()->json([
+                'success' => true,
+                'data' => $user,
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found',
+            ]);
+        }
+    }
+
+    public function invoiceUserPost(Request $request)
+    {
+        $this->validate($request, [
+            'data.name' => 'required|string|max:255',
+            'data.role' => 'required|exists:roles,name'
+        ]);
+
+        try {
+           
+            if ($request->data['id'] != null) {
+                $user = User::findOrFail($request->data['id']);
+                $this->validate($request, [
+                    'data.email' => 'required|string|email|unique:users,email,' . $user->id . '|max:255',
+                ]);
+                $password = ($request->data['password'] != null) ? Hash::make($request->data['password']) : $user->password;
+                $user->update([
+                    'name' => $request->data['name'],
+                    'email' => $request->data['email'],
+                    'password' => $password,
+                ]);
+                $role = Role::where('name', $request->data['role'])->first();
+                $user->syncRoles([$role->id]);
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Data user ' . $user->name. ' berhasil diperbarui',
+                ]);
+            } else {
+                $this->validate($request, [
+                    'data.password' => 'required',
+                    'data.email' => 'required|string|email|unique:users,email|max:255',
+                ]);
+                $user = User::create([
+                    'name' => $request->data['name'],
+                    'email' => $request->data['email'],
+                    'password' => Hash::make($request->data['password']),
+                ]);
+                $role = Role::where('name', $request->data['role'])->first();
+                $user->syncRoles([$role->id]);
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Data user ' . $user->name. ' berhasil disimpan',
+                ]);
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Opss something wrong in: ' . $th->getMessage(),
+            ]);
+        }
+    }
+
+    public function invoiceUserassignIndex($id)
+    {
+        $user = User::find($id);
+        $data['users'] = $user;
+        $data['title'] = 'Assigned Permission for ' . $user->name;
+        $data['permission'] = Permission::where('id', '>=', 36)->get();
+
+        return view('billingSystem.system.user-permission', $data);
+    }
+
+    public function invoiceUserassignPost($id, Request $request)
+    {
+        $user = User::findOrFail($id);
+        $requestedPermissions = collect($request->permissions ?? [])
+            ->filter(fn($id) => $id >= 36)
+            ->map(fn($id) => (int) $id); // pastikan integer
+        $currentPermissionIds = $user->permissions
+            ->pluck('id')
+            ->filter(fn($id) => $id >= 36);
+
+        $toAdd = $requestedPermissions->diff($currentPermissionIds);
+        $toRemove = $currentPermissionIds->diff($requestedPermissions);
+
+        if ($toAdd->isNotEmpty()) {
+            $permissionsToAdd = Permission::whereIn('id', $toAdd)->get();
+            $user->givePermissionTo($permissionsToAdd);
+        }
+
+        if ($toRemove->isNotEmpty()) {
+            $permissionsToRemove = Permission::whereIn('id', $toRemove)->get();
+            $user->revokePermissionTo($permissionsToRemove);
+        }
+
+        return redirect()->back()->with('success', 'Permissions updated successfully!');
     }
 }

@@ -908,50 +908,65 @@ Route::get('/laporan-kapal', [ReportController::class, 'laporan_kapal'])->name('
 // Import
 
 // Master Tarif
-Route::get('/billing/import/master-tarif', [MasterTarifController::class, 'import'])->name('mtImport');
-Route::post('/billing/import/master-tarif/store-OS', [MasterTarifController::class, 'orderService'])->name('orderService');
-Route::get('/billing/import/master-tarif-{os?}', [MasterTarifController::class, 'tarif']);
-Route::post('/billing/import/master-tarif/store-MT', [MasterTarifController::class, 'storeMT'])->name('storeMT');
-Route::get('/billing/import/master-tarif/edit-{id?}', [MasterTarifController::class, 'EditImport']);
-Route::post('/billing/import/master-tarif/update-MT', [MasterTarifController::class, 'updateMT'])->name('updateMT');
-// Customer ikut di Master Tarif
-Route::get('/billing/customer', [MasterTarifController::class, 'customer'])->name('Customer');
-Route::get('/billing/customer/add', [MasterTarifController::class, 'addCust'])->name('addCust');
-Route::post('/billing/customer/store', [MasterTarifController::class, 'storeCust'])->name('storeCust');
-Route::get('/billing/customer/edit-{id?}', [MasterTarifController::class, 'editCust']);
-Route::post('/billing/customer/update', [MasterTarifController::class, 'updateCust'])->name('updateCust');
-
-// DO ikut di Master Tarif
-
-Route::get('/billing/dock-DO', [MasterTarifController::class, 'doMain'])->name('doMain');
-Route::get('/billing/dock-DO/data', [MasterTarifController::class, 'doData']);
-Route::post('/billing/dock-DO/upload', [MasterTarifController::class, 'doUpload'])->name('doUpload');
-Route::post('/billing/dock-DO/delete', [MasterTarifController::class, 'deleteDo'])->name('deleteDo');
-Route::get('/edit/doOnline/{id?}', [MasterTarifController::class, 'doEdit'])->name('doEdit');
-Route::post('/update/doOnline/{id?}', [MasterTarifController::class, 'doUpdate'])->name('doUpdate');
-
-Route::controller(MasterTarifController::class)->group(function(){
-  Route::get('/billing/do/createManual', 'createDoManual');
-  Route::post('/billing/do/postManual', 'postManual');
+Route::middleware('permission:MasterTarif Import')->group(function(){
+  Route::get('/billing/import/master-tarif', [MasterTarifController::class, 'import'])->name('mtImport');
+  Route::post('/billing/import/master-tarif/store-OS', [MasterTarifController::class, 'orderService'])->name('orderService');
+  Route::post('/billing/import/master-tarif/store-MT', [MasterTarifController::class, 'storeMT'])->name('storeMT');
+  Route::get('/billing/import/master-tarif/edit-{id?}', [MasterTarifController::class, 'EditImport']);
+  Route::post('/billing/import/master-tarif/update-MT', [MasterTarifController::class, 'updateMT'])->name('updateMT');
 });
+Route::get('/billing/import/master-tarif-{os?}', [MasterTarifController::class, 'tarif']);
+
+// Customer ikut di Master Tarif
+Route::middleware('permission:Master Customer')->group(function(){
+  Route::get('/billing/customer', [MasterTarifController::class, 'customer'])->name('Customer');
+  Route::get('/billing/customer/add', [MasterTarifController::class, 'addCust'])->name('addCust');
+  Route::post('/billing/customer/store', [MasterTarifController::class, 'storeCust'])->name('storeCust');
+  Route::get('/billing/customer/edit-{id?}', [MasterTarifController::class, 'editCust']);
+  Route::post('/billing/customer/update', [MasterTarifController::class, 'updateCust'])->name('updateCust');
+  
+  // DO ikut di Master Tarif
+  Route::middleware('permission:DoOnline')->group(function(){
+    Route::get('/billing/dock-DO', [MasterTarifController::class, 'doMain'])->name('doMain');
+    Route::get('/billing/dock-DO/data', [MasterTarifController::class, 'doData']);
+    Route::post('/billing/dock-DO/upload', [MasterTarifController::class, 'doUpload'])->name('doUpload');
+    Route::post('/billing/dock-DO/delete', [MasterTarifController::class, 'deleteDo'])->name('deleteDo');
+    Route::get('/edit/doOnline/{id?}', [MasterTarifController::class, 'doEdit'])->name('doEdit');
+    Route::post('/update/doOnline/{id?}', [MasterTarifController::class, 'doUpdate'])->name('doUpdate');
+    
+    Route::controller(MasterTarifController::class)->group(function(){
+      Route::get('/billing/do/createManual', 'createDoManual');
+      Route::post('/billing/do/postManual', 'postManual');
+    });
+  });
+  });
 
 // invoiceImport
-Route::get('/billing/import/delivey-system', [ImportController::class, 'billingMain'])->name('billinImportgMain');
-Route::get('/billing/import/delivery-dashboard', [ImportController::class, 'deliveryMenu'])->name('deliveryMenu');
-Route::get('/billing/import/formData', [ImportController::class, 'formImportData'])->name('formImportData');
-Route::get('/billing/import/delivery-editForm/{id?}', [ImportController::class, 'deliveryEdit'])->name('deliveryEdit');
-Route::delete('/billing/import/delivery-deleteForm/{id?}', [ImportController::class, 'deliveryDelete'])->name('deliveryDelete');
-Route::delete('/billing/import/delivery-deleteInvoice/{id?}', [ImportController::class, 'deliveryInvoiceDelete'])->name('deliveryInvoiceDelete');
-Route::post('/billing/import/delivery-updateFormImport', [ImportController::class, 'updateFormImport'])->name('updateFormImport');
-Route::get('/billing/import/delivery-form', [ImportController::class, 'deliveryForm'])->name('deliveryForm');
+Route::middleware('permission:Invoice Import')->group(function(){
+  Route::get('/billing/import/delivey-system', [ImportController::class, 'billingMain'])->name('billinImportgMain');
+  Route::get('/billing/import/delivery-dashboard', [ImportController::class, 'deliveryMenu'])->name('deliveryMenu');
+  Route::post('/invoice/import-payFull', [ImportController::class, 'payFullImport'])->name('payFullImport');
+  Route::post('/invoice/import-piutang', [ImportController::class, 'piutangImport'])->name('piutangImport');
+  Route::post('/invoice/import-cancel', [ImportController::class, 'deliveryInvoiceCancel'])->name('deliveryInvoiceCancel');
+});
+
+Route::middleware('permission:Form Import')->group(function(){
+  Route::get('/billing/import/formData', [ImportController::class, 'formImportData'])->name('formImportData');
+  Route::get('/billing/import/delivery-editForm/{id?}', [ImportController::class, 'deliveryEdit'])->name('deliveryEdit');
+  Route::delete('/billing/import/delivery-deleteForm/{id?}', [ImportController::class, 'deliveryDelete'])->name('deliveryDelete');
+  Route::delete('/billing/import/delivery-deleteInvoice/{id?}', [ImportController::class, 'deliveryInvoiceDelete'])->name('deliveryInvoiceDelete');
+  Route::post('/billing/import/delivery-updateFormImport', [ImportController::class, 'updateFormImport'])->name('updateFormImport');
+  Route::get('/billing/import/delivery-form', [ImportController::class, 'deliveryForm'])->name('deliveryForm');
+  Route::post('/billing/import/delivey-system/beforeCreate', [ImportController::class, 'beforeCreate'])->name('beforeCreate');
+  Route::get('/billing/import/delivey-system/formInvoice/{id?}', [ImportController::class, 'formInvoice'])->name('formInvoice');
+  Route::post('/billing/import/delivey-system/store-import-invoice', [ImportController::class, 'invoiceImport'])->name('invoiceImport');
+});
+
 Route::get('/get-customer-data', [ImportController::class, 'getCust'])->name('getCust');
 Route::get('/get-doOnline-data', [ImportController::class, 'getDOdata'])->name('getDOdata');
 Route::get('/get-doOnline-manual', [ImportController::class, 'doManual'])->name('doManual');
 Route::get('/get-dokumenImport-data', [ImportController::class, 'getDokImport'])->name('getDokImport');
 
-Route::post('/billing/import/delivey-system/beforeCreate', [ImportController::class, 'beforeCreate'])->name('beforeCreate');
-Route::get('/billing/import/delivey-system/formInvoice/{id?}', [ImportController::class, 'formInvoice'])->name('formInvoice');
-Route::post('/billing/import/delivey-system/store-import-invoice', [ImportController::class, 'invoiceImport'])->name('invoiceImport');
 
 // Pranota
 Route::get('/pranota/import-DSK{id?}', [ImportController::class, 'PranotaImportDSK'])->name('PranotaImportDSK');
@@ -962,9 +977,6 @@ Route::get('/invoice/import-DS{id?}', [ImportController::class, 'InvoiceImportDS
 // JOB
 Route::get('/invoice/job/import-{id?}', [ImportController::class, 'JobInvoice'])->name('JobInvoice');
 Route::get('/import/pay-button{id?}', [ImportController::class, 'payImport'])->name('payImport');
-Route::post('/invoice/import-payFull', [ImportController::class, 'payFullImport'])->name('payFullImport');
-Route::post('/invoice/import-piutang', [ImportController::class, 'piutangImport'])->name('piutangImport');
-Route::post('/invoice/import-cancel', [ImportController::class, 'deliveryInvoiceCancel'])->name('deliveryInvoiceCancel');
 
 // Detil
 Route::controller(ImportController::class)->group(function(){
@@ -992,46 +1004,56 @@ Route::controller(InvoiceExportController::class)->group(function(){
 
 
 // Export
-Route::get('/billing/export/master-tarif', [MasterTarifController::class, 'export'])->name('mtExport');
-Route::get('/billing/export/master-tarif-{os?}', [MasterTarifController::class, 'tarifExport']);
-Route::post('/billing/export/master-tarif/store-MT', [MasterTarifController::class, 'storeMTexport'])->name('storeMTexport');
-Route::get('/billing/export/master-tarif/edit-{id?}', [MasterTarifController::class, 'EditExport']);
-Route::post('/billing/import/master-tarif/update-MT', [MasterTarifController::class, 'updateMTexport'])->name('updateMTexport');
+Route::middleware('permission:MasterTarif Export')->group(function(){
+  Route::get('/billing/export/master-tarif', [MasterTarifController::class, 'export'])->name('mtExport');
+  Route::get('/billing/export/master-tarif-{os?}', [MasterTarifController::class, 'tarifExport']);
+  Route::post('/billing/export/master-tarif/store-MT', [MasterTarifController::class, 'storeMTexport'])->name('storeMTexport');
+  Route::get('/billing/export/master-tarif/edit-{id?}', [MasterTarifController::class, 'EditExport']);
+  Route::post('/billing/import/master-tarif/update-MT', [MasterTarifController::class, 'updateMTexport'])->name('updateMTexport');
+});
 
 
 // coparn
-Route::get('/billing/coparn', [CoparnController::class, 'index'])->name('coparnMain');
-Route::get('/billing/coparn/upload-file', [CoparnController::class, 'uploadView'])->name('uploadView');
-Route::get('/billing/coparn/upload-single', [CoparnController::class, 'uploadSingle'])->name('uploadSingle');
-Route::get('/billing/coparn/get-vessel', [CoparnController::class, 'getVesselData'])->name('getVesselData');
-Route::post('/billing/coparn/postFile', [CoparnController::class, 'storeData'])->name('storeData');
-Route::post('/billing/coparn/postSingleCoparn', [CoparnController::class, 'storeDataSingle'])->name('storeDataSingle');
-Route::get('/billing/coparn/edit-{id?}', [CoparnController::class, 'editCoparn'])->name('editCoparn');
-Route::post('/billing/coparn/update', [CoparnController::class, 'updateCoparn'])->name('updateCoparn');
+Route::middleware('permission:Coparn')->group(function(){
+  Route::get('/billing/coparn', [CoparnController::class, 'index'])->name('coparnMain');
+  Route::get('/billing/coparn/upload-file', [CoparnController::class, 'uploadView'])->name('uploadView');
+  Route::get('/billing/coparn/upload-single', [CoparnController::class, 'uploadSingle'])->name('uploadSingle');
+  Route::get('/billing/coparn/get-vessel', [CoparnController::class, 'getVesselData'])->name('getVesselData');
+  Route::post('/billing/coparn/postFile', [CoparnController::class, 'storeData'])->name('storeData');
+  Route::post('/billing/coparn/postSingleCoparn', [CoparnController::class, 'storeDataSingle'])->name('storeDataSingle');
+  Route::get('/billing/coparn/edit-{id?}', [CoparnController::class, 'editCoparn'])->name('editCoparn');
+  Route::post('/billing/coparn/update', [CoparnController::class, 'updateCoparn'])->name('updateCoparn');
+});
 
 
 // invoice Export
-Route::get('/billing/export/delivey-system', [InvoiceExportController::class, 'billingMain'])->name('billingExportMain');
-Route::get('/billing/export/delivery-dashboard', [InvoiceExportController::class, 'deliveryMenuExport'])->name('deliveryMenuExport');
-Route::get('/billing/export/delivery-form', [InvoiceExportController::class, 'deliveryFormExport'])->name('deliveryFormExport');
+Route::middleware('permission:Invoice Export')->group(function(){
+  Route::get('/billing/export/delivey-system', [InvoiceExportController::class, 'billingMain'])->name('billingExportMain');
+  Route::get('/billing/export/delivery-dashboard', [InvoiceExportController::class, 'deliveryMenuExport'])->name('deliveryMenuExport');
+});
+
+Route::middleware('permission:Form Export')->group(function(){
+  Route::get('/billing/export/delivery-form', [InvoiceExportController::class, 'deliveryFormExport'])->name('deliveryFormExport');
+  Route::get('/billing/export/delivey-system/formInvoice/{id?}', [InvoiceExportController::class, 'formInvoice'])->name('formInvoiceExport');
+  Route::get('/billing/export/reciving-editForm/{id?}', [InvoiceExportController::class, 'deliveryEdit'])->name('deliveryEditExport');
+  Route::post('/billing/export/delivey-system/beforeCreate', [InvoiceExportController::class, 'beforeCreate'])->name('beforeCreateExport');
+  Route::post('/billing/export/delivey-system/store-export-invoice', [InvoiceExportController::class, 'invoiceExport'])->name('invoiceExport');
+  Route::post('/billing/export/reciving-updateFormExport', [InvoiceExportController::class, 'updateFormExport'])->name('updateFormExport');
+  Route::delete('/billing/export/reciving-deleteInvoice/{id?}', [InvoiceExportController::class, 'recivingInvoiceDelete'])->name('recivingInvoiceDelete');
+  Route::get('/export/pay-button{id?}', [InvoiceExportController::class, 'payExport'])->name('payExport');
+  Route::post('/invoice/export-payFull', [InvoiceExportController::class, 'payFullExport'])->name('payFullExport');
+  Route::post('/invoice/export-piutang', [InvoiceExportController::class, 'piutangExport'])->name('piutangExport');
+  Route::post('/invoice/export-cancel', [InvoiceExportController::class, 'recivingInvoiceCancel'])->name('recivingInvoiceCancel');
+});
+
 Route::get('/get-order-data', [InvoiceExportController::class, 'getOrder'])->name('getOrder');
 Route::get('/get-BookingNo-data', [InvoiceExportController::class, 'getDOdataExport'])->name('getDOdataExport');
 Route::get('/get-RoNumber-data', [InvoiceExportController::class, 'getROdataExport'])->name('getROdataExport');
-Route::get('/billing/export/delivey-system/formInvoice/{id?}', [InvoiceExportController::class, 'formInvoice'])->name('formInvoiceExport');
-Route::get('/billing/export/reciving-editForm/{id?}', [InvoiceExportController::class, 'deliveryEdit'])->name('deliveryEditExport');
-Route::post('/billing/export/delivey-system/beforeCreate', [InvoiceExportController::class, 'beforeCreate'])->name('beforeCreateExport');
-Route::post('/billing/export/delivey-system/store-export-invoice', [InvoiceExportController::class, 'invoiceExport'])->name('invoiceExport');
-Route::post('/billing/export/reciving-updateFormExport', [InvoiceExportController::class, 'updateFormExport'])->name('updateFormExport');
-Route::delete('/billing/export/reciving-deleteInvoice/{id?}', [InvoiceExportController::class, 'recivingInvoiceDelete'])->name('recivingInvoiceDelete');
 
 Route::get('/pranota/export-OSK{id?}', [InvoiceExportController::class, 'PranotaExportOSK'])->name('PranotaExportOSK');
 Route::get('/pranota/export-OS{id?}', [InvoiceExportController::class, 'PranotaExportOS'])->name('PranotaExportOS');
 
 
-Route::get('/export/pay-button{id?}', [InvoiceExportController::class, 'payExport'])->name('payExport');
-Route::post('/invoice/export-payFull', [InvoiceExportController::class, 'payFullExport'])->name('payFullExport');
-Route::post('/invoice/export-piutang', [InvoiceExportController::class, 'piutangExport'])->name('piutangExport');
-Route::post('/invoice/export-cancel', [InvoiceExportController::class, 'recivingInvoiceCancel'])->name('recivingInvoiceCancel');
 
 
 Route::get('/invoice/export-OSK{id?}', [InvoiceExportController::class, 'InvoiceExportOSK'])->name('InvoiceExportOSK');
@@ -1088,64 +1110,71 @@ Route::controller(ImportController::class)->group(function(){
 });
 
 // Extend
-Route::get('/billing/import/extendIndex', [InvoiceExtend::class, 'index'])->name('index-extend');
-Route::get('/billing/import/extend/dataIndex', [InvoiceExtend::class, 'dataIndex'])->name('dataIndex');
-Route::get('/billing/import/extendIndexForm', [InvoiceExtend::class, 'ListForm'])->name('listForm-extend');
-Route::get('/billing/import/extendDataForm', [InvoiceExtend::class, 'extendDataForm'])->name('extendDataForm');
-Route::get('/billing/import/extendForm', [InvoiceExtend::class, 'form'])->name('extendForm');
-Route::get('/billing/import/extend-editForm/{id?}', [InvoiceExtend::class, 'EditForm']);
-Route::post('/billing/import/extend-updateFormImport', [InvoiceExtend::class, 'updateFormImport'])->name('updateFormImportExtend');
-Route::delete('/billing/import/extend-deleteInvoice/{id?}', [InvoiceExtend::class, 'extendInvoiceDelete'])->name('extendInvoiceDelete');
-Route::get('/billing/import/extenx-edit/{id?}', [InvoiceExtend::class, 'editInvoice']);
-Route::post('/billing/import/extend-updateDetil', [InvoiceExtend::class, 'updateDetil']);
-Route::post('/billing/import/extend-update/{id?}', [InvoiceExtend::class, 'updateInvoiceHeader']);
-// 
-Route::post('/billing/import/extendPost', [InvoiceExtend::class, 'postForm'])->name('extendPostForm');
-// 
-Route::get('/billing/import/extendPreinvoice/{id?}', [InvoiceExtend::class, 'preinvoice'])->name('extendPreinvoice');
-Route::post('/billing/import/extendCreate', [InvoiceExtend::class, 'post'])->name('extendCreate');
-Route::get('/extend/pay-button{id?}', [InvoiceExtend::class, 'payExtend'])->name('payExtend');
-Route::post('/invoice/extend-payFullExtend', [InvoiceExtend::class, 'payFull'])->name('payFullExtend');
-Route::post('/invoice/extend-piutangExtend', [InvoiceExtend::class, 'piutang'])->name('piutangFullExtend');
-Route::post('/invoice/extend-cancelExtend', [InvoiceExtend::class, 'extendInvoiceCancel'])->name('extendInvoiceCancel');
+Route::middleware('permission:Form Extend')->group(function(){
+  Route::get('/billing/import/extendIndexForm', [InvoiceExtend::class, 'ListForm'])->name('listForm-extend');
+  Route::get('/billing/import/extendDataForm', [InvoiceExtend::class, 'extendDataForm'])->name('extendDataForm');
+  Route::get('/billing/import/extendForm', [InvoiceExtend::class, 'form'])->name('extendForm');
+  Route::get('/billing/import/extend-editForm/{id?}', [InvoiceExtend::class, 'EditForm']);
+  Route::post('/billing/import/extend-updateFormImport', [InvoiceExtend::class, 'updateFormImport'])->name('updateFormImportExtend');
+  Route::delete('/billing/import/extend-deleteInvoice/{id?}', [InvoiceExtend::class, 'extendInvoiceDelete'])->name('extendInvoiceDelete');
+  Route::post('/billing/import/extendPost', [InvoiceExtend::class, 'postForm'])->name('extendPostForm');
+  // 
+  Route::get('/billing/import/extendPreinvoice/{id?}', [InvoiceExtend::class, 'preinvoice'])->name('extendPreinvoice');
+  Route::post('/billing/import/extendCreate', [InvoiceExtend::class, 'post'])->name('extendCreate');
+
+});
+
+Route::middleware('permission:Invoice Extend')->group(function(){
+  Route::get('/billing/import/extendIndex', [InvoiceExtend::class, 'index'])->name('index-extend');
+  Route::get('/billing/import/extend/dataIndex', [InvoiceExtend::class, 'dataIndex'])->name('dataIndex');
+  Route::get('/billing/import/extenx-edit/{id?}', [InvoiceExtend::class, 'editInvoice']);
+  Route::post('/billing/import/extend-updateDetil', [InvoiceExtend::class, 'updateDetil']);
+  Route::post('/billing/import/extend-update/{id?}', [InvoiceExtend::class, 'updateInvoiceHeader']);
+  // 
+  Route::get('/extend/pay-button{id?}', [InvoiceExtend::class, 'payExtend'])->name('payExtend');
+  Route::post('/invoice/extend-payFullExtend', [InvoiceExtend::class, 'payFull'])->name('payFullExtend');
+  Route::post('/invoice/extend-piutangExtend', [InvoiceExtend::class, 'piutang'])->name('piutangFullExtend');
+  Route::post('/invoice/extend-cancelExtend', [InvoiceExtend::class, 'extendInvoiceCancel'])->name('extendInvoiceCancel');
+});
 Route::get('/pranota/extend-{id?}', [InvoiceExtend::class, 'PranotaExtend']);
 Route::get('/invoice/extend-{id?}', [InvoiceExtend::class, 'InvoiceExtend']);
 Route::get('/invoice/job/extend-{id?}', [InvoiceExtend::class, 'JobExtend']);
 Route::get('/get-cont-extend-data', [InvoiceExtend::class, 'contData'])->name('getContToExtend');
 
-// Steva Dooring
-Route::get('/billing/stevadooring/billingMain', [StevadooringController::class, 'main'])->name('index-stevadooring');
-Route::get('/billing/stevadooring/masterTarif', [StevadooringController::class, 'TarifIndex'])->name('index-stevadooring-Tarif');
-Route::post('/billing/stevadooring/masterTarif-Update', [StevadooringController::class, 'TarifUpdate'])->name('update-stevadooring-Tarif');
-  // RBM
-Route::get('/billing/stevadooring/RBM', [StevadooringController::class, 'RBM_Index'])->name('index-stevadooring-RBM');
-Route::get('/billing/stevadooring/RBM-create', [StevadooringController::class, 'RBM_Create'])->name('index-stevadooring-RBM_Create');
-Route::post('/billing/stevadooring/RBM-post', [StevadooringController::class, 'RBM_Post'])->name('index-stevadooring-RBM_Post');
-Route::get('/billing/stevadooring/RBM-detali/{id}', [StevadooringController::class, 'RBM_Detail'])->name('index-stevadooring-RBM_Detail');
-Route::post('/billing/stevadooring/RBM-update', [StevadooringController::class, 'RBM_Update'])->name('index-stevadooring-RBM_Update');
-
-// Form
-Route::get('/billing/stevadooring/list-form', [StevadooringController::class, 'listForm'])->name('index-stevadooring-listForm');
-Route::get('/billing/stevadooring/form', [StevadooringController::class, 'Form'])->name('stevadooringForm');
-Route::post('/billing/stevadooring/FormPost', [StevadooringController::class, 'FormPost'])->name('stevadooringPost');
-Route::get('/billing/stevadooring/PreInvoice/{id}', [StevadooringController::class, 'showInvoice'])->name('stevadooringPreInvoice');
-Route::get('/billing/stevadooring/edit-invoice/{id}', [StevadooringController::class, 'editInvoice'])->name('stevadooringEditInvoice');
-Route::post('/billing/stevadooring/FormUpdate', [StevadooringController::class, 'FormUpdate'])->name('stevadooringUpdate');
-Route::post('/billing/stevadooring/DetailPost', [StevadooringController::class, 'stevadooringDetailPost'])->name('stevadooringDetailPost');
+Route::middleware('permission:Stevadooring')->group(function(){
+  // Steva Dooring
+  Route::get('/billing/stevadooring/billingMain', [StevadooringController::class, 'main'])->name('index-stevadooring');
+  Route::get('/billing/stevadooring/masterTarif', [StevadooringController::class, 'TarifIndex'])->name('index-stevadooring-Tarif');
+  Route::post('/billing/stevadooring/masterTarif-Update', [StevadooringController::class, 'TarifUpdate'])->name('update-stevadooring-Tarif');
+    // RBM
+  Route::get('/billing/stevadooring/RBM', [StevadooringController::class, 'RBM_Index'])->name('index-stevadooring-RBM');
+  Route::get('/billing/stevadooring/RBM-create', [StevadooringController::class, 'RBM_Create'])->name('index-stevadooring-RBM_Create');
+  Route::post('/billing/stevadooring/RBM-post', [StevadooringController::class, 'RBM_Post'])->name('index-stevadooring-RBM_Post');
+  Route::get('/billing/stevadooring/RBM-detali/{id}', [StevadooringController::class, 'RBM_Detail'])->name('index-stevadooring-RBM_Detail');
+  Route::post('/billing/stevadooring/RBM-update', [StevadooringController::class, 'RBM_Update'])->name('index-stevadooring-RBM_Update');
+  
+  // Form
+  Route::get('/billing/stevadooring/list-form', [StevadooringController::class, 'listForm'])->name('index-stevadooring-listForm');
+  Route::get('/billing/stevadooring/form', [StevadooringController::class, 'Form'])->name('stevadooringForm');
+  Route::post('/billing/stevadooring/FormPost', [StevadooringController::class, 'FormPost'])->name('stevadooringPost');
+  Route::get('/billing/stevadooring/PreInvoice/{id}', [StevadooringController::class, 'showInvoice'])->name('stevadooringPreInvoice');
+  Route::get('/billing/stevadooring/edit-invoice/{id}', [StevadooringController::class, 'editInvoice'])->name('stevadooringEditInvoice');
+  Route::post('/billing/stevadooring/FormUpdate', [StevadooringController::class, 'FormUpdate'])->name('stevadooringUpdate');
+  Route::post('/billing/stevadooring/DetailPost', [StevadooringController::class, 'stevadooringDetailPost'])->name('stevadooringDetailPost');
+  // Pay
+  Route::get('/stevadooring/pay-button{id}', [StevadooringController::class, 'Pay'])->name('index-stevadooring-Pay');
+  Route::post('/invoice/stevadooring-payFull', [StevadooringController::class, 'payFullStevadooring'])->name('index-stevadooring-PayFull');
+  Route::post('/invoice/stevadooring-piutang', [StevadooringController::class, 'piutangStevadooring'])->name('index-stevadooring-Piutang');
+  Route::post('/invoice/stevadooring-cancel', [StevadooringController::class, 'cancelStevadooring'])->name('index-stevadooring-cancel');
+  Route::delete('/billing/stevadooring/deleteInvoice/{id?}', [StevadooringController::class, 'invoiceDelete']);
+});
 
 // Pranota
 Route::get('/pranota/stevadooring-{id}', [StevadooringController::class, 'Pranota'])->name('index-stevadooring-Pranota');
-// Pay
-Route::get('/stevadooring/pay-button{id}', [StevadooringController::class, 'Pay'])->name('index-stevadooring-Pay');
-Route::post('/invoice/stevadooring-payFull', [StevadooringController::class, 'payFullStevadooring'])->name('index-stevadooring-PayFull');
-Route::post('/invoice/stevadooring-piutang', [StevadooringController::class, 'piutangStevadooring'])->name('index-stevadooring-Piutang');
-Route::post('/invoice/stevadooring-cancel', [StevadooringController::class, 'cancelStevadooring'])->name('index-stevadooring-cancel');
-Route::delete('/billing/stevadooring/deleteInvoice/{id?}', [StevadooringController::class, 'invoiceDelete']);
 
 // invoice
 Route::get('/invoice/stevadooring-{id}', [StevadooringController::class, 'Invoice'])->name('index-stevadooring-Invoice');
 Route::get('/invoice/report-stevadooring', [StevadooringController::class, 'ReportExcel'])->name('report-invoice-stevadooring');
-
 
 // Shifting
 Route::get('/planning/shifting/main', [ShiftingController::class, 'index'])->name('index-shifting');
@@ -1161,22 +1190,24 @@ Route::get('/invoice/zahir-extend', [ZahirController::class, 'ZahirExtend'])->na
 Route::get('/invoice/zahir-steva', [ZahirController::class, 'ZahirSteva'])->name('zahir-invoice-steva');
 Route::get('/invoice/zahir-others', [ZahirController::class, 'ZahirOthers'])->name('zahir-invoice-others');
 
-// Master Invoice
-Route::get('/invoice/master/item', [MasterInvoiceController::class, 'indexMItem'])->name('invoice-master-item');
-Route::post('/invoice/master/itemCreate', [MasterInvoiceController::class, 'postItem'])->name('invoice-master-itemCreate');
-Route::post('/invoice/master/itemDelete', [MasterInvoiceController::class, 'deleteItem'])->name('invoice-master-itemDelete');
-Route::get('/invoice/master/item-{id}', [MasterInvoiceController::class, 'editMItem'])->name('invoice-master-itemEdit');
-Route::post('/invoice/master/itemUpdate', [MasterInvoiceController::class, 'updateItem'])->name('invoice-master-itemUpdate');
+Route::middleware('permission:Master Invoice')->group(function(){
+  // Master Invoice
+  Route::get('/invoice/master/item', [MasterInvoiceController::class, 'indexMItem'])->name('invoice-master-item');
+  Route::post('/invoice/master/itemCreate', [MasterInvoiceController::class, 'postItem'])->name('invoice-master-itemCreate');
+  Route::post('/invoice/master/itemDelete', [MasterInvoiceController::class, 'deleteItem'])->name('invoice-master-itemDelete');
+  Route::get('/invoice/master/item-{id}', [MasterInvoiceController::class, 'editMItem'])->name('invoice-master-itemEdit');
+  Route::post('/invoice/master/itemUpdate', [MasterInvoiceController::class, 'updateItem'])->name('invoice-master-itemUpdate');
+  // os
+  Route::get('/invoice/master/os', [MasterInvoiceController::class, 'indexOS'])->name('invoice-master-os');
+  Route::post('/invoice/master/osDelete', [MasterInvoiceController::class, 'deleteOS'])->name('invoice-master-osDelete');
+  Route::get('/invoice/master/osDetail{id?}', [MasterInvoiceController::class, 'detailOS'])->name('invoice-master-osDetail');
+  
+  Route::post('/invoice/master/osUpdate', [MasterInvoiceController::class, 'updateOS'])->name('invoice-master-osUpdate');
+  Route::post('/invoice/master/osDetailDSK', [MasterInvoiceController::class, 'osDetailDSK'])->name('invoice-master-osDetailDSK');
+  Route::post('/invoice/master/osDetailDS', [MasterInvoiceController::class, 'osDetailDS'])->name('invoice-master-osDetailDS');
+  Route::delete('/invoice/master/osDetailBuang={id}', [MasterInvoiceController::class, 'buangDetail'])->name('invoice-master-osDetailBuang');
+});
 
-// os
-Route::get('/invoice/master/os', [MasterInvoiceController::class, 'indexOS'])->name('invoice-master-os');
-Route::post('/invoice/master/osDelete', [MasterInvoiceController::class, 'deleteOS'])->name('invoice-master-osDelete');
-Route::get('/invoice/master/osDetail{id?}', [MasterInvoiceController::class, 'detailOS'])->name('invoice-master-osDetail');
-
-Route::post('/invoice/master/osUpdate', [MasterInvoiceController::class, 'updateOS'])->name('invoice-master-osUpdate');
-Route::post('/invoice/master/osDetailDSK', [MasterInvoiceController::class, 'osDetailDSK'])->name('invoice-master-osDetailDSK');
-Route::post('/invoice/master/osDetailDS', [MasterInvoiceController::class, 'osDetailDS'])->name('invoice-master-osDetailDS');
-Route::delete('/invoice/master/osDetailBuang={id}', [MasterInvoiceController::class, 'buangDetail'])->name('invoice-master-osDetailBuang');
 
 Route::get('/invoice/master/tarif-import', [MasterInvoiceController::class, 'indexMTimport'])->name('invoice-master-tarifImport');
 Route::get('/invoice/master/tarif-export', [MasterInvoiceController::class, 'indexMTexport'])->name('invoice-master-tarifExport');
@@ -1220,70 +1251,72 @@ Route::post('/gate/gate-out/MT-confirm', [GateMTcontroller::class, 'ConfirmOut']
 
 
 // plugging
-// main
-Route::get('/plugging', [PluggingController::class, 'billingMain'])->name('plugging-main');
-Route::get('/plugging/dataTable', [PluggingController::class, 'dataTable']);
-  // Tarif
-Route::get('/plugging/master-tarif', [MasterInvoiceController::class, 'indexMTplugging'])->name('plugging-tarif-index');
-Route::get('/plugging/master-tarifDetail-{id?}', [MasterInvoiceController::class, 'indexMTpluggingDetail'])->name('plugging-tarif-detail');
-Route::post('/plugging/master-tarif-create-first', [MasterInvoiceController::class, 'tarifFirstPlugging'])->name('plugging-tarif-create-first');
-
-
-// Form
-  // list
-  Route::get('/plugging-form', [PluggingController::class, 'deliveryMenu'])->name('plugging-form-index');
-  Route::get('/plugging-create-index', [PluggingController::class, 'FormIndex'])->name('plugging-create-index');
-  Route::get('/plugging-create-container', [PluggingController::class, 'getContainer'])->name('container-plugging');
-  Route::post('/plugging-create-store', [PluggingController::class, 'FormStore'])->name('plugging-create-post');
-  Route::get('/plugging-preinvoice/{id?}', [PluggingController::class, 'preinvoice'])->name('plugging-preinvoice');
-  Route::get('/plugging-create-edit-{id?}', [PluggingController::class, 'FormEdit'])->name('plugging-edit-index');
-  Route::post('/plugging-create-update', [PluggingController::class, 'FormUpdate'])->name('plugging-create-update');
+Route::middleware('permission:Plugging')->group(function(){
+  Route::get('/plugging', [PluggingController::class, 'billingMain'])->name('plugging-main');
+  Route::get('/plugging/dataTable', [PluggingController::class, 'dataTable']);
+    // Tarif
+  Route::get('/plugging/master-tarif', [MasterInvoiceController::class, 'indexMTplugging'])->name('plugging-tarif-index');
+  Route::get('/plugging/master-tarifDetail-{id?}', [MasterInvoiceController::class, 'indexMTpluggingDetail'])->name('plugging-tarif-detail');
+  Route::post('/plugging/master-tarif-create-first', [MasterInvoiceController::class, 'tarifFirstPlugging'])->name('plugging-tarif-create-first');
+  // Form
+    // list
+    Route::get('/plugging-form', [PluggingController::class, 'deliveryMenu'])->name('plugging-form-index');
+    Route::get('/plugging-create-index', [PluggingController::class, 'FormIndex'])->name('plugging-create-index');
+    Route::get('/plugging-create-container', [PluggingController::class, 'getContainer'])->name('container-plugging');
+    Route::post('/plugging-create-store', [PluggingController::class, 'FormStore'])->name('plugging-create-post');
+    Route::get('/plugging-preinvoice/{id?}', [PluggingController::class, 'preinvoice'])->name('plugging-preinvoice');
+    Route::get('/plugging-create-edit-{id?}', [PluggingController::class, 'FormEdit'])->name('plugging-edit-index');
+    Route::post('/plugging-create-update', [PluggingController::class, 'FormUpdate'])->name('plugging-create-update');
+    
+    //Submit Invoice
+    Route::post('/plugging-invoice-post', [PluggingController::class, 'SubmitInvoice'])->name('plugging-invoice-post');
   
-  //Submit Invoice
-  Route::post('/plugging-invoice-post', [PluggingController::class, 'SubmitInvoice'])->name('plugging-invoice-post');
-
-  // Invoice
-  Route::get('/plugging-pranota-{id?}', [PluggingController::class, 'Pranota'])->name('plugging-pranota');
-  Route::get('/plugging-invoice-{id?}', [PluggingController::class, 'Invoice'])->name('plugging-invoice');
-  Route::get('/plugging-report', [PluggingController::class, 'ReportExcel'])->name('plugging-report');
-  Route::get('/plugging-report-os', [PluggingController::class, 'ReportExcelOnce'])->name('plugging-report-os');
-  Route::post('/plugging-piutang', [PluggingController::class, 'Piutang'])->name('PiutangPlugging');
-  Route::post('/plugging-paid', [PluggingController::class, 'Paid'])->name('PaidPlugging');
-  Route::post('/plugging-cancel', [PluggingController::class, 'Cancel'])->name('CancelPlugging');
+    // Invoice
+    Route::get('/plugging-pranota-{id?}', [PluggingController::class, 'Pranota'])->name('plugging-pranota');
+    Route::get('/plugging-invoice-{id?}', [PluggingController::class, 'Invoice'])->name('plugging-invoice');
+    Route::get('/plugging-report', [PluggingController::class, 'ReportExcel'])->name('plugging-report');
+    Route::get('/plugging-report-os', [PluggingController::class, 'ReportExcelOnce'])->name('plugging-report-os');
+    Route::post('/plugging-piutang', [PluggingController::class, 'Piutang'])->name('PiutangPlugging');
+    Route::post('/plugging-paid', [PluggingController::class, 'Paid'])->name('PaidPlugging');
+    Route::post('/plugging-cancel', [PluggingController::class, 'Cancel'])->name('CancelPlugging');
+});
+// main
 
 
 // Rental-Repair
-// main
-Route::get('/renta&repair', [RentalController::class, 'billingMain'])->name('rental-repair-main');
-Route::get('/renta&repair/dataTable', [RentalController::class, 'dataTable']);
-  // Tarif
-Route::get('/renta&repair/master-tarif', [MasterInvoiceController::class, 'indexMTrental'])->name('rental-repair-tarif-index');
-Route::get('/renta&repair/master-tarifDetail-{id?}', [MasterInvoiceController::class, 'indexMTrentalDetail'])->name('rental-repair-tarif-detail');
-Route::post('/renta&repair/master-tarif-create-first', [MasterInvoiceController::class, 'tarifFirstRental'])->name('rental-repair-tarif-create-first');
-
-
-// Form
-  // list
-  Route::get('/renta&repair-form', [RentalController::class, 'deliveryMenu'])->name('rental-repair-form-index');
-  Route::get('/renta&repair-create-index', [RentalController::class, 'FormIndex'])->name('rental-repair-create-index');
-  Route::get('/rental&repair-create-container', [RentalController::class, 'getContainer'])->name('container-rental-repair');
-  Route::post('/renta&repair-create-store', [RentalController::class, 'FormStore'])->name('rental-repair-create-post');
-  Route::get('/renta&repair-preinvoice/{id?}', [RentalController::class, 'preinvoice'])->name('rental-repair-preinvoice');
-  Route::get('/renta&repair-create-edit-{id?}', [RentalController::class, 'FormEdit'])->name('rental-repair-edit-index');
-  Route::post('/renta&repair-create-update', [RentalController::class, 'FormUpdate'])->name('rental-repair-create-update');
+Route::middleware('permission:Invoice Others')->group(function(){
+  Route::get('/renta&repair', [RentalController::class, 'billingMain'])->name('rental-repair-main');
+  Route::get('/renta&repair/dataTable', [RentalController::class, 'dataTable']);
+    // Tarif
+  Route::get('/renta&repair/master-tarif', [MasterInvoiceController::class, 'indexMTrental'])->name('rental-repair-tarif-index');
+  Route::get('/renta&repair/master-tarifDetail-{id?}', [MasterInvoiceController::class, 'indexMTrentalDetail'])->name('rental-repair-tarif-detail');
+  Route::post('/renta&repair/master-tarif-create-first', [MasterInvoiceController::class, 'tarifFirstRental'])->name('rental-repair-tarif-create-first');
   
-  //Submit Invoice
-  Route::post('/renta&repair-invoice-post', [RentalController::class, 'SubmitInvoice'])->name('rental-repair-invoice-post');
-
-  // Invoice
-  Route::get('/renta&repair-pranota-{id?}', [RentalController::class, 'Pranota'])->name('rental-repair-pranota');
-  Route::get('/renta&repair-invoice-{id?}', [RentalController::class, 'Invoice'])->name('rental-repair-invoice');
-  Route::get('/renta&repair-report', [RentalController::class, 'ReportExcel'])->name('rental-repair-report');
-  Route::get('/renta&repair-report-os', [RentalController::class, 'ReportExcelOnce'])->name('rental-repair-report-os');
-  Route::post('/renta&repair-piutang', [RentalController::class, 'Piutang'])->name('PiutangRentalRepair');
-  Route::post('/renta&repair-paid', [RentalController::class, 'Paid'])->name('PaidRentalRepair');
-  Route::post('/renta&repair-cancel', [RentalController::class, 'Cancel'])->name('CancelRentalRepair');
-  Route::get('/renta&repair/osData', [RentalController::class, 'getOrder'])->name('rental-osData');
+  
+  // Form
+    // list
+    Route::get('/renta&repair-form', [RentalController::class, 'deliveryMenu'])->name('rental-repair-form-index');
+    Route::get('/renta&repair-create-index', [RentalController::class, 'FormIndex'])->name('rental-repair-create-index');
+    Route::get('/rental&repair-create-container', [RentalController::class, 'getContainer'])->name('container-rental-repair');
+    Route::post('/renta&repair-create-store', [RentalController::class, 'FormStore'])->name('rental-repair-create-post');
+    Route::get('/renta&repair-preinvoice/{id?}', [RentalController::class, 'preinvoice'])->name('rental-repair-preinvoice');
+    Route::get('/renta&repair-create-edit-{id?}', [RentalController::class, 'FormEdit'])->name('rental-repair-edit-index');
+    Route::post('/renta&repair-create-update', [RentalController::class, 'FormUpdate'])->name('rental-repair-create-update');
+    
+    //Submit Invoice
+    Route::post('/renta&repair-invoice-post', [RentalController::class, 'SubmitInvoice'])->name('rental-repair-invoice-post');
+  
+    // Invoice
+    Route::get('/renta&repair-pranota-{id?}', [RentalController::class, 'Pranota'])->name('rental-repair-pranota');
+    Route::get('/renta&repair-invoice-{id?}', [RentalController::class, 'Invoice'])->name('rental-repair-invoice');
+    Route::get('/renta&repair-report', [RentalController::class, 'ReportExcel'])->name('rental-repair-report');
+    Route::get('/renta&repair-report-os', [RentalController::class, 'ReportExcelOnce'])->name('rental-repair-report-os');
+    Route::post('/renta&repair-piutang', [RentalController::class, 'Piutang'])->name('PiutangRentalRepair');
+    Route::post('/renta&repair-paid', [RentalController::class, 'Paid'])->name('PaidRentalRepair');
+    Route::post('/renta&repair-cancel', [RentalController::class, 'Cancel'])->name('CancelRentalRepair');
+    Route::get('/renta&repair/osData', [RentalController::class, 'getOrder'])->name('rental-osData');
+});
+// main
 
 // Service Invoice
 Route::prefix('/invoiceService')->controller(ServiceController::class)->group(function(){
@@ -1298,6 +1331,10 @@ Route::middleware('permission:User')->group(function(){
   Route::prefix('/invoiceService')->controller(SystemController::class)->group(function(){
     Route::get('/indexUser', 'invoiceUserIndex')->name('invoiceService.system.userIndex');
     Route::get('/dataUser', 'invoiceUserData')->name('invoiceService.system.userData');
+    Route::post('/editUser', 'invoiceUserEdit')->name('invoiceService.system.userEdit');
+    Route::post('/postUser', 'invoiceUserPost')->name('invoiceService.system.userPost');
+    Route::get('/assignIndex/{id?}', 'invoiceUserassignIndex')->name('invoiceService.system.assignIndex');
+    Route::post('/assignPost/{id?}', 'invoiceUserassignPost')->name('invoiceService.system.assignPost');
   });
 });
 

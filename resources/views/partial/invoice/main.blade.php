@@ -331,4 +331,37 @@
     });
 </script>
 
+<script>
+    async function errorResponse(response) {
+        Swal.fire({
+            icon: 'error',
+            title: response.status,
+            text: response.statusText,
+        }).then(() => {
+            showLoading();
+            location.reload();
+        });
+    }
+    async function errorHasil(hasil) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: hasil.message,
+        }).then(() => {
+            showLoading();
+            location.reload();
+        });
+    }
+    async function successHasil(hasil) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Sukses',
+            text: hasil.message,
+        }).then(() => {
+            showLoading();
+            location.reload();
+        });
+    }
+</script>
+
 </html>

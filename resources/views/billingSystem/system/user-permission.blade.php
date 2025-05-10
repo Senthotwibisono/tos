@@ -1,4 +1,4 @@
-@extends('partial.main')
+@extends('partial.invoice.main')
 
 @section('custom_styles')
 
@@ -13,7 +13,7 @@
     <div class="page-content">
     <div class="card">
         <div class="card-body">
-                <form action="{{route('system.user.postAssignedPermission', ['id' => $users->id])}}" method="post">
+                <form action="{{route('invoiceService.system.assignPost', ['id' => $users->id])}}" method="post">
                     @csrf
                     <table class="table table-bordered">
                         <thead>
