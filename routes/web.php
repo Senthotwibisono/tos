@@ -1208,16 +1208,19 @@ Route::middleware('permission:Master Invoice')->group(function(){
   Route::delete('/invoice/master/osDetailBuang={id}', [MasterInvoiceController::class, 'buangDetail'])->name('invoice-master-osDetailBuang');
 });
 
-
-Route::get('/invoice/master/tarif-import', [MasterInvoiceController::class, 'indexMTimport'])->name('invoice-master-tarifImport');
-Route::get('/invoice/master/tarif-export', [MasterInvoiceController::class, 'indexMTexport'])->name('invoice-master-tarifExport');
-Route::post('/invoice/master/tairfFirstStep', [MasterInvoiceController::class, 'tarifFirst'])->name('invoice-master-tarifFirst');
-Route::post('/invoice/master/tairfFirstStepExport', [MasterInvoiceController::class, 'tarifFirstExport'])->name('invoice-master-tarifFirstExport');
+Route::middleware('permission:MasterTarif Import')->group(function(){
+  Route::get('/invoice/master/tarif-import', [MasterInvoiceController::class, 'indexMTimport'])->name('invoice-master-tarifImport');
+  Route::post('/invoice/master/tairfFirstStep', [MasterInvoiceController::class, 'tarifFirst'])->name('invoice-master-tarifFirst');
+  Route::get('/invoice/master/tarif-import-detail-{id}', [MasterInvoiceController::class, 'indexMTimportDetail'])->name('invoice-master-tarifImport-detail');
+});
+Route::middleware('permission:MasterTarif Export')->group(function(){
+  Route::get('/invoice/master/tarif-export', [MasterInvoiceController::class, 'indexMTexport'])->name('invoice-master-tarifExport');
+  Route::post('/invoice/master/tairfFirstStepExport', [MasterInvoiceController::class, 'tarifFirstExport'])->name('invoice-master-tarifFirstExport');
+  Route::get('/invoice/master/tarif-export-detail-{id}', [MasterInvoiceController::class, 'indexMTexportDetail'])->name('invoice-master-tarifExport-detail');
+});
 Route::post('/invoice/master/tairfDelete', [MasterInvoiceController::class, 'tarifDelete'])->name('invoice-master-tarifDelete');
 Route::get('/invoice/master/tarif-modalMT', [MasterInvoiceController::class, 'modalMT'])->name('invoice-master-modalMT');
 
-Route::get('/invoice/master/tarif-import-detail-{id}', [MasterInvoiceController::class, 'indexMTimportDetail'])->name('invoice-master-tarifImport-detail');
-Route::get('/invoice/master/tarif-export-detail-{id}', [MasterInvoiceController::class, 'indexMTexportDetail'])->name('invoice-master-tarifExport-detail');
 Route::post('/invoice/master/tairfDetail', [MasterInvoiceController::class, 'tarifDetail'])->name('invoice-master-tarifDetail');
 
 // newReport
