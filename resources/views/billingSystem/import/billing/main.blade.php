@@ -20,24 +20,43 @@
     <div class="card">
       <div class="card-header">
         <h4>Export to Zahir</h4>
-        <form action="{{ route('zahir-invoice-import')}}" method="GET" enctype="multipart/form-data">
+        <form action="" method="GET" enctype="multipart/form-data">
           <div class="row">
-            <div class="col-4">
+            <div class="col-3">
               <div class="form-group">
                 <label>Pick Start Date Range</label>
-                <!-- <input name="start" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired"> -->
-                <input type="date" name="start" class="form-control" required>
+                <input name="start" type="date" class="form-control flatpickr-range mb-1 expired" placeholder="09/05/2023" id="startZahir">
+                <!-- <input type="date" name="start" class="form-control" required> -->
               </div>
             </div>
-            <div class="col-4">
+            <div class="col-3">
               <div class="form-group">
                 <label>Pick End Date Range</label>
-                <!-- <input name="end" type="date" class="form-control flatpickr-range mb-1" placeholder="09/05/2023" id="expired"> -->
-                <input type="date" name="end" class="form-control" required>
+                <input name="end" type="date" class="form-control flatpickr-range mb-1 expired" placeholder="09/05/2023" id="endZahir">
+                <!-- <input type="date" name="end" class="form-control" required> -->
               </div>
             </div>
-            <div class="col-4 mt-4">
-              <button class="btn btn-info" type="submit"><i class=" fa fa-file"></i> Export Active Invoice to CSV</button>
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label for="">Invoice Type</label>
+                  <div class="row">
+                     <div class="col-6">
+                       <div class="form-check form-switch">
+                         <input class="form-check-input" type="checkbox" name="inv_typeZahir[]" value="DSK">
+                         <label class="form-check-label" for="checkbox-dsk">DSK</label>
+                       </div>
+                     </div>
+                     <div class="col-6">
+                       <div class="form-check form-switch">
+                         <input class="form-check-input" type="checkbox" name="inv_typeZahir[]" value="DS">
+                         <label class="form-check-label" for="checkbox-ds">DS</label>
+                       </div>
+                     </div>
+                  </div>
+              </div>
+            </div>
+            <div class="col-3 mt-4">
+              <button class="btn btn-info" type="button" onClick="exportZahir()"><i class=" fa fa-file"></i> Export Active Invoice to CSV</button>
             </div>
           </div>
         </form>
@@ -717,5 +736,115 @@ $(document).ready(function() {
     function openWindow(url) {
         window.open(url, '_blank', 'width=600,height=800');
     }
+</script>
+
+<script>
+  async function exportZahir() {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Are you sure ?',
+      text: 'Pastikan data yang dimasukkan sudah benar!!!',
+      showCancelButton: true,
+    }).then( async (result) => {
+      if (result.isConfirmed) {
+        showLoading();
+        const start = document.getElementById('startZahir').value;
+        const end = document.getElementById('endZahir').value;
+        const type = Array.from(document.querySelectorAll('input[name="inv_typeZahir[]"]:checked')).map(el => el.value);
+        if (start > end) {
+          hideLoading();
+          Swal.fire({
+            icon: 'error',
+            title: 'error',
+            text: 'Tanggal Mulai tidah boleh lebih besar dari tanggal end',
+          });
+          return;
+        }
+        if (type.length == 0) {
+          hideLoading();
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Anda belum mengisi tipe invoice',
+          });
+          return;
+        }
+        // console.log(type);
+        const dataZahir = {
+          start:start,
+          end:end,
+          inv_type:type
+        };
+        console.log(dataZahir);
+        const url = '{{route('invoice.zahir.import')}}';
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+              "Content-Type": "application/json",
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+          },
+          body: JSON.stringify(dataZahir),
+        });
+        hideLoading();
+        if (response.ok) {
+          const hasil = await response.json();
+          if (hasil.success) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Sukses',
+              text: 'Data ditemukan',
+            }).then( async(then) => {
+              showLoading();
+              const data = hasil.data;
+              // console.log(data);
+              const urlCSV = '{{route('invoice.zahir.csvImport')}}';
+              const formData = new FormData();
+              formData.append('inv_id', JSON.stringify(data.inv_id));
+              formData.append('fileName', data.fileName);
+  
+              try {
+                // Menggunakan fetch untuk mendapatkan file CSV
+                const response = await fetch(urlCSV, {
+                  method: 'POST',
+                  headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                  },
+                  body: formData,
+                });
+              
+                if (!response.ok) {
+                  throw new Error('Failed to download file');
+                }
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = data.fileName;
+                link.click();
+                window.URL.revokeObjectURL(url);
+                hideLoading();
+  
+              } catch (error) {
+                hideLoading();
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Download Gagal',
+                  text: error.message,
+                });
+              }
+            })
+              
+            // location.reload();
+          } else {
+            errorHasil(hasil);
+          }
+        } else {
+          errorResponse(response);
+        }
+      } else {
+        return;
+      }
+    });
+  }
 </script>
 @endsection

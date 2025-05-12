@@ -183,6 +183,9 @@
     flatpickr('#expired', {
       "minDate": null
     });
+    flatpickr('.expired', {
+      "minDate": null
+    });
     flatpickr('#doexpired', {
       "minDate": new Date()
     });
@@ -311,9 +314,13 @@
         }
     }
 </script>
+
 <script>
- window.addEventListener("beforeunload", function () {
+    let loadingHidden = false;
+
+    window.addEventListener("beforeunload", function () {
         showLoading();
+        loadingHidden = false; // reset flag jika mau pindah halaman
     });
 
     // Tampilkan loading saat halaman mulai dimuat
@@ -329,6 +336,13 @@
             hideLoading();
         }
     });
+
+    setTimeout(() => {
+        if (!loadingHidden) {
+            hideLoading();
+        }
+    }, 5000);
+    
 </script>
 
 <script>

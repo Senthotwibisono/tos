@@ -15,6 +15,8 @@ use App\Exports\ZahirSteva;
 use App\Exports\ZahirOthers;
 use Maatwebsite\Excel\Facades\Excel;
 
+use Carbon\Carbon;
+
 
 class ZahirController extends Controller
 {
@@ -64,6 +66,8 @@ class ZahirController extends Controller
 
    public function ZahirImport(Request $request)
    {
+
+    // dd($request->all());
      $startDate = $request->start;
      $endDate = $request->end;
     //  $data = ImportDetail::whereDate('order_date', '>=', $startDate)->whereDate('order_date', '<=', $endDate)->orderBy('inv_id', 'asc')->get();
@@ -80,9 +84,63 @@ class ZahirController extends Controller
     
       // Fetch ExportDetail records that match the InvoiceExport ids
       $data = ImportDetail::whereIn('inv_id', $exportInvIds)->get();
-       $fileName = 'ReportZahirImport-'. $startDate . $endDate .'.csv';
+      $fileName = 'ReportZahirImport-'. $startDate . $endDate .'.csv';
+      try {
+        csvExcel($fileName, $data);
+        return back()->with('success', 'Success');
+      } catch (\Throwable $th) {
+        return back()->with('error', 'Somethings wrong in : ' . $th->getMessage());
+      }
+   }
+
+   private function csvExcel($fileName, $data)
+   {
      return Excel::download(new ImportZahir($data), $fileName);
    }
+
+   public function newImport(Request $request)
+   {
+    $import = InvoiceImport::whereHas('service', function($query) {
+      $query->where('ie', 'I');
+    })->whereNot('lunas', 'C')->whereIn('inv_type', $request->inv_type)->whereBetween('invoice_date', [Carbon::parse($request->start), Carbon::parse($request->end)])->get();
+
+    $detil = ImportDetail::whereIn('inv_id', $import->pluck('id'))->get();
+    if ($detil->isEmpty()) {
+      return response()->json([
+        'success' => false,
+        'message' => 'Tidak ada data yang bisa di export',
+      ]);
+    }
+    $fileName = 'ReportZahirImport-'. Carbon::parse($request->start) .'-'. Carbon::parse($request->end) .'.csv';
+
+    $invId = $import->pluck('id');
+    return response()->json([
+      'success' => true,
+      'message' => 'Data tersedia, siap di export',
+      'data' => [
+        'inv_id' => $invId,
+        'fileName' => $fileName,
+      ],
+    ]);
+   }
+
+   public function csvImport(Request $request)
+   {
+    // var_dump($request->all());
+    // die;
+    // dd($data);
+    try {
+      $data = ImportDetail::whereIn('inv_id', json_decode($request->inv_id))->get();
+       return Excel::download(new ImportZahir($data), $request->fileName.'.csv');
+    } catch (\Throwable $th) {
+      return response()->json([
+        'success' => false,
+        'message' => $th->getMessage(),
+      ]);
+    }
+   }
+
+
 
    public function ZahirExport(Request $request)
    {
@@ -103,6 +161,48 @@ class ZahirController extends Controller
       $data = ExportDetail::whereIn('inv_id', $exportInvIds)->get();
        $fileName = 'ReportZahirExport-'. $startDate . $endDate .'.csv';
      return Excel::download(new ImportZahir($data), $fileName);
+   }
+
+   public function newExport(Request $request)
+   {
+    $import = InvoiceExport::whereHas('service', function($query) {
+      $query->where('ie', 'E');
+    })->whereNot('lunas', 'C')->whereIn('inv_type', $request->inv_type)->whereBetween('invoice_date', [Carbon::parse($request->start), Carbon::parse($request->end)])->get();
+
+    $detil = ExportDetail::whereIn('inv_id', $import->pluck('id'))->get();
+    if ($detil->isEmpty()) {
+      return response()->json([
+        'success' => false,
+        'message' => 'Tidak ada data yang bisa di export',
+      ]);
+    }
+    $fileName = 'ReportZahirExport-'. Carbon::parse($request->start) .'-'. Carbon::parse($request->end) .'.csv';
+
+    $invId = $import->pluck('id');
+    return response()->json([
+      'success' => true,
+      'message' => 'Data tersedia, siap di export',
+      'data' => [
+        'inv_id' => $invId,
+        'fileName' => $fileName,
+      ],
+    ]);
+   }
+
+   public function csvExport(Request $request)
+   {
+    // var_dump($request->all());
+    // die;
+    // dd($data);
+    try {
+      $data = ExportDetail::whereIn('inv_id', json_decode($request->inv_id))->get();
+       return Excel::download(new ImportZahir($data), $request->fileName.'.csv');
+    } catch (\Throwable $th) {
+      return response()->json([
+        'success' => false,
+        'message' => $th->getMessage(),
+      ]);
+    }
    }
 
    public function ZahirPlugging(Request $request)

@@ -1190,6 +1190,14 @@ Route::get('/invoice/zahir-extend', [ZahirController::class, 'ZahirExtend'])->na
 Route::get('/invoice/zahir-steva', [ZahirController::class, 'ZahirSteva'])->name('zahir-invoice-steva');
 Route::get('/invoice/zahir-others', [ZahirController::class, 'ZahirOthers'])->name('zahir-invoice-others');
 
+Route::controller(ZahirController::class)->prefix('/invoice/zahir')->group(function(){
+  Route::post('/import', 'newImport')->name('invoice.zahir.import');
+  Route::post('/csvImport', 'csvImport')->name('invoice.zahir.csvImport');
+
+  Route::post('/export', 'newExport')->name('invoice.zahir.export');
+  Route::post('/csvExport', 'csvExport')->name('invoice.zahir.csvExport');
+});
+
 Route::middleware('permission:Master Invoice')->group(function(){
   // Master Invoice
   Route::get('/invoice/master/item', [MasterInvoiceController::class, 'indexMItem'])->name('invoice-master-item');
