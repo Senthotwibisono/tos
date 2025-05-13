@@ -62,6 +62,7 @@
                 <table class="table-hover" id="tableContainerInvoice">
                     <thead>
                         <tr>
+                            <th></th>
                             <th>No Container</th>
                             <th>Last Invoice</th>
                             <th>Last Job</th>
@@ -131,14 +132,7 @@
                         }).then(() => {
                             var items = hasil.data.items;
                             console.log(items);
-                            new DataTable('#tableContainerInvoice', {
-                                data: items,
-                                columns:[
-                                    {name:'container_no', data:'container_no'},
-                                    {name:'invoice_no', data:'invoice_no'},
-                                    {name:'job_no', data:'job_no'},
-                                ],
-                            })
+                            tableInvoice(items);
                         });
                     }else{
                         Swal.fire({
@@ -158,6 +152,79 @@
             }
         });
     }
+
+    function tableInvoice(items)
+    {
+        var table = new DataTable('#tableContainerInvoice', {
+            processing: true,
+            serverSide:true,
+            ajax : {
+                url: '{{route('invoiceService.tracking.dataImport')}}',
+                data: {
+                    items:items,
+                },
+            },
+            columns:[
+                {
+                    data: null,
+                    className: 'dt-control',
+                    orderable: false,
+                    defaultContent: '',
+                },
+                {name:'container_no', data:'container_no'},
+                {name:'invoice_no', data:'invoice_no'},
+                {name:'job_no', data:'job_no'},
+            ],
+        })
+        bindDetailRowClick(table);
+    }
+    function formatDetailRow(rowData) {
+        return `
+            <table class="table table-bordered table-detail" id="detail-${rowData.container_key}">
+                <thead>
+                    <tr>
+                        <th>Pranota</th>
+                        <th>Invoice Number</th>
+                        <th>Job Number</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        `;
+    }
+
+    function bindDetailRowClick(table) {
+        $('#tableContainerInvoice tbody').off('click', 'td.dt-control'); // hapus handler lama
+        $('#tableContainerInvoice tbody').on('click', 'td.dt-control', function () {
+            const tr = $(this).closest('tr');
+            const row = table.row(tr);
+
+            if (row.child.isShown()) {
+                row.child.hide();
+                tr.removeClass('shown');
+            } else {
+                row.child(formatDetailRow(row.data())).show();
+                tr.addClass('shown');
+                const detailTableId = `#detail-${row.data().container_key}`;
+                new DataTable(detailTableId, {
+                    serverSide: true,
+                    processing: true,
+                    ajax: {
+                        url: '{{route('invoiceService.tracking.dataDetilImport')}}',
+                        data: {
+                            container_key: row.data().container_key
+                        },
+                    },
+                    columns: [
+                       {data:'pranota'},
+                       {data:'invoice_no'},
+                       {data:'job_no'},
+                    ],
+                });
+            }
+        });
+    }
+
 </script>
 
 @endsection

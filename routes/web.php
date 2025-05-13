@@ -1334,6 +1334,8 @@ Route::prefix('/invoiceService')->controller(ServiceController::class)->group(fu
   Route::get('/jadwalKapal', 'jadwalKapal')->name('invoiceService.tracking.jadwalKapal');
   Route::prefix('/import')->group(function(){
     Route::get('/indexImport', 'indexImport')->name('invoiceService.tracking.indexImport');
+    Route::get('/data', 'contInvoiceData')->name('invoiceService.tracking.dataImport');
+    Route::get('/dataDetil', 'contInvoiceDataDetil')->name('invoiceService.tracking.dataDetilImport');
   });
 });
 

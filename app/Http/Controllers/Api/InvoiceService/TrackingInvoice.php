@@ -35,14 +35,21 @@ class TrackingInvoice extends Controller
         $doCont = json_decode($do->container_no, true);
         // var_dump($vessel->ves_id, $doCont);
         
-        $items = Item::where('ves_id', $vessel->ves_id)->whereIn('container_no', $doCont)->get();
+        $items = Item::where('ves_id', $vessel->ves_id)->where('ctr_i_e_t', 'I')->whereIn('container_no', $doCont)->get();
+        $containersItem = $items->pluck('container_key');
+        
+        if ($items->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' =>'Data null atau tidak ditemukan',
+            ]);
+        }
 
-        // var_dump($items);
         return response()->json([
             'success' => true,
             'message' => 'Data ditemukan',
             'data' => [
-                'items' => $items,
+                'items' => $containersItem,
             ],
         ]);
     }
