@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\VVoyage;
 use App\Models\Item;
 use App\Models\DOonline;
+use App\Models\InvoiceForm as Form;
+use App\Models\ContainerInvoice as Container;
 
 class TrackingInvoice extends Controller
 {
@@ -37,6 +39,14 @@ class TrackingInvoice extends Controller
         
         $items = Item::where('ves_id', $vessel->ves_id)->where('ctr_i_e_t', 'I')->whereIn('container_no', $doCont)->get();
         $containersItem = $items->pluck('container_key');
+
+        $form = Form::where('i_e', 'i')->where('do_id', $do->id)->get();
+        $containers = Container::whereIn('form_id', $form->pluck('id'))->get();
+        $containerKeyFromForm = $containers->unique('container_key')->pluck('container_key');
+        $itemsFromContainers = Item::whereIn('container_key', $containerKeyFromForm)->get();
+        $containerKeyForms = $itemsFromContainers->pluck('container_key');
+
+        $mergeContainerKey = $containersItem->merge($containerKeyForms)->unique()->values();
         
         if ($items->isEmpty()) {
             return response()->json([
@@ -49,7 +59,7 @@ class TrackingInvoice extends Controller
             'success' => true,
             'message' => 'Data ditemukan',
             'data' => [
-                'items' => $containersItem,
+                'items' => $mergeContainerKey,
             ],
         ]);
     }
