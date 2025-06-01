@@ -336,12 +336,6 @@
             hideLoading();
         }
     });
-
-    setTimeout(() => {
-        if (!loadingHidden) {
-            hideLoading();
-        }
-    }, 5000);
     
 </script>
 

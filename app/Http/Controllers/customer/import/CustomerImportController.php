@@ -811,7 +811,7 @@ class CustomerImportController extends CustomerMainController
             $newVa = DB::transaction(function() use($billingAmount, $import){
                 return VA::create([
                     'virtual_account' => $this->virtualAccount(),
-                    'expired_va' => Carbon::now()->addHours(3),
+                    'expired_va' => Carbon::now()->addHours(6),
                     'invoice_type' => 'Import',
                     'customer_name' => $import->cust_name,
                     'customer_id' => $import->cust_id,
@@ -840,10 +840,12 @@ class CustomerImportController extends CustomerMainController
     private function virtualAccount()
     {
         $prefix = '56732'; // kode perusahaan/bank Mandiri
+        $year = date('y'); // Tahun 2 digit, misal 2025 => 25
+        $month = date('m'); 
         do {
             // Generate 16 digit angka random
-            $randomDigits = str_pad(mt_rand(0, 99999999999), 11, '0', STR_PAD_LEFT);
-            $generateVa = $prefix . $randomDigits;
+            $randomDigits = str_pad(mt_rand(0, 9999999), 7, '0', STR_PAD_LEFT);
+            $generateVa = $prefix . $year . $month . $randomDigits;
         } while (VA::where('virtual_account', $generateVa)->exists());
 
         return $generateVa;

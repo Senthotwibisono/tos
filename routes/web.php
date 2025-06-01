@@ -967,7 +967,6 @@ Route::get('/get-doOnline-data', [ImportController::class, 'getDOdata'])->name('
 Route::get('/get-doOnline-manual', [ImportController::class, 'doManual'])->name('doManual');
 Route::get('/get-dokumenImport-data', [ImportController::class, 'getDokImport'])->name('getDokImport');
 
-
 // Pranota
 Route::get('/pranota/import-DSK{id?}', [ImportController::class, 'PranotaImportDSK'])->name('PranotaImportDSK');
 Route::get('/pranota/import-DS{id?}', [ImportController::class, 'PranotaImportDS'])->name('PranotaImportDS');
@@ -988,6 +987,12 @@ Route::controller(ImportController::class)->group(function(){
   Route::get('/invoice/import/delivery-data/service', 'dataService');
   Route::get('/invoice/import/report-unpaid', 'unpaidReport');
   Route::get('/invoice/import/report-piutang', 'piutangReport');
+
+  // form
+  Route::prefix('/invoice/import/form')->group(function(){
+    Route::get('/preinvoice/{id?}', 'Preinvoice')->name('invoiceImport.form.preinvoice');
+    Route::post('/createInvoice', 'createInvoice')->name('invoiceImport.form.createInvoice');
+  });
 });
 
 Route::controller(InvoiceExportController::class)->group(function(){
@@ -1114,7 +1119,7 @@ Route::middleware('permission:Form Extend')->group(function(){
   Route::get('/billing/import/extendIndexForm', [InvoiceExtend::class, 'ListForm'])->name('listForm-extend');
   Route::get('/billing/import/extendDataForm', [InvoiceExtend::class, 'extendDataForm'])->name('extendDataForm');
   Route::get('/billing/import/extendForm', [InvoiceExtend::class, 'form'])->name('extendForm');
-  Route::get('/billing/import/extend-editForm/{id?}', [InvoiceExtend::class, 'EditForm']);
+  Route::get('/billing/import/extend-editForm/{id?}', [InvoiceExtend::class, 'EditForm'])->name('extend.form.edit');
   Route::post('/billing/import/extend-updateFormImport', [InvoiceExtend::class, 'updateFormImport'])->name('updateFormImportExtend');
   Route::delete('/billing/import/extend-deleteInvoice/{id?}', [InvoiceExtend::class, 'extendInvoiceDelete'])->name('extendInvoiceDelete');
   Route::post('/billing/import/extendPost', [InvoiceExtend::class, 'postForm'])->name('extendPostForm');
@@ -1135,6 +1140,11 @@ Route::middleware('permission:Invoice Extend')->group(function(){
   Route::post('/invoice/extend-payFullExtend', [InvoiceExtend::class, 'payFull'])->name('payFullExtend');
   Route::post('/invoice/extend-piutangExtend', [InvoiceExtend::class, 'piutang'])->name('piutangFullExtend');
   Route::post('/invoice/extend-cancelExtend', [InvoiceExtend::class, 'extendInvoiceCancel'])->name('extendInvoiceCancel');
+
+  Route::prefix('/billing/import/extend/form')->controller(InvoiceExtend::class)->group(function(){
+    Route::get('/preinvoice/{id?}', 'newPreinvoice')->name('extend.form.preinvoice');
+    Route::post('/createInvoice', 'createInvoice')->name('extend.form.createInvoice');
+  });
 });
 Route::get('/pranota/extend-{id?}', [InvoiceExtend::class, 'PranotaExtend']);
 Route::get('/invoice/extend-{id?}', [InvoiceExtend::class, 'InvoiceExtend']);
@@ -1337,6 +1347,29 @@ Route::prefix('/invoiceService')->controller(ServiceController::class)->group(fu
     Route::get('/data', 'contInvoiceData')->name('invoiceService.tracking.dataImport');
     Route::get('/dataDetil', 'contInvoiceDataDetil')->name('invoiceService.tracking.dataDetilImport');
   });
+
+  Route::prefix('/getData')->group(function(){
+    Route::get('/doList', 'doList')->name('invoiceService.getData.doList');
+    Route::post('/doData', 'doData')->name('invoiceService.getData.doData');
+    Route::post('/customer', 'getCustomer')->name('invoiceService.getData.customer');
+    Route::prefix('/import')->group(function(){
+      Route::post('/postForm', 'ImportPostForm')->name('invoiceService.import.postForm');
+    });
+
+    Route::prefix('/extend')->group(function(){
+      Route::get('/oldInvoiceList', 'OldInvoiceList')->name('invoiceService.getData.OldInvoiceList');
+      Route::post('/oldInvoiceData', 'OldInvoiceData')->name('invoiceService.getData.OldInvoiceData');
+      Route::post('/form-post', 'ExtendPostForm')->name('invoiceService.extend.formPost');
+    });
+
+    Route::post('/searchToPay', 'searchToPay')->name('invoiceService.getData.searchToPay');
+    Route::post('/pay', 'manualPayment')->name('invoiceService.pay.manualPayment');
+    Route::post('/cancelInovice', 'cancelInvoice')->name('invoiceService.cancel.CancelInvoice');
+    // Virtual Account
+    Route::prefix('/virtual-account')->group(function(){
+      Route::post('/create', 'createVA')->name('invoiceService.va.create');
+    });
+  });
 });
 
 
@@ -1500,6 +1533,11 @@ Route::middleware('permission:User')->group(function(){
     Route::get('/list-dataVA', 'dataList')->name('pembayaran.va.dataList');
     Route::post('/list-cancelVA', 'cancelVA')->name('pembayaran.va.cancelVA');
     Route::get('/virtual_account-{id}', 'indexVA');
+
+    // Manual Payment
+    Route::prefix('/manualPayment')->group(function(){
+      Route::post('/import', 'manualImport')->name('pembayaran.manual.import');
+    });
   });
   
 

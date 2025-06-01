@@ -113,6 +113,11 @@ use Carbon\Carbon;
                   <br>
                 </h2>
               </div>
+              <div class="col-xs-12 col-4 text-center">
+                <div class="position-relative d-inline-block" style="width: 70%;">
+                  <img src="/logoInvoice/logoDS.jpg" class="img-fluid w-100" alt="Logo">
+                </div>
+              </div>
             </div>
           </div>
           <hr>

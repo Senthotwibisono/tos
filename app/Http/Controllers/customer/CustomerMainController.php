@@ -30,7 +30,7 @@ class CustomerMainController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('role:customer'); 
+        // $this->middleware('role:customer'); 
         $this->middleware(function ($request, $next) {
             $this->userId = Auth::user()->id; // Ambil user ID di sini
             $this->import = Import::where('user_id', Auth::user()->id);

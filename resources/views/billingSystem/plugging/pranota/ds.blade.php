@@ -96,8 +96,27 @@
         <div class="grid invoice">
           <div class="grid-body">
             <div class="invoice-title">
-              <h2>Pranota<br><span class="small">Proforma No. # {{$invoice->proforma_no}}</span></h2>
+            <div class="row">
+              <div class="col-xs-12">
+                <!-- <img src="http://vergo-kertas.herokuapp.com/assets/img/logo.png" alt="" height="35"> -->
+              </div>
             </div>
+            <br>
+            <div class="row">
+              <div class="col-xs-12 col-8 my-auto">
+                <h2>Pranota<br>
+                  <span class="small">Proforma No. # {{$invoice->proforma_no}}</span>
+                  <br>
+                </h2>
+              </div>
+              <div class="col-xs-12 col-4 text-center">
+                <div class="position-relative d-inline-block" style="width: 70%;">
+                  <img src="/logoInvoice/logoDS.jpg" class="img-fluid w-100" alt="Logo">
+                  <!-- <img src="/images/paid.png" class="position-absolute" alt="Paid" style="top: 150px; left: 50px; width: 80%; opacity: 0.7;"> -->
+                </div>
+              </div>
+            </div>
+          </div>
             <hr>
             <div class="row">
               <div class="col-6">

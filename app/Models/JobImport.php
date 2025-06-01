@@ -22,6 +22,7 @@ class JobImport extends Model
         'container_key',
         'container_no',
         'ves_id',
+        'extend_flag',
     ];
 
     public function Kapal()

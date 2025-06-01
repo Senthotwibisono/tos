@@ -123,7 +123,7 @@ class TransactionController extends Controller
     {
         // var_dump($va->invoice_type);
         // die();
-        if (in_array($va->invoice_type, ['Export', 'EXPORT'])) {
+        if (in_array($va->invoice_type, ['Export', 'EXPORT', 'export'])) {
             // var_dump($va->invoice_type);
             // die();
             try {
@@ -132,14 +132,14 @@ class TransactionController extends Controller
                 \Log::error('Payment failed for VA ID ' . $va->id . ': ' . $th->getMessage());
                 return false;
             }
-        } elseif (in_array($va->invoice_type, ['Import', 'IMPORT'])) {
+        } elseif (in_array($va->invoice_type, ['Import', 'IMPORT', 'import'])) {
             try {
                 $this->payImport($va);
             } catch (\Throwable $th) {
                 \Log::error('Payment failed for VA ID ' . $va->id . ': ' . $th->getMessage());
                 return false;
             }
-        } elseif (in_array($va->invoice_type, ['EXTEND', 'Extend'])) {
+        } elseif (in_array($va->invoice_type, ['EXTEND', 'Extend', 'extend'])) {
             try {
                 $this->payExtend($va);
             } catch (\Throwable $th) {
@@ -155,66 +155,11 @@ class TransactionController extends Controller
     private function payImport($va)
     {
         $detils = RefDetail::where('va_id', $va->id)->get();
-        foreach ($detils as $detil) {
-            $import = Import::find($detil->inv_id);
-            if ($import->inv_type == 'DSK') {
-                $noInvoice = $this->getInvoiceNoDSK();
-            } elseif ($import->inv_type == 'DS') {
-                $noInvoice = $this->getInvoiceNoDS();
-            } else {
-                return false;
-            }
-
-            $containerInvoice = Container::where('form_id', $import->form_id)->get();
-            $bigOS = OS::where('id', $import->os_id)->first();
-            foreach ($containerInvoice as $cont) {
-                $lastJobNo = JobImport::orderBy('id', 'desc')->value('job_no');
-                $jobNo = $this->getNextJob($lastJobNo);
-                $job = JobImport::where('inv_id', $import->id)->where('container_key', $cont->container_key)->first();
-                if (!$job) {
-                    $job = DB::transaction(function() use($import, $jobNo, $cont){
-                        return JobImport::create([
-                            'inv_id'=>$import->id,
-                            'job_no'=>$jobNo,
-                            'os_id'=>$import->os_id,
-                            'os_name'=>$import->os_name,
-                            'cust_id'=>$import->cust_id,
-                            'active_to'=>$import->expired_date,
-                            'container_key'=>$cont->container_key,
-                            'container_no'=>$cont->container_no,
-                            'ves_id'=>$cont->ves_id,
-                        ]);
-                    });
-                }
-                $item = Item::where('container_key', $cont->container_key)->first();
-                DB::transaction(function() use($item, $job, $bigOS, $noInvoice){
-                    $item->update([
-                        'invoice_no'=>$noInvoice,
-                        'job_no' => $job->job_no,
-                        'order_service' => $bigOS->order,
-                    ]);
-                });
-            }
-
-            $importDetils = ImportDetail::where('inv_id', $import->id)->get();
-            foreach ($importDetils as $detilI) {
-                DB::transaction(function() use($detilI, $noInvoice) {
-                    $detilI->update([
-                        'lunas' => 'Y',
-                        'inv_no'=>$noInvoice,
-                    ]);
-                });
-            }
-            
-            DB::transaction(function() use($import, $noInvoice){
-                $import->update([
-                    'lunas' => 'Y',
-                    'inv_no'=>$noInvoice,
-                    'lunas_at'=> Carbon::now(),
-                    'invoice_date'=> Carbon::now(),
-                ]);
-            });
-        }
+        $details = $detils->pluck('inv_id');
+        $action = 'lunas';
+        $response = $this->processImport($details, $action);
+        // var_dump($details, $response);
+        // die();
     }
 
     private function payExport($va)
@@ -295,70 +240,9 @@ class TransactionController extends Controller
     private function payExtend($va)
     {
         $detils = RefDetail::where('va_id', $va->id)->get();
-        // var_dump(json_encode($detils));
-        // die();
-        try {
-            foreach ($detils as $detil) {
-                $extend = Extend::find($detil->inv_id);
-                // var_dump($extend);
-                // die();
-                $noInvoice = $this->getNextInvoiceExtend();
-    
-                $containerInvoice = Container::where('form_id', $extend->form_id)->get();
-                $bigOS = OS::where('id', $extend->os_id)->first();
-                foreach ($containerInvoice as $cont) {
-                    $lastJobNo = JobExtend::orderBy('id', 'desc')->value('job_no');
-                    $jobNo = $this->getNextJobPerpanjangan($lastJobNo);
-                    $job = JobExtend::where('inv_id', $extend->id)->where('container_key', $cont->container_key)->first();
-                    if (!$job) {
-                        $job = DB::transaction(function() use($extend, $jobNo, $cont){
-                            return JobExtend::create([
-                                'inv_id'=>$extend->id,
-                                'job_no'=>$jobNo,
-                                'os_id'=>$extend->os_id,
-                                'os_name'=>$extend->os_name,
-                                'cust_id'=>$extend->cust_id,
-                                'active_to'=>$extend->expired_date,
-                                'container_key'=>$cont->container_key,
-                                'container_no'=>$cont->container_no,
-                                'ves_id'=>$cont->ves_id,
-                            ]);
-                        });
-                    }
-                    $item = Item::where('container_key', $cont->container_key)->first();
-                    DB::transaction(function() use($item, $job, $bigOS, $noInvoice){
-                        $item->update([
-                            'invoice_no'=>$noInvoice,
-                            'job_no' => $job->job_no,
-                            'order_service' => $bigOS->order,
-                        ]);
-                    });
-                }
-    
-                $extendDetils = ExtendDetail::where('inv_id', $extend->id)->get();
-                foreach ($extendDetils as $detilE) {
-                    DB::transaction(function() use($detilE, $noInvoice) {
-                        $detilE->update([
-                            'lunas' => 'Y',
-                            'inv_no'=>$noInvoice,
-                        ]);
-                    });
-                }
-                
-                DB::transaction(function() use($extend, $noInvoice){
-                    $extend->update([
-                        'lunas' => 'Y',
-                        'inv_no'=>$noInvoice,
-                        'lunas_at'=> Carbon::now(),
-                        'invoice_date'=> Carbon::now(),
-                    ]);
-                });
-            }
-        } catch (\Throwable $th) {
-            dd($th->getMessage());
-            return false;
-
-        }
+        $details = $detils->pluck('inv_id');
+        $action = 'lunas';
+        $response = $this->processExtend($details, $action);
     }
 
     private function getInvoiceNoOS()
@@ -453,5 +337,206 @@ class TransactionController extends Controller
         $lastNumber = (int)substr($lastInvoice, 5);
         $nextNumber = $lastNumber + 1;
         return 'P' . str_pad($nextNumber, 7, '0', STR_PAD_LEFT);
+    }
+
+    // Manual Payment
+    public function manualImport($data)
+    {
+        $valueData = $data['data']['data'];
+        $action = $data['data']['action'];
+        $singleInvoice = Import::find($valueData['id']);
+        $details = Import::where('id', $valueData['id'])->pluck('id');
+        if ($valueData['couple'] == 'Y') {
+            $details = Import::where('form_id', $singleInvoice->form_id)->pluck('id');
+        }
+        // var_dump($details);
+        // die();
+        $response = $this->processImport($details, $action);
+        return $response;
+        
+    }
+
+    private function processImport($details, $action)
+    {
+        try {
+            $lunas = ($action == 'lunas') ? 'Y' : 'P';
+            foreach ($details as $detil) {
+                $import = Import::find($detil);
+                if ($import->inv_type == 'DSK') {
+                    $noInvoice = ($import->inv_no) ? $import->inv_no : $this->getInvoiceNoDSK();
+                } elseif ($import->inv_type == 'DS') {
+                    $noInvoice = ($import->inv_no) ? $import->inv_no : $this->getInvoiceNoDS();
+                } else {
+                    return false;
+                }
+
+                $piutangAt = ($lunas == 'P') ? ($import->piutang_at ? $import->piutang_at : Carbon::now()) : $import->piutang_at ;
+                $lunasAt = ($lunas == 'Y') ? ($import->lunas_at ? $import->lunas_at : Carbon::now()) : $import->lunas_at;
+                $invoiceDate = ($lunas == 'Y') ? $lunasAt : $piutangAt;
+    
+                $containerInvoice = Container::where('form_id', $import->form_id)->get();
+                $bigOS = OS::where('id', $import->os_id)->first();
+                foreach ($containerInvoice as $cont) {
+                    $lastJobNo = JobImport::orderBy('id', 'desc')->value('job_no');
+                    $jobNo = $this->getNextJob($lastJobNo);
+                    $job = JobImport::where('inv_id', $import->id)->where('container_key', $cont->container_key)->first();
+                    if (!$job) {
+                        $expired = Carbon::parse($cont->SingleCont->disc_date)->addDays(4);
+                        $job = DB::transaction(function() use($import, $jobNo, $cont, $expired){
+                            return JobImport::create([
+                                'inv_id'=>$import->id,
+                                'job_no'=>$jobNo,
+                                'os_id'=>$import->os_id,
+                                'os_name'=>$import->os_name,
+                                'cust_id'=>$import->cust_id,
+                                'active_to'=>$expired,
+                                'container_key'=>$cont->container_key,
+                                'container_no'=>$cont->container_no,
+                                'ves_id'=>$cont->ves_id,
+                            ]);
+                        });
+                    }
+                    $item = Item::where('container_key', $cont->container_key)->first();
+                    DB::transaction(function() use($item, $job, $bigOS, $noInvoice){
+                        $item->update([
+                            'invoice_no'=>$noInvoice,
+                            'job_no' => $job->job_no,
+                            'order_service' => $bigOS->order,
+                            'os_id' => $job->os_id, 
+                        ]);
+                    });
+                }
+    
+                $importDetils = ImportDetail::where('inv_id', $import->id)->get();
+                foreach ($importDetils as $detilI) {
+                    DB::transaction(function() use($detilI, $noInvoice, $lunas) {
+                        $detilI->update([
+                            'lunas' => $lunas,
+                            'inv_no'=>$noInvoice,
+                        ]);
+                    });
+                }
+                
+                DB::transaction(function() use($import, $noInvoice, $lunas, $lunasAt, $piutangAt, $invoiceDate){
+                    $import->update([
+                        'lunas' => $lunas,
+                        'inv_no'=>$noInvoice,
+                        'lunas_at' => $lunasAt,
+                        'piutang_at' => $piutangAt,
+                        'invoice_date'=> $invoiceDate,
+                    ]);
+                });
+            }
+            return response()->json([
+                'success' => true,
+                'message' => 'Data udpated'
+            ]);
+        } catch (\Throwable $th) {
+           return response()->json([
+                'success' => false,
+                'message' => 'Something wrong in :' . $th->getMessage(),
+            ]);
+        }
+    }
+
+    public function manualExtend($data)
+    {
+        $valueData = $data['data']['data'];
+        $action = $data['data']['action'];
+        $singleInvoice = Extend::find($valueData['id']);
+        $details = Extend::where('id', $valueData['id'])->pluck('id');
+        if ($valueData['couple'] == 'Y') {
+            $details = Extend::where('form_id', $singleInvoice->form_id)->pluck('id');
+        }
+        // var_dump($details);
+        // die();
+        $response = $this->processExtend($details, $action);
+        return $response;
+    }
+
+    private function processExtend($details, $action)
+    {
+        try {
+            foreach ($details as $detil) {
+                $lunas = ($action == 'lunas') ? 'Y' : 'P';
+                $extend = Extend::find($detil);
+                if ($extend->Form->tipe == 'P') {
+                    $query = Extend::find($extend->Form->do_id);
+                    $jobQuery = JobExtend::where('inv_id', $extend->Form->do_id);
+                }elseif ($extend->Form->tipe == 'I') {
+                    $query = Import::find($extend->Form->do_id);
+                    $jobQuery = JobImport::where('inv_id', $extend->Form->do_id);
+                }
+
+                $piutangAt = ($lunas == 'P') ? ($extend->piutang_at ? $extend->piutang_at : Carbon::now()) : $extend->piutang_at ;
+                $lunasAt = ($lunas == 'Y') ? ($extend->lunas_at ? $extend->lunas_at : Carbon::now()) : $extend->lunas_at;
+                $invoiceDate = ($lunas == 'Y') ? $lunasAt : $piutangAt;
+
+
+                $noInvoice = ($extend->inv_no) ? $extend->inv_no : 'DS-'.$this->getNextInvoiceExtend();
+                $containerInvoice = Container::where('form_id', $extend->form_id)->get();
+                $bigOS = OS::where('id', $extend->os_id)->first();
+                foreach ($containerInvoice as $cont) {
+                    $lastJobNo = JobExtend::orderBy('id', 'desc')->value('job_no');
+                    $jobNo = $this->getNextJobPerpanjangan($lastJobNo);
+                    $job = JobExtend::where('inv_id', $extend->id)->where('container_key', $cont->container_key)->first();
+                    if (!$job) {
+                        $job = DB::transaction(function() use($extend, $jobNo, $cont){
+                            return JobExtend::create([
+                                'inv_id'=>$extend->id,
+                                'job_no'=>$jobNo,
+                                'os_id'=>$extend->os_id,
+                                'os_name'=>$extend->os_name,
+                                'cust_id'=>$extend->cust_id,
+                                'active_to'=>$extend->expired_date,
+                                'container_key'=>$cont->container_key,
+                                'container_no'=>$cont->container_no,
+                                'ves_id'=>$cont->ves_id,
+                            ]);
+                        });
+                    }
+
+                    $oldJob = $jobQuery->where('container_key', $cont->container_key)->update(['extend_flag' => 'Y']);
+
+                    $item = Item::where('container_key', $cont->container_key)->first();
+                    DB::transaction(function() use($item, $job, $bigOS, $noInvoice){
+                        $item->update([
+                            'invoice_no'=>$noInvoice,
+                            'job_no' => $job->job_no,
+                            'order_service' => $bigOS->order,
+                        ]);
+                    });
+                }
+    
+                $extendDetils = ExtendDetail::where('inv_id', $extend->id)->get();
+                foreach ($extendDetils as $detilE) {
+                    DB::transaction(function() use($detilE, $noInvoice, $lunas) {
+                        $detilE->update([
+                            'lunas' => $lunas,
+                            'inv_no'=>$noInvoice,
+                        ]);
+                    });
+                }
+                
+                DB::transaction(function() use($extend, $noInvoice, $lunas, $lunasAt, $piutangAt, $invoiceDate){
+                    $extend->update([
+                        'lunas' => $lunas,
+                        'inv_no'=>$noInvoice,
+                        'lunas_at' => $lunasAt,
+                        'piutang_at' => $piutangAt,
+                        'invoice_date'=> $invoiceDate,
+                    ]);
+                });
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data udpated'
+            ]);
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+            return false;
+
+        }
     }
 }

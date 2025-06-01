@@ -642,9 +642,6 @@ class CustomerExtendController extends CustomerMainController
                     'message' => 'Opsss sudah ada Pranota yang terbit, handa hanya dapat melakukan cancel invoice',
                 ]);
             }
-           
-    
-            $containerInvoice = Container::where('form_id', $form->id)->get();
     
             Container::where('form_id')->delete();
     

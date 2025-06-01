@@ -10,7 +10,20 @@
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
     <div class="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full text-center">
-        <img src="{{ asset('logo/icon.png') }}" alt="" class="w-1/2 mx-auto mb-4">
+        <div class="relative w-1/2 mx-auto mb-4">
+            <!-- Gambar utama -->
+            <img src="{{ asset('logo/icon.png') }}" alt="icon" class="w-full">
+            <!-- Gambar cancel di pojok kanan atas -->
+            @if($va->status == 'C')
+              <img src="{{ asset('images/cancel.png') }}" alt="cancel" class="absolute top-20 left-20  rounded-full">
+            @endif
+            @if($va->status == 'Y')
+              <img src="{{ asset('images/paid.png') }}" alt="cancel" class="absolute top-20 left-20  rounded-full">
+            @endif
+            @if($va->status == 'E')
+              <img src="{{ asset('images/expired.png') }}" alt="cancel" class="absolute top-20 left-20  rounded-full">
+            @endif
+        </div>
 
         <h1 class="text-2xl font-bold text-gray-800 mb-4">Pembayaran Virtual Account</h1>   
 
@@ -20,12 +33,17 @@
         </div>  
 
         <p class="text-gray-500 mb-2">Waktu tersisa untuk membayar</p>
-        <div id="countdown" class="text-xl font-semibold text-red-500"></div>   
-
+        @if($va->status == 'N')
+          <div id="countdown" class="text-xl font-semibold text-red-500"></div>   
+        @endif   
         <div class="mt-6">
+          @if($va->status == 'N')
             <button onclick="copyVA()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl transition">
                 Salin Nomor VA
             </button>
+          @else
+           <h1 class="text-2xl font-bold text-gray-800 mb-4">Transaksi telah ditutup</h1>   
+          @endif
         </div>
         <br>
         <b>Rincian dan Total</b>

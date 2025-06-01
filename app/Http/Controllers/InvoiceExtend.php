@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+
 use App\Models\OrderService as OS;
 use App\Models\OSDetail;
 use App\Models\MasterTarif as MT;
@@ -113,13 +115,19 @@ class InvoiceExtend extends Controller
             }
         })
         ->addColumn('action', function($inv){
-            return '<button type="button" id="pay" data-id="'.$inv->id.'" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>';
+            if (in_array($inv->lunas, ['N', 'P'])) {
+                return '<button type="button" id="pay" data-type="extend" data-id="'.$inv->id.'" class="btn btn-sm btn-success" onClick="searchToPay(this)"><i class="fa fa-cogs"></i></button>';
+            }elseif ($inv->lunas == 'Y') {
+                return '<span class="badge bg-success text-white">Paid</span>';
+            }else{
+                return '<span class="badge bg-danger text-white">Canceled</span>';
+            }
         })
         ->addColumn('delete', function($inv){
-            if ($inv->lunas == 'N') {
-                return '<button type="button" data-id="'.$inv->form_id.'" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>';
+           if ($inv->lunas != 'C') {
+                return '<button type="button" data-type="extend" data-id="'.$inv->form_id.'" class="btn btn-sm btn-danger" onClick="cancelInvoice(this)"><i class="fa fa-trash"></i></button>';
             }else {
-                return '-';
+                return '<span class="badge bg-danger text-white">Canceled</span>';
             }
         })
         ->addColumn('viewPhoto', function($inv){
@@ -168,7 +176,7 @@ class InvoiceExtend extends Controller
             return $form->doOnline->bl_no ?? '-';
         })
         ->addColumn('edit', function($form){
-            return '<a href="/billing/import/delivery-editForm/'.$form->id.'" class="btn btn-outline-warning">Edit</a>';
+            return '<a href="/billing/import/extend-editForm/'.$form->id.'" class="btn btn-outline-warning">Edit</a>';
         })
         ->rawColumns(['edit'])
         ->make(true);
@@ -194,33 +202,32 @@ class InvoiceExtend extends Controller
         // Pass the merged collection to the view or further processing
         $data['oldInv'] = $mergedInvoices;
         $data['customer'] = Customer::get();
-        $data['now'] = Carbon::now();
+        $data['now'] = Carbon::now()->format('Y-m-d');
         $data['OrderService'] = OS::where('ie', '=', 'X')->get();
         return view('billingSystem.extend.form.createForm', $data);
     }
 
     public function EditForm($id)
     {
+        $form = Form::find($id);
         $data['title'] = 'Extend Form';
         $user = Auth::user();
         $data["user"] = $user->id;
-
-        $tumpuk = ImportDetail::where('count_by', 'T')->get();
-        $invIds = $tumpuk->pluck('inv_id');
-        $invoiceImport = InvoiceImport::whereNot('form_id',  '=' , '')->whereNot('lunas', '=', 'N')->get();
-    
-        // Retrieve invoices from Extend where 'lunas' is 'Y'
-        $extendInv = Extend::whereNot('lunas', '=', 'N')->get();
-    
-        // Merge the collections
-        $mergedInvoices = $invoiceImport->merge($extendInv);
-    
-        // Pass the merged collection to the view or further processing
-        $data['oldInv'] = $mergedInvoices;
         $data['customer'] = Customer::get();
         $data['now'] = Carbon::now();
         $data['OrderService'] = OS::where('ie', '=', 'X')->get();
-        $data['containerInvoice'] = Container::where('form_id', $id)->get();
+        $containers = Container::where('form_id', $id)->get();
+        
+        if ($form->tipe == 'I') {
+            $query = InvoiceImport::find($form->do_id);
+            $jobQuery = new JobImport;
+        }elseif ($form->tipe == 'P') {
+            $query = Extend::find($form->do_id);
+            $jobQuery = new JobExtend;
+        }
+
+        $data['jobs'] = $jobQuery->where('inv_id', $query->id)->whereIn('container_key', $containers->pluck('container_key'))->get();
+
         $data['form'] = Form::where('id', $id)->first();
         return view('billingSystem.extend.form.editForm', $data);
     }
@@ -1197,6 +1204,177 @@ public function ReportExcelPiutang(Request $request)
         } catch (\Throwable $th) {
             return back()->with('error', 'Something Wrong in : ' . $th->getMessage());
         }
+    }
+
+    public function newPreinvoice($id)
+    {
+        $form = Form::find($id);
+        $data['title'] = "Preinvoice Perpanjangan| " . $form->Service->name;
+        $data['form'] = $form;
+
+        $containers = Container::where('form_id', $form->id)->get();
+        $data['listContainers'] = $containers;
+
+        $service = OS::find($form->os_id);
+        $serviceDetail = OSDetail::where('os_id', $service->id)->orderBy('master_item_name', 'asc')->get();
+
+        $serviceDSK = $serviceDetail->where('type', 'DSK');
+        $data['serviceDSK'] = $serviceDSK;
+        $data['dsk'] = $serviceDSK->isNotEmpty() ? 'Y' : 'N'; 
+
+        $serviceDS = $serviceDetail->where('type', 'XTD');
+        $data['serviceDS'] = $serviceDS;
+        $data['ds'] = $serviceDS->isNotEmpty() ? 'Y' : 'N';
+
+        // dd($serviceDetail, $serviceDS, $serviceDSK);
+
+        $data['size'] = $containers->pluck('ctr_size')->unique();
+        $data['status'] = $containers->pluck('ctr_status')->unique();
+
+        $tarif = MT::where('os_id', $service->id)->select('ctr_size', 'ctr_status')->get();
+        $checkTarif = $tarif->toArray();
+        $invalidContainer = $containers->filter(function($container) use ($checkTarif){
+            return !in_array(['ctr_size'=>$container->ctr_size, 'ctr_status'=>$container->ctr_status], $checkTarif);
+        });
+        if ($invalidContainer->isNotEmpty()) {
+            $invalidContainerNumber = $invalidContainer->pluck('container_no')->implode(', ');
+            return redirect()->back()->with('error', 'Hubungi Admin, terdapat container yang belum memiliki master tarif :' . $invalidContainerNumber);
+        }
+        $groupContainer = $containers->unique('ctr_size', 'ctr_status')->pluck('ctr_size', 'ctr_status');
+        $data['sizes'] = $containers->pluck('ctr_size')->unique();
+        $data['statuses'] = $containers->pluck('ctr_status')->unique();
+        $data['groupContainer'] = $groupContainer;
+
+        $data['tarif'] = MT::where('os_id', $service->id)->get();
+        $data['tarifDetail'] = MTDetail::whereIn('master_tarif_id', $data['tarif']->pluck('id'))->get();
+        // dd($service, $data['dsk'], $data['size'], $data['status'], $checkTarif, $invalidContainer);
+
+        return view('billingSystem.extend.form.newPreinvoice.preinvoice', $data)->with('success', 'Seilahkan lanjutkan ke tahap berikut nya');
+    }
+
+    public function createInvoice(Request $request)
+    {
+        // dd($request->all());
+
+        $form = Form::find($request->formId);
+        $service = OS::find($form->os_id);
+        $containers = Container::where('form_id', $form->id)->get();
+        $groupContainer = $containers->unique('ctr_size', 'ctr_status')->pluck('ctr_size', 'ctr_status');
+        $sizes = $containers->pluck('ctr_size')->unique();
+        $statuses = $containers->pluck('ctr_status')->unique();
+
+        $serviceDetail = OSDetail::where('os_id', $service->id)->get();
+        $tarif = MT::where('os_id', $service->id)->get();
+        $tarifDetail = MTDetail::whereIn('master_tarif_id', $tarif->pluck('id'))->get();
+        try {
+            if ($serviceDetail->where('type', 'DSK')->isNotEmpty()) {
+                $this->processInvoice($request, $form, $service, $containers, $groupContainer, $sizes, $statuses, $serviceDetail->where('type', 'DSK'), $tarif, $tarifDetail, 'DSK');
+            }
+    
+            if ($serviceDetail->where('type', 'XTD')->isNotEmpty()) {
+                $this->processInvoice($request, $form, $service, $containers, $groupContainer, $sizes, $statuses, $serviceDetail->where('type', 'XTD'), $tarif, $tarifDetail, 'DS');
+            }
+
+            $form->update(['done'=>'Y']);
+            foreach ($containers as $cont) {
+                $item = Item::find($cont->container_key);
+                $item->selected_do = 'Y';
+                $item->os_id = $form->os_id;
+                $item->order_service = $service->order;
+                $item->save();
+            }
+
+            return redirect()->route('index-extend')->with('success', 'Invoice berhasil di buat');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Something Wrong : '.$th->getMessage());
+        }
+    }
+
+    private function processInvoice($request, $form, $service, $containers, $groupContainer, $sizes, $statuses, $serviceDetails, $tarif, $tarifDetail, $type)
+    {
+        DB::transaction(function () use ($request, $form, $service, $containers, $groupContainer, $sizes, $statuses, $serviceDetails, $tarif, $tarifDetail, $type) {
+            $header = $this->createInvoiceHeader($request, $form, $service, $type);
+
+            foreach ($sizes as $size) {
+                foreach ($statuses as $status) {
+                    $jumlahCont = $containers->where('ctr_size', $size)->where('ctr_status', $status)->count();
+                    if ($jumlahCont > 0) {
+                        foreach ($serviceDetails as $detail) {
+                            $this->createInvoiceDetail($header, $form, $detail, $tarif, $tarifDetail, $size, $status, $jumlahCont);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private function createInvoiceHeader($request, $form, $service, $type)
+    {
+        return Extend::create([
+            'form_id' => $form->id,
+            'inv_id' => $form->do_id,
+            'proforma_no' => $this->getNextProformaNumber(),
+            'cust_id' => $form->customer->id,
+            'cust_name' => $form->customer->name,
+            'fax' => $form->customer->fax,
+            'npwp' => $form->customer->npwp,
+            'alamat' => $form->customer->alamat,
+            'os_id' => $service->id,
+            'os_name' => $service->name,
+            'total' => $request->input("total$type"),
+            'admin' => $request->input("admin$type"),
+            'pajak' => $request->input("ppn$type"),
+            'discount' => $request->input("discount$type"),
+            'grand_total' => $request->input("grandTotal$type"),
+            'order_by' => Auth::user()->name,
+            'order_at' => Carbon::now(),
+            'disc_date' => $form->disc_date,
+            'expired_date' => $form->expired_date,
+            'user_id' => Auth::user()->id,
+            'lunas' => 'N',
+        ]);
+    }
+
+    private function createInvoiceDetail($header, $form, $detail, $tarif, $tarifDetail, $size, $status, $jumlahCont)
+    {
+        $selectedTarif = $tarif->where('ctr_size', $size)->where('ctr_status', $status)->first();
+        $tarifDSK = $tarifDetail->where('master_tarif_id', $selectedTarif->id)->where('master_item_id', $detail->master_item_id)->first();
+
+        $jumlahHari = $this->calculateDays($form, $detail);
+        $kode = ($detail->kode != 'PASSTRUCK') ? $detail->kode . $size : 'PASSTRUCK';
+        $harga = $jumlahCont * $jumlahHari * $tarifDSK->tarif;
+        // dd($detail);
+        Detail::create([
+            'inv_id' => $header->id,
+            'inv_type' => 'XTD',
+            'keterangan' => $form->service->name,
+            'ukuran' => ($detail->MItem->count_by != 'O') ? $size : '0',
+            'ctr_status' => ($detail->MItem->count_by != 'O') ? $status : '-',
+            'jumlah' => ($detail->MItem->count_by != 'O') ? $jumlahCont : 1,
+            'satuan' => 'unit',
+            'expired_date' => $form->expired_date,
+            'order_date' => $header->order_at,
+            'lunas' => 'N',
+            'cust_id' => $form->cust_id,
+            'cust_name' => $form->customer->name,
+            'os_id' => $form->os_id,
+            'jumlah_hari' => $jumlahHari,
+            'master_item_id' => $detail->master_item_id,
+            'master_item_name' => $detail->master_item_name,
+            'kode' => $kode,
+            'tarif' => $tarifDSK->tarif,
+            'total' => $harga,
+            'form_id' => $form->id,
+            'count_by' => $detail->MItem->count_by,
+        ]);
+    }
+
+    private function calculateDays($form, $detail)
+    {
+        if ($detail->MItem->count_by == 'T') {
+            return ($detail->MItem->massa == 3) ? $form->massa3 : (($detail->MItem->massa == 2) ? $form->massa2 : 1);
+        }
+        return 1;
     }
 }
 
