@@ -99,47 +99,47 @@
         countdown(); // tampilkan langsung tanpa tunggu 1 detik 
 
         function copyVA() {
-    const vaNumber = "{{ $va->virtual_account }}";
+           const vaNumber = "{{ $va->virtual_account }}";
 
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(vaNumber).then(() => {
-            alert("Nomor VA disalin!");
-        }).catch(err => {
-            alert("Gagal menyalin teks: " + err);
-        });
-    } else {
-        // Fallback for older browsers
-        const textArea = document.createElement("textarea");
-        textArea.value = vaNumber;
-        // Avoid scrolling to bottom
-        textArea.style.position = "fixed";
-        textArea.style.top = 0;
-        textArea.style.left = 0;
-        textArea.style.width = "2em";
-        textArea.style.height = "2em";
-        textArea.style.padding = 0;
-        textArea.style.border = "none";
-        textArea.style.outline = "none";
-        textArea.style.boxShadow = "none";
-        textArea.style.background = "transparent";
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
+           if (navigator.clipboard && navigator.clipboard.writeText) {
+               navigator.clipboard.writeText(vaNumber).then(() => {
+                   alert("Nomor VA disalin!");
+               }).catch(err => {
+                   alert("Gagal menyalin teks: " + err);
+               });
+           } else {
+               // Fallback for older browsers
+               const textArea = document.createElement("textarea");
+               textArea.value = vaNumber;
+               // Avoid scrolling to bottom
+               textArea.style.position = "fixed";
+               textArea.style.top = 0;
+               textArea.style.left = 0;
+               textArea.style.width = "2em";
+               textArea.style.height = "2em";
+               textArea.style.padding = 0;
+               textArea.style.border = "none";
+               textArea.style.outline = "none";
+               textArea.style.boxShadow = "none";
+               textArea.style.background = "transparent";
+               document.body.appendChild(textArea);
+               textArea.focus();
+               textArea.select();
 
-        try {
-            const successful = document.execCommand('copy');
-            if(successful) {
-                alert("Nomor VA disalin!");
-            } else {
-                alert("Gagal menyalin teks.");
-            }
-        } catch (err) {
-            alert("Gagal menyalin teks: " + err);
+               try {
+                   const successful = document.execCommand('copy');
+                   if(successful) {
+                       alert("Nomor VA disalin!");
+                   } else {
+                       alert("Gagal menyalin teks.");
+                   }
+               } catch (err) {
+                   alert("Gagal menyalin teks: " + err);
+               }
+
+               document.body.removeChild(textArea);
+           }
         }
-
-        document.body.removeChild(textArea);
-    }
-}
 
     </script>
 

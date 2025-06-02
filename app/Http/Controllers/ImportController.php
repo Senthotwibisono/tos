@@ -2060,6 +2060,10 @@ private function getNextInvoiceDSK()
 
         $jumlahHari = $this->calculateDays($form, $detail);
         $kode = ($detail->kode != 'PASSTRUCK') ? $detail->kode . $size : 'PASSTRUCK';
+        if ($detail->MItem->count_by == 'O') {
+            $jumlahCont = 1;
+        };
+        
         $harga = $jumlahCont * $jumlahHari * $tarifDSK->tarif;
         // dd($detail);
         Detail::create([

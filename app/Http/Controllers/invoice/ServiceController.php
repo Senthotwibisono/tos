@@ -135,7 +135,7 @@ class ServiceController extends Controller
     public function doData(Request $request)
     {
         $do = DOonline::find($request->doId);
-        if (Carbon::parse($do->expired) < Carbon::now()) {
+        if (Carbon::parse($do->expired)->addDays() < Carbon::now()) {
             return response()->json([
                 'success' => false,
                 'message' => 'DO Telah expired',
@@ -715,7 +715,6 @@ class ServiceController extends Controller
 
         // Query untuk import
         $importQuery = InvoiceImport::whereIn('lunas', ['Y', 'P'])
-            ->where('inv_type', 'DS')
             ->select('inv_no', 'id', 'form_id')
             ->groupBy('inv_no', 'id', 'form_id');   
 
@@ -828,18 +827,25 @@ class ServiceController extends Controller
        }
 
         $jobs = $queryJob->where('inv_id', $query->id)->whereIn('id', $request->container)->get();
-        $grouped = $jobs->groupBy('active_to');
+        $grouped = $jobs->groupBy(function ($item) {
+            return Carbon::parse($item->active_to)->format('Y-m-d');
+        });     
+
+        // Ambil tanggal yang paling banyak muncul
         $mostCommonActiveTo = $grouped->sortByDesc(function ($group) {
             return $group->count();
         })->keys()->first();        
+
+        // Filter container yang memiliki tanggal active_to berbeda dari mayoritas
         $differentContainers = $jobs->filter(function ($item) use ($mostCommonActiveTo) {
-            return $item->active_to != $mostCommonActiveTo;
+            return Carbon::parse($item->active_to)->format('Y-m-d') !== $mostCommonActiveTo;
         })->pluck('container_no');      
 
+        // Jika ada yang berbeda, return error
         if ($differentContainers->isNotEmpty()) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Beberapa container memiliki active_to yang berbeda dari mayoritas, ' . $differentContainers->values(),
+                'message' => 'Beberapa container memiliki active_to yang berbeda dari mayoritas: ' . $differentContainers->join(', '),
                 'containers' => $differentContainers->values()
             ]);
         }

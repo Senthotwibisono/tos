@@ -76,6 +76,7 @@
                   @else
                     @php
                       $adminDS = $tarifDS->tarif ?? 0;
+                      $totalDS += $adminDS;
                     @endphp
                   @endif
                 @endforeach
@@ -97,20 +98,20 @@
               </h1>
               <h4 class="text-white">Total Amount :</h4>
               <h4 class="text-white">Admin :</h4>
-              <h4 class="text-white">Tax 11%      :</h4>
               <h4 class="text-white">Discount :</h4>
+              <h4 class="text-white">Tax 11%      :</h4>
               <h4 class="text-white">Grand Total  :</h4>
           </div>
           @php
-            $totalAmountDS = $totalDS + $adminDS;
+            $totalAmountDS = ($totalDS)  - $form->discount_ds;
             $ppnDS = ($totalAmountDS * 11)/100;
-            $grandTotalDS = $totalAmountDS + $ppnDS - $form->discount_ds; 
+            $grandTotalDS = $totalAmountDS + $ppnDS; 
           @endphp
           <div class="col-6 mt-4" style="text-align:right;">
             <h4 class="text-white"> Rp. {{number_format($totalDS, 2, ',', '.')}}</h4>
             <h4 class="text-white"> Rp. {{number_format($adminDS, 2, ',', '.')}}</h4>
-            <h4 class="text-white">Rp. {{number_format($ppnDS, 2, ',', '.')}}</h4>
             <h4 class="text-white">Rp. {{number_format($form->discount_ds, 2, ',', '.')}}</h4>
+            <h4 class="text-white">Rp. {{number_format($ppnDS, 2, ',', '.')}}</h4>
             <h4 class="color:#ff5265;">Rp. {{number_format($grandTotalDS, 2, ',', '.')}} </h4>
             <input type="hidden" name="adminDS" value="{{$adminDS}}">
             <input type="hidden" name="totalDS" value="{{$totalDS}}">

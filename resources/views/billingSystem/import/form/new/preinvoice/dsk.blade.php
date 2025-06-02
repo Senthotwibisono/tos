@@ -67,6 +67,7 @@
                   @else
                     @php
                       $adminDSK = $tarifDSK->tarif ?? 0;
+                      $totalDSK += $adminDSK;
                     @endphp
                   @endif
                 @endforeach
@@ -88,21 +89,21 @@
               </h1>
               <h4 class="text-white">Total Amount :</h4>
               <h4 class="text-white">Admin :</h4>
-              <h4 class="text-white">Tax 11%      :</h4>
               <h4 class="text-white">Discount :</h4>
+              <h4 class="text-white">Tax 11%      :</h4>
               <h4 class="text-white">Grand Total  :</h4>
           </div>
           @php
-            $totalAmountDSK = $totalDSK + $adminDSK;
-            $ppnDSK = ($totalAmountDSK * 11)/100;
             $discountDSK = $form->discount_dsk;
-            $grandTotalDSK = $totalAmountDSK + $ppnDSK - $discountDSK; 
+            $totalAmountDSK = ($totalDSK)  - $discountDSK;
+            $ppnDSK = ($totalAmountDSK * 11)/100;
+            $grandTotalDSK = $totalAmountDSK + $ppnDSK; 
           @endphp
           <div class="col-6 mt-4" style="text-align:right;">
             <h4 class="text-white"> Rp. {{number_format($totalDSK, 2, ',', '.')}}</h4>
             <h4 class="text-white"> Rp. {{number_format($adminDSK, 2, ',', '.')}}</h4>
-            <h4 class="text-white">Rp. {{number_format($ppnDSK, 2, ',', '.')}}</h4>
             <h4 class="text-white">Rp. {{number_format($discountDSK, 2, ',', '.')}}</h4>
+            <h4 class="text-white">Rp. {{number_format($ppnDSK, 2, ',', '.')}}</h4>
             <h4 class="color:#ff5265;">Rp. {{number_format($grandTotalDSK, 2, ',', '.')}} </h4>
             <input type="hidden" name="adminDSK" value="{{$adminDSK}}">
             <input type="hidden" name="totalDSK" value="{{$totalDSK}}">
