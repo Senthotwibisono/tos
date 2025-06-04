@@ -76,7 +76,6 @@
                   @else
                     @php
                       $adminDS = $tarifDS->tarif ?? 0;
-                      $totalDS += $adminDS;
                     @endphp
                   @endif
                 @endforeach
@@ -103,6 +102,7 @@
               <h4 class="text-white">Grand Total  :</h4>
           </div>
           @php
+            $totalDS += $adminDS;
             $totalAmountDS = ($totalDS)  - $form->discount_ds;
             $ppnDS = ($totalAmountDS * 11)/100;
             $grandTotalDS = $totalAmountDS + $ppnDS; 

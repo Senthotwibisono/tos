@@ -219,8 +219,14 @@
                 <p><strong>Rp. {{ number_format($admin, 0, ',', '.') }} ,00 ~</strong></p>
                 <p><strong>Rp. {{ number_format($invoice->pajak, 0, ',', '.') }}, 00 ~</strong></p>
                 <p><strong>Rp. {{ number_format($invoice->grand_total, 0, ',', '.') }},00 ~</strong></p> -->
-                <p><strong>Rp. {{ number_format($admin, 2, ',', '.') }}</strong></p>
-                <p><strong>Rp. {{ number_format($invoice->total + $admin, 2, ',', '.') }}</strong></p>
+                <p><strong>Rp. {{ number_format($invoice->admin, 2, ',', '.') }}</strong></p>
+                @php
+                  $tanggalBerlaku = \Carbon\Carbon::create(2025, 6, 1);
+                  $orderAt = \Carbon\Carbon::parse($invoice->order_at);
+                  $total = $orderAt->gt($tanggalBerlaku) ? $invoice->total : $invoice->total + $admin;
+                @endphp
+                  
+                <p><strong>Rp. {{ number_format($total, 2, ',', '.') }}</strong></p>
                 <p><strong>Rp. {{ number_format($invoice->discount, 2, ',', '.') }}</strong></p>
                 <p><strong>Rp. {{ number_format($invoice->pajak, 2, ',', '.') }}</strong></p>
                 <p><strong>Rp. {{ number_format($invoice->grand_total, 2, ',', '.') }}</strong></p>
