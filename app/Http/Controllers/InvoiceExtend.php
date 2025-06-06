@@ -1107,7 +1107,6 @@ public function ReportExcelPiutang(Request $request)
                     $item->update([
                         'invoice_no' => $oldInv->inv_no,
                         'job_no' => $singleJob->job_no,
-                        'os_id' => $oldInv->os_id,
                     ]);
                 }
             }
