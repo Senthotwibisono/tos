@@ -515,12 +515,10 @@ class ServiceController extends Controller
                     if ($containers->isNotEmpty()) {
                         foreach ($containers as $cont) {
                             $item = Item::find($cont->container_key);
+                            $oldJob = $jobQuery->where('container_key', $cont->container_key)->first();
                             $item->update([
-                                'invoice_no' => null,
-                                'job_no' => null,
-                                'order_service' => null,
-                                'os_id' => null,
-                                'selected_do' => 'N',
+                                'invoice_no' => $oldJob->Invoice->inv_no ?? null,
+                                'job_no' => $oldJob->job_no ?? null,
                             ]);
 
                             $jobQuery->where('container_key', $cont->container_key)->update(['extend_flag' => 'N']);

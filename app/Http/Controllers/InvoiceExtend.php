@@ -157,6 +157,7 @@ class InvoiceExtend extends Controller
 
     public function extendDataForm(Request $request)
     {
+        set_time_limit(0);
         $form = Form::where('done', '=', 'N')->where('i_e', '=', 'X')->get();
 
         return DataTables::of($form)
