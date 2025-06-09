@@ -48,29 +48,15 @@
         <div class="card-body">
           <div class="row">
             <div class="col-12">
-              <table class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns" id="table1">
+              <table class="table table-hover table-striped" id="tableCoparn">
                 <thead>
                   <tr>
-                    <th>No</th>
                     <th>Container No</th>
                     <th>Booking No</th>
                     <th>Vessel</th>
                     <th>Edit</th>
                   </tr>
                 </thead>
-                <tbody>
-                @foreach($container as $cont)
-                <tr>
-                    <td>{{$loop->iteration}}</td>
-                    <td>{{$cont->container_no}}</td>
-                    <td>{{$cont->booking_no}}</td>
-                    <td>{{$cont->ves_name}}</td>
-                    <td>
-                      <a href="/billing/coparn/edit-{{$cont->container_key}}" class="btn btn-warning"><i class="fa fa-pencil"></i></a>
-                    </td>
-                </tr>
-                @endforeach
-                </tbody>
               </table>
             </div>
           </div>
@@ -80,5 +66,25 @@
   </section>
 
 </div>
+
+@endsection
+
+@section('custom_js')
+<script>
+  $(document).ready(function () {
+    $('#tableCoparn').DataTable({
+      processing: true,
+      serverSide: true,
+      scrollY: '50vh',
+      ajax: '{{route('coparn.masterData')}}',
+      columns: [
+        {data:'container_no', name:'container_no', className:'text-center'},
+        {data:'booking_no', name:'booking_no', className:'text-center'},
+        {data:'ves_name', name:'ves_name', className:'text-center'},
+        {data:'edit', name:'edit', className:'text-center'},
+      ]
+    });
+  });
+</script>
 
 @endsection

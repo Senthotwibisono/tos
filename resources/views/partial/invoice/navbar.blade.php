@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" style="width: 100%; max-width: 1500px; margin: 0 auto;">
   <ul>
     <li class="menu-item  ">
       <a href="/invoice/menu" class='menu-link'>

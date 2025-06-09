@@ -34,7 +34,7 @@
 
       </header>
 
-        <div class="content-wrapper container">
+        <div class="content-wrapper container" style="width: 100%; max-width: 1500px; margin: 0 auto;">
           @if(session('success'))
               <div class="alert alert-success">
                   {{ session('success') }}

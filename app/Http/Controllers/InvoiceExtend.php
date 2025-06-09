@@ -1275,13 +1275,6 @@ public function ReportExcelPiutang(Request $request)
             }
 
             $form->update(['done'=>'Y']);
-            foreach ($containers as $cont) {
-                $item = Item::find($cont->container_key);
-                $item->selected_do = 'Y';
-                $item->os_id = $form->os_id;
-                $item->order_service = $service->order;
-                $item->save();
-            }
 
             return redirect()->route('index-extend')->with('success', 'Invoice berhasil di buat');
         } catch (\Throwable $th) {

@@ -1021,6 +1021,7 @@ Route::middleware('permission:MasterTarif Export')->group(function(){
 // coparn
 Route::middleware('permission:Coparn')->group(function(){
   Route::get('/billing/coparn', [CoparnController::class, 'index'])->name('coparnMain');
+  Route::get('/billing/coparnData', [CoparnController::class, 'coparnData'])->name('coparn.masterData');
   Route::get('/billing/coparn/upload-file', [CoparnController::class, 'uploadView'])->name('uploadView');
   Route::get('/billing/coparn/upload-single', [CoparnController::class, 'uploadSingle'])->name('uploadSingle');
   Route::get('/billing/coparn/get-vessel', [CoparnController::class, 'getVesselData'])->name('getVesselData');

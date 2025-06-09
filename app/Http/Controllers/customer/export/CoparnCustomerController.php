@@ -139,6 +139,7 @@ class CoparnCustomerController extends CustomerMainController
 
     public function storeFile(Request $request)
     {
+        set_time_limit(0);
         $coparns = $request->dataResult;
         foreach ($coparns as $data) {
             $oldItem = Item::where('container_no', $data[1])->where('ctr_intern_status', "49")->where('booking_no', $data[0])->first();
@@ -181,7 +182,7 @@ class CoparnCustomerController extends CustomerMainController
                     'selected_do'=>'N',
                     'booking_no'=>$data[0],
                     'created_by' => Auth::user()->id,
-                    'customer_code' => $request->customer,
+                    'customer_code' => $request->customer ?? null,
                 ]);
             }
         }

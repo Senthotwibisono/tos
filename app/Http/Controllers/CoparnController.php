@@ -17,6 +17,7 @@ use App\Imports\Coparn;
 
 use Auth;
 use Carbon\Carbon;
+use DataTables;
 
 class CoparnController extends Controller
 {
@@ -29,8 +30,20 @@ class CoparnController extends Controller
     {
 
         $data['title'] = "Coparn";
-        $data['container'] = Item::where('ctr_intern_status', '49')->whereNotNull('booking_no')->get();
         return view('billingSystem.coparn.main', $data);
+    }
+
+    public function coparnData(Request $request)
+    {
+        $containers = Item::where('ctr_intern_status', '49')->whereNot('container_no', null)->whereNot('container_no', '')->whereNotNull('booking_no')->orderBy('container_key', 'desc')->get();
+
+        return DataTables::of($containers)
+        ->addColumn('edit', function($containers){
+            $herf = '/billing/coparn/edit-';
+            return '<a href="'.$herf.$containers->container_key.'" class="btn btn-warning"><i class="fas fa-pencil"></i></a>';
+        })
+        ->rawColumns(['edit'])
+        ->make(true);
     }
 
     public function uploadView()
