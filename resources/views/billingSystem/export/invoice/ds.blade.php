@@ -183,6 +183,7 @@
                   Kode Bank: <strong>008</strong><br>
                   Nomor Rekening: <strong>1460021308742</strong><br>
                 </address>
+                @if(!in_array($form->os_id, ['28', 29]))
                 <address>
                 <strong>Veesel</strong><br>
                   Ves Name : <strong>{{$form->Kapal->ves_name ?? ''}}</strong> <br>
@@ -191,6 +192,7 @@
                   Departure Date : <strong>{{$form->Kapal->deparature_date ?? ''}}</strong><br>
                   <!-- h.elaine@gmail.com<br> -->
                 </address>
+                @endif
               </div>
 
             </div>
