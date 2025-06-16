@@ -150,13 +150,19 @@ class InvoiceExportController extends Controller
             }
         })
         ->addColumn('action', function($inv){
-            return '<button type="button" id="pay" data-id="'.$inv->id.'" class="btn btn-sm btn-success pay"><i class="fa fa-cogs"></i></button>';
+            if (in_array($inv->lunas, ['N', 'P'])) {
+                return '<button type="button" id="pay" data-type="export" data-id="'.$inv->id.'" class="btn btn-sm btn-success" onClick="searchToPay(this)"><i class="fa fa-cogs"></i></button>';
+            }elseif ($inv->lunas == 'Y') {
+                return '<span class="badge bg-success text-white">Paid</span>';
+            }else{
+                return '<span class="badge bg-danger text-white">Canceled</span>';
+            }
         })
         ->addColumn('delete', function($inv){
-            if ($inv->lunas == 'N') {
-                return '<button type="button" data-id="'.$inv->form_id.'" class="btn btn-sm btn-danger Delete"><i class="fa fa-trash"></i></button>';
+           if ($inv->lunas != 'C') {
+                return '<button type="button" data-type="export" data-id="'.$inv->form_id.'" class="btn btn-sm btn-danger" onClick="cancelInvoice(this)"><i class="fa fa-trash"></i></button>';
             }else {
-                return '-';
+                return '<span class="badge bg-danger text-white">Canceled</span>';
             }
         })
         ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete'])
@@ -176,17 +182,11 @@ class InvoiceExportController extends Controller
         $user = Auth::user();
         $data['title'] = "Reciving Form";
         $data["user"] = $user->id;
-
+        $data['form'] = Form::find($id);
+        $data['containers'] = Container::where('form_id', $id)->get();
         $data['customer'] = Customer::get();
         $data['orderService'] = OS::where('ie', '=', 'E')->get();
-      
-        $data['ves'] = VVoyage::where('arrival_date', '<=', Carbon::now())->get();
-        $data['form'] = Form::where('id', $id)->first();
-        $data['containerInvoice'] = Container::where('form_id', $id)->get();
-        $cont = Item::where('ctr_intern_status', ['49'])->where('selected_do', 'N')->get();
-        $data['contBooking'] = $cont->unique('booking_no')->pluck('booking_no');
-        $data['roDok'] = RO::get();
-        $data['kapalRO'] = VVoyage::where('clossing_date', '>=', Carbon::now())->get();
+        $data['vessels'] = VVoyage::where('clossing_date','>=', Carbon::now())->get();
         return view('billingSystem.export.form.edit', $data);
     }
 
@@ -198,15 +198,7 @@ class InvoiceExportController extends Controller
 
         $data['customer'] = Customer::get();
         $data['orderService'] = OS::where('ie', '=', 'E')->get();
-        $data['dok_ro'] = RO::get();
-        $cont = Item::where('ctr_intern_status', ['49'])->where('selected_do', 'N')->get();
-        $data['contBooking'] = Item::where('ctr_intern_status', '49')
-        ->where('selected_do', 'N')
-        ->distinct()
-        ->pluck('booking_no');
-        $data['roDok'] = RO::get();
-        $data['kapalRO'] = VVoyage::where('clossing_date', '>=', Carbon::now())->get();
-
+        $data['vessels'] = VVoyage::where('clossing_date','>=', Carbon::now())->get();
         return view('billingSystem.export.form.create', $data);
     }
 
@@ -354,6 +346,9 @@ class InvoiceExportController extends Controller
                             ->where('ctr_size', $size)
                             ->where('ctr_status', $status)
                             ->first();
+                        if (!$tarif) {
+                            return redirect('/billing/export/reciving-editForm/' . $form->id)->with('error', 'Master Tarif tidak ditemukan untuk size : ' . $size . ', type:' . $status);
+                        }
                         $tarifDetail = MTDetail::where('master_tarif_id', $tarif->id)
                             ->where('master_item_id', $svc->master_item_id)
                             ->first();

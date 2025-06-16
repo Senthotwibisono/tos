@@ -1363,6 +1363,11 @@ Route::prefix('/invoiceService')->controller(ServiceController::class)->group(fu
       Route::post('/form-post', 'ExtendPostForm')->name('invoiceService.extend.formPost');
     });
 
+    Route::prefix('/export')->group(function(){
+      Route::get('/bookingList', 'bookingList')->name('invoiceService.export.getBookingNo');
+      Route::post('/postForm', 'ExportPostForm')->name('invoiceService.export.formPost');
+    });
+
     Route::post('/searchToPay', 'searchToPay')->name('invoiceService.getData.searchToPay');
     Route::post('/pay', 'manualPayment')->name('invoiceService.pay.manualPayment');
     Route::post('/cancelInovice', 'cancelInvoice')->name('invoiceService.cancel.CancelInvoice');

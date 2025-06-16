@@ -31,6 +31,7 @@ Route::prefix('/getData')->controller(GetDataServcie::class)->group(function(){
     Route::post('/customer', 'customer')->name('api.customer.GetData-customer');
     Route::post('/vessel', 'vessel')->name('api.customer.GetData-vessel');
     Route::post('/bookingNo', 'bookingNo')->name('api.customer.GetData-booking');
+    Route::post('/getBookingGlobal', 'getBookingGlobal')->name('api.customer.getBookingGlobal');
 });
 
 Route::controller(PaymentController::class)->group(function(){

@@ -92,4 +92,33 @@ class GetDataServcie extends Controller
             ]);
         }
     }
+
+
+    public function getBookingGlobal(Request $request)
+    {
+        // var_dump($request->all());
+        $items = Item::where('booking_no', $request->booking_no)->where('ctr_intern_status', 49)->where('selected_do', 'N')->where('ctr_i_e_t', 'E')->get();
+        if ($items->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada container yang dapat di pilih',
+            ]);
+        }
+        $singleItem = $items->first();
+        $vessel = VVoyage::find($singleItem->ves_id);
+        try {
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'vessel' => $vessel,
+                    'items' => $items,
+                ],
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage(),
+            ]);
+        }
+    }
 }

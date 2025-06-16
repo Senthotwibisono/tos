@@ -1,6 +1,20 @@
 @extends ('partial.invoice.main')
 
-
+@section('custom_styles')
+<style>
+  .select2-container--bootstrap-5 .select2-selection {
+    border: 1px solid rgb(0, 0, 0) !important; /* Border berwarna biru */
+    border-radius: 1px; /* Agar sudutnya sedikit melengkung */
+    padding: 6px; /* Tambahkan padding agar terlihat lebih rapi */
+    height: 100%;
+  }
+  
+  .select2-container--bootstrap-5 .select2-selection:focus {
+      border-color: #0056b3 !important; /* Border berubah saat fokus */
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Efek shadow saat fokus */
+  }
+</style>
+@endsection
 @section('content')
 
 <div class="page-heading">
@@ -9,7 +23,7 @@
 </div>
 <div class="page-content mb-5">
   <section class="row">
-    <form action="{{ route('updateFormExport')}}" method="POST" id="updateForm" enctype="multipart/form-data">
+    <form action="" method="post" id="updateForm" enctype="multipart/form-data">
       @CSRF
       <div class="card">
         <div class="card-body">
@@ -18,151 +32,87 @@
               <h5>Customer Information</h5>
               <p>Masukan Data Customer</p>
             </div>
-            <div class="col-4">
-              <label for="">Customer</label>
-              <div class="form-group">
-                <select required name="customer" id="customer" class="js-example-basic-single form-control">
-                    <option disabled selected value>Plih Satu</option>
-                    @foreach($customer as $cust)
-                    <option value="{{$cust->id}}" {{$form->cust_id == $cust->id ? 'selected' : ''}}>{{$cust->name}}</option>
-                    @endforeach
-                </select>
-                <input type="hidden" name="form_id" value="{{$form->id}}" >
+            <div class="row">
+              <div class="col-6">
+                <div>
+                  <label for="">Customer</label>
+                  <div class="form-group">
+                    <select required name="customer" id="customer" class="js-example-basic-single form-control">
+                        @foreach($customer as $cust)
+                        <option value="{{$cust->id}}" {{$form->cust_id == $cust->id ? 'selected' : ''}}>{{$cust->name}}</option>
+                        @endforeach
+                    </select>
+                    <input type="hidden" name="" id="formId" value='{{$form->id}}'>
+                  </div>
+                </div>
+                <div>
+                  <div class="form-group">
+                    <label for="">NPWP</label>
+                    <input required type="text" value="{{$form->customer->npwp ?? ''}}" class="form-control" id="npwp" name="npwp" placeholder="Pilih Customer Dahulu!.." readonly>
+                  </div>
+                </div>
+
               </div>
-            </div>
-            <div class="col-4">
-              <div class="form-group">
-                <label for="">NPWP</label>
-                <input required type="text" class="form-control" id="npwp" value="{{$form->customer->npwp}}" name="npwp" placeholder="Pilih Customer Dahulu!.." readonly>
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="">Address</label>
+                  <!-- <input required type="text" class="form-control" id="address" name="address" placeholder="Pilih Customer Dahulu!.." readonly> -->
+                  <textarea class="form-control" id="address" name="address" cols="10" rows="4" readonly>{{$form->customer->alamat ?? ''}}</textarea>
+                </div>
               </div>
             </div>
             
             <div class="col-12">
-              <div class="form-group">
-                <label for="">Address</label>
-                <input required type="text" class="form-control" id="address" name="address" value="{{$form->customer->alamat}}" placeholder="Pilih Customer Dahulu!.." readonly>
-                <!-- <textarea class="form-control" id="address" name="address" cols="10" rows="4"></textarea> -->
-              </div>
-            </div>
-            <div class="col-12">
-              <div class="form-group">
-                <label>Order Service</label>
-                <select name="order_service" class="form-select js-example-basic-single" required id="orderService">
-                  <option value="" default selected disabled>Pilih Salah Satu..</option>
-                 @foreach($orderService as $os)
-                 <option value="{{$os->id}}" {{$form->os_id == $os->id ? 'selected' : ''}}>{{$os->name}}</option>
-                 @endforeach
-                </select>
-                <input type="hidden" id="order">
-              </div>
-            </div>
-          </div>
-          <div id="do_fill"style="display: {{ $form->Service->order == 'SP2' ? 'block' : 'none' }};">
-          <div class="row mt-5" >
-            <div class="col-12">
-              <h5>Information Shipping Agent</h5>
-              <p>Masukan Data Shipping dan Pilih Metode Do Checking</p>
-            </div>
-
-              <div class="col-12">
-                <div class="row">
-                  <div class="col-6">
-                    <div class="btn-group mb-3">
-                      <a id="auto" class="btn btn-info ml-3" type="button">Booking Number Checking</a>
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label>Order Service</label>
+                    <select name="order_service" class="js-example-basic-single form-control" style="height: 150%;" required id="orderService">
+                     @foreach($orderService as $os)
+                     <option value="{{$os->id}}" {{$form->os_id == $os->id ? 'selected' : ''}}>{{$os->name}}</option>
+                     @endforeach
+                    </select>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="">Booking No</label>
+                    <div class="input-group">
+                      <select  name="booking_no" id="booking_no"  class="select2 form-select" style="height: 150%;">
+                        <option value="{{$form->do_id}}" selected>{{{$form->do_id}}}</option>
+                      </select>
+                      <button type="button" class="btn btn-primary" id="buttonBooking"><i class="fas fa-search"></i></button>
                     </div>
                   </div>
                 </div>
               </div>
-           
-              <div class="col-12 col-md-4" id="do_auto">
+            </div>
+
+            <div class="row">
+              <div class="col-4">
                 <div class="form-group">
-                  <label for="">Booking Number Auto</label>
-                  <select  name="booking_no" id="booking_no" class="js-example-basic-single form-control" style="height: 150%;">
-                    <option value="" disabled selected>Pilih Salah Satu</option>
-                  @foreach($contBooking as $cont)
-                  <option value="{{$cont}}" {{$form->do_id == $cont ? 'selected' : ''}}>{{$cont}}</option>
-                  @endforeach
+                  <label for="">Vessel</label>
+                  <select name="ves_id" id="ves_id" class="js-example-basic-single form-select" style="height: 150%;">
+                    @foreach($vessels as $vessel)
+                      <option value="{{$vessel->ves_id}}" {{$form->ves_id == $vessel->ves_id ? 'selected' : ''}}>{{$vessel->ves_name}} | {{$vessel->voy_out}}</option>
+                    @endforeach
                   </select>
                 </div>
               </div>
-
-            
-            <div class="col-12 col-md-4">
-              <div class="form-group">
-                <label for="">Estimate Departure of Vessel</label>
-                <input name="do_exp_date" id="do_exp_date"  readonly type="date-time"value="{{ $form->ves_id == 'PELINDO' ? \Carbon\Carbon::now()->format('Y-m-d\TH:i') : $form->Kapal->etd_date }}" class="form-control flatpickr-range mb-3" >
-              </div>
-            </div>
-            <div class="col-12 col-md-4">
-              <div class="form-group">
-                <label for="">Vessel Name</label>
-                <input name="boln" id="boln"  readonly type="text" class="form-control" value="{{ $form->ves_id == 'PELINDO' ? "PELINDO" : $form->Kapal->etd_date }}" placeholder="Bill Of Loading Number">
-              </div>
-            </div>
-
-          </div>
-          </div>
-
-          <!-- RO -->
-        <div id="roDok" style="display: {{ $form->Service->order == 'SPPS' ? 'block' : 'none' }};">
-          <div class="row mt-5" >
-            <div class="col-12">
-              <h5>Information Shipping Agent</h5>
-              <p>Masukan Data Shipping dan Pilih Metode RO Checking</p>
-            </div>
-
-              <div class="col-12">
-                <div class="row">
-                  <div class="col-6">
-                    <div class="btn-group mb-3">
-                      <a id="auto" class="btn btn-info ml-3" type="button">Automatic RO Number Checking</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-           
-              <div class="col-12 col-md-4">
+              <div class="col-4">
                 <div class="form-group">
-                  <label for="">RO Number</label>
-                  <select  name="booking_no" id="RoNo" class="js-example-basic-single form-control" style="height: 150%;">
-                    <option value="" disabled selected>Pilih Salah Satu</option>
-                    @foreach($roDok as $dok)
-                    <option value="{{$dok->ro_no}}" {{$form->do_id == $dok->ro_no ? 'selected' : ''}}>{{$dok->ro_no}}</option>
-                    @endforeach
-                  </select>
+                  <label for="">Estimate Deparature</label>
+                  <input type="datetime-local" id ="etd" class="form-control" value="{{$form->Kapal->etd_date ?? ''}}">
                 </div>
               </div>
-
-            
-            <div class="col-12 col-md-4">
-              <div class="form-group">
-                <label for="">Select Vessel</label>
-                <select  name="ves_id" id="vesStuffing" class="js-example-basic-single form-control" style="height: 150%;">
-                    <option value="" disabled selected>Pilih Salah Satu</option>
-                    @foreach($kapalRO as $kpl)
-                    <option value="{{$kpl->ves_id}}" {{$form->ves_id == $kpl->ves_id ? 'selected' : ''}}>{{$kpl->ves_name}} -- {{$kpl->voy_out}}</option>
-                    @endforeach
-                    <option value="PELINDO" {{$form->ves_id == "PELINDO" ? 'selected' : ''}}>Relokasi Pelindo</option>
-                  </select>
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="">Clossing Date</label>
+                  <input type="datetime-local" class="form-control" id="clossingDate" value="{{$form->Kapal->colssing_date ?? ''}}">
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-          
 
-          <div class="row mt-5">
-            <div id="kapalManual" class="col-12 col-md-4" style="{{ $form->Service->order == 'SPPSD' ? 'block' : 'none' }};">
-              <div class="form-group">
-                <label for="">Select Vessel</label>
-                <select  name="ves_id" id="vesStuffing" class="js-example-basic-single form-control" style="height: 150%;">
-                    <option value="" disabled selected>Pilih Salah Satu</option>
-                    @foreach($kapalRO as $kpl)
-                    <option value="{{$kpl->ves_id}}" {{$form->ves_id == $kpl->ves_id ? 'selected' : ''}}>{{$kpl->ves_name}} -- {{$kpl->voy_out}}</option>
-                    @endforeach
-                    <option value="PELINDO">Relokasi Pelindo</option>
-                  </select>
-              </div>
-            </div>
             <div class="col-12">
               <h5>Add Container</h5>
               <p>Masukan Nomor Container</p>
@@ -170,15 +120,9 @@
             <div class="col-12" id="selector">
               <label for="">Container Number</label>
               <select name="container[]" id="containerSelector" class="js-example-basic-multiple form-control" style="height: 150%;" multiple="multiple">
-                <option disabled value="">Pilih Salah Satu</option>
-                @foreach($containerInvoice as $container)
-                    <option value="{{$container->container_key}}" selected>{{$container->container_no}}</option>
+                @foreach($containers as $container)
+                  <option value="{{$container->container_key}}" selected>{{$container->container_no}}</option>
                 @endforeach
-              </select>
-            </div>
-            <div class="col-12" id="selectorView" style="display: none !important;">
-              <select name="" id="containerSelectorView" disabled class="js-example-basic-multiple form-control" style="height: 150%;" multiple="multiple">
-                <option disabled value="">Pilih Salah Satu</option>
               </select>
             </div>
           </div>
@@ -189,14 +133,15 @@
           <div class="col-sm-6">
             <div class="form-group">
               <label for="">Discount OSK</label>
-              <input type="text" class="form-control" name="discount_dsk" value="{{$form->discount_dsk}}">
+              <p>Di Isi dengan Nomial !!</p>
+              <input type="text" class="form-control" name="discount_dsk" id="discount_dsk" value="{{$form->discount_dsk ?? 0}}">
             </div>
           </div>
           <div class="col-sm-6">
             <div class="form-group">
               <label for="">Discount OS</label>
-              <input type="text" class="form-control" name="discount_ds" value="{{$discount->ds}}">
-            </div>
+              <p>Di Isi dengan Nomial !!</p>
+              <input type="text" class="form-control" name="discount_ds" id="discount_ds" value="{{$form->discount_ds ?? 0}}">
           </div>
          </div>
 
@@ -242,7 +187,7 @@
           </div>
           <div class="row mt-5">
             <div class="col-12 text-right">
-            <button type="button" id="updateButton" class="btn btn-success">Submit</button>
+            <button type="button" id="updateButton" onclick="submitForm()" class="btn btn-success">Submit</button>
             <button type="button" class="btn btn-light-secondary" onclick="window.history.back();"><i class="bx bx-x d-block d-sm-none"></i><span class="d-none d-sm-block">Back</span></button>
             </div>
           </div>
@@ -256,314 +201,246 @@
 
 @section('custom_js')
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Attach event listener to the update button
-        document.getElementById('updateButton').addEventListener('click', function (e) {
-            e.preventDefault(); // Prevent the default form submission
+    $(document).ready(function(){
 
-            // Show SweetAlert confirmation dialog
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, update it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Submit the form programmatically if confirmed
-                        Swal.fire({
-                        title: 'Processing...',
-                        text: 'Please wait while we update the container',
-                        icon: 'info',
-                        allowOutsideClick: false,
-                        showConfirmButton: false,
-                            willOpen: () => {
-                                Swal.showLoading();
-                            }
-                        });
-                    document.getElementById('updateForm').submit();
-                }
-            });
+        $('#customer').on('change', function(){
+            customersExport();
         });
-    });
-</script>
 
-<script>
-  $(function(){
-        $.ajaxSetup({
-    headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        $('#ves_id').on('change', function(){
+            vesselExport();
+        });
+
+        $('#booking_no').on('change', function(){
+          searchByBookingNo();
+        });
+
+        $('#buttonBooking').on('click', function(){
+          searchByBookingNo()
+        });
+
+    })
+
+    function openWindow(url) {
+        window.open(url, '_blank', 'width=1000,height=1000');
     }
-});
-$(function(){
-    // Cust
-            $('#customer'). on('change', function(){
-                let id = $('#customer').val();
-
-                $.ajax({
-                    type: 'get',
-                    url: "{{ route('getCust')}}",
-                    data : {id : id},
-                    cache: false,
-                    
-                    success: function(response){
-                        $('#npwp').val(response.data.npwp);
-                        $('#address').val(response.data.alamat);
-                   
-                    },
-                    error: function(data){
-                        console.log('error:',data)
-                    },
-                })
-            })
-
-            $('#orderService').on('change', function() {
-                let id = $('#orderService').val();
-            
-                $.ajax({
-                    type: 'get',
-                    url: "{{ route('getOrder') }}",
-                    data: { id: id },
-                    cache: false,
-                    success: function(response) {
-                        $('#order').val(response.data.order);
-                        $('#containerSelector').empty();
-                    
-                        if (response.data.order == "SPPS") {
-                            $('#do_fill').hide();
-                            $('#roDok').show();
-                            $('#kapalManual').hide();
-                        } else if (response.data.order == "SPPSD") {
-                            if (response.success) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Saved!',
-                                    timer: 2000,
-                                    showConfirmButton: false
-                                }).then(() => {
-                                    $('#do_fill').hide();
-                                    $('#roDok').hide();
-                                    $('#kapalManual').show();
-                                    $.each(response.cont, function(index, item) {
-                                        $('#containerSelector').append($('<option>', {
-                                            value: item.container_key,
-                                            text: item.container_no,
-                                        }));
-                                    });
-                                });
-                            } else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: response.message
-                                }).then(() => {
-                                    window.location.reload();
-                                });
-                            }
-                        } else {
-                            $('#do_fill').show();
-                            $('#roDok').hide();
-                            $('#kapalManual').hide();
-                        }
-                    },
-                    error: function(data) {
-                        console.log('error:', data);
-                    },
-                });
-            });
-
-
-    // Do
-        $('#booking_no'). on('change', function(){
-                let bookingNo = $('#booking_no').val();
-                let os = $('#orderService').val();
-
-                $.ajax({
-                    type: 'get',
-                    url: "{{ route('getDOdataExport')}}",
-                    data : {bookingNo : bookingNo,
-                            os:os
-                            },
-                    cache: false,
-                    
-                    success: function(response) {
-                        console.log(response);
-                        if (response.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Saved!',
-                                timer: 2000, // Waktu tampilan SweetAlert (ms)
-                                showConfirmButton: false
-                            }).then(() => {
-                              $('#boln').val(response.kapal.ves_name);
-                              $('#do_exp_date').val(response.kapal.etd_date);
-                                $('#containerSelector').empty();
-                            
-                                $.each(response.data, function(index, item) {
-                                    $('#containerSelector').append($('<option>', {
-                                        value: item.container_key,
-                                        text: item.container_no,
-                                        selected: 'selected'
-                                    }));
-                                });
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: response.message
-                            }).then(() => {
-                                window.location.reload();
-                            });
-                        }
-                    },
-                    error: function(data) {
-                        console.log('error:', data);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.',
-                        });
-                    }
-                })
-            })
-
-
-
-            // RO
-            $('#RoNo'). on('change', function(){
-                let RoNo = $('#RoNo').val();
-                let os = $('#orderService').val();
-
-                $.ajax({
-                    type: 'get',
-                    url: "{{ route('getROdataExport')}}",
-                    data : {RoNo : RoNo,
-                            os:os
-                            },
-                    cache: false,
-                    
-                    success: function(response) {
-                        console.log(response);
-                        if (response.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Saved!',
-                                timer: 2000, // Waktu tampilan SweetAlert (ms)
-                                showConfirmButton: false
-                            }).then(() => {
-                                $('#containerSelector').empty();
-                            
-                                $.each(response.data, function(index, item) {
-                                    $('#containerSelector').append($('<option>', {
-                                        value: item.container_key,
-                                        text: item.container_no,
-                                        selected: 'selected'
-                                    }));
-                                });
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: response.message
-                            }).then(() => {
-                                window.location.reload();
-                            });
-                        }
-                    },
-                    error: function(data) {
-                        console.log('error:', data);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.',
-                        });
-                    }
-                })
-            })
-
-        })
-    });
 </script>
-
 <script>
-  $(function(){
-        $.ajaxSetup({
-    headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    }
-});
-$(function(){
-        $('.cekDokumen'). on('click', function(){
-            var data = {
-            'container_key': $('#containerSelector').val(),
-            'no_dok': $('#documentNumber').val(),
+    async function customersExport() {
+        showLoading();
+        const cust_id = document.getElementById('customer').value;
+        // console.log(cust_id);
+        const url = '{{route('api.customer.GetData-customer')}}';
+        const response = await fetch(url, {
+            method : 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Optional kalau butuh CSRF untuk GET
+            },
+            body: JSON.stringify({ cust_id: cust_id }),
+        });
+        console.log(response);
+        hideLoading();
+        if (response.ok) {
+            const hasil = await response.json();
+            if (hasil.success) {
+                $('#npwp').val(hasil.data.npwp);
+                $('#address').val(hasil.data.alamat);
+            }
         }
-                $.ajax({
-                    type: 'get',
-                    url: "{{ route('getDokImport')}}",
-                    data : data,
-                    cache: false,
-                    
-                    success: function(response) {
-                        console.log(response);
-                        if (response.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Saved!',
-                                timer: 2000, // Waktu tampilan SweetAlert (ms)
-                                showConfirmButton: false
-                            }).then(() => {
-                                $('#documentType').val(response.dok.name);
-                                $('#documentDate').val(response.tgl);
-                                
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: response.message
-                            }).then(() => {
-                                window.location.reload();
-                            });
-                        }
+    }
+
+    async function vesselExport() {
+        showLoading();
+        const ves_id = document.getElementById('ves_id').value;
+        // console.log(ves_id);
+        const url = '{{route('api.customer.GetData-vessel')}}';
+        const response = await fetch(url, {
+            method : 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Optional kalau butuh CSRF untuk GET
+            },
+            body: JSON.stringify({ ves_id: ves_id }),
+        });
+        console.log(response);
+        hideLoading();
+        if (response.ok) {
+            const hasil = await response.json();
+            if (hasil.success) {
+               $('#voy_in').val(hasil.data.voy_in);
+               $('#voy_out').val(hasil.data.voy_out);
+               $('#etd').val(hasil.data.etd_date);
+               $('#clossingDate').val(hasil.data.clossing_date);
+            }
+        }
+    }
+
+    async function searchByBookingNo() {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Apakah nomor booking yg anda masukkan sudah benar?',
+            showCancelButton: true,
+        }).then( async(result) => {
+            if (result.isConfirmed) {
+                const bookingNo = document.getElementById('booking_no').value;
+                const userId = {{Auth::user()->id}};
+                console.log(userId);
+                if (!bookingNo || bookingNo === null) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Anda Belum Mengisi',
+                    });
+                    return;
+                }
+                showLoading();
+                const url = '{{route('api.customer.getBookingGlobal')}}';
+                const response = await fetch(url, {
+                    method : 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Optional kalau butuh CSRF untuk GET
                     },
-                    error: function(data) {
-                        console.log('error:', data);
+                    body: JSON.stringify({ booking_no: bookingNo, userId:userId }),
+                });
+                console.log(response);
+                hideLoading();
+                if (response.ok) {
+                    const hasil = await response.json();
+                    if (hasil.success) {
+                        Swal.fire({
+                            icon: 'success'
+                        }).then(async() => {
+                            $('#ves_id').val(hasil.data.vessel.ves_id).trigger('change');
+
+                            $('#containerSelector').empty();
+                          
+                            $.each(hasil.data.items, function(index, item) {
+                                $('#containerSelector').append($('<option>', {
+                                    value: item.container_key,
+                                    text: item.container_no,
+                                    selected: 'selected'
+                                }));
+                            });
+                        });
+                    }else{
                         Swal.fire({
                             icon: 'error',
-                            title: 'Oops...',
-                            text: 'Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.',
+                            title: 'Something wrong',
+                            text: hasil.message,
+                        }).then(() => {
+                            location.reload();
                         });
                     }
-                })
-            })
+                }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: response.status,
+                        text: response.statusText,
+                    }).then(() => {
+                        location.reload();
+                    });
+                }
+            }
+        });
+    }
 
-        })
-    });
+    async function submitForm() {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Are you sure?',
+        text: 'Pastikan data yang anda isi sudah benar!!!',
+        showCancelButton: true,
+      }).then( async(result) => {
+        if (result.isConfirmed) {
+          showLoading();
+          const customer = document.getElementById('customer').value;
+          const formId = document.getElementById('formId').value;
+          const service = document.getElementById('orderService').value;
+          const bookingNo = document.getElementById('booking_no').value;
+          const vessel = document.getElementById('ves_id').value;
+          const containerKeySelect = document.getElementById('containerSelector');
+          const container_key = Array.from(containerKeySelect.selectedOptions).map(option => option.value);
+          const discountDSK = document.getElementById('discount_dsk').value; 
+          const discountDS = document.getElementById('discount_ds').value;
+          const data = {
+            customer,
+            formId,
+            service,
+            bookingNo,
+            vessel,
+            container_key,
+            discountDSK,
+            discountDS
+          };
+          const url = "{{route('invoiceService.export.formPost')}}";
+          const response = await fetch(url, {
+            method : 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Optional kalau butuh CSRF untuk GET
+            },
+            body: JSON.stringify(data),
+          });
+          hideLoading();
+          if (response.ok) {
+            const hasil = await response.json();
+            if (hasil.success) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Data berhasil di simpan'
+              }).then(() => {
+                const href = '/billing/export/delivey-system/formInvoice/' + hasil.data.id;
+                location.href = href;
+              });
+            }else{
+              errorHasil(hasil);
+              return;
+            }
+          }else{
+            errorResponse(response);
+            return;
+          }
+        }else{
+          return;
+        }
+      })
+    }
 </script>
 
 <script>
-  document.getElementById('orderService').addEventListener('change', function() {
-    var selectedValue = $('#order').val();
-    var do_fill = document.getElementById('do_fill');
-    var roDok = document.getElementById('roDok');
-    
-    if (selectedValue == "SPPS") {
-      do_fill.style.display = 'none';
-      roDok.style.display = 'block';
-      $('.js-example-basic-single').select2();
-      $('.js-example-basic-multiple').select2();
-    } else {
-      do_fill.style.display = 'block';
-      roDok.style.display = 'none';
-      $('.js-example-basic-single').select2();
-      $('.js-example-basic-multiple').select2();
-    }
-  });
+  $(document).ready(function(){
+    $('#booking_no').select2({
+        theme: "bootstrap-5",
+        placeholder: "Pilih Booking Number",
+        allowClear: true,
+        ajax: {
+            url: "{{route('invoiceService.export.getBookingNo')}}",
+            dataType: 'json',
+            delay: 250,
+            data: function(params) {
+                return {
+                    search: params.term,
+                    page: params.page || 1
+                };
+            },
+            processResults: function(response) {
+                return {
+                    results: $.map(response.data, function(item) {
+                        return {
+                            id: item, // ID utama
+                            text: item, // Teks yang ditampilkan di dropdown
+                        };
+                    }),
+                    pagination: {
+                        more: response.more
+                    }
+                };
+            },
+            cache: true
+        }
+    });
+  })
 </script>
 
 @endsection

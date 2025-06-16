@@ -26,6 +26,8 @@ use App\Models\ExtendDetail;
 use App\Models\JobExtend;
 use App\Models\InvoiceForm as Form;
 use App\Models\ContainerInvoice as Container;
+use App\Models\InvoiceExport;
+use App\Models\ExportDetail;
 
 use App\Models\Payment\RefNumber as VA;
 use App\Models\Payment\RefDetail;
@@ -312,6 +314,18 @@ class ServiceController extends Controller
                     'type' => $data['type'],
                 ]);
             }
+            if ($type == 'export') {
+                $data = $this->searchExport($request);
+                // var_dump($data);
+                // die();
+                return response()->json([
+                    'success' => true,
+                    'data' => $data['data'],
+                    'another' => $data['another'],
+                    'anotherData' => $data['anotherData'],
+                    'type' => $data['type'],
+                ]);
+            }
         }else {
             return response()->json([
                 'success' => false,
@@ -364,6 +378,32 @@ class ServiceController extends Controller
         }
     }
 
+    private function searchExport($request)
+    {
+        $export = InvoiceExport::find($request->id);
+        $anotherInvoice = false;
+        if ($export->lunas == 'N') {
+            $anotherInvoice = InvoiceExport::where('form_id', $export->form_id)->whereNot('id', $export->id)->where('lunas', 'N')->first();
+        }
+        if ($export->lunas == 'P') {
+            $anotherInvoice = InvoiceExport::where('form_id', $export->form_id)->whereNot('id', $export->id)->where('lunas', 'P')->first();
+        }
+        $response = [
+            'data' => $export,
+            'another' => ($anotherInvoice) ? true : false,
+            'anotherData' => ($anotherInvoice) ? $anotherInvoice : null,
+            'type' => 'export',
+        ];
+        if ($export) {
+            return $response;
+        }else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something wrong, call the admin!!',
+            ]);
+        }
+    }
+
     public function manualPayment(Request $request)
     {
         $action = $request->action;
@@ -404,6 +444,22 @@ class ServiceController extends Controller
                     ]);
                 }
             }
+
+            if ($request->data['type'] == 'export') {
+                $controller = new TransactionController;
+                $response = $controller->manualExport($data);
+                // var_dump($response);
+                if ($response->getStatusCode() == 200) {
+                    return response()->json(json_decode($response->getContent(), true));
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Gagal memproses di route export',
+                        // 'status'  => $response->getStatusCode(),
+                        'body'    => $response->getContent(),
+                    ]);
+                }
+            }
         }else {
             return response()->json([
                 'success' => false,
@@ -422,6 +478,10 @@ class ServiceController extends Controller
             }
             if ($type == 'extend') {
                 $response = $this->cancelExtend($request);
+                return $response;
+            }
+            if ($type == 'export') {
+                $response = $this->cancelExport($request);
                 return $response;
             }
         }else {
@@ -547,6 +607,60 @@ class ServiceController extends Controller
         }
     }
 
+    private function cancelExport($request)
+    {
+        $exports = InvoiceExport::where('form_id', $request->id)->get();
+        if ($exports->isNotEmpty()) {
+            $detils = ExportDetail::where('form_id', $request->id)->get();
+            $containers = Container::where('form_id', $request->id)->get();
+            $form = Form::find($request->id);
+            try {
+                DB::transaction(function() use($request, $exports, $detils, $containers, $form) {
+                    foreach ($exports as $export) {
+                        $export->update([
+                            'lunas' => 'C',
+                            'invoice_date' => Carbon::now(),
+                        ]);
+                    }
+                    
+                    ExportDetail::where('form_id', $request->id)->update(['lunas' => 'C']);
+                   
+                    // var_dump($containers);
+                    if ($containers->isNotEmpty()) {
+                        foreach ($containers as $cont) {
+                            $item = Item::find($cont->container_key);
+                            $item->update([
+                                'invoice_no' => null,
+                                'job_no' => null,
+                                'order_service' => null,
+                                'os_id' => null,
+                                'selected_do' => 'N',
+                            ]);
+                        }
+                    }
+                    
+                    $form->update([
+                        'done' => 'C'
+                    ]);
+                });
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Data canceled'
+                ]);
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Something wrong in: ' . $th->getMessage(),
+                ]);
+            }
+        }else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data tidak ditemukan'
+            ]);
+        }
+    }
+
     public function createVA(Request $request)
     {
         $data = $request->data;
@@ -555,7 +669,7 @@ class ServiceController extends Controller
         }elseif ($data['type'] == 'extend') {
              $query = new Extend;
         }elseif (in_array($data['type'], ['others', 'plugging', 'export'])) {
-            # code...
+           $query = new InvoiceExport;
         }elseif (condition) {
             # code...
         }else {
@@ -960,4 +1074,103 @@ class ServiceController extends Controller
         return $massa;
     }
 
+    public function bookingList(Request $request)
+    {
+        $search = $request->search;
+        $page = $request->page ?? 1;
+        $perPage = 5; // Jumlah item per halaman
+
+        $query = Item::select('booking_no')->where('ctr_intern_status', '49')->where('selected_do', 'N')->where('ctr_i_e_t', 'E')->distinct();
+        // var_dump($query);
+        // die();
+
+        // Tambahkan pencarian jika ada
+        if ($search) {
+            $query->where('booking_no', 'like', "%{$search}%");
+        }
+
+        // Hitung total data untuk pagination
+        $totalCount = $query->count();
+        $bookingNo = $query->skip(($page - 1) * $perPage)->take($perPage)->pluck('booking_no');
+
+        return response()->json([
+            'data' => $bookingNo,
+            'more' => false // Cek apakah ada halaman berikutnya
+        ]);
+    }
+
+    public function exportPostForm(Request $request)
+    {
+        // var_dump($request->all());
+        // die();
+         $validated = validator::make($request->all(), [    
+            'service' => 'required',
+            'customer' => 'required',
+            'bookingNo' => 'required',
+            'vessel' => 'required',
+            'container_key' => 'required|array',
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validated->errors()->all(),
+            ]);
+        }
+
+        $vessel = VVoyage::findOrFail($request->vessel);
+        $expired = $vessel->clossing_date;
+        $items = Item::whereIn('container_key', $request->container_key)->get();
+        try {
+            if ($request->has('formId') || $request->formId != null) {
+                $form = Form::find($request->formId);
+                $form = DB::transaction(function() use ($request, $items, $expired, $vessel, $form) {
+                    $form->update([
+                        'expired_date'=>$expired,
+                        'os_id'=>$request->service,
+                        'cust_id'=>$request->customer,
+                        'do_id'=>$request->bookingNo,
+                        'ves_id'=> $vessel->ves_id,
+                        'i_e'=>'E',
+                        'disc_date'=>Carbon::now(),
+                        'done'=>'N',
+                        'discount_ds'=>$request->discountDS,
+                        'discount_dsk'=>$request->discountDSK,
+                        'user_id' => Auth::user()->id
+                    ]);
+                    $this->containerStore($form, $items);
+                    return $form;
+                });
+            }else {
+                $form = DB::transaction(function() use ($request, $items, $expired, $vessel) {
+                    $form = Form::create([
+                        'expired_date'=>$expired,
+                        'os_id'=>$request->service,
+                        'cust_id'=>$request->customer,
+                        'do_id'=>$request->bookingNo,
+                        'ves_id'=> $vessel->ves_id,
+                        'i_e'=>'E',
+                        'disc_date'=>Carbon::now(),
+                        'done'=>'N',
+                        'discount_ds'=>$request->discountDS,
+                        'discount_dsk'=>$request->discountDSK,
+                        'user_id' => Auth::user()->id
+
+                    ]);
+                    $this->containerStore($form, $items);
+                    return $form;
+                });
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $form
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => "Opss Something Wrong in " . $e->getMessage()
+            ]);
+        }
+    }
 }
