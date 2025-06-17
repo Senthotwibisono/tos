@@ -67,7 +67,6 @@
                   @else
                     @php
                       $adminDSK = $tarifDSK->tarif ?? 0;
-                      $totalDSK += $adminDSK;
                     @endphp
                   @endif
                 @endforeach
@@ -95,18 +94,19 @@
           </div>
           @php
             $discountDSK = $form->discount_dsk;
-            $totalAmountDSK = ($totalDSK)  - $discountDSK;
+            $totalDSKBanget = $totalDSK + $adminDSK;
+            $totalAmountDSK = ($totalDSK + $adminDSK)  - $discountDSK;
             $ppnDSK = ($totalAmountDSK * 11)/100;
             $grandTotalDSK = $totalAmountDSK + $ppnDSK; 
           @endphp
           <div class="col-6 mt-4" style="text-align:right;">
-            <h4 class="text-white"> Rp. {{number_format($totalDSK, 2, ',', '.')}}</h4>
+            <h4 class="text-white"> Rp. {{number_format($totalDSKBanget, 2, ',', '.')}}</h4>
             <h4 class="text-white"> Rp. {{number_format($adminDSK, 2, ',', '.')}}</h4>
             <h4 class="text-white">Rp. {{number_format($discountDSK, 2, ',', '.')}}</h4>
             <h4 class="text-white">Rp. {{number_format($ppnDSK, 2, ',', '.')}}</h4>
             <h4 class="color:#ff5265;">Rp. {{number_format($grandTotalDSK, 2, ',', '.')}} </h4>
             <input type="hidden" name="adminDSK" value="{{$adminDSK}}">
-            <input type="hidden" name="totalDSK" value="{{$totalDSK}}">
+            <input type="hidden" name="totalDSK" value="{{$totalDSKBanget}}">
             <input type="hidden" name="ppnDSK" value="{{$ppnDSK}}">
             <input type="hidden" name="discountDSK" value="{{$discountDSK}}">
             <input type="hidden" name="grandTotalDSK" value="{{$grandTotalDSK}}"> 
