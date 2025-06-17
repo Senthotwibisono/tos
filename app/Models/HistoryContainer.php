@@ -9,7 +9,8 @@ class HistoryContainer extends Model
 {
     use HasFactory;
     protected $table = 'history_container';
-    protected $primaryKey = false;
+    public $incrementing = false;
+    protected $primaryKey = null;
     public $timestamps = false;
 
     protected $fillable = [

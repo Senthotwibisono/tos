@@ -9,6 +9,9 @@ use App\Models\HistoryContainer;
 use App\Models\Job;
 use Illuminate\Pagination\Paginator;
 
+
+use Auth;
+use Carbon\Carbon;
 class HistoryController extends Controller
 {
     public function __construct()
@@ -62,5 +65,34 @@ class HistoryController extends Controller
             'stack_date'
         ]);
         return response()->json(['data' => $anncectrjobs]);
+    }
+
+
+    public function postHistoryContainer($dataHistory)
+    {
+        // dd($dataHistory);
+        $history = HistoryContainer::create([
+            'container_key' => $dataHistory['container_key'],
+            'container_no' => $dataHistory['container_no'],
+            'operation_name' => $dataHistory['operation_name'],
+            'ves_id' => $dataHistory['ves_id'],
+            'ves_code' => $dataHistory['ves_code'],
+            'voy_no' => $dataHistory['voy_no'],
+            'ctr_i_e_t' => $dataHistory['ctr_i_e_t'],
+            'ctr_active_yn' => $dataHistory['ctr_active_yn'],
+            'ctr_size' => $dataHistory['ctr_size'],
+            'ctr_type' => $dataHistory['ctr_type'],
+            'ctr_status' => $dataHistory['ctr_status'],
+            'ctr_intern_status' => $dataHistory['ctr_intern_status'],
+            'yard_blok' => $dataHistory['yard_blok'],
+            'yard_slot' => $dataHistory['yard_slot'],
+            'yard_row' => $dataHistory['yard_row'],
+            'yard_tier' => $dataHistory['yard_tier'],
+            'truck_no' => $dataHistory['truck_no'],
+            'truck_in_date' => $dataHistory['truck_in_date'],
+            'truck_out_date' => $dataHistory['truck_out_date'],
+            'oper_name' => $dataHistory['oper_name'],
+            'iso_code' => $dataHistory['iso_code'],
+        ]);
     }
 }
