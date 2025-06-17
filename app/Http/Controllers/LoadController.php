@@ -17,13 +17,14 @@ use Auth;
 use Illuminate\Http\Request;
 
 use DataTables;
-
+use App\Http\Controllers\HistoryController;
 class LoadController extends Controller
 {
   //
   public function __construct()
   {
     $this->middleware('auth');
+    $this->history = app(HistoryController::class);
   }
   public function index()
   {
@@ -292,6 +293,32 @@ class LoadController extends Controller
           'ves_name'=>$kapal->ves_name,
           'voy_no'=>$kapal->voy_out,
         ]);
+
+        $dataHistory = [
+          'container_key' => $item->container_key,
+          'container_no' => $item->container_no,
+          'operation_name' => 'LOAD',
+          'ves_id' => $item->ves_id,
+          'ves_code' => $item->ves_code,
+          'voy_no' => $item->voy_no,
+          'ctr_i_e_t' => $item->ctr_i_e_t,
+          'ctr_active_yn' => $item->ctr_active_yn,
+          'ctr_size' => $item->ctr_size,
+          'ctr_type' => $item->ctr_type,
+          'ctr_status' => $item->ctr_status,
+          'ctr_intern_status' => $item->ctr_intern_status,
+          'yard_blok' => $item->yard_blok,
+          'yard_slot' => $item->yard_slot,
+          'yard_row' => $item->yard_row,
+          'yard_tier' => $item->yard_tier,
+          'truck_no' => $item->truck_no,
+          'truck_in_date' => $item->truck_in_date ? Carbon::parse($item->truck_in_date)->format('Y-m-d') : null,
+          'truck_out_date' => $item->truck_out_date ? Carbon::parse($item->truck_out_date)->format('Y-m-d') : null,
+          'oper_name' => Auth::user()->name,
+          'iso_code' => $item->iso_code,
+        ];
+                
+        $historyContainer = $this->history->postHistoryContainer($dataHistory);
         $ship->update([
           'container_no'=>$item->container_no,
           'container_key'=>$item->container_key,
@@ -348,6 +375,31 @@ class LoadController extends Controller
         'bay_tier' => null,
         'ctr_intern_status' => 50,
      ]);
+     $dataHistory = [
+        'container_key' => $item->container_key,
+        'container_no' => $item->container_no,
+        'operation_name' => 'LOAD-X',
+        'ves_id' => $item->ves_id,
+        'ves_code' => $item->ves_code,
+        'voy_no' => $item->voy_no,
+        'ctr_i_e_t' => $item->ctr_i_e_t,
+        'ctr_active_yn' => $item->ctr_active_yn,
+        'ctr_size' => $item->ctr_size,
+        'ctr_type' => $item->ctr_type,
+        'ctr_status' => $item->ctr_status,
+        'ctr_intern_status' => $item->ctr_intern_status,
+        'yard_blok' => $item->yard_blok,
+        'yard_slot' => $item->yard_slot,
+        'yard_row' => $item->yard_row,
+        'yard_tier' => $item->yard_tier,
+        'truck_no' => $item->truck_no,
+        'truck_in_date' => $item->truck_in_date ? Carbon::parse($item->truck_in_date)->format('Y-m-d') : null,
+        'truck_out_date' => $item->truck_out_date ? Carbon::parse($item->truck_out_date)->format('Y-m-d') : null,
+        'oper_name' => Auth::user()->name,
+        'iso_code' => $item->iso_code,
+      ];
+                
+                    $historyContainer = $this->history->postHistoryContainer($dataHistory);
      return back()->with('success', 'Bay Berhasil di Update');
     }else {
       return back()->with('error', 'Bay Tidak Ditemukan');
