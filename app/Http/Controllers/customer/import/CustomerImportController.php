@@ -347,7 +347,7 @@ class CustomerImportController extends CustomerMainController
         $data['form'] = Form::find($id);
         $data['orderService'] = OS::where('ie', '=', 'I')->get();
         $data['do_online'] = DOonline::where('active', 'Y')->get();
-        $data['ves'] = VVoyage::where('deparature_date', '>=', Carbon::now())->get();
+        $data['ves'] = VVoyage::get();
         $data['containerInvoice'] = Container::where('form_id', $id)->get();
         
         $mui = MUI::where('user_id', $this->userId)->get();

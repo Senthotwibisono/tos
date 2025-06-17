@@ -167,7 +167,7 @@ class TransactionController extends Controller
         $detils = RefDetail::where('va_id', $va->id)->get();
         $details = $detils->pluck('inv_id');
         $action = 'lunas';
-        $response = $this->processImport($details, $action);
+        $response = $this->processExport($details, $action);
         // var_dump(json_encode($detils));
         // die();
         
