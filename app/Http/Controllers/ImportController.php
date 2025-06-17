@@ -56,8 +56,8 @@ class ImportController extends Controller
     public function __construct()
     {
       $this->middleware('auth');
-      $this->middleware('role:invoice|admin|user')->only(['billingMain', 'detilUnpaid', 'detilPiutang', 'deliveryMenu',
-    'deliveryEdit', 'deliveryForm']); 
+    //   $this->middleware('role:invoice|admin|user')->only(['billingMain', 'detilUnpaid', 'detilPiutang', 'deliveryMenu',
+    // 'deliveryEdit', 'deliveryForm']); 
     }
 
     public function billingMain()
