@@ -77,6 +77,7 @@
 @endsection
 
 @section('custom_js')
+@include('billingSystem.js.jsInvoice');
 <script>
   $(document).ready(function(){
     $('#pitangTable').DataTable({

@@ -157,7 +157,7 @@ class ServiceController extends Controller
             $dischDate = Carbon::parse($singleCont->disc_date);
             $expired = $dischDate->addDays(4);
             $expiredDate = $expired->format('Y-m-d');
-            $flagCustomer = $customer->id ? (($customer->id == $request->customerId) ? 'Y' : 'N') : 'Y';
+            $flagCustomer = $customer ? ($customer->id ? (($customer->id == $request->customerId) ? 'Y' : 'N') : 'Y') : 'Y';
             return response()->json([
                 'success' => true,
                 'data' => [

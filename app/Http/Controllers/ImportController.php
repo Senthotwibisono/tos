@@ -447,6 +447,12 @@ class ImportController extends Controller
 
         $do_no = $request->doNo;
         $do = DOonline::where('do_no', $do_no)->first();
+        if (!$do) {
+            return response()->json([
+                'success' => false,
+                'message' => 'DO yang anda masukkan tidak sesuai !!',
+            ]);
+        }
 
         if (empty($request->customerId)) {
             return response()->json([
@@ -2017,9 +2023,19 @@ private function getNextInvoiceDSK()
                     $jumlahCont = $containers->where('ctr_size', $size)->where('ctr_status', $status)->count();
                     if ($jumlahCont > 0) {
                         foreach ($serviceDetails as $detail) {
-                            $this->createInvoiceDetail($header, $form, $detail, $tarif, $tarifDetail, $size, $status, $jumlahCont);
+                            if ($detail->MItem->count_by != 'O') {
+                                $this->createInvoiceDetail($header, $form, $detail, $tarif, $tarifDetail, $size, $status, $jumlahCont);
+                            }
                         }
                     }
+                }
+            }
+
+            foreach ($serviceDetails as $detail) {
+                if ($detail->MItem->count_by == 'O') {
+                    $size = null;
+                    $status = null;
+                    $this->createInvoiceDetail($header, $form, $detail, $tarif, $tarifDetail, $size, $status, 1);
                 }
             }
         });
@@ -2056,6 +2072,9 @@ private function getNextInvoiceDSK()
     private function createInvoiceDetail($header, $form, $detail, $tarif, $tarifDetail, $size, $status, $jumlahCont)
     {
         $selectedTarif = $tarif->where('ctr_size', $size)->where('ctr_status', $status)->first();
+        if ($detail->MItem->count_by == 'O') {
+            $selectedTarif = $tarif->first();
+        }
         $tarifDSK = $tarifDetail->where('master_tarif_id', $selectedTarif->id)->where('master_item_id', $detail->master_item_id)->first();
 
         $jumlahHari = $this->calculateDays($form, $detail);

@@ -709,9 +709,19 @@ class CustomerExtendController extends CustomerMainController
                     $jumlahCont = $containers->where('ctr_size', $size)->where('ctr_status', $status)->count();
                     if ($jumlahCont > 0) {
                         foreach ($serviceDetails as $detail) {
-                            $this->createInvoiceDetail($header, $form, $detail, $tarif, $tarifDetail, $size, $status, $jumlahCont);
+                            if ($detail->MItem->count_by != 'O') {
+                                $this->createInvoiceDetail($header, $form, $detail, $tarif, $tarifDetail, $size, $status, $jumlahCont);
+                            }
                         }
                     }
+                }
+            }
+
+            foreach ($serviceDetails as $detail) {
+                if ($detail->MItem->count_by == 'O') {
+                    $size = null;
+                    $status = null;
+                    $this->createInvoiceDetail($header, $form, $detail, $tarif, $tarifDetail, $size, $status, 1);
                 }
             }
         });
@@ -746,6 +756,9 @@ class CustomerExtendController extends CustomerMainController
     private function createInvoiceDetail($header, $form, $detail, $tarif, $tarifDetail, $size, $status, $jumlahCont)
     {
         $selectedTarif = $tarif->where('ctr_size', $size)->where('ctr_status', $status)->first();
+        if ($detail->MItem->count_by == 'O') {
+            $selectedTarif = $tarif->first();
+        }
         $tarifDSK = $tarifDetail->where('master_tarif_id', $selectedTarif->id)->where('master_item_id', $detail->master_item_id)->first();
 
         $jumlahHari = $this->calculateDays($form, $detail);
@@ -766,7 +779,7 @@ class CustomerExtendController extends CustomerMainController
             'cust_id' => $form->cust_id,
             'cust_name' => $form->customer->name,
             'os_id' => $form->os_id,
-            'jumlah_hari' => 0,
+            'jumlah_hari' => $jumlahHari,
             'master_item_id' => $detail->master_item_id,
             'master_item_name' => $detail->master_item_name,
             'kode' => $kode,

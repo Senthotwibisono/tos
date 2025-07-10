@@ -184,31 +184,83 @@ class TransactionController extends Controller
 
     private function getInvoiceNoOS()
     {
+        // Ambil semua inv_no yang sudah digunakan
+        $usedNumbers = Export::whereIn('inv_no', $this->reservedInvoiceNumbers)->pluck('inv_no')->toArray();
+
+        // Cari nomor pertama dari daftar yang belum digunakan
+        foreach ($this->reservedInvoiceNumbers as $inv) {
+            if (!in_array($inv, $usedNumbers)) {
+                return $inv;
+            }
+        }
+
+        // Jika semua nomor dalam daftar sudah digunakan, generate otomatis
         $latest = Export::where('inv_type', 'OS')->orderBy('inv_no', 'desc')->first();
         if (!$latest) {
             return 'OS0000001';
         }
-        $lastInvoice = $latest->inv_no;
-        $lastNumber = (int)substr($lastInvoice, 3);
+
+        $lastNumber = (int)substr($latest->inv_no, 2); // ambil angka saja
         $nextNumber = $lastNumber + 1;
+
         return 'OS' . str_pad($nextNumber, 7, '0', STR_PAD_LEFT);
     }
 
+    private $reservedInvoiceNumbers = [
+        'OS0005782', 'OS0005783', 'OS0005784', 'OS0005785', 'OS0005786',
+        'OS0005787', 'OS0005788', 'OS0005789', 'OS0005790', 'OS0005791',
+        'OS0005792', 'OS0005793', 'OS0005794', 'OS0005795', 'OS0005796',
+        'OS0005797', 'OS0005798', 'OS0005799', 'OS0005800', 'OS0005801',
+        'OS0005802', 'OS0005803', 'OS0005804', 'OS0005805', 'OS0005806',
+        'OS0005807', 'OS0005808', 'OS0005809', 'OS0005810', 'OS0005811',
+        'OS0005812', 'OS0005813', 'OS0005814', 'OS0005815', 'OS0005816',
+        'OS0005817', 'OS0005818', 'OS0005819', 'OS0005820', 'OS0005824',
+        'OS0005825', 'OS0005826', 'OS0005827', 'OS0005828', 'OS0005829',
+        'OS0005830', 'OS0005831', 'OS0005832', 'OS0005833', 'OS0005834',
+        'OS0005835', 'OS0005836', 'OS0005837', 'OS0005838', 'OS0005839',
+        'OS0005840', 'OS0005841', 'OS0005842', 'OS0005843', 'OS0005844',
+        'OS0005845', 'OS0005846', 'OS0005847', 'OS0005848', 'OS0005849',
+        'OS0005850', 'OS0005851', 'OS0005852', 'OS0005853', 'OS0005854',
+        'OS0005855', 'OS0005856', 'OS0005857', 'OS0005858', 'OS0005859',
+        'OS0005860', 'OS0005861', 'OS0005862'
+    ];
+
+
+    private $reservedInvoiceNumbersOSK = [
+        'OSK0001640', 'OSK0001641', 'OSK0001642', 'OSK0001643', 'OSK0001644',
+        'OSK0001645', 'OSK0001646', 'OSK0001647', 'OSK0001648', 'OSK0001649',
+        'OSK0001650', 'OSK0001651', 'OSK0001652', 'OSK0001653', 'OSK0001654',
+    ];
+    
     private function getInvoiceNoOSK()
     {
+        // Ambil semua inv_no OSK yang sudah digunakan dari dua tabel
+        $usedFromExport = Export::whereIn('inv_no', $this->reservedInvoiceNumbersOSK)->pluck('inv_no')->toArray();
+        $usedFromStev = InvoiceHeaderStevadooring::whereIn('invoice_no', $this->reservedInvoiceNumbersOSK)->pluck('invoice_no')->toArray();
+        
+        $usedNumbers = array_merge($usedFromExport, $usedFromStev);
+    
+        // Cari yang belum digunakan dari list reserved
+        foreach ($this->reservedInvoiceNumbersOSK as $inv) {
+            if (!in_array($inv, $usedNumbers)) {
+                return $inv;
+            }
+        }
+    
+        // Jika semua sudah digunakan, lanjut generate otomatis dari Export dan Stev
         $latest = Export::where('inv_type', 'OSK')->orderBy('inv_no', 'desc')->first();
         $latestStev = InvoiceHeaderStevadooring::orderBy('invoice_no', 'desc')->first();
+    
         if (!$latest && !$latestStev) {
             return 'OSK0000001';
         }
-        $lastExportInvoice = $latest ? $latest->inv_no : null;
-        $lastStevInvoice = $latestStev ? $latestStev->invoice_no : null;
-
-        $lastExportNumber = $lastExportInvoice ? (int)substr($lastExportInvoice, 3) : 0;
-        $lastStevNumber = $lastStevInvoice ? (int)substr($lastStevInvoice, 3) : 0;
-
+    
+        $lastExportNumber = $latest ? (int)substr($latest->inv_no, 3) : 0;
+        $lastStevNumber = $latestStev ? (int)substr($latestStev->invoice_no, 3) : 0;
+    
         $lastNumber = max($lastExportNumber, $lastStevNumber);
         $nextNumber = $lastNumber + 1;
+    
         return 'OSK' . str_pad($nextNumber, 7, '0', STR_PAD_LEFT);
     }
 
@@ -309,7 +361,7 @@ class TransactionController extends Controller
 
                 $piutangAt = ($lunas == 'P') ? ($import->piutang_at ? $import->piutang_at : Carbon::now()) : $import->piutang_at ;
                 $lunasAt = ($lunas == 'Y') ? ($import->lunas_at ? $import->lunas_at : Carbon::now()) : $import->lunas_at;
-                $invoiceDate = ($lunas == 'Y') ? $lunasAt : $piutangAt;
+                $invoiceDate = $import->invoice_date ? $import->invoice_date : (($lunas == 'Y') ? $lunasAt : $piutangAt);
     
                 $containerInvoice = Container::where('form_id', $import->form_id)->get();
                 $bigOS = OS::where('id', $import->os_id)->first();
@@ -407,7 +459,7 @@ class TransactionController extends Controller
 
                 $piutangAt = ($lunas == 'P') ? ($extend->piutang_at ? $extend->piutang_at : Carbon::now()) : $extend->piutang_at ;
                 $lunasAt = ($lunas == 'Y') ? ($extend->lunas_at ? $extend->lunas_at : Carbon::now()) : $extend->lunas_at;
-                $invoiceDate = ($lunas == 'Y') ? $lunasAt : $piutangAt;
+                $invoiceDate = $extend->invoice_date ? $extend->invoice_date : (($lunas == 'Y') ? $lunasAt : $piutangAt);
 
 
                 $noInvoice = ($extend->inv_no) ? $extend->inv_no : 'DS-'.$this->getNextInvoiceExtend();
@@ -504,13 +556,15 @@ class TransactionController extends Controller
                 // var_dump($export->inv_type);
                 // die();
                 if ($export->inv_type == 'OSK') {
-                    $noInvoice = $this->getInvoiceNoOSK();
+                    $noInvoice = ($export->inv_no) ? $export->inv_no : $this->getInvoiceNoOSK();
                 } elseif ($export->inv_type == 'OS') {
-                    $noInvoice = $this->getInvoiceNoOS();
+                    $noInvoice = ($export->inv_no) ? $export->inv_no : $this->getInvoiceNoOS();
                 } else {
                     return false;
                 }
-    
+                $piutangAt = ($lunas == 'P') ? ($export->piutang_at ? $export->piutang_at : Carbon::now()) : $export->piutang_at ;
+                $lunasAt = ($lunas == 'Y') ? ($export->lunas_at ? $export->lunas_at : Carbon::now()) : $export->lunas_at;
+                $invoiceDate = $export->invoice_date ? $export->invoice_date : (($lunas == 'Y') ? $lunasAt : $piutangAt);
                 $containerInvoice = Container::where('form_id', $export->form_id)->get();
                 $bigOS = OS::where('id', $export->os_id)->first();
                 foreach ($containerInvoice as $cont) {
@@ -552,12 +606,13 @@ class TransactionController extends Controller
                     });
                 }
                 
-                DB::transaction(function() use($export, $noInvoice, $lunas){
+                DB::transaction(function() use($export, $noInvoice, $lunas, $lunasAt, $piutangAt, $invoiceDate){
                     $export->update([
                         'lunas' => $lunas,
                         'inv_no'=>$noInvoice,
-                        'lunas_at'=> Carbon::now(),
-                        'invoice_date'=> Carbon::now(),
+                        'lunas_at' => $lunasAt,
+                        'piutang_at' => $piutangAt,
+                        'invoice_date'=> $invoiceDate,
                     ]);
                 });
             }

@@ -142,50 +142,66 @@ class CoparnCustomerController extends CustomerMainController
         set_time_limit(0);
         $coparns = $request->dataResult;
         foreach ($coparns as $data) {
-            $oldItem = Item::where('container_no', $data[1])->where('ctr_intern_status', "49")->where('booking_no', $data[0])->first();
+            $isoCodeData = null; // Reset setiap loop       
+
+            $oldItem = Item::where('container_no', $data[1])
+                ->where('ctr_intern_status', "49")
+                ->where('booking_no', $data[0])
+                ->first();      
+
             if (!$oldItem) {
-                $isoCodeData = Isocode::where('iso_code', $data[2])->first();
+                $isoCodeData = Isocode::where('iso_code', trim($data[2]))->first();     
+
+                if (!$isoCodeData) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Data Iso Code ' . $data[2] . ' Belum tersedia',
+                    ]);
+                }       
+
                 if ($request->ves_id == 'PELINDO') {
-                    $ves = (object)[ // Cast the array to an object for consistent access
+                    $ves = (object)[
                         'ves_name' => 'Pelindo',
                         'ves_code' => 'Pelindo',
-                        'voy_no' => null, // Assign null or any default value you prefer
+                        'voy_no' => null,
                         'voy_out' => null,
                         'clossing_date' => null,
                         'eta_date' => null,
                         'etd_date' => null,
                     ];
-                }else {
+                } else {
                     $ves = VVoyage::where('ves_id', $request->ves_id)->first();
-                }
-    
-                $status = ($data[9] == 'EMPTY') ? 'MTY' : 'FCL';
-                $item = Item::create([
-                    'ves_id'=>$request->ves_id,
-                    'ves_code'=>$ves->ves_code,
-                    'ves_name'=>$ves->ves_name,
-                    'voy_no'=>$ves->voy_no,
-                    'disch_port'=>$data[4],
-                    'load_port'=>$data[5],
-                    'container_no'=>$data[1],
-                    'iso_code'=>$data[2],
-                    'ctr_size'=>$isoCodeData->iso_size,
-                    'ctr_type'=>$isoCodeData->iso_type,
-                    'ctr_opr'=>$data[6],
-                    'ctr_status'=>$status,
-                    'gross'=>$data[10],
-                    'ctr_intern_status'=>'49',
-                    'ctr_i_e_t'=>'E',
-                    'disc_load_trans_shift'=>'LOAD',
-                    'user_id'=>Auth::user()->name,
-                    'ctr_active_yn'=>'N',
-                    'selected_do'=>'N',
-                    'booking_no'=>$data[0],
+                }       
+
+                $status = ($data[9] == 'EMPTY') ? 'MTY' : 'FCL';        
+
+                Item::create([
+                    'ves_id' => $request->ves_id,
+                    'ves_code' => $ves->ves_code,
+                    'ves_name' => $ves->ves_name,
+                    'voy_no' => $ves->voy_no,
+                    'disch_port' => $data[4],
+                    'load_port' => $data[5],
+                    'container_no' => $data[1],
+                    'iso_code' => $data[2], // pakai langsung dari $data[2]
+                    'ctr_size' => $isoCodeData->iso_size,
+                    'ctr_type' => $isoCodeData->iso_type,
+                    'ctr_opr' => $data[6],
+                    'ctr_status' => $status,
+                    'gross' => $data[10],
+                    'ctr_intern_status' => '49',
+                    'ctr_i_e_t' => 'E',
+                    'disc_load_trans_shift' => 'LOAD',
+                    'user_id' => Auth::user()->name,
+                    'ctr_active_yn' => 'N',
+                    'selected_do' => 'N',
+                    'booking_no' => $data[0],
                     'created_by' => Auth::user()->id,
                     'customer_code' => $request->customer ?? null,
                 ]);
             }
         }
+
 
         return response()->json([
             'success' => true,

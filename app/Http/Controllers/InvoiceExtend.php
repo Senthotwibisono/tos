@@ -1287,15 +1287,25 @@ public function ReportExcelPiutang(Request $request)
     {
         DB::transaction(function () use ($request, $form, $service, $containers, $groupContainer, $sizes, $statuses, $serviceDetails, $tarif, $tarifDetail, $type) {
             $header = $this->createInvoiceHeader($request, $form, $service, $type);
-
+            
             foreach ($sizes as $size) {
                 foreach ($statuses as $status) {
                     $jumlahCont = $containers->where('ctr_size', $size)->where('ctr_status', $status)->count();
                     if ($jumlahCont > 0) {
                         foreach ($serviceDetails as $detail) {
-                            $this->createInvoiceDetail($header, $form, $detail, $tarif, $tarifDetail, $size, $status, $jumlahCont);
+                            if ($detail->MItem->count_by != 'O') {
+                                $this->createInvoiceDetail($header, $form, $detail, $tarif, $tarifDetail, $size, $status, $jumlahCont);
+                            }
                         }
                     }
+                }
+            }
+
+            foreach ($serviceDetails as $detail) {
+                if ($detail->MItem->count_by == 'O') {
+                    $size = null;
+                    $status = null;
+                    $this->createInvoiceDetail($header, $form, $detail, $tarif, $tarifDetail, $size, $status, 1);
                 }
             }
         });
@@ -1331,6 +1341,9 @@ public function ReportExcelPiutang(Request $request)
     private function createInvoiceDetail($header, $form, $detail, $tarif, $tarifDetail, $size, $status, $jumlahCont)
     {
         $selectedTarif = $tarif->where('ctr_size', $size)->where('ctr_status', $status)->first();
+        if ($detail->MItem->count_by == 'O') {
+            $selectedTarif = $tarif->first();
+        }
         $tarifDSK = $tarifDetail->where('master_tarif_id', $selectedTarif->id)->where('master_item_id', $detail->master_item_id)->first();
 
         $jumlahHari = $this->calculateDays($form, $detail);

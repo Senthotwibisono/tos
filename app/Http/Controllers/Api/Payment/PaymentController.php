@@ -142,6 +142,8 @@ class PaymentController extends Controller
         // die();
 
         $va = VA::where('virtual_account', $request->va)->first();
+        $detail = RefDetail::where('va_id', $va->id)->get();
+        $proforma = $detail->pluck('proforma_no')->implode(', ');
         if ($va) {
             if (Carbon::parse($va->expired_va)->greaterThan(Carbon::now())) {
                 if ($va->status != 'N') {
@@ -173,7 +175,7 @@ class PaymentController extends Controller
                     'va' => $va->virtual_account,
                     'name' => $va->customer_name,
                     'customerid' => $va->customer_id,
-                    'description' => $va->description,
+                    'description' => $proforma,
                     'billing_amount' => ceil($va->billing_amount),
                     'type_trx' => "c"
                 ]);
