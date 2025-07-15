@@ -480,6 +480,7 @@ class CustomerExportController extends  CustomerMainController
                 'total' => $detil->total,
                 'form_id' => $detil->form_id,
                 'count_by' => $detil->count_by,
+                'order_date'=>$invoiceOSK->order_at,
             ]);
         }
 
@@ -536,6 +537,7 @@ class CustomerExportController extends  CustomerMainController
                 'total' => $detil->total,
                 'form_id' => $detil->form_id,
                 'count_by' => $detil->count_by,
+                'order_date'=>$invoiceOS->order_at,
             ]);
         }
 
