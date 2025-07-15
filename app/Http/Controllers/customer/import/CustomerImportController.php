@@ -259,7 +259,11 @@ class CustomerImportController extends CustomerMainController
         })
         ->addColumn('action', function($inv){
             if ($inv->lunas == 'N' || $inv->lunas == 'P') {
-                return '<button type="button" id="pay" data-id="'.$inv->id.'" class="btn btn-sm btn-success" onClick="searchToPay(this)"><i class="fa fa-cogs"></i></button>';
+                if ($inv->inv_type == 'DS') {
+                    return '<span class="badge text-white" style="background-color: orange;">Pembayaran Manual</span>';
+                }else {
+                    return '<button type="button" id="pay" data-id="'.$inv->id.'" class="btn btn-sm btn-success" onClick="searchToPay(this)"><i class="fa fa-cogs"></i></button>';
+                }
             }elseif ($inv->lunas == 'Y') {
                 return '<span class="badge bg-success text-white">Paid</span>';
             }else {
@@ -945,6 +949,56 @@ class CustomerImportController extends CustomerMainController
         }
 
         return null;
+    }
+
+    public function doIndex()
+    {
+        $data['title'] = 'DO Online, ' . Auth::user()->name;
+        $data['vessels'] = VVoyage::where('deparature_date', '>=', Carbon::now())->orderBy('ves_id', 'desc')->get();
+
+        return view('customer.import.do.index', $data);
+    }
+
+    public function doData(Request $request)
+    {
+        $mui = MUI::where('user_id', $this->userId)->get();
+        $customer = Customer::whereIn('id', $mui->pluck('customer_id'))->get();
+        $doData = DOonline::whereIn('customer_code', $customer->pluck('code'))->get(); // Adjust with your actual model and query logic
+        return datatables()->of($doData)
+            ->addIndexColumn() // This adds DT_RowIndex to each row
+            ->addColumn('actions', function($do) {
+                return '
+                    <div class="row mb-3">
+                        <div class="col-sm-6">
+                            <a href="/customer-import/doOnline/edit/'.$do->id.'" class="btn btn-warning">Edit</a>
+                        </div>
+                        <div class="col-sm-6">
+                            <form id="deleteForm-'.$do->id.'" action="'.route('deleteDo').'" method="post">
+                                '.csrf_field().'
+                                <input type="hidden" name="id" value="'.$do->id.'">
+                                <button type="button" class="btn btn-outline-danger delete-btn" data-id="'.$do->id.'">Delete</button>
+                            </form>
+                        </div>
+                    </div>';
+            })
+            ->addColumn('container_no', function($do) {
+                $doArray = json_decode($do->container_no, true);
+                if (is_array($doArray)) {
+                    return implode(', ', $doArray);
+                } else {
+                    return $do->container_no;
+                }
+            })
+            ->rawColumns(['actions', 'container_no'])
+            ->make(true);
+    }
+
+     public function doEdit($id)
+    {
+        $do = DOonline::where('id', $id)->first();
+        $data['title'] = "Edit DO ".$do->do_no;
+        $data['do'] = $do;
+        return view('customer.import.do.edit', $data);
     }
 
 }

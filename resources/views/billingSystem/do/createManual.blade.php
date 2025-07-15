@@ -1,4 +1,4 @@
-@extends ('partial.invoice.main')
+@extends(Auth::user()->hasRole('customer') ? 'partial.customer.main' : 'partial.invoice.main')
 @section('custom_styles')
 <style>
      .text-left {
@@ -72,7 +72,11 @@
                 <div class="row mb-3">
                     <div class="col-sm-3">
                         <button type="button" id="updateButton" class="btn btn-success">Submit</button>
+                        @if(Auth::user()->hasRole('customer'))
+                        <a href="/customer-import/doOnline/index" class="btn btn-secondary">Back</a>
+                        @else
                         <a href="/billing/dock-DO" class="btn btn-secondary">Back</a>
+                        @endif
                     </div>
                 </div>
             </div>

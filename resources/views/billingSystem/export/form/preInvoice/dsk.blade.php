@@ -56,9 +56,12 @@
                         <h4 class="text-white">Grand Total  :</h4>
                     </div>
 
+                    @php
+                      $totalAmountDSK = $totalDSK + $adminDSK;
+                    @endphp
                       <div class="col-6 mt-4" style="text-align:right;">
                         <h4 class="text-white"> Rp. {{number_format($totalDSK, 0, ',', '.')}}</h4>
-                        <input type="hidden" name="totalDSK" value="{{$totalDSK}}">
+                        <input type="hidden" name="totalDSK" value="{{$totalAmountDSK}}">
                         <h4 class="text-white"> Rp. {{number_format($adminDSK, 0, ',', '.')}}</h4>
                         <input type="hidden" name="adminDSK" value="{{$adminDSK}}">
                         <h4 class="text-white"> Rp. {{number_format($discountDSK, 0, ',', '.')}}</h4>

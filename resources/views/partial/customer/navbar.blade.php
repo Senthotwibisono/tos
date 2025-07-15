@@ -7,14 +7,27 @@
         <span>Dashboard</span>
       </a>
     </li>
-
-    <li class="menu-item">
-      <a href="/customer-import" class="menu-link">
+  
+    <li class="menu-item has-sub">
+      <a type="button" class="menu-link">
         <i class="fa-solid fa-ship"></i>
         Bongkar
       </a>
+      <div class="submenu">
+        <div class="submenu-group-wrapper">
+          <ul class="submenu-group">
+            <li class="submenu-item">
+              <a href="/customer-import" class="submenu-link">Create Invoice</a>
+            </li>
+            <li class="submenu-item">
+              <a href="{{ route('customer.importDO.index')}}" class="submenu-link">Upload DO Online</a>
+            </li>
+            
+          </ul>
+        </div>
+      </div>
     </li>
-    
+
     <li class="menu-item has-sub">
       <a type="button" class="menu-link">
         <i class="fa-solid fa-ship"></i>

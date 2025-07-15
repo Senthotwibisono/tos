@@ -112,7 +112,7 @@
             <h4 class="text-white">Rp. {{number_format($ppnDS, 2, ',', '.')}}</h4>
             <h4 class="color:#ff5265;">Rp. {{number_format($grandTotalDS, 2, ',', '.')}} </h4>
             <input type="hidden" name="adminDS" value="{{$adminDS}}">
-            <input type="hidden" name="totalDS" value="{{$totalDS}}">
+            <input type="hidden" name="totalDS" value="{{$totalAmountDS}}">
             <input type="hidden" name="ppnDS" value="{{$ppnDS}}">
             <input type="hidden" name="grandTotalDS" value="{{$grandTotalDS}}"> 
           </div>

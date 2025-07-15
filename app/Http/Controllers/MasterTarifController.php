@@ -14,6 +14,7 @@ use Auth;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\uploadDO;
+use App\Models\MasterUserInvoice as MUI;
 
 use DataTables;
 
@@ -247,8 +248,12 @@ class MasterTarifController extends Controller
     {
         $path = $request->file('storedo');
         Excel::import(new uploadDO, $path->getRealPath(), null, 'Xls');
-
-        return redirect('/billing/dock-DO')->with('success', 'Data berhasil diimpor.');
+        if (Auth::user()->hasRole('customer')) {
+            $url = '/customer-import/doOnline/index';
+        }else {
+            $url = '/billing/dock-DO';
+        }
+        return redirect($url)->with('success', 'Data berhasil diimpor.');
     }
 
     public function deleteDo(Request $request)
@@ -293,7 +298,12 @@ class MasterTarifController extends Controller
         // dd($idKapal);
         $data['title'] = 'Create DO Online Manual';
         $data['items'] = Item::where('ves_id', $idKapal)->whereIn('ctr_intern_status', ['01', '02', '03'])->where('selected_do', 'N')->get();
-        $data['customers'] = Customer::get();
+        if (Auth::user()->hasRole('customer')) {
+            $mui = MUI::where('user_id', Auth::user()->id)->get();
+            $data['customers'] = Customer::whereIn('id', $mui->pluck('customer_id'))->get();
+        }else {
+            $data['customers'] = Customer::get();
+        }
 
         // dd($request->all());
 
@@ -334,7 +344,12 @@ class MasterTarifController extends Controller
                 'container_no'=>$containersJson,
             ]);
 
-            return redirect('/billing/dock-DO')->with('success', 'Data Berhasil di Buat');
+            if (Auth::user()->hasRole('customer')) {
+                $url = '/customer-import/doOnline/index';
+            }else {
+                $url = '/billing/dock-DO';
+            }
+            return redirect($url)->with('success', 'Data Berhasil di Buat');
 
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Something Wrong : ' . $th->getMessage());

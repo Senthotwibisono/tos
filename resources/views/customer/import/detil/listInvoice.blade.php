@@ -100,7 +100,7 @@
                             <label for="">Grand Total</label>
                             <input type="text" class="form-control" id="anotherGrandTotal">
                             <label for="">Ceklis untuk membayar tagihan lainnya</label>
-                            <input class="form-check-input" type="checkbox" name="couple" id="couple" checked>
+                            <input class="form-check-input" type="checkbox" name="couple" id="couple" disabled>
                         </div>
                     </div>
                 </div>
@@ -173,10 +173,10 @@
                 $('#payModal #inv_type_edit').val(result.data.inv_type);
                 $('#payModal #grand_total_edit').val(result.data.grand_total);
                 if (result.another) {
-                    $('#payModal #anotherForm').removeClass('d-none');
-                    $('#payModal #anotherProforma').val(result.anotherData.proforma_no);
-                    $('#payModal #anotherType').val(result.anotherData.inv_type);
-                    $('#payModal #anotherGrandTotal').val(result.anotherData.grand_total);
+                    // $('#payModal #anotherForm').removeClass('d-none');
+                    // $('#payModal #anotherProforma').val(result.anotherData.proforma_no);
+                    // $('#payModal #anotherType').val(result.anotherData.inv_type);
+                    // $('#payModal #anotherGrandTotal').val(result.anotherData.grand_total);
                 } else {
                     $('#payModal #anotherForm').addClass('d-none');
                     $('#payModal #couple').prop('checked', false);

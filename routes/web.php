@@ -929,17 +929,21 @@ Route::middleware('permission:Master Customer')->group(function(){
   Route::middleware('permission:DoOnline')->group(function(){
     Route::get('/billing/dock-DO', [MasterTarifController::class, 'doMain'])->name('doMain');
     Route::get('/billing/dock-DO/data', [MasterTarifController::class, 'doData']);
-    Route::post('/billing/dock-DO/upload', [MasterTarifController::class, 'doUpload'])->name('doUpload');
-    Route::post('/billing/dock-DO/delete', [MasterTarifController::class, 'deleteDo'])->name('deleteDo');
+   
+   
     Route::get('/edit/doOnline/{id?}', [MasterTarifController::class, 'doEdit'])->name('doEdit');
-    Route::post('/update/doOnline/{id?}', [MasterTarifController::class, 'doUpdate'])->name('doUpdate');
     
-    Route::controller(MasterTarifController::class)->group(function(){
-      Route::get('/billing/do/createManual', 'createDoManual');
-      Route::post('/billing/do/postManual', 'postManual');
-    });
+    
   });
-  });
+});
+
+Route::controller(MasterTarifController::class)->group(function(){
+  Route::get('/billing/do/createManual', 'createDoManual');
+  Route::post('/billing/do/postManual', 'postManual');
+});
+Route::post('/billing/dock-DO/delete', [MasterTarifController::class, 'deleteDo'])->name('deleteDo');
+Route::post('/update/doOnline/{id?}', [MasterTarifController::class, 'doUpdate'])->name('doUpdate');
+Route::post('/billing/dock-DO/upload', [MasterTarifController::class, 'doUpload'])->name('doUpload');
 
 // invoiceImport
 Route::middleware('permission:Invoice Import')->group(function(){
@@ -1458,6 +1462,12 @@ Route::middleware('permission:User')->group(function(){
     Route::get('/customer-import/payButton/{id?}', 'payButton');
     Route::post('/customer-import/payImportFromCust', 'payImportFromCust');
 
+    // DO Online
+    Route::prefix('/customer-import/doOnline')->name('customer.importDO.')->group(function() {
+      Route::get('/index', 'doIndex')->name('index');
+      Route::get('/data', 'doData')->name('data');
+      Route::get('/edit/{id}', 'doEdit')->name('edit');
+    });
   });
 
   Route::prefix('/customer-extend')->group(function(){

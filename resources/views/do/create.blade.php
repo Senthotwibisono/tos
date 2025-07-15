@@ -1,4 +1,4 @@
-@extends ('partial.invoice.main')
+@extends(Auth::user()->hasRole('customer') ? 'partial.customer.main' : 'partial.invoice.main')
 
 
 @section('content')

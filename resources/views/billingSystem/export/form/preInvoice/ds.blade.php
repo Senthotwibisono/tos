@@ -56,6 +56,10 @@
                         <h4 class="text-white">Grand Total  :</h4>
                     </div>
 
+                    @php
+                      $totalAmountDS = $totalDS + $adminDS;
+                    @endphp
+
                       <div class="col-6 mt-4" style="text-align:right;">
                       <h4 class="text-white"> Rp. {{number_format($totalDS, 0, ',', '.')}}</h4>
                         <h4 class="text-white"> Rp. {{number_format($adminDS, 0, ',', '.')}}</h4>
@@ -64,7 +68,7 @@
                         <h4 class="color:#ff5265;">Rp. {{number_format($grandTotalDS, 0, ',', '.')}} </h4>
                         <input type="hidden" name="adminDS" value="{{$adminDS}}">
                         <input type="hidden" name="discountDS" value="{{$discountDS}}">
-                        <input type="hidden" name="totalDS" value="{{$totalDS}}">
+                        <input type="hidden" name="totalDS" value="{{$totalAmountDS}}">
                         <input type="hidden" name="pajakDS" value="{{$pajakDS}}">
                         <input type="hidden" name="grandTotalDS" value="{{$grandTotalDS}}">
                        

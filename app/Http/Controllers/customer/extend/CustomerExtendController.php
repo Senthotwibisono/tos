@@ -252,7 +252,11 @@ class CustomerExtendController extends CustomerMainController
         })
         ->addColumn('action', function($inv){
             if ($inv->lunas == 'N' || $inv->lunas == 'P') {
-                return '<button type="button" id="pay" data-id="'.$inv->id.'" class="btn btn-sm btn-success pay" onClick="payExtend(this)"><i class="fa fa-cogs"></i></button>';
+                 if ($inv->inv_type == 'DS') {
+                    return '<span class="badge text-white" style="background-color: orange;">Pembayaran Manual</span>';
+                }else {
+                    return '<button type="button" id="pay" data-id="'.$inv->id.'" class="btn btn-sm btn-success pay" onClick="payExtend(this)"><i class="fa fa-cogs"></i></button>';
+                }
             }elseif ($inv->lunas == 'Y') {
                 return '<span class="badge bg-success text-white">Paid</span>';
             }else {

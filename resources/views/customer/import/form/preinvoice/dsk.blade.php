@@ -103,7 +103,7 @@
             <h4 class="text-white">Rp. {{number_format($ppnDSK, 2, ',', '.')}}</h4>
             <h4 class="color:#ff5265;">Rp. {{number_format($grandTotalDSK, 2, ',', '.')}} </h4>
             <input type="hidden" name="adminDSK" value="{{$adminDSK}}">
-            <input type="hidden" name="totalDSK" value="{{$totalDSK}}">
+            <input type="hidden" name="totalDSK" value="{{$totalAmountDSK}}">
             <input type="hidden" name="ppnDSK" value="{{$ppnDSK}}">
             <input type="hidden" name="grandTotalDSK" value="{{$grandTotalDSK}}"> 
           </div>
