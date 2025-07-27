@@ -162,6 +162,7 @@ public function generatePDF_bongkar(Request $request)
     $voy_no = implode(", ", $voy_nos->toArray());
     $items = Item::where('ves_id', $ves_id)
                 ->where('ctr_intern_status','!=', '01' )
+                ->where('ctr_i_e_t', 'I')
                 ->orderBy('ctr_intern_status', 'asc')
                 ->orderBy('yard_block', 'asc')
                 ->orderBy('yard_slot', 'asc')
@@ -169,8 +170,8 @@ public function generatePDF_bongkar(Request $request)
                 ->orderBy('yard_tier', 'asc')
                 ->get();
     
-    $total = Item::where('ves_id', $ves_id)->count();   
-    $bongkar = Item::where('ves_id', $ves_id)->where('ctr_intern_status','!=', '01' )->count(); 
+    $total = Item::where('ves_id', $ves_id)->where('ctr_i_e_t', 'I')->count();   
+    $bongkar = Item::where('ves_id', $ves_id)->where('ctr_i_e_t', 'I')->where('ctr_intern_status','!=', '01' )->count(); 
         // Lakukan tindakan yang sesuai dengan nilai ves_id
         // Misalnya, ambil data berdasarkan ves_id dan hasilkan PDF
         
