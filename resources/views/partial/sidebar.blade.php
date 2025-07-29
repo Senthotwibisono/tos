@@ -18,22 +18,9 @@
             <span>Planning</span>
         </a>
         <ul class="submenu @if(Request::is('planning/*')) active @endif">
-            <li class="submenu-item @if(Request::is('planning/vessel-schedule') || Request::is('planning/create-schedule') || Request::is('planning/schedule_schedule=*')) active @endif">
-                <a href="/planning/vessel-schedule">Vessel Schedule</a>
+            <li class="submenu-item @if(Request::is('planning/voyage/*')) active @endif">
+                <a href="{{route('planning.voyage.index')}}">Vessel Schedule</a>
             </li>
-            <!-- <li class="submenu-item ">
-                        <a href="form-element-select.html">Vessel Service / Route</a>
-                    </li>
-                    <li class="submenu-item ">
-                        <a href="form-element-radio.html">Yard Allocation Filter</a>
-                    </li>
-                    <li class="submenu-item ">
-                        <a href="form-element-checkbox.html">Load Planning</a>
-                    </li>
-                    <li class="submenu-item ">
-                        <a href="form-element-checkbox.html">Load Planning - Bigger Vessel</a>
-                    </li> -->
-            <!-- update  -->
             <li class="submenu-item @if(Request::is('planning/bayplan_import')) active @endif">
                 <a href="/planning/bayplan_import">Bay Plan Import</a>
             </li>
