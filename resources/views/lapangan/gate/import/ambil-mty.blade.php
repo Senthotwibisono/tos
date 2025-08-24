@@ -1,4 +1,8 @@
-@extends(auth()->user()->role == 'admin' ? 'partial.main' : 'partial.android')
+@php
+    $layout = auth()->user()->hasRole('admin') ? 'partial.main' : 'partial.android';
+@endphp
+
+@extends($layout)
 
 @section('custom_styles')
 <style>
