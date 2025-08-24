@@ -281,6 +281,38 @@
                 </div>
                 @endif
             </div>
+            <div class="card">
+                <div class="card-header">
+                    <h4>Container List</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table">
+                        <table class="table-hover" id="table1">
+                            <thead>
+                                <tr>
+                                    <th>Container No</th>
+                                    <th>Container Size</th>
+                                    <th>Order Service</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($items as $item)
+                                    <tr>
+                                        <td>{{ $item->container_no }}</td>
+                                        <td>{{ $item->ctr_size }}</td>
+                                        <td>
+                                            <select name="order_service[{{ $item->container_key }}]" class="form-select">
+                                                <option value="SP2" {{ $item->order_service == 'SP2' ? 'selected' : '' }}>SP2</option>
+                                                <option value="SPPS" {{ $item->order_service == 'SPPS' ? 'selected' : '' }}>SPPS</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </form>
     </div>
     <div class="card-footer">

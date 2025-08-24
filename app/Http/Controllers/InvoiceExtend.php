@@ -1149,6 +1149,8 @@ public function ReportExcelPiutang(Request $request)
         $data['customers'] = Customer::get();
         $data['nomorContainers'] = $data['containers']->pluck('container_no')->implode(', ');
         // dd($data);
+        $container = Container::where('form_id', $data['form']->id)->get();
+        $data['items'] = Item::whereIn('container_key', $container->pluck('container_key'))->get();
         return view('billingSystem.extend.invoice.edit', $data);
     }
 
@@ -1198,6 +1200,14 @@ public function ReportExcelPiutang(Request $request)
             $job = JobExtend::where('inv_id', $id)->update([
                 'active_to' => $request->expired_date,
             ]);
+            
+            if ($request->has('order_service')) {
+                foreach ($request->order_service as $containerKey => $service) {
+                    Item::where('container_key', $containerKey)->update([
+                        'order_service' => $service
+                    ]);
+                }
+            }
 
             return back()->with('success', 'Data berhasil disimpan');
             

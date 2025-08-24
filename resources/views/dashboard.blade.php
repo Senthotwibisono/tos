@@ -83,7 +83,7 @@
           <div class="card-header">
 
             <a href=""><img class="logoicon2" style="position: absolute; left: -250px; top: -100px;" src="{{asset('logo/ICON2.png')}}" alt="Logo"></a>
-            <div style="position:  top: -200px;" id="lottie-animation"></div>
+            <!-- <div style="position:  top: -200px;" id="lottie-animation"></div> -->
           </div>
           <div class="card-body">
 
@@ -284,7 +284,7 @@
 <script src="{{asset('lottifiles/lokal.min.js')}}"></script>
 
 
-<script>
+<!-- <script>
   document.addEventListener('DOMContentLoaded', function() {
     var animation = lottie.loadAnimation({
       container: document.getElementById('lottie-animation'),
@@ -294,7 +294,7 @@
       path: '/lottifiles/97854-imprint-genius-hero.json' // Ubah path sesuai dengan jalur file Lottie JSON Anda
     });
   });
-</script>
+</script> -->
 
 <script>
     var ctx = document.getElementById('myDonutChart').getContext('2d');

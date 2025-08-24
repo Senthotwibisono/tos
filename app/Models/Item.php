@@ -114,6 +114,12 @@ class item extends Model
         'os_id',
         'created_by',
         'customer_code',
+        'relokasi_flag',
+        'depo_mty',
+        'truck_no_mty',
+        'mty_date',
+        'out_mty_date',
+        'out_mty_truck'
     ];
 
     public function job()

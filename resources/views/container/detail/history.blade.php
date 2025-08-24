@@ -215,6 +215,9 @@
                                 <th>Truck No</th>
                                 <th>Truck in Date</th>
                                 <th>Truck Out Date</th>
+                                <th>MTY Date</th>
+                                <th>Truck MTY No</th>
+                                <th>Depo MTY</th>
                                 <th>Operator</th>
                                 <th>Time</th>
                             </tr>
@@ -231,6 +234,9 @@
                                     <th>{{$hist->truck_no}}</th>
                                     <th>{{$hist->truck_in_date}}</th>
                                     <th>{{$hist->truck_out_date}}</th>
+                                    <th>{{$hist->mty_date}}</th>
+                                    <th>{{$hist->truck_no_mty}}</th>
+                                    <th>{{$hist->depo_mty}}</th>
                                     <th>{{$hist->oper_name}}</th>
                                     <th>{{$hist->update_time}}</th>
                                 </tr>

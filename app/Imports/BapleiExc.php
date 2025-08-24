@@ -132,6 +132,7 @@ class BapleiExc implements ToCollection, WithHeadingRow
                     'user_id' => $this->user_id,
                     'ctr_active_yn' => 'Y',
                     'selected_do'=>'N',
+                    'relokasi_flag' => trim($row['relokasi_flag']),
 
                 ];
     
