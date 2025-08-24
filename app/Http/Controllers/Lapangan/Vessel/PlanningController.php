@@ -17,6 +17,10 @@ use App\Models\VService;
 use App\Models\Berth;
 use App\Models\ProfileTier;
 use App\Models\Ship;
+use App\Models\Port;
+use App\Models\Item;
+use App\Models\Isocode;
+use App\Models\Imocode;
 
 class PlanningController extends Controller
 {
@@ -123,6 +127,107 @@ class PlanningController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 'success' => false, 
+                'message' => $th->getMessage()
+            ]);
+        }
+    }
+
+    public function bapleiIndex()
+    {
+        $data['title'] = 'Bay Plan Import';
+
+        $data['vessels'] = VVoyage::where('deparature_date', '>=', Carbon::now())->get();
+        $data['isoCodes'] = Isocode::get();
+        $data['ports'] = Port::get();
+
+        return view('lapangan.planning.baplei.index', $data);
+    }
+
+    public function bapleiData(Request $request)
+    {
+        $data = Item::where('ctr_intern_status', '01')->orderBy('ves_id', 'desc')->get();
+        
+        return DataTables::of($data)
+        ->addColumn('edit', function($data) {
+            return '<button class="btn btn-primary" data-id="'.$data->container_key.'" onClick="eidtBaplei(this)"><i class="fas fa-pencil"></i></button>';
+        })
+        ->rawColumns(['edit'])
+        ->make(true);
+    }
+
+    public function bapleiPost(Request $request)
+    {
+        try {
+            $vessel = VVoyage::where('ves_id', $request->vessel)->first();
+            DB::transaction(function() use($request, $vessel){
+                $item = Item::updateOrCreate(
+                    ['container_key'=>$request->container_key],
+                    [
+                        'container_no' => $request->container_no,
+                        'ves_id' => $vessel->ves_id,
+                        'ves_code' => $vessel->ves_code,
+                        'ves_name' => $vessel->ves_name,
+                        'voy_no' => $vessel->voy_out,
+                        'ctr_i_e_t' => "I",
+                        'ctr_size' => $request->ctr_size,
+                        'ctr_type' => $request->ctr_type,
+                        'ctr_status' => $request->ctr_status,
+                        'ctr_intern_status' => '01',
+                        'disc_load_trans_shift' => $request->disc_load_trans_shift,
+                        'gross' => $request->gross,
+                        'gross_class' => $request->gross_class,
+                        'over_height' => $request->over_height,
+                        'over_weight' => $request->over_weight,
+                        'over_length' => $request->over_length,
+                        'commodity_name' => $request->commodity_name,
+                        'load_port' => $request->load_port,
+                        'disch_port' => $request->disc_port,
+                        'agent' => $request->agent,
+                        'chilled_temp' => $request->child_temp,
+                        'imo_code' => $request->imocode,
+                        'dangerous_yn' => $request->dangerous,
+                        'dangerous_label_yn' => $request->dangerous_label,
+                        'bl_no' => $request->bl_no,
+                        'seal_no' => $request->seal_no,
+                        'disc_load_seq' => $request->disc_load_seq,
+                        'bay_slot' => $request->bay_slot,
+                        'bay_row' => $request->bay_row,
+                        'bay_tier' => $request->bay_tier,
+                        'iso_code' => $request->isocode,
+                        'ctr_opr' => $request->ctr_opr,
+                        'user_id' => Auth::user()->id,
+                        'selected_do' => 'N',
+                        'relokasi_flag' => $request->relokasi_flag
+                    ]
+                );
+
+                $ship = Ship::where('ves_id', $item->ves_id)->where('bay_slot', $item->bay_slot)->where('bay_row', $item->bay_row)->where('bay_tier', $item->bay_tier)->first();
+                if ($ship) {
+                    if (($ship->container_key == null) || ($ship->container_key == $item->container_key)) {
+                       $ship->update([
+                           'container_no'=>$item->container_no,
+                           'container_key'=>$item->container_key,
+                           'ctr_size'=>$item->ctr_size,
+                           'ctr_type'=>$item->ctr_type,
+                           'dangerous_yn'=>$item->dangerous_yn,
+                           'ctr_i_e_t'=> "I",
+                       ]);
+                    }else {
+                       $item->delete();
+                       throw new \Exception("Bay Row Tier Sudah Terisi");
+                    }
+                }else{
+                    $item->delete();
+                    throw new \Exception("Profile Kapal tidak ditemukan");
+                }
+            });
+            return response()->json([
+                'success' => true,
+                'message' => 'Aksi berhasil'
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
                 'message' => $th->getMessage()
             ]);
         }

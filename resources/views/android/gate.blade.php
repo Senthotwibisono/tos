@@ -49,17 +49,16 @@
         <h3>&nbspGate Dashboard</h3>
         <div class="card mt-5">
             <div class="card-header">
-                <h4 class="card-title">Delivery Menu</h4>
+                <h4 class="card-title">Gate Menu</h4>
             </div>
             <div class="card-body">
                 <div class="row mb-3">
-                    <p><strong>Gate Bongkar</strong></p>
+                    <p><strong>Gate Bongkar & Muat</strong></p>
                     <div class="col-sm-6">
                         <div style="width: 300px;">
                             <div style="float: left; margin-right: 20px;">
                                 <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_oqt1izjh.json" background="#FFFFFF" speed="1" width="100" height="100" loop autoplay></lottie-player>
-                                <a href="/delivery/android-in" class="btn btn-warning rounded-pill">Gate
-                                    In</a>
+                                <a href="{{route('gate.import.indexIn')}}" class="btn btn-warning rounded-pill">Gate In</a>
                             </div>
                         </div>
                     </div>
@@ -67,36 +66,40 @@
                         <div style="width: 300px;">
                              <div style="float: left; margin-right: 20px;">
                                  <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_oqt1izjh.json" background="#FFFFFF" speed="1" width="150" height="150" loop autoplay></lottie-player>
-                                 <a href="/delivery/android-out" class="btn btn-danger rounded-pill">Gate
-                                     Out</a>
+                                 <a href="{{route('gate.import.indexOut')}}" class="btn btn-danger rounded-pill">Gate Out</a>
                              </div>
                         </div>
                    </div>
                 </div>
 
-                <!-- SPPS -->
-                <!-- <div class="row mb-3">
-                    <p><strong>Gate SPPS</strong></p>
+                <div class="row mb-3">
+                    <p><strong>Gate Lainnya</strong></p>
                     <div class="col-sm-6">
                         <div style="width: 300px;">
                             <div style="float: left; margin-right: 20px;">
                                 <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_oqt1izjh.json" background="#FFFFFF" speed="1" width="100" height="100" loop autoplay></lottie-player>
-                                <a href="/delivery/android-in" class="btn btn-warning rounded-pill">Gate
-                                    In</a>
+                                <a href="{{route('gate.balikMt.index')}}" class="btn btn-warning rounded-pill">Gate MT Balik IKS/MKB</a>
                             </div>
                         </div>
                     </div>
-                   <div class="col-sm-6">
-                        <div style="width: 300px;">
-                             <div style="float: left; margin-right: 20px;">
-                                 <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_oqt1izjh.json" background="#FFFFFF" speed="1" width="150" height="150" loop autoplay></lottie-player>
-                                 <a href="/delivery/android-out" class="btn btn-danger rounded-pill">Gate
-                                     Out</a>
-                             </div>
-                        </div>
-                   </div>
-                </div> -->
 
+                    <div class="col-sm-6">
+                        <div style="width: 300px;">
+                            <div style="float: left; margin-right: 20px;">
+                                <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_oqt1izjh.json" background="#FFFFFF" speed="1" width="100" height="100" loop autoplay></lottie-player>
+                                <a href="{{route('gate.pelindoImport.index')}}" class="btn btn-warning rounded-pill">Gate Kapal Sandar IKS Relokasi Pelindo</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div style="width: 300px;">
+                            <div style="float: left; margin-right: 20px;">
+                                <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_oqt1izjh.json" background="#FFFFFF" speed="1" width="100" height="100" loop autoplay></lottie-player>
+                                <a href="{{route('gate.ambilMt.index')}}" class="btn btn-warning rounded-pill">Gate Ambil MT</a>
+                            </div>
+                        </div>
+                    </div>
                 <!-- Checking Dokumen -->
                 <div class="row mb-3">
                     <p><strong>Check Container</strong></p>
@@ -118,123 +121,6 @@
                    </div> -->
                 </div>
 
-            </div>
-        </div>
-
-        <!-- Stuffing Section -->
-        <div class="card mt-4 stuffing-section">
-            <div class="card-header">
-                <h4 class="card-title">Stuffing Menu</h4>
-            </div>
-            <div class="card-body">
-                <div class="buttons">
-                    <div class="child">
-                        <div class="row mb-3">
-                            <div class="col-sm-6">
-                                <div style="width: 300px;">
-                                    <div style="float: left; margin-right: 20px;">
-                                        <lottie-player src="https://lottie.host/cb74262b-92a5-488b-8e47-d12410b5fcd6/lZ1GfrbXOQ.json" background="#FFFFFF" speed="1" width="150" height="150" loop autoplay></lottie-player>
-                                        <a href="/stuffing/gate-in-stuffing-android" class="btn btn-warning rounded-pill">Gate In Stuffing</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div style="width: 300px;">
-                                    <div style="float: left; margin-right: 20px;">
-                                        <lottie-player src="https://lottie.host/cb74262b-92a5-488b-8e47-d12410b5fcd6/lZ1GfrbXOQ.json" background="#FFFFFF" speed="1" width="150" height="150" loop autoplay></lottie-player>
-                                        <a href="/stuffing/gate-out-stuffing-android" class="btn btn-danger rounded-pill">Gate Out Stuffing</a>
-                                    </div>
-                                    <!-- <hr>
-                                    <a href="/docs/dokumen/ro-android" class="btn btn-primary rounded-pill">Dokumen RO</a> -->
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                    <div style="width: 300px;">
-                                        <div style="float: left; margin-right: 20px;">
-                                            <lottie-player src="https://lottie.host/a69618ca-9be0-4ca9-8bdc-f77c5515488b/hcDUnyATfv.json" background="#FFFFFF" speed="1" width="150" height="150" loop autoplay></lottie-player>
-                                            <a href="/docs/dokumen/ro-android" class="btn btn-primary rounded-pill">Dokumen RO</a>
-                                        </div>
-                                        <!-- <hr>
-                                        <a href="/docs/dokumen/ro-android" class="btn btn-primary rounded-pill">Dokumen RO</a> -->
-                                    </div>
-                                </div>
-                            </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mt-4 stuffing-section">
-            <div class="card-header">
-                <h4 class="card-title">Gate Muat</h4>
-            </div>
-            <div class="card-body">
-                <div class="buttons">
-                    <div class="child">
-                       <div class="row mb-3">
-                            <div class="col-sm-6">
-                                <div style="width: 300px;">
-                                    <div style="float: left; margin-right: 20px;">
-                                        <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_oqt1izjh.json" background="#FFFFFF" speed="1" width="150" height="150" loop autoplay></lottie-player>
-                                        <a href="/reciving/gate-in-android" class="btn btn-warning rounded-pill">Gate In</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div style="width: 300px;">
-                                    <div style="float: left; margin-right: 20px;">
-                                        <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_oqt1izjh.json" background="#FFFFFF" speed="1" width="150" height="150" loop autoplay></lottie-player>
-                                        <a href="/reciving/gate-out-android" class="btn btn-danger rounded-pill">Gate Out</a>
-                                    </div>
-                                </div>
-                            </div>
-                       </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card mt-5">
-            <div class="card-header">
-                <h4 class="card-title">Gate Container Empty</h4>
-            </div>
-            <div class="card-body">
-                <div class="buttons">
-                    <div class="child">
-                        <div class="row mb-3">
-                            <div class="col-sm-4">
-                                <p><strong>Gate MT Balik IKS/MKB</strong></p>
-                                <div style="width: 300px;">
-                                    <div style="float: left; margin-right: 20px;">
-                                        <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_oqt1izjh.json" background="#FFFFFF" speed="1" width="100" height="100" loop autoplay></lottie-player>
-                                        <a href="/delivery/balik-relokasi-android" class="btn btn-success rounded-pill">Open</a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-4">
-                                <p><strong>Gate In Ambil Empty</strong></p>
-                                <div style="width: 300px;">
-                                    <div style="float: left; margin-right: 20px;">
-                                        <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_oqt1izjh.json" background="#FFFFFF" speed="1" width="100" height="100" loop autoplay></lottie-player>
-                                        <a href="/gate/gate-in/MT" class="btn btn-success rounded-pill">Open</a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-4">
-                                <p><strong>Gate Out Ambil Empty</strong></p>
-                                <div style="width: 300px;">
-                                    <div style="float: left; margin-right: 20px;">
-                                        <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_oqt1izjh.json" background="#FFFFFF" speed="1" width="100" height="100" loop autoplay></lottie-player>
-                                        <a href="/gate/gate-out/MT" class="btn btn-success rounded-pill">Open</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
 

@@ -106,7 +106,7 @@ class ContainerController extends Controller
       $data['title'] = 'History Container ' . $cont->container_no;
       
       $data['cont'] = $cont;
-      $data['history'] = History::where('container_key', $id)->orderBy('ctr_intern_status', 'asc')->get();
+      $data['history'] = History::where('container_key', $id)->orderBy('update_time', 'asc')->get();
       return view('container.detail.history', $data);
     }
 

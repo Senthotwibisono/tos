@@ -1843,6 +1843,9 @@ private function getNextInvoiceDSK()
             $data['flagDS'] = 'Y';
             $data['ds'] = $ds;
         }
+
+        $container = Container::where('form_id', $form_id)->get();
+        $data['items'] = Item::whereIn('container_key', $container->pluck('container_key'))->get();
         // dd($invoice);
 
         return view('billingSystem.import.billing.edit.index', $data);
@@ -1881,6 +1884,14 @@ private function getNextInvoiceDSK()
             //     'npwp' => $request->npwp ?? null, 
             //     'alamat' => $request->alamat ?? null, 
             // ]);
+
+            if ($request->has('order_service')) {
+                foreach ($request->order_service as $containerKey => $service) {
+                    Item::where('container_key', $containerKey)->update([
+                        'order_service' => $service
+                    ]);
+                }
+            }
 
             $details = Detail::where('form_id', $form->id)->get();
             foreach ($details as $detil) {

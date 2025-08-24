@@ -38,10 +38,10 @@
           <tbody>
             @foreach($containers as $container)
             <tr>
-              <td>{{$container->container_no}}</td>
-              <td>{{$container->ctr_size}}</td>
-              <td>{{$container->Kapal->ves_name}} -- {{$container->Kapal->voy_out}}</td>
-              <td>{{$container->Form->Service->name}}</td>
+              <td>{{$container->container_no ?? '-'}}</td>
+              <td>{{$container->ctr_size ?? '-'}}</td>
+              <td>{{$container->Kapal->ves_name ?? '-'}} -- {{$container->Kapal->voy_out ?? '-'}}</td>
+              <td>{{$container->Form->Service->name ?? '-'}}</td>
               <td>
                 @if($container->Form->done == 'Y')
                   <p class="text-green">Invoice Sudah Terbit</p>

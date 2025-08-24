@@ -29,7 +29,6 @@
                 <table class="table table-hover" id="tableDisc">
                     <thead>
                         <tr>
-                            <th>NO</th>
                             <th>Container No</th>
                             <th>Crane Code</th>
                             <th>Operator</th>
@@ -168,11 +167,6 @@
 </style>
 @endsection
 @section('custom_js')
-
-<script src="{{ asset('select2/dist/js/select2.full.min.js') }}"></script>
-<script src="{{asset('dist/assets/extensions/sweetalert2/sweetalert2.min.js')}}"></script>
-<script src="{{asset('dist/assets/js/pages/sweetalert2.js')}}"></script>
-
 <script>
     $(document).ready(function(){
         $('#tableDisc').DataTable({

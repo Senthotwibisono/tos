@@ -36,5 +36,10 @@ class HistoryContainer extends Model
         'oper_name',
         'update_time',
         'iso_code',
+        'mty_date',
+        'truck_no_mty',
+        'depo_mty',
+        'out_mty_date',
+        'out_mty_truck'
     ];
 }

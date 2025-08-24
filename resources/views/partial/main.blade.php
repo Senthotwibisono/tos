@@ -78,7 +78,8 @@
     <script src="{{asset('dist/assets/extensions/choices.js/public/assets/scripts/choices.js')}}"></script>
     <script src="{{asset('dist/assets/js/pages/form-element-select.js')}}"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-
+    <script src="{{asset('dist/assets/extensions/simple-datatables/umd/simple-datatables.js')}}"></script>
+    <script src="{{asset('dist/assets/js/pages/simple-datatables.js')}}"></script>
 
     <!-- dataTables -->
     <script src="{{ asset('dataTables/datatables.min.js')}}"></script>
@@ -90,8 +91,7 @@
         $(document).ready(function() {
         // Initialize all tables with class 'dataTable-wrapper'
             $('.tabelCustom').each(function() {
-                $(this).DataTable({});
-                
+                $(this).DataTable({}); 
             });
         });
     </script>

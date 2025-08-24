@@ -93,6 +93,11 @@ class HistoryController extends Controller
             'truck_out_date' => $dataHistory['truck_out_date'],
             'oper_name' => $dataHistory['oper_name'],
             'iso_code' => $dataHistory['iso_code'],
+            'mty_date' => $dataHistory['mty_date'] ?? null,
+            'truck_no_mty' => $dataHistory['truck_no_mty'] ?? null,
+            'depo_mty' => $dataHistory['depo_mty'] ?? null,
+            'out_mty_date' => $dataHistory['out_mty_date'] ?? null,
+            'out_mty_truck' => $dataHistory['out_mty_truck'] ?? null,
         ]);
     }
 }

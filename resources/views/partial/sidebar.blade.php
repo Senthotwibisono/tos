@@ -21,8 +21,8 @@
             <li class="submenu-item @if(Request::is('planning/voyage/*')) active @endif">
                 <a href="{{route('planning.voyage.index')}}">Vessel Schedule</a>
             </li>
-            <li class="submenu-item @if(Request::is('planning/bayplan_import')) active @endif">
-                <a href="/planning/bayplan_import">Bay Plan Import</a>
+            <li class="submenu-item @if(Request::is('planning/baplei/*')) active @endif">
+                <a href="{{route('planning.baplei.index')}}">Bay Plan Import</a>
             </li>
             <!-- <li class="submenu-item @if(Request::is('planning/ship_planning')) active @endif">
                 <a href="/planning/ship_planning">Ship Planning</a>
@@ -271,47 +271,27 @@
 
     <!-- gate -->
 
-    <li class="sidebar-item  has-sub @if(Request::is('delivery/*') || Request::is('reciving/*') || Request::is('stuffing/*')) active @endif">
+    <li class="sidebar-item  has-sub @if(Request::is('gate/*')) active @endif">
         <a href="#" class='sidebar-link'>
             <i class="fa-solid fa-torii-gate"></i>
             <span>Gate</span>
         </a>
-        <ul class="submenu @if(Request::is('delivery/*') || Request::is('reciving/*') || Request::is('stuffing/*')) active @endif">
-            <li class="submenu-item @if(Request::is('delivery/gate-in')) active @endif">
-                <a href="/delivery/gate-in">Get in Delivery</a>
+        <ul class="submenu @if(Request::is('gate/*')) active @endif">
+            <li class="submenu-item @if(Request::is('gate/import/*/in')) active @endif">
+                <a href="{{route('gate.import.indexIn')}}">Gate In (Reciving Delivery)</a>
             </li>
-            <li class="submenu-item @if(Request::is('delivery/gate-out')) active @endif">
-                <a href="/delivery/gate-out">Gate Out Delivery</a>
+            <li class="submenu-item @if(Request::is('gate/import/*/out')) active @endif">
+                <a href="{{route('gate.import.indexOut')}}">Gate Out (Reciving Delivery)</a>
             </li>
-            <hr>
-            <li class="submenu-item @if(Request::is('delivery/balik-relokasi')) active @endif">
-                <a href="/delivery/balik-relokasi">Gate MT Balik IKS & Relokasi Pelindo</a>
+            <li class="submenu-item @if(Request::is('gate/balik-mt/*')) active @endif">
+                <a href="{{route('gate.balikMt.index')}}">Gate Balik Mt</a>
             </li>
-            <hr>
-
-            <li class="submenu-item @if(Request::is('reciving/gate-in')) active @endif">
-                <a href="/reciving/gate-in">Get in Reciving</a>
+            <li class="submenu-item @if(Request::is('gate/relokasi-pelindo/*')) active @endif">
+                <a href="{{route('gate.pelindoImport.index')}}">Gate Delivery Pelindo</a>
             </li>
-            <li class="submenu-item @if(Request::is('reciving/gate-out')) active @endif">
-                <a href="/reciving/gate-out">Gate Out Reciving</a>
+            <li class="submenu-item @if(Request::is('gate/ambil-mty/*')) active @endif">
+                <a href="{{route('gate.ambilMt.index')}}">Gate Ambil MTY</a>
             </li>
-
-            <hr>
-
-            <li class="submenu-item @if(Request::is('stuffing/gate-in')) active @endif">
-                <a href="/stuffing/gate-in">Get in Stuffing</a>
-            </li>
-
-            <li class="submenu-item @if(Request::is('stuffing/gate-out')) active @endif">
-                <a href="/stuffing/gate-out">Get out Stuffing</a>
-            </li>
-
-            <!-- <li class="submenu-item ">
-                        <a href="form-element-select.html">Gate In Receiving</a>
-                    </li>
-                    <li class="submenu-item ">
-                        <a href="form-element-radio.html">Gate Out Receiving</a>
-                    </li> -->
         </ul>
     </li>
 
