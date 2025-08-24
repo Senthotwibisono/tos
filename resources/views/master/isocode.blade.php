@@ -98,6 +98,7 @@
                                             <option value="20">20</option>                                             
                                             <option value="21">21</option>                                             
                                             <option value="40">40</option>
+                                            <option value="41">41</option>
                                             <option value="42">42</option>
                                             <option value="45">45</option>
                                         </select>

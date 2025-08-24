@@ -284,7 +284,7 @@
     const oldExpired = document.getElementById('oldExpired').value;
    // onChange Trigger;
     flatpickr('.expiredForm', {
-      "minDate" : oldExpired,
+      "minDate" : false,
     
     })
     console.log(oldExpired);
@@ -301,7 +301,7 @@
       const minDate =  date.toISOString().split('T')[0];
       console.log(minDate);
       flatpickr('.expiredForm', {
-        "minDate" : minDate,
+        "minDate" : false,
         
       })
     });

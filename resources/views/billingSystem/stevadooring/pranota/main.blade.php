@@ -222,9 +222,9 @@
                    <tr>
                     <td>{{$loop->iteration}}</td>
                     <td>{{$tt->name}}</td>
-                    <td>{{number_format($tt->tarif, 0, ',', '.')}}</td>
+                    <td>{{number_format($tt->tarif, 2, ',', '.')}}</td>
                     <td>{{$tt->jumlah}}</td>
-                    <td>{{number_format($tt->total, 0 ,',', '.' )}}</td>
+                    <td>{{number_format($tt->total, 2 ,',', '.' )}}</td>
                    </tr>
                    @endforeach
                   </tbody>
@@ -248,10 +248,10 @@
                    <tr>
                     <td>1</td>
                     <td>Jasa Tambat Kapal</td>
-                    <td>{{number_format($tkapal->tarif, 0 , ',', '.')}}</td>
+                    <td>{{number_format($tkapal->tarif, 2 , ',', '.')}}</td>
                     <td>{{$tkapal->gt_kapal}}</td>
                     <td>{{$tkapal->etmal}}</td>
-                    <td>{{number_format($tkapal->total, 0 , ',', '.')}}</td>
+                    <td>{{number_format($tkapal->total, 2 , ',', '.')}}</td>
                    </tr>
                   </tbody>
                 </table>
@@ -276,9 +276,9 @@
                     <td>{{$loop->iteration}}</td>
                     <td>{{$stv->ctr_size}}</td>
                     <td>{{$stv->ctr_status}}</td>
-                    <td>{{number_format($stv->tarif, 0, ',', '.')}}</td>
+                    <td>{{number_format($stv->tarif, 2, ',', '.')}}</td>
                     <td>{{$stv->jumlah}}</td>
-                    <td>{{number_format($stv->total, 0, ',', '.')}}</td>
+                    <td>{{number_format($stv->total, 2, ',', '.')}}</td>
                    </tr>
                    @endforeach
                   </tbody>
@@ -307,9 +307,9 @@
                         <td>{{$cd->ctr_size}}</td>
                         <td>{{$cd->ctr_status}}</td>
                         <td>{{$cd->landing}}</td>
-                        <td>{{number_format($cd->tarif, 0, ',', '.')}}</td>
+                        <td>{{number_format($cd->tarif, 2, ',', '.')}}</td>
                         <td>{{$cd->jumlah}}</td>
-                        <td>{{number_format($cd->total, 0, ',', '.')}}</td>
+                        <td>{{number_format($cd->total, 2, ',', '.')}}</td>
                       </tr>
                       @endforeach
                       </tbody>
@@ -336,9 +336,9 @@
                         <td>{{$ck->ctr_size}}</td>
                         <td>{{$ck->ctr_status}}</td>
                         <td>{{$ck->landing}}</td>
-                        <td>{{number_format($ck->tarif, 0, ',', '.')}}</td>
+                        <td>{{number_format($ck->tarif, 2, ',', '.')}}</td>
                         <td>{{$ck->jumlah}}</td>
-                        <td>{{number_format($ck->total, 0, ',', '.')}}</td>
+                        <td>{{number_format($ck->total, 2, ',', '.')}}</td>
                       </tr>
                       @endforeach
                       </tbody>
@@ -356,11 +356,12 @@
               <p>Grand Total: </p>
             </div>
             <div class="col-xs-12 col-6" style="text-align: right;">
-              <p><strong>Rp. {{number_format ($invoice->admin), 0, ',', '.'}}, 00 ~</strong></p>
-              <p><strong>Rp. {{number_format ($invoice->discount), 0, ',', '.'}}, 00 ~</strong></p>
-              <p><strong>Rp. {{number_format ($invoice->total + $invoice->admin), 0, ',', '.'}} ,00 ~</strong></p>
-              <p><strong>Rp. {{number_format ($invoice->pajak), 0, ',', '.'}}, 00 ~</strong></p>
-              <p><strong>Rp.  {{number_format ($invoice->grand_total), 0, ',', '.'}},00 ~</strong></p>
+              <p><strong>Rp. {{ number_format($invoice->admin, 2, ',', '.') }}</strong></p>
+              <p><strong>Rp. {{ number_format($invoice->discount, 2, ',', '.') }}</strong></p>
+              <p><strong>Rp. {{ number_format($invoice->total + $invoice->admin, 2, ',', '.') }}</strong></p>
+              <p><strong>Rp. {{ number_format($invoice->pajak, 2, ',', '.') }}</strong></p>
+              <p><strong>Rp. {{ number_format($invoice->grand_total, 2, ',', '.') }}</strong></p>
+
 
             </div>
             <div class="col-12">

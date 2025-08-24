@@ -128,16 +128,16 @@
                <tr>
                 <td>1</td>
                 <td>Loose Cargo</td>
-                <td>{{number_format($mt->loose_cargo, 0 , ',', '.')}}</td>
+                <td>{{number_format($mt->loose_cargo, 2 , ',', '.')}}</td>
                 <td>{{$rbm->loose_cargo}}</td>
-                <td>{{number_format($mt->loose_cargo * $rbm->loose_cargo, 0 , ',', '.')}}</td>
+                <td>{{number_format($mt->loose_cargo * $rbm->loose_cargo, 2 , ',', '.')}}</td>
                </tr>
                <tr>
                 <td>2</td>
                 <td>Container</td>
-                <td>{{number_format($mt->ctr_tt, 0 , ',', '.')}}</td>
+                <td>{{number_format($mt->ctr_tt, 2 , ',', '.')}}</td>
                 <td>{{$rbm->ctr_tt}}</td>
-                <td>{{number_format($mt->ctr_tt * $rbm->ctr_tt, 0 , ',', '.')}}</td>
+                <td>{{number_format($mt->ctr_tt * $rbm->ctr_tt, 2 , ',', '.')}}</td>
                </tr>
               </tbody>
             </table>
@@ -164,10 +164,10 @@
                <tr>
                 <td>1</td>
                 <td>Jasa Tambat Kapal</td>
-                <td>{{number_format($mt->tambat_kapal, 0 , ',', '.')}}</td>
+                <td>{{number_format($mt->tambat_kapal, 2 , ',', '.')}}</td>
                 <td>{{$rbm->gt_kapal}}</td>
                 <td>{{$rbm->etmal}}</td>
-                <td>{{number_format($mt->tambat_kapal * $rbm->gt_kapal * $rbm->etmal, 0 , ',', '.')}}</td>
+                <td>{{number_format($mt->tambat_kapal * $rbm->gt_kapal * $rbm->etmal, 2 , ',', '.')}}</td>
                </tr>
               </tbody>
             </table>
@@ -195,65 +195,65 @@
                 <td>1</td>
                 <td>20</td>
                 <td>Full</td>
-                <td>{{number_format($mt->ctr_20_fcl, 0 , ',', '.')}}</td>
+                <td>{{number_format($mt->ctr_20_fcl, 2 , ',', '.')}}</td>
                 <td>{{$rbm->ctr_20_fcl}}</td>
-                <td>{{number_format($mt->ctr_20_fcl * $rbm->ctr_20_fcl, 0 , ',', '.')}}</td>
+                <td>{{number_format($mt->ctr_20_fcl * $rbm->ctr_20_fcl, 2 , ',', '.')}}</td>
                </tr>
                <tr>
                 <td>2</td>
                 <td>20</td>
                 <td>Empty</td>
-                <td>{{number_format($mt->ctr_20_mty, 0 , ',', '.')}}</td>
+                <td>{{number_format($mt->ctr_20_mty, 2 , ',', '.')}}</td>
                 <td>{{$rbm->ctr_20_mty}}</td>
-                <td>{{number_format($mt->ctr_20_mty * $rbm->ctr_20_mty, 0 , ',', '.')}}</td>
+                <td>{{number_format($mt->ctr_20_mty * $rbm->ctr_20_mty, 2 , ',', '.')}}</td>
                </tr>
                <tr>
                 <td>3</td>
                 <td>21</td>
                 <td>Full</td>
-                <td>{{number_format($mt->ctr_21_fcl, 0 , ',', '.')}}</td>
+                <td>{{number_format($mt->ctr_21_fcl, 2 , ',', '.')}}</td>
                 <td>{{$rbm->ctr_21_fcl}}</td>
-                <td>{{number_format($mt->ctr_21_fcl * $rbm->ctr_21_fcl, 0 , ',', '.')}}</td>
+                <td>{{number_format($mt->ctr_21_fcl * $rbm->ctr_21_fcl, 2 , ',', '.')}}</td>
                </tr>
                <tr>
                 <td>4</td>
                 <td>21</td>
                 <td>Empty</td>
-                <td>{{number_format($mt->ctr_21_mty, 0 , ',', '.')}}</td>
+                <td>{{number_format($mt->ctr_21_mty, 2 , ',', '.')}}</td>
                 <td>{{$rbm->ctr_21_mty}}</td>
-                <td>{{number_format($mt->ctr_21_mty * $rbm->ctr_21_mty, 0 , ',', '.')}}</td>
+                <td>{{number_format($mt->ctr_21_mty * $rbm->ctr_21_mty, 2 , ',', '.')}}</td>
                </tr>
                <tr>
                 <td>5</td>
                 <td>40</td>
                 <td>Full</td>
-                <td>{{number_format($mt->ctr_40_fcl, 0 , ',', '.')}}</td>
+                <td>{{number_format($mt->ctr_40_fcl, 2 , ',', '.')}}</td>
                 <td>{{$rbm->ctr_40_fcl}}</td>
-                <td>{{number_format($mt->ctr_40_fcl * $rbm->ctr_40_fcl, 0 , ',', '.')}}</td>
+                <td>{{number_format($mt->ctr_40_fcl * $rbm->ctr_40_fcl, 2 , ',', '.')}}</td>
                </tr>
                <tr>
                 <td>6</td>
                 <td>40</td>
                 <td>Empty</td>
-                <td>{{number_format($mt->ctr_40_mty, 0 , ',', '.')}}</td>
+                <td>{{number_format($mt->ctr_40_mty, 2 , ',', '.')}}</td>
                 <td>{{$rbm->ctr_40_mty}}</td>
-                <td>{{number_format($mt->ctr_40_mty * $rbm->ctr_40_mty, 0 , ',', '.')}}</td>
+                <td>{{number_format($mt->ctr_40_mty * $rbm->ctr_40_mty, 2 , ',', '.')}}</td>
                </tr>
                <tr>
                 <td>7</td>
                 <td>42</td>
                 <td>Full</td>
-                <td>{{number_format($mt->ctr_42_fcl, 0 , ',', '.')}}</td>
+                <td>{{number_format($mt->ctr_42_fcl, 2 , ',', '.')}}</td>
                 <td>{{$rbm->ctr_42_fcl}}</td>
-                <td>{{number_format($mt->ctr_42_fcl * $rbm->ctr_42_fcl, 0 , ',', '.')}}</td>
+                <td>{{number_format($mt->ctr_42_fcl * $rbm->ctr_42_fcl, 2 , ',', '.')}}</td>
                </tr>
                <tr>
                 <td>8</td>
                 <td>42</td>
                 <td>Empty</td>
-                <td>{{number_format($mt->ctr_42_mty, 0 , ',', '.')}}</td>
+                <td>{{number_format($mt->ctr_42_mty, 2 , ',', '.')}}</td>
                 <td>{{$rbm->ctr_42_mty}}</td>
-                <td>{{number_format($mt->ctr_42_mty * $rbm->ctr_42_mty, 0 , ',', '.')}}</td>
+                <td>{{number_format($mt->ctr_42_mty * $rbm->ctr_42_mty, 2 , ',', '.')}}</td>
                </tr>
               </tbody>
             </table>
@@ -285,65 +285,65 @@
                         <td>1</td>
                         <td>20</td>
                         <td>Full</td>
-                        <td>{{number_format($mt->shift_20_fcl_d_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_20_fcl_d_l, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_20_fcl_d_l}}</td>
-                        <td>{{number_format($mt->shift_20_fcl_d_l * $rbm->shift_20_fcl_d_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_20_fcl_d_l * $rbm->shift_20_fcl_d_l, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>2</td>
                         <td>20</td>
                         <td>Empty</td>
-                        <td>{{number_format($mt->shift_20_mty_d_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_20_mty_d_l, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_20_mty_d_l}}</td>
-                        <td>{{number_format($mt->shift_20_mty_d_l * $rbm->shift_20_mty_d_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_20_mty_d_l * $rbm->shift_20_mty_d_l, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>3</td>
                         <td>21</td>
                         <td>Full</td>
-                        <td>{{number_format($mt->shift_21_fcl_d_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_21_fcl_d_l, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_21_fcl_d_l}}</td>
-                        <td>{{number_format($mt->shift_21_fcl_d_l * $rbm->shift_21_fcl_d_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_21_fcl_d_l * $rbm->shift_21_fcl_d_l, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>4</td>
                         <td>21</td>
                         <td>Empty</td>
-                        <td>{{number_format($mt->shift_21_mty_d_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_21_mty_d_l, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_21_mty_d_l}}</td>
-                        <td>{{number_format($mt->shift_21_mty_d_l * $rbm->shift_21_mty_d_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_21_mty_d_l * $rbm->shift_21_mty_d_l, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>5</td>
                         <td>40</td>
                         <td>Full</td>
-                        <td>{{number_format($mt->shift_40_fcl_d_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_40_fcl_d_l, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_40_fcl_d_l}}</td>
-                        <td>{{number_format($mt->shift_40_fcl_d_l * $rbm->shift_40_fcl_d_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_40_fcl_d_l * $rbm->shift_40_fcl_d_l, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>6</td>
                         <td>40</td>
                         <td>Empty</td>
-                        <td>{{number_format($mt->shift_40_mty_d_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_40_mty_d_l, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_40_mty_d_l}}</td>
-                        <td>{{number_format($mt->shift_40_mty_d_l * $rbm->shift_40_mty_d_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_40_mty_d_l * $rbm->shift_40_mty_d_l, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>7</td>
                         <td>42</td>
                         <td>Full</td>
-                        <td>{{number_format($mt->shift_42_fcl_d_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_42_fcl_d_l, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_42_fcl_d_l}}</td>
-                        <td>{{number_format($mt->shift_42_fcl_d_l * $rbm->shift_42_fcl_d_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_42_fcl_d_l * $rbm->shift_42_fcl_d_l, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>8</td>
                         <td>42</td>
                         <td>Empty</td>
-                        <td>{{number_format($mt->shift_42_mty_d_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_42_mty_d_l, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_42_mty_d_l}}</td>
-                        <td>{{number_format($mt->shift_42_mty_d_l * $rbm->shift_42_mty_d_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_42_mty_d_l * $rbm->shift_42_mty_d_l, 2 , ',', '.')}}</td>
                        </tr>
                       </tbody>
                     </table>
@@ -366,65 +366,65 @@
                         <td>1</td>
                         <td>20</td>
                         <td>Full</td>
-                        <td>{{number_format($mt->shift_20_fcl_d, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_20_fcl_d, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_20_fcl_d}}</td>
-                        <td>{{number_format($mt->shift_20_fcl_d * $rbm->shift_20_fcl_d, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_20_fcl_d * $rbm->shift_20_fcl_d, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>2</td>
                         <td>20</td>
                         <td>Empty</td>
-                        <td>{{number_format($mt->shift_20_mty_d, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_20_mty_d, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_20_mty_d}}</td>
-                        <td>{{number_format($mt->shift_20_mty_d * $rbm->shift_20_mty_d, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_20_mty_d * $rbm->shift_20_mty_d, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>3</td>
                         <td>21</td>
                         <td>Full</td>
-                        <td>{{number_format($mt->shift_21_fcl_d, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_21_fcl_d, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_21_fcl_d}}</td>
-                        <td>{{number_format($mt->shift_21_fcl_d * $rbm->shift_21_fcl_d, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_21_fcl_d * $rbm->shift_21_fcl_d, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>4</td>
                         <td>21</td>
                         <td>Empty</td>
-                        <td>{{number_format($mt->shift_21_mty_d, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_21_mty_d, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_21_mty_d}}</td>
-                        <td>{{number_format($mt->shift_21_mty_d * $rbm->shift_21_mty_d, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_21_mty_d * $rbm->shift_21_mty_d, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>5</td>
                         <td>40</td>
                         <td>Full</td>
-                        <td>{{number_format($mt->shift_40_fcl_d, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_40_fcl_d, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_40_fcl_d}}</td>
-                        <td>{{number_format($mt->shift_40_fcl_d * $rbm->shift_40_fcl_d, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_40_fcl_d * $rbm->shift_40_fcl_d, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>6</td>
                         <td>40</td>
                         <td>Empty</td>
-                        <td>{{number_format($mt->shift_40_mty_d, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_40_mty_d, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_40_mty_d}}</td>
-                        <td>{{number_format($mt->shift_40_mty_d * $rbm->shift_40_mty_d, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_40_mty_d * $rbm->shift_40_mty_d, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>7</td>
                         <td>42</td>
                         <td>Full</td>
-                        <td>{{number_format($mt->shift_42_fcl_d, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_42_fcl_d, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_42_fcl_d}}</td>
-                        <td>{{number_format($mt->shift_42_fcl_d * $rbm->shift_42_fcl_d, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_42_fcl_d * $rbm->shift_42_fcl_d, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>8</td>
                         <td>42</td>
                         <td>Empty</td>
-                        <td>{{number_format($mt->shift_42_mty_d, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_42_mty_d, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_42_mty_d}}</td>
-                        <td>{{number_format($mt->shift_42_mty_d * $rbm->shift_42_mty_d, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_42_mty_d * $rbm->shift_42_mty_d, 2 , ',', '.')}}</td>
                        </tr>
                       </tbody>
                     </table>
@@ -450,65 +450,65 @@
                         <td>1</td>
                         <td>20</td>
                         <td>Full</td>
-                        <td>{{number_format($mt->shift_20_fcl_k_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_20_fcl_k_l, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_20_fcl_k_l}}</td>
-                        <td>{{number_format($mt->shift_20_fcl_k_l * $rbm->shift_20_fcl_k_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_20_fcl_k_l * $rbm->shift_20_fcl_k_l, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>2</td>
                         <td>20</td>
                         <td>Empty</td>
-                        <td>{{number_format($mt->shift_20_mty_k_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_20_mty_k_l, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_20_mty_k_l}}</td>
-                        <td>{{number_format($mt->shift_20_mty_k_l * $rbm->shift_20_mty_k_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_20_mty_k_l * $rbm->shift_20_mty_k_l, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>3</td>
                         <td>21</td>
                         <td>Full</td>
-                        <td>{{number_format($mt->shift_21_fcl_k_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_21_fcl_k_l, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_21_fcl_k_l}}</td>
-                        <td>{{number_format($mt->shift_21_fcl_k_l * $rbm->shift_21_fcl_k_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_21_fcl_k_l * $rbm->shift_21_fcl_k_l, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>4</td>
                         <td>21</td>
                         <td>Empty</td>
-                        <td>{{number_format($mt->shift_21_mty_k_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_21_mty_k_l, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_21_mty_k_l}}</td>
-                        <td>{{number_format($mt->shift_21_mty_k_l * $rbm->shift_21_mty_k_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_21_mty_k_l * $rbm->shift_21_mty_k_l, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>5</td>
                         <td>40</td>
                         <td>Full</td>
-                        <td>{{number_format($mt->shift_40_fcl_k_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_40_fcl_k_l, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_40_fcl_k_l}}</td>
-                        <td>{{number_format($mt->shift_40_fcl_k_l * $rbm->shift_40_fcl_k_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_40_fcl_k_l * $rbm->shift_40_fcl_k_l, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>6</td>
                         <td>40</td>
                         <td>Empty</td>
-                        <td>{{number_format($mt->shift_40_mty_k_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_40_mty_k_l, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_40_mty_k_l}}</td>
-                        <td>{{number_format($mt->shift_40_mty_k_l * $rbm->shift_40_mty_k_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_40_mty_k_l * $rbm->shift_40_mty_k_l, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>7</td>
                         <td>42</td>
                         <td>Full</td>
-                        <td>{{number_format($mt->shift_42_fcl_k_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_42_fcl_k_l, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_42_fcl_k_l}}</td>
-                        <td>{{number_format($mt->shift_42_fcl_k_l * $rbm->shift_42_fcl_k_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_42_fcl_k_l * $rbm->shift_42_fcl_k_l, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>8</td>
                         <td>42</td>
                         <td>Empty</td>
-                        <td>{{number_format($mt->shift_42_mty_k_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_42_mty_k_l, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_42_mty_k_l}}</td>
-                        <td>{{number_format($mt->shift_42_mty_k_l * $rbm->shift_42_mty_k_l, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_42_mty_k_l * $rbm->shift_42_mty_k_l, 2 , ',', '.')}}</td>
                        </tr>
                       </tbody>
                     </table>
@@ -531,65 +531,65 @@
                         <td>1</td>
                         <td>20</td>
                         <td>Full</td>
-                        <td>{{number_format($mt->shift_20_fcl_k, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_20_fcl_k, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_20_fcl_k}}</td>
-                        <td>{{number_format($mt->shift_20_fcl_k * $rbm->shift_20_fcl_k, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_20_fcl_k * $rbm->shift_20_fcl_k, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>2</td>
                         <td>20</td>
                         <td>Empty</td>
-                        <td>{{number_format($mt->shift_20_mty_k, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_20_mty_k, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_20_mty_k}}</td>
-                        <td>{{number_format($mt->shift_20_mty_k * $rbm->shift_20_mty_k, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_20_mty_k * $rbm->shift_20_mty_k, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>3</td>
                         <td>21</td>
                         <td>Full</td>
-                        <td>{{number_format($mt->shift_21_fcl_k, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_21_fcl_k, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_21_fcl_k}}</td>
-                        <td>{{number_format($mt->shift_21_fcl_k * $rbm->shift_21_fcl_k, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_21_fcl_k * $rbm->shift_21_fcl_k, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>4</td>
                         <td>21</td>
                         <td>Empty</td>
-                        <td>{{number_format($mt->shift_21_mty_k, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_21_mty_k, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_21_mty_k}}</td>
-                        <td>{{number_format($mt->shift_21_mty_k * $rbm->shift_21_mty_k, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_21_mty_k * $rbm->shift_21_mty_k, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>5</td>
                         <td>40</td>
                         <td>Full</td>
-                        <td>{{number_format($mt->shift_40_fcl_k, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_40_fcl_k, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_40_fcl_k}}</td>
-                        <td>{{number_format($mt->shift_40_fcl_k * $rbm->shift_40_fcl_k, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_40_fcl_k * $rbm->shift_40_fcl_k, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>6</td>
                         <td>40</td>
                         <td>Empty</td>
-                        <td>{{number_format($mt->shift_40_mty_k, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_40_mty_k, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_40_mty_k}}</td>
-                        <td>{{number_format($mt->shift_40_mty_k * $rbm->shift_40_mty_k, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_40_mty_k * $rbm->shift_40_mty_k, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>7</td>
                         <td>42</td>
                         <td>Full</td>
-                        <td>{{number_format($mt->shift_42_fcl_k, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_42_fcl_k, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_42_fcl_k}}</td>
-                        <td>{{number_format($mt->shift_42_fcl_k * $rbm->shift_42_fcl_k, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_42_fcl_k * $rbm->shift_42_fcl_k, 2 , ',', '.')}}</td>
                        </tr>
                        <tr>
                         <td>8</td>
                         <td>42</td>
                         <td>Empty</td>
-                        <td>{{number_format($mt->shift_42_mty_k, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_42_mty_k, 2 , ',', '.')}}</td>
                         <td>{{$rbm->shift_42_mty_k}}</td>
-                        <td>{{number_format($mt->shift_42_mty_k * $rbm->shift_42_mty_k, 0 , ',', '.')}}</td>
+                        <td>{{number_format($mt->shift_42_mty_k * $rbm->shift_42_mty_k, 2 , ',', '.')}}</td>
                        </tr>
                       </tbody>
                     </table>
@@ -621,15 +621,15 @@
 
                       <div class="col-6 mt-4" style="text-align:right;">
                         <input type="hidden" name="admin" value="{{$mt->admin}}">
-                        <h4 class="text-white">Rp. {{number_format($mt->admin, 0, ',', '.')}} </h4>
+                        <h4 class="text-white">Rp. {{number_format($mt->admin, 2, ',', '.')}} </h4>
                         <input type="hidden" name="discount" value="{{$inv->discount}}">
-                        <h4 class="text-white">Rp. {{number_format($inv->discount, 0, ',', '.')}} </h4>
-                        <h4 class="text-white">Rp. {{number_format($total, 0, ',', '.')}}</h4>
+                        <h4 class="text-white">Rp. {{number_format($inv->discount, 2, ',', '.')}} </h4>
+                        <h4 class="text-white">Rp. {{number_format($total, 2, ',', '.')}}</h4>
                         <input type="hidden" name="total" value="{{$total}}">
                         <input type="hidden" name="pajak" value="{{$pajak}}">
-                        <h4 class="text-white">Rp. {{number_format($pajak, 0, ',', '.')}}</h4>
+                        <h4 class="text-white">Rp. {{number_format($pajak, 2, ',', '.')}}</h4>
                         <input type="hidden" name="grand_total" value="{{$gt}}">
-                        <h4 class="color:#ff5265;">Rp. {{number_format($gt, 0, ',', '.')}} </h4>
+                        <h4 class="color:#ff5265;">Rp. {{number_format($gt, 2, ',', '.')}} </h4>
                       </div>
                       
                     </div>
