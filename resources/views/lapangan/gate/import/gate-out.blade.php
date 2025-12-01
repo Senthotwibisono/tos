@@ -37,6 +37,10 @@
                                 <th>Bongkar/Muat</th>
                                 <th>Truck No</th>
                                 <th>Time Out</th>
+                                <th>Voy No</th>
+                                <th>Size</th>
+                                <th>Type</th>
+                                <th>Job No</th>
                                 <th>Cancel</th>
                             </tr>
                         </thead>
@@ -119,6 +123,10 @@
                 {name: 'iet', data: 'iet', className:'text-center'},
                 {name: 'truck_no', data: 'truck_no', className:'text-center'},
                 {name: 'truck_out_date', data: 'truck_out_date', className:'text-center'},
+                {name: 'voy_no', data: 'voy_no', className:'text-center'},
+                {name: 'ctr_size', data: 'ctr_size', className:'text-center'},
+                {name: 'ctr_type', data: 'ctr_type', className:'text-center'},
+                {name: 'job_no', data: 'job_no', className:'text-center'},
                 {name: 'cancel', data: 'cancel', className:'text-center', sortable: false},
             ],
         });

@@ -287,7 +287,7 @@
                     <i class="bx bx-x d-block d-sm-none"></i>
                     <span class="d-none d-sm-block">Close</span>
                 </button>
-                <button type="submit" class="btn btn-warning" id="saveButton" onClick="postVoyage(this)">
+                <button type="submit" class="btn btn-warning"  onClick="postVoyage(this)">
                     <span class="d-none d-sm-block">Confirm</span>
                 </button>
             </div>

@@ -967,19 +967,21 @@ class CustomerImportController extends CustomerMainController
         return datatables()->of($doData)
             ->addIndexColumn() // This adds DT_RowIndex to each row
             ->addColumn('actions', function($do) {
-                return '
-                    <div class="row mb-3">
-                        <div class="col-sm-6">
-                            <a href="/customer-import/doOnline/edit/'.$do->id.'" class="btn btn-warning">Edit</a>
-                        </div>
-                        <div class="col-sm-6">
-                            <form id="deleteForm-'.$do->id.'" action="'.route('deleteDo').'" method="post">
-                                '.csrf_field().'
-                                <input type="hidden" name="id" value="'.$do->id.'">
-                                <button type="button" class="btn btn-outline-danger delete-btn" data-id="'.$do->id.'">Delete</button>
-                            </form>
-                        </div>
-                    </div>';
+                // return '
+                //     <div class="row mb-3">
+                //         <div class="col-sm-6">
+                //             <a href="/customer-import/doOnline/edit/'.$do->id.'" class="btn btn-warning">Edit</a>
+                //         </div>
+                //         <div class="col-sm-6">
+                //             <form id="deleteForm-'.$do->id.'" action="'.route('deleteDo').'" method="post">
+                //                 '.csrf_field().'
+                //                 <input type="hidden" name="id" value="'.$do->id.'">
+                //                 <button type="button" class="btn btn-outline-danger delete-btn" data-id="'.$do->id.'">Delete</button>
+                //             </form>
+                //         </div>
+                //     </div>';
+
+                return 'HUbungi Admin';
             })
             ->addColumn('container_no', function($do) {
                 $doArray = json_decode($do->container_no, true);

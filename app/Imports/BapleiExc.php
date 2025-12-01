@@ -86,6 +86,12 @@ class BapleiExc implements ToCollection, WithHeadingRow
                     'bay_slot'  => $bay_slot,
                     'bay_row'   => $bay_row,
                     'bay_tier'  => $bay_tier,
+                    'container_no' => trim($row['container_no']),
+                    'iso_code' => $iso_code,
+                    'ctr_size' => $ctr_size,
+                    'ctr_type' => $ctr_type,
+                    'ctr_opr' => trim($row['operator']),
+                    'ctr_status' => $ctr_status,
                     'gross' => trim($row['weightton']),
                     'chilled_temp' => trim($row['temperature_celcius']),
                     'ctr_intern_status' => '01',
@@ -94,6 +100,7 @@ class BapleiExc implements ToCollection, WithHeadingRow
                     'user_id' => $this->user_id,
                     'ctr_active_yn' => 'Y',
                     'selected_do'=>'N',
+                    'relokasi_flag' => trim($row['relokasi_flag']),
                 ]);
                }
                $ship = Ship::where('ves_id', $this->ves_id)->where('bay_slot', $bay_slot)->where('bay_row', $bay_row)->where('bay_tier', $bay_tier)->first();

@@ -3,7 +3,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
 
-<title>IKS | {{$title}}</title>
+<title>IKS | {{$title ?? '-'}}</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <link rel="stylesheet" href="{{asset('dist/assets/css/main/app.css')}}">
 <link rel="stylesheet" href="{{asset('dist/assets/css/main/app-dark.css')}}">

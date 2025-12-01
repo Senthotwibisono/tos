@@ -213,6 +213,29 @@ new simpleDatatables.DataTable('#table2');
   $(document).ready(function() {
     $('.js-example-basic-single').select2();
     $('.js-example-basic-multiple').select2();
+    $('.selectSingle').each(function() {
+        let parent = $(this).closest('.modal');
+        if (parent.length) {
+            // Kalau select2 ada di dalam modal
+            $(this).select2({
+                dropdownParent: parent
+            });
+        } else {
+            // Kalau select2 di luar modal
+            $(this).select2();
+        }
+    });
+
+    $('.selectMultiple').each(function() {
+        let parent = $(this).closest('.modal');
+        if (parent.length) {
+            $(this).select2({
+                dropdownParent: parent
+            });
+        } else {
+            $(this).select2();
+        }
+    });
     flatpickr('#expired', {
       "minDate": null
     });

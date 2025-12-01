@@ -89,7 +89,7 @@
                     </div>
                     <div class="col-3">
                         <div class="form-group">
-                            <label for="">Type</label>
+                            <label for="">Status</label>
                             <select name="" id="ctr_status" class="selectSingle form-select" style="width: 100%">
                                 <option disabled selected value>Pilih Satu</option>
                                 <option value="FCL">FCL</option>

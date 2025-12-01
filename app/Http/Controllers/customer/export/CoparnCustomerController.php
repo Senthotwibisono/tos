@@ -41,10 +41,12 @@ class CoparnCustomerController extends CustomerMainController
 
         return DataTables::of($items)
         ->addColumn('edit', function($items){
-            return '<button type="button" id="editButton" data-id="'.$items->container_key.'" class="btn btn-warning" onclick="editItem(event)"><i class="fas fa-pencil"></i></button>';
+            // return '<button type="button" id="editButton" data-id="'.$items->container_key.'" class="btn btn-warning" onclick="editItem(event)"><i class="fas fa-pencil"></i></button>';
+            return 'Hubungi Admin';
         })
         ->addColumn('delete', function($items){
-            return '<button type="button" class="btn btn-danger btn-delete-coparn" data-id="'.$items->container_key.'" data-no="'.$items->container_no.'"><i class="fas fa-trash"></i></button>';
+            // return '<button type="button" class="btn btn-danger btn-delete-coparn" data-id="'.$items->container_key.'" data-no="'.$items->container_no.'"><i class="fas fa-trash"></i></button>';
+            return 'Hubungi Admin';
         })
         ->addColumn('uid', function($items){
             return $items->craeted->name ?? '-';

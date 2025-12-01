@@ -12,7 +12,7 @@ use App\Models\Operator;
 use App\Models\Ship;
 use App\Models\ActOper;
 use GuzzleHttp\Client;
-
+use Illuminate\Support\Facades\DB;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -161,22 +161,21 @@ class LoadController extends Controller
 {
     $ves_id = $request->ves_id;
 
-    $container_key = Item::where(function ($query) use ($ves_id) {
-        // When ctr_i_e_t is 'E', filter by ves_id and ctr_intern_status
+    $container_key = Item::select('container_no', DB::raw('MAX(container_key) as container_key'))
+    ->where(function ($query) use ($ves_id) {
         $query->where('ctr_i_e_t', 'E')
               ->where('ves_id', $ves_id)
               ->whereIn('ctr_intern_status', ['50', '51', '53']);
     })
     ->orWhere(function ($query) {
-        // For MTY containers, check only ctr_status and ctr_intern_status
         $query->where('ctr_status', 'MTY')
-              ->whereIn('ctr_intern_status', ['14', '04', '03']);
+              ->whereIn('ctr_intern_status', ['04']);
     })
     ->orWhere(function ($query) {
-        // For MTY containers, check only ctr_status and ctr_intern_status
         $query->where('ves_code', 'NTG')
               ->whereIn('ctr_intern_status', ['50', '51', '53']);
     })
+    ->groupBy('container_no')
     ->get();
 
     $option = []; // Initialize $option as an empty array

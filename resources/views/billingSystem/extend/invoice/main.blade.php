@@ -129,7 +129,15 @@
               </div>
               <div class="col-xs-12 col-4 text-center">
                 <div class="position-relative d-inline-block" style="width: 70%;">
-                  <img src="/logoInvoice/logoDS.jpg" class="img-fluid w-100" alt="Logo">
+                  @php
+    $invoiceDate = \Carbon\Carbon::parse($invoice->invoice_date);
+@endphp
+
+@if($invoiceDate->lessThan(\Carbon\Carbon::create(2025, 5, 1)))
+    <img src="/logoInvoice/logoDSK.jpg" class="img-fluid w-100" alt="Logo">
+@else
+    <img src="/logoInvoice/logoDS.jpg" class="img-fluid w-100" alt="Logo">
+@endif
                   <img src="/images/paid.png" class="position-absolute" alt="Paid" style="top: 150px; left: 50px; width: 80%; opacity: 0.7;">
                 </div>
               </div>
@@ -176,13 +184,31 @@
                 </address>
               </div>
               <div class="col-xs-12 col-12">
-                <address>
-                  <strong>Metode Pembayaran</strong><br>
-                  Nama Bank: <strong>MANDIRI</strong> <br>
-                  Pemilik Rekening: <strong>PT. DEPO INDO KONTAINER SARANA</strong><br>
-                  Kode Bank: <strong>008</strong><br>
-                  Nomor Rekening: <strong>1460021308742</strong><br>
-                </address>
+               <div class="col-xs-12 col-12">
+                @php
+  use Carbon\Carbon;
+    $invoiceDate = Carbon::parse($invoice->invoice_date);
+    $cutoffDate = Carbon::create(2025, 5, 1);
+@endphp
+
+@if($invoiceDate->lt($cutoffDate))
+    <address>
+        <strong>Metode Pembayaran</strong><br>
+        Nama Bank : <strong>MANDIRI</strong> <br>
+        Pemilik Rekening : <strong>PT. INDO KONTAINER SARANA</strong><br>
+        Kode Bank : <strong>008</strong><br>
+        Nomor Rekening : <strong>1460002771975</strong><br>
+        {{-- <small>h.elaine@gmail.com</small> --}}
+    </address>
+@else
+    <address>
+        <strong>Metode Pembayaran</strong><br>
+        Nama Bank: <strong>MANDIRI</strong> <br>
+        Pemilik Rekening: <strong>PT. DEPO INDO KONTAINER SARANA</strong><br>
+        Kode Bank: <strong>008</strong><br>
+        Nomor Rekening: <strong>1460021308742</strong><br>
+    </address>
+@endif
                 <address>
                   <strong>Veesel</strong><br>
                   Ves Name : <strong>{{$form->Kapal->ves_name}}</strong> <br>

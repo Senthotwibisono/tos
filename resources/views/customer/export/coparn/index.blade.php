@@ -94,7 +94,7 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="">Vessel</label>
-                                <select name="ves_id" id="ves_id" id="" class="js-example-basic-single select2 form-select" style="width: 100%;">
+                                <select name="ves_id" id="ves_id" id="" class="selectSingle form-select" style="width: 100%;">
                                     <option disabeled selected value>Pilih Satu</option>
                                     @foreach($vessels as $ves)
                                         <option value="{{$ves->ves_id}}">{{$ves->ves_name}} -- {{$ves->voy_in}} / {{$ves->voy_out}}</option>
@@ -103,7 +103,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="">Iso Code</label>
-                                <select name="iso_code" id="iso_code" id="" class="js-example-basic-single select2 form-select" style="width: 100%;">
+                                <select name="iso_code" id="iso_code" id="" class="selectSingle form-select" style="width: 100%;">
                                     <option disabeled selected value>Pilih Satu</option>
                                     @foreach($isoCode as $iso)
                                         <option value="{{$iso->iso_code}}">{{$iso->iso_code}}</option>
@@ -112,7 +112,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="">Customer</label>
-                                <select name="customer_id" id="customer_id" id="" class="js-example-basic-single select2 form-select" style="width: 100%;">
+                                <select name="customer_id" id="customer_id" id="" class="selectSingle form-select" style="width: 100%;">
                                     <option disabeled selected value>Pilih Satu</option>
                                     @foreach($customers as $customer)
                                         <option value="{{$customer->code}}">{{$customer->name}}</option>
@@ -136,14 +136,14 @@
                             </div>
                             <div class="form-group">
                                 <label for="">Status</label>
-                                <select name="ctr_status" id="ctr_status" class="js-example-basic-multiple form-control" style="width: 100%;">
+                                <select name="ctr_status" id="ctr_status" class="selectSingle form-control" style="width: 100%;">
                                     <option value="FCL">Full</option>
                                     <option value="MTY">Empty</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="">Load Port</label>
-                                <select name="load_port" id="load_port" class="js-example-basic-multiple form-control" style="width: 100%;">
+                                <select name="load_port" id="load_port" class="selectSingle form-control" style="width: 100%;">
                                     @foreach($ports as $port)
                                         <option value="{{$port->port}}">{{$port->port}}</option>
                                     @endforeach
@@ -151,7 +151,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="">Disch Port</label>
-                                <select name="disch_port" id="disch_port" class="js-example-basic-multiple form-control" style="width: 100%;">
+                                <select name="disch_port" id="disch_port" class="selectSingle form-control" style="width: 100%;">
                                     @foreach($ports as $port)
                                         <option value="{{$port->port}}">{{$port->port}}</option>
                                     @endforeach
@@ -187,7 +187,7 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="">Vessel</label>
-                                <select name="ves_id" id="vesFile" class="js-example-basic-single select2 form-select" style="width: 100%;">
+                                <select name="ves_id" id="vesFile" class="selectSingle form-select" style="width: 100%;">
                                     <option disabeled selected value>Pilih Satu</option>
                                     @foreach($vessels as $ves)
                                         <option value="{{$ves->ves_id}}">{{$ves->ves_name}} -- {{$ves->voy_in}} / {{$ves->voy_out}}</option>
@@ -196,7 +196,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="">Customer</label>
-                                <select name="customer_id" id="customerFile" class="js-example-basic-single select2 form-select" style="width: 100%;">
+                                <select name="customer_id" id="customerFile" class="selectSingle form-select" style="width: 100%;">
                                     <option disabeled selected value>Pilih Satu</option>
                                     @foreach($customers as $customer)
                                         <option value="{{$customer->code}}">{{$customer->name}}</option>

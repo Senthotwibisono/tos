@@ -21,6 +21,7 @@
                                 <option value="20" {{$masterTarif->ctr_size == '20' ? 'selected' : ''}}>20</option>
                                 <option value="21" {{$masterTarif->ctr_size == '21' ? 'selected' : ''}}>21</option>
                                 <option value="40" {{$masterTarif->ctr_size == '40' ? 'selected' : ''}}>40</option>
+                                <option value="41" {{$masterTarif->ctr_size == '41' ? 'selected' : ''}}>41</option>
                                 <option value="42" {{$masterTarif->ctr_size == '42' ? 'selected' : ''}}>42</option>
                             </select>
                         </div>

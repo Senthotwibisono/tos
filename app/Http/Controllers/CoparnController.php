@@ -98,7 +98,7 @@ class CoparnController extends Controller
             'ctr_intern_status'=>'49',
             'ctr_i_e_t'=>'E',
             'disc_load_trans_shift'=>'LOAD',
-            'user_id'=>Auth::user()->name,
+            'user_id'=>Auth::user()->id,
             'ctr_active_yn'=>'N',
             'selected_do'=>'N',
             'booking_no'=>$request->booking_no,

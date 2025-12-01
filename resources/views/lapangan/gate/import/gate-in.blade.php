@@ -37,6 +37,10 @@
                                 <th>Bongkar/Muat</th>
                                 <th>Truck No</th>
                                 <th>Time In</th>
+                                <th>Voy No</th>
+                                <th>Size</th>
+                                <th>Type</th>
+                                <th>Job No</th>
                                 <th>Cancel</th>
                             </tr>
                         </thead>
@@ -119,6 +123,10 @@
                 {name: 'iet', data: 'iet', className:'text-center'},
                 {name: 'truck_no', data: 'truck_no', className:'text-center'},
                 {name: 'truck_in_date', data: 'truck_in_date', className:'text-center'},
+                {name: 'voy_no', data: 'voy_no', className:'text-center'},
+                {name: 'ctr_size', data: 'ctr_size', className:'text-center'},
+                {name: 'ctr_type', data: 'ctr_type', className:'text-center'},
+                {name: 'job_no', data: 'job_no', className:'text-center'},
                 {name: 'cancel', data: 'cancel', className:'text-center', sortable: false},
             ],
         });
@@ -233,7 +241,7 @@
             const truck_no = document.getElementById('truck_no').value;
             const active_to = document.getElementById('active_to').value;
             const truck_in_date = document.getElementById('truck_in_date').value;
-
+            const type = document.getElementById('type').value;
             if (!truck_in_date) {
                 hideButton(button);
                 Swal.fire({
@@ -244,14 +252,23 @@
                 return;
             }
 
-            if (active_to < truck_in_date) {
-                hideButton(button);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Kadaluarsa',
-                    text: 'Job order expired, perlu perpanjangan',
-                });
-                return;
+            if (type == 'I') {
+                const activeDate = new Date(active_to);
+                const truckDate = new Date(truck_in_date);
+                        
+                // reset jam, menit, detik, ms
+                activeDate.setHours(0,0,0,0);
+                truckDate.setHours(0,0,0,0);
+                        
+                if (activeDate < truckDate) {
+                    hideButton(button);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Kadaluarsa',
+                        text: 'Job order expired, perlu perpanjangan',
+                    });
+                    return;
+                }
             }
             const data = {
                 container_key,

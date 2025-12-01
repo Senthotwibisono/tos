@@ -145,7 +145,7 @@ class PlanningController extends Controller
 
     public function bapleiData(Request $request)
     {
-        $data = Item::where('ctr_intern_status', '01')->orderBy('ves_id', 'desc')->get();
+        $data = Item::whereIn('ctr_intern_status', ['01', '02', '03'])->whereNot('selected_do', 'Y')->orderBy('ves_id', 'desc')->get();
         
         return DataTables::of($data)
         ->addColumn('edit', function($data) {

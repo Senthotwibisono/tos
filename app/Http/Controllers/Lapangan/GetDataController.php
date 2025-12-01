@@ -192,7 +192,7 @@ class GetDataController extends Controller
 
         if ($request->type == 'ambilMt') {
             $subQuery = Item::selectRaw('MAX(container_key) as container_key, container_no')
-                ->whereIn('ctr_intern_status', ['03', '04', '50', '51', '53', '54'])
+                ->whereIn('ctr_intern_status', ['49', '03', '04', '50', '51', '53', '54'])
                 ->groupBy('container_no');
         }
         

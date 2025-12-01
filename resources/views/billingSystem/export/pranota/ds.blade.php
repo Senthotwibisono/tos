@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=0.5">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <title> {{$title}} | Icon Sarana</title>
@@ -13,82 +13,98 @@
 </head>
 
 
-   <style>
-       @page {
-        size: 11in 9.5in;
-        margin: 0;
-    }
-
-    body {
+<style>
+ body{
+        font-family: 'Roboto Condensed', sans-serif;
         margin: 0;
         padding: 0;
-        background: #eee;
-        font-family: Arial, sans-serif;
-        font-size: 10px; /* Reduced from 12px */
+    }
+    .img {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
     }
 
-    .container {
+    .page-break {
+                page-break-before: always;
+            }
+    .m-0{
+        margin: 0px;
+    }
+    .p-0{
+        padding: 0px;
+    }
+    .pt-5{
+        padding-top:5px;
+    }
+    .mt-10{
+        margin-top:10px;
+    }
+    .text-center{
+        text-align:center !important;
+    }
+    .w-100{
         width: 100%;
-        max-width: 950px;
-        margin: 0 auto;
-        padding: 20px; /* Reduced from 30px */
-        background: #fff;
     }
-
-    .invoice-title h2, .invoice-title .small {
-        display: inline-block;
-        font-size: 14px; /* Reduced from default size */
+    .w-50{
+        width:50%;   
     }
-
-    .invoice hr {
-        margin-top: 10px;
-        border-color: #ddd;
+    .w-85{
+        width:85%;   
     }
-
-    .invoice .table {
-        width: 100%;
-        margin-bottom: 15px; /* Reduced from 20px */
+    .w-15{
+        width:15%;   
     }
-
-    .invoice .table th, .invoice .table td {
-        padding: 6px; /* Reduced from 8px */
-        border-bottom: 1px solid #ddd;
-        font-size: 10px; /* Reduced from default size */
+    .logo img{
+        width:45px;
+        height:45px;
+        padding-top:30px;
     }
-
-    .invoice .table th {
-        background: #f5f5f5;
+    .logo span{
+        margin-left:8px;
+        top:19px;
+        position: absolute;
+        font-weight: bold;
+        font-size:25px;
     }
-
-    .invoice .identity {
-        margin-top: 10px;
-        font-size: 10px; /* Reduced from 1.1em */
-        font-weight: 300;
+    .gray-color{
+        color:#5D5D5D;
     }
-
-    .invoice .identity strong {
-        font-weight: 600;
+    .text-bold{
+        font-weight: bold;
     }
-
-    .grid {
-        padding: 15px; /* Reduced from 20px */
-        margin-bottom: 20px; /* Reduced from 25px */
-        border-radius: 2px;
-        box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
+    .border{
+        border:1px solid black;
     }
-
-    .text-right {
-        text-align: right;
+    table tr,th,td{
+        border: 1px solid #d2d2d2;
+        border-collapse:collapse;
+        padding:7px 8px;
     }
-
-    .mt-3 {
-        margin-top: 0.5rem; /* Reduced from 1rem */
+    table tr th{
+        background: #F4F4F4;
+        font-size:15px;
     }
-
-    .p-3 {
-        padding: 0.5rem; /* Reduced from 1rem */
+    table tr td{
+        font-size:13px;
     }
-    </style>
+    table{
+        border-collapse:collapse;
+    }
+    .box-text p{
+        line-height:10px;
+    }
+    .float-left{
+        float:left;
+    }
+    .total-part{
+        font-size:16px;
+        line-height:12px;
+    }
+    .total-right p{
+        padding-right:20px;
+    }
+</style>
 
 <div class="container">
   <div class="row">
@@ -112,7 +128,15 @@
               </div>
               <div class="col-xs-12 col-4 text-center">
                 <div class="position-relative d-inline-block" style="width: 70%;">
-                  <img src="/logoInvoice/logoDS.jpg" class="img-fluid w-100" alt="Logo">
+                 @php
+    $invoiceDate = \Carbon\Carbon::parse($invoice->invoice_date);
+@endphp
+
+@if($invoiceDate->lessThan(\Carbon\Carbon::create(2025, 5, 1)))
+    <img src="/logoInvoice/logoDSK.jpg" class="img-fluid w-100" alt="Logo">
+@else
+    <img src="/logoInvoice/logoDS.jpg" class="img-fluid w-100" alt="Logo">
+@endif
                   <!-- <img src="/images/paid.png" class="position-absolute" alt="Paid" style="top: 150px; left: 50px; width: 80%; opacity: 0.7;"> -->
                 </div>
               </div>
@@ -153,13 +177,30 @@
                 </address>
               </div>
               <div class="col-xs-12 col-12">
-                <address>
-                  <strong>Metode Pembayaran</strong><br>
-                  Nama Bank: <strong>MANDIRI</strong> <br>
-                  Pemilik Rekening: <strong>PT. DEPO INDO KONTAINER SARANA</strong><br>
-                  Kode Bank: <strong>008</strong><br>
-                  Nomor Rekening: <strong>1460021308742</strong><br>
-                </address>
+               @php
+    use Carbon\Carbon;
+    $invoiceDate = Carbon::parse($invoice->invoice_date);
+    $cutoffDate = Carbon::create(2025, 5, 1);
+@endphp
+
+@if($invoiceDate->lt($cutoffDate))
+    <address>
+        <strong>Metode Pembayaran</strong><br>
+        Nama Bank : <strong>MANDIRI</strong> <br>
+        Pemilik Rekening : <strong>PT. INDO KONTAINER SARANA</strong><br>
+        Kode Bank : <strong>008</strong><br>
+        Nomor Rekening : <strong>1460002771975</strong><br>
+        {{-- <small>h.elaine@gmail.com</small> --}}
+    </address>
+@else
+    <address>
+        <strong>Metode Pembayaran</strong><br>
+        Nama Bank: <strong>MANDIRI</strong> <br>
+        Pemilik Rekening: <strong>PT. DEPO INDO KONTAINER SARANA</strong><br>
+        Kode Bank: <strong>008</strong><br>
+        Nomor Rekening: <strong>1460021308742</strong><br>
+    </address>
+@endif
               </div>
 
             </div>
@@ -221,23 +262,19 @@
             </div>
           </div>
           <div class="row p-3">
-          <div class="col-6">
-                <p>Admin (NK) :</p>
-                <p>Total Amount: </p>
-                <p>Discount :</p>
-                <p>PPN : </p>
-                <p>Grand Total: </p>
-              </div>
-              <div class="col-6 text-right">
-                <!-- <p><strong>Rp. {{ number_format($invoice->total, 0, ',', '.') }} ,00 ~</strong></p>
-                <p><strong>Rp. {{ number_format($admin, 0, ',', '.') }} ,00 ~</strong></p>
-                <p><strong>Rp. {{ number_format($invoice->pajak, 0, ',', '.') }}, 00 ~</strong></p>
-                <p><strong>Rp. {{ number_format($invoice->grand_total, 0, ',', '.') }},00 ~</strong></p> -->
-                <p><strong>Rp. {{ number_format($admin, 2, ',', '.') }}</strong></p>
-                <p><strong>Rp. {{ number_format($invoice->total, 2, ',', '.') }}</strong></p>
-                <p><strong>Rp. {{ number_format($invoice->discount, 2, ',', '.') }}</strong></p>
-                <p><strong>Rp. {{ number_format($invoice->pajak, 2, ',', '.') }}</strong></p>
-                <p><strong>Rp. {{ number_format($invoice->grand_total, 2, ',', '.') }}</strong></p>
+          <div class="col-xs-12 col-6">
+              <p>Admin (K) :</p>
+              <p>Total Amount: </p>
+              <p>Discount :</p>
+              <p>PPN : </p>
+              <p>Grand Total: </p>
+            </div>
+            <div class="col-xs-12 col-6" style="text-align: right;">
+            <p><strong>Rp. {{ number_format($admin, 2, ',', '.') }}</strong></p>
+            <p><strong>Rp. {{ number_format($invoice->total, 2, ',', '.') }}</strong></p>
+            <p><strong>Rp. {{ number_format($invoice->discount, 2, ',', '.') }}</strong></p>
+            <p><strong>Rp. {{ number_format($invoice->pajak, 2, ',', '.') }}</strong></p>
+            <p><strong>Rp. {{ number_format($invoice->grand_total, 2, ',', '.') }}</strong></p>
 
 
             </div>

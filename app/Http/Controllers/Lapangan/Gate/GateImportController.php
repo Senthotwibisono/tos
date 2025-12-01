@@ -119,9 +119,9 @@ class GateImportController extends Controller
     public function dataOut(Request $request)
     {
         $items = Item::whereIn('ctr_intern_status', ['09', '50'])
-        ->selectRaw('MAX(container_key) as container_key, container_no, MAX(truck_no) as truck_no, MAX(truck_out_date) as truck_out_date, MAX(ctr_intern_status) as ctr_intern_status')
+        ->selectRaw('MAX(container_key) as container_key, container_no, MAX(truck_no) as truck_no, MAX(truck_out_date) as truck_out_date, MAX(ctr_intern_status) as ctr_intern_status, MAX(iso_code) as iso_code, MAX(ctr_size) as ctr_size, MAX(ctr_type) as ctr_type, MAX(job_no) as job_no, MAX(voy_no) as voy_no')
         ->groupBy('container_no')
-        ->orderBy('container_key', 'desc');
+        ->get();
         return DataTables::of($items)
         ->addColumn('cancel', function($items){
             return '<button type="button" class="btn btn-danger" data-tipe="out" data-id="'.$items->container_key.'" onClick="cancelGateIn(this)">Cancel</button>';
