@@ -105,7 +105,11 @@ class CustomerExportController extends  CustomerMainController
         })
         ->addColumn('action', function($inv){
             if ($inv->lunas == 'N' || $inv->lunas == 'P') {
-                return '<button type="button" id="pay" data-id="'.$inv->id.'" class="btn btn-sm btn-success pay" onClick="payButton(this)"><i class="fa fa-cogs"></i></button>';
+                if ($inv->inv_type === 'OSK') {
+                    return '<button type="button" id="pay" data-id="'.$inv->id.'" class="btn btn-sm btn-success pay" onClick="payButton(this)"><i class="fa fa-cogs"></i></button>';
+                }else {
+                    return 'Pembayaran melalui kasir!';
+                }
             }elseif ($inv->lunas == 'Y') {
                 return '<span class="badge bg-success text-white">Paid</span>';
             }else {
@@ -457,31 +461,56 @@ class CustomerExportController extends  CustomerMainController
             'order_at' => Carbon::now(),
             'user_id' => Auth::user()->id, 
         ]);
-
+        // dd($detailsOSK);
         foreach ($detailsOSK as $detil) {
             // dd($detil);
-            Detail::create([
-                'inv_id'=>$invoiceOSK->id,
-                'inv_type' => $detil->inv_type,
-                'keterangan' => $detil->keterangan,
-                'ukuran' => $detil->ukuran,
-                'jumlah' => $detil->jumlah,
-                'satuan' => $detil->satuan,
-                'expired_date' => $detil->expired_date,
-                'lunas' => $detil->lunas,
-                'cust_id' => $detil->cust_id,
-                'cust_name' => $detil->cust_name,
-                'os_id' => $detil->os_id,
-                'jumlah_hari' => $detil->jumlah_hari,
-                'master_item_id' => $detil->master_item_id,
-                'master_item_name' => $detil->master_item_name,
-                'kode' => $detil->kode,
-                'tarif' => $detil->tarif,
-                'total' => $detil->total,
-                'form_id' => $detil->form_id,
-                'count_by' => $detil->count_by,
-                'order_date'=>$invoiceOSK->order_at,
-            ]);
+            if ($detil->total === 2000) {
+                Detail::create([
+                    'inv_id'=>$invoiceOSK->id,
+                    'inv_type' => $detil->inv_type,
+                    'keterangan' => $detil->keterangan,
+                    'ukuran' => $detil->ukuran,
+                    'jumlah' => $detil->jumlah,
+                    'satuan' => $detil->satuan,
+                    'expired_date' => $detil->expired_date,
+                    'lunas' => $detil->lunas,
+                    'cust_id' => $detil->cust_id,
+                    'cust_name' => $detil->cust_name,
+                    'os_id' => $detil->os_id,
+                    'jumlah_hari' => $detil->jumlah_hari,
+                    'master_item_id' => 19,
+                    'master_item_name' => 'Administrasi (K)',
+                    'kode' => 'ADMINISTRASI (K)',
+                    'tarif' => $detil->tarif,
+                    'total' => $detil->total,
+                    'form_id' => $detil->form_id,
+                    'count_by' => 'O',
+                    'order_date'=>$invoiceOSK->order_at,
+                ]);
+            }else {
+                Detail::create([
+                    'inv_id'=>$invoiceOSK->id,
+                    'inv_type' => $detil->inv_type,
+                    'keterangan' => $detil->keterangan,
+                    'ukuran' => $detil->ukuran,
+                    'jumlah' => $detil->jumlah,
+                    'satuan' => $detil->satuan,
+                    'expired_date' => $detil->expired_date,
+                    'lunas' => $detil->lunas,
+                    'cust_id' => $detil->cust_id,
+                    'cust_name' => $detil->cust_name,
+                    'os_id' => $detil->os_id,
+                    'jumlah_hari' => $detil->jumlah_hari,
+                    'master_item_id' => $detil->master_item_id,
+                    'master_item_name' => $detil->master_item_name,
+                    'kode' => $detil->kode,
+                    'tarif' => $detil->tarif,
+                    'total' => $detil->total,
+                    'form_id' => $detil->form_id,
+                    'count_by' => $detil->count_by,
+                    'order_date'=>$invoiceOSK->order_at,
+                ]);
+            }
         }
 
         return $invoiceOSK;
@@ -517,28 +546,54 @@ class CustomerExportController extends  CustomerMainController
 
         foreach ($detailsOS as $detil) {
             // dd($detil);
-            Detail::create([
-                'inv_id'=>$invoiceOS->id,
-                'inv_type' => $detil->inv_type,
-                'keterangan' => $detil->keterangan,
-                'ukuran' => $detil->ukuran,
-                'jumlah' => $detil->jumlah,
-                'satuan' => $detil->satuan,
-                'expired_date' => $detil->expired_date,
-                'lunas' => $detil->lunas,
-                'cust_id' => $detil->cust_id,
-                'cust_name' => $detil->cust_name,
-                'os_id' => $detil->os_id,
-                'jumlah_hari' => $detil->jumlah_hari,
-                'master_item_id' => $detil->master_item_id,
-                'master_item_name' => $detil->master_item_name,
-                'kode' => $detil->kode,
-                'tarif' => $detil->tarif,
-                'total' => $detil->total,
-                'form_id' => $detil->form_id,
-                'count_by' => $detil->count_by,
-                'order_date'=>$invoiceOS->order_at,
-            ]);
+            if ($detil->total === 2000) {
+                Detail::create([
+                    'inv_id'=>$invoiceOS->id,
+                    'inv_type' => $detil->inv_type,
+                    'keterangan' => $detil->keterangan,
+                    'ukuran' => $detil->ukuran,
+                    'jumlah' => $detil->jumlah,
+                    'satuan' => $detil->satuan,
+                    'expired_date' => $detil->expired_date,
+                    'lunas' => $detil->lunas,
+                    'cust_id' => $detil->cust_id,
+                    'cust_name' => $detil->cust_name,
+                    'os_id' => $detil->os_id,
+                    'jumlah_hari' => $detil->jumlah_hari,
+                    'master_item_id' => 19,
+                    'master_item_name' => 'Administrasi (NK)',
+                    'kode' => 'ADMINISTRASI (NK)',
+                    'tarif' => $detil->tarif,
+                    'total' => $detil->total,
+                    'form_id' => $detil->form_id,
+                    'count_by' => 'O',
+                    'order_date'=>$invoiceOS->order_at,
+                ]);
+            } else {
+
+                Detail::create([
+                    'inv_id'=>$invoiceOS->id,
+                    'inv_type' => $detil->inv_type,
+                    'keterangan' => $detil->keterangan,
+                    'ukuran' => $detil->ukuran,
+                    'jumlah' => $detil->jumlah,
+                    'satuan' => $detil->satuan,
+                    'expired_date' => $detil->expired_date,
+                    'lunas' => $detil->lunas,
+                    'cust_id' => $detil->cust_id,
+                    'cust_name' => $detil->cust_name,
+                    'os_id' => $detil->os_id,
+                    'jumlah_hari' => $detil->jumlah_hari,
+                    'master_item_id' => $detil->master_item_id,
+                    'master_item_name' => $detil->master_item_name,
+                    'kode' => $detil->kode,
+                    'tarif' => $detil->tarif,
+                    'total' => $detil->total,
+                    'form_id' => $detil->form_id,
+                    'count_by' => $detil->count_by,
+                    'order_date'=>$invoiceOS->order_at,
+                ]);
+            }
         }
 
         return $invoiceOS;

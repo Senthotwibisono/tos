@@ -45,8 +45,12 @@
                   <input name="fax" type="text" class="form-control" value="{{$cust->fax}}" required>
                 </div>
                 <div class="form-group">
-                  <label for="">NPWP</label>
-                  <input name="npwp" type="text" class="form-control" value="{{$cust->npwp}}" required>
+                    <label for="">NPWP</label>
+                    <input name="npwp" type="text" class="form-control"
+                           value="{{$cust->npwp}}" 
+                           required
+                           pattern=".*[0-9].*"
+                           title="NPWP harus berisi angka, tidak boleh hanya tanda strip (-)">
                 </div>
                 <div class="form-group">
                   <label for="">Address</label>

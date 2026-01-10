@@ -372,7 +372,7 @@ class CustomerImportController extends CustomerMainController
         $selctedCont = Item::whereIn('container_key', $request->container)->get();
         
         $disc = Carbon::parse($request->disc_date);
-        $expired = Carbon::parse($request->exp_date);
+        $expired = $disc->copy()->addDays(4);
 
         if ($expired == null || $disc >= $expired) {
             return redirect()->back()->with('error', 'Rencana Keluar Harus Lebih Besar');
@@ -387,13 +387,13 @@ class CustomerImportController extends CustomerMainController
         $massa2 = null;
         $massa3 = null;
 
-        if ($jumlahHari > 5) {
-            $massa2 = min($jumlahHari -5, 5);
+        // if ($jumlahHari > 5) {
+        //     $massa2 = min($jumlahHari -5, 5);
 
-            if ($jumlahHari > 10) {
-                $massa3 = $jumlahHari -10;
-            }
-        }
+        //     if ($jumlahHari > 10) {
+        //         $massa3 = $jumlahHari -10;
+        //     }
+        // }
         // dd($request->all(), $disc, $expired, $interval, $jumlahHari, $massa2, $massa3);
 
         try {
@@ -406,7 +406,7 @@ class CustomerImportController extends CustomerMainController
 
             $form = Form::find($request->form_id);
             $form->update([
-                'expired_date' => $request->exp_date,
+                'expired_date' => $expired,
                 'os_id' => $request->order_service,
                 'cust_id' => $request->customer,
                 'do_id' => $request->do_number_auto,

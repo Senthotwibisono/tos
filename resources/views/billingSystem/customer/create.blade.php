@@ -44,8 +44,11 @@
                   <input name="fax" type="text" class="form-control" placeholder="13610" required>
                 </div>
                 <div class="form-group">
-                  <label for="">NPWP</label>
-                  <input name="npwp" type="text" class="form-control" placeholder="6673009219991" required>
+                    <label for="">NPWP</label>
+                    <input name="npwp" type="text" class="form-control"
+                           required
+                           pattern=".*[0-9].*"
+                           title="NPWP harus berisi angka, tidak boleh hanya tanda strip (-)">
                 </div>
                 <div class="form-group">
                   <label for="">Address</label>

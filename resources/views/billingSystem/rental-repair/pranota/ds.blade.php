@@ -154,7 +154,7 @@
                   <br>
                 </address>
                 <address>
-                  <strong>Tipe Invoice:</strong><br> DS
+                  <strong>Tipe Invoice:</strong><br> OS
                 </address>
                 <address>
                   <strong>Order Service:</strong><br> {{$invoice->os_name}}

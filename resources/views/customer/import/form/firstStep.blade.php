@@ -45,10 +45,10 @@
               </div>
             </div>
             <div class="col-3">
-              <div class="form-group">
+              <!-- <div class="form-group">
                 <label for="">Rencana Keluar</label>
                 <input required name="exp_date" id="exp_date" type="date" class="form-control flatpickr-range mb-3" value="{{ isset($form->expired_date) ? \Carbon\Carbon::parse($form->expired_date)->format('Y-m-d') : null ?? $expired ?? null}}" placeholder="09/05/2023">
-              </div>
+              </div> -->
             </div>
             <div class="col-12">
               <div class="form-group">

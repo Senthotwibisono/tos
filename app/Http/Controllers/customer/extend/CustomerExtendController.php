@@ -247,16 +247,16 @@ class CustomerExtendController extends CustomerMainController
             }elseif ($inv->lunas == 'C') {
                 return '<span class="badge bg-danger text-white">Canceled</span>';
             }else {
-                return '<a type="button" href="/invoice/job/import-'.$inv->id.'" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>';
+                return '<a type="button" href="/invoice/job/extend-'.$inv->id.'" target="_blank" class="btn btn-sm btn-info text-white"><i class="fa fa-ship"></i></a>';
             }
         })
         ->addColumn('action', function($inv){
             if ($inv->lunas == 'N' || $inv->lunas == 'P') {
-                 if ($inv->inv_type == 'DS') {
+                //  if ($inv->inv_type == 'DS') {
                     return '<span class="badge text-white" style="background-color: orange;">Pembayaran Manual</span>';
-                }else {
-                    return '<button type="button" id="pay" data-id="'.$inv->id.'" class="btn btn-sm btn-success pay" onClick="payExtend(this)"><i class="fa fa-cogs"></i></button>';
-                }
+                // }else {
+                //     return '<button type="button" id="pay" data-id="'.$inv->id.'" class="btn btn-sm btn-success pay" onClick="payExtend(this)"><i class="fa fa-cogs"></i></button>';
+                // }
             }elseif ($inv->lunas == 'Y') {
                 return '<span class="badge bg-success text-white">Paid</span>';
             }else {
@@ -376,7 +376,7 @@ class CustomerExtendController extends CustomerMainController
         // Query untuk import
         $importQuery = $this->import
             ->where('lunas', 'Y')
-            ->where('inv_type', 'DS')
+            // ->where('inv_type', 'DS')
             ->select('inv_no', 'id', 'form_id')
             ->groupBy('inv_no', 'id', 'form_id');
 
@@ -400,7 +400,7 @@ class CustomerExtendController extends CustomerMainController
 
         return response()->json([
             'data' => $oldInvoice,
-            'more' => ($page * $perPage) < $totalCount, // Cek apakah ada halaman berikutnya
+            'more' => false, // Cek apakah ada halaman berikutnya
         ]);
     }
 
@@ -439,6 +439,7 @@ class CustomerExtendController extends CustomerMainController
             switch ($oldForm->i_e) {
                 case 'I':
                     $oldInvoice = Import::find($request->oldId);
+                    // var_dump($oldInvoice);
                     $allInvoice = Import::where('form_id', $oldForm->id)->get();
                     $oldJob = JobImport::whereIn('inv_id', $allInvoice->pluck('id'))->get();
                     $tipe = 'I';
@@ -697,7 +698,7 @@ class CustomerExtendController extends CustomerMainController
                 $item->save();
             }
 
-            return redirect('/customer-extend/unpaid')->with('success', 'Invoice berhasil di buat');
+            return redirect('/customer-extend/listIndex')->with('success', 'Invoice berhasil di buat');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Something Wrong : '.$th->getMessage());
         }
@@ -865,13 +866,48 @@ class CustomerExtendController extends CustomerMainController
         return back()->with('success', 'Bukti pembayaran berhasil diunggah');
     }
 
-    // public function cancelInvoice(Request $request)
-    // {
-    //     $headers = Extend::where('form_id', $request->formId)->get();
-    //     if ($headers->isNotEmpty()) {
-            
-    //     } 
-    // }
+    public function cancelInvoice(Request $request)
+    {
+        $headers = Extend::where('form_id', $request->formId)->get();
+        $checkLunas = $headers->whereIn('lunas', ['Y', 'P']);
+        if ($checkLunas->isNotEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak dapat melakukan pembatalan, sudah ada invoice yang lunas',
+            ]);
+        }
+        try {
+            foreach ($headers as $header) {
+                $detils = Detail::where('inv_id', $header->id)->get();
+                if ($detils->isNotEmpty()) {
+                        foreach ($detils as $detil) {
+                            $detil->update([
+                                'lunas' => 'C',
+                            ]);
+                        }
+                }
+                $header->update([
+                    'lunas' => 'C',
+                ]);
+                $va = VA::where('virtual_account', $header->va)->first();
+                if ($va) {
+                    $va->update([
+                        'status' => 'C',
+                        'lunas_time' => Carbon::now(),
+                    ]);
+                }
+            }        
+            return response()->json([
+                'success' => true,
+                'message' => 'Data updated',
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage(),
+            ]);
+        }
+    }
 
 
     public function searchToPay(Request $request)
