@@ -84,10 +84,11 @@ class Coparn implements ToCollection, WithHeadingRow
                     'selected_do'=>'N',
                     'booking_no'=>trim($row['booking_no']),
                     'chilled_temp'=>trim($row['temperature']),
+                    'customer_code'=>trim($row['customer_code']),
 
 
                 ];
-    
+                dd($item);        
                 Item::create($item);
             
         }

@@ -374,11 +374,20 @@ class CustomerExtendController extends CustomerMainController
         $perPage = 5; // Jumlah item per halaman
 
         // Query untuk import
-        $importQuery = $this->import
-            ->where('lunas', 'Y')
-            // ->where('inv_type', 'DS')
-            ->select('inv_no', 'id', 'form_id')
-            ->groupBy('inv_no', 'id', 'form_id');
+        if (Auth::user()->id === 522) {
+            $importQuery = $this->import
+                ->whereIn('lunas', ['Y', 'P'])
+                // ->where('inv_type', 'DS')
+                ->select('inv_no', 'id', 'form_id')
+                ->groupBy('inv_no', 'id', 'form_id');
+        }else{
+
+            $importQuery = $this->import
+                ->where('lunas', 'Y')
+                // ->where('inv_type', 'DS')
+                ->select('inv_no', 'id', 'form_id')
+                ->groupBy('inv_no', 'id', 'form_id');
+        }
 
         // Query untuk export
         $exportQuery = $this->extend
@@ -442,6 +451,7 @@ class CustomerExtendController extends CustomerMainController
                     // var_dump($oldInvoice);
                     $allInvoice = Import::where('form_id', $oldForm->id)->get();
                     $oldJob = JobImport::whereIn('inv_id', $allInvoice->pluck('id'))->get();
+                    // dd($oldJob);
                     $tipe = 'I';
                     break;
                     case 'X':
@@ -466,6 +476,7 @@ class CustomerExtendController extends CustomerMainController
             $discDate = Carbon::parse($oldInvoice->expired_date)->format('Y-m-d');
 
             $items = Item::whereIn('container_key', $oldJob->pluck('container_key'))->whereIn('job_no', $oldJob->pluck('job_no'))->get();
+            // dd($items, $oldJob->pluck('container_key'));
             if ($items->isEmpty()) {
                 return response()->json([
                     'success' => false,

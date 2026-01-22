@@ -199,7 +199,7 @@ class CoparnCustomerController extends CustomerMainController
                     'selected_do' => 'N',
                     'booking_no' => $data[0],
                     'created_by' => Auth::user()->id,
-                    'customer_code' => $request->customer ?? null,
+                    'customer_code' => $data[19] ?? $request->customer ?? null,
                 ]);
             }
         }
