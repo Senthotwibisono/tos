@@ -138,7 +138,15 @@ class CustomerExportController extends  CustomerMainController
                 return '-';
             }
         })
-        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete', 'payFlag'])
+        ->addColumn('materai', function($inv){
+            if (($inv->grand_total >= 5000000) && ($inv->lunas === 'Y')) {
+                # code...
+                return '<button class="btn btn-danger" data-type="E" data-id="'.$inv->id.'" onClick="materai(this)">Materai</button>';
+            }else{
+                return '-';
+            }
+        })
+        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete', 'payFlag', 'materai'])
         ->make(true);
     }
 
@@ -400,12 +408,16 @@ class CustomerExportController extends  CustomerMainController
             DB::transaction(function() use($form, $request){
                 if ($request->has('itemOSK')) {
                     $detailsOSK = json_decode($request->itemOSK);
+                    $grandTotal = $request->grandTotalOSK;
+                    if ($grandTotal >= 5000000) {
+                        $grandTotal += 10000;
+                    }
                     $dataOSK =[
                         'total' => $request->totalAmountOSK,
                         'admin' => $request->adminOSK,
                         'discount' => 0,
                         'pajak' => $request->ppnOSK,
-                        'grand_total' => $request->grandTotalOSK,
+                        'grand_total' => $grandTotal,
                     ];
                   
                     $this->createOSK($form, $detailsOSK, $dataOSK);
@@ -413,12 +425,16 @@ class CustomerExportController extends  CustomerMainController
                 
                 if ($request->has('itemOS')) {
                     $detailsOS = json_decode($request->itemOS);
+                    $grandTotal = $request->grandTotalOS;
+                    if ($grandTotal >= 5000000) {
+                        $grandTotal += 10000;
+                    }
                     $dataOS =[
                         'total' => $request->totalAmountOS,
                         'admin' => $request->adminOS,
                         'discount' => 0,
                         'pajak' => $request->ppnOS,
-                        'grand_total' => $request->grandTotalOS,
+                        'grand_total' => $grandTotal,
                     ];
                     $this->createOS($form, $detailsOS, $dataOS);
                 }

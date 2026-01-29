@@ -91,6 +91,7 @@
                       <th>Status</th>
                       <th>Pranota</th>
                       <th>Invoice</th>
+                      <th>Materai</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -127,6 +128,15 @@
                       @else
                       <td>
                         <a type="button" href="/invoice/stevadooring-{{$header->id}}" target="_blank" class="btn btn-sm btn-primary text-white"><i class="fa fa-dollar"></i></a>
+                      </td>
+                      @endif
+                      @if(($header->lunas === "Y") && ($header->grand_total >= 5000000))
+                      <td>
+                      <button class="btn btn-danger" data-type="S" data-id="{{$header->id}}" onClick="materai(this)">Materai</button>
+                      </td>
+                      @else
+                      <td>
+                        -
                       </td>
                       @endif
                       <td>
@@ -197,7 +207,7 @@
 
 
 @endsection
-
+@include('materai.js');
 @section('custom_js')
 <script>
    $(document).on('click', '.pay', function() {

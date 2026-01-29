@@ -294,7 +294,15 @@ class CustomerImportController extends CustomerMainController
                 return '<span class="badge bg-danger text-white">Canceled</span>';
             }
         })
-        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'cancel', 'payFlag'])
+        ->addColumn('materai', function($inv){
+            if (($inv->grand_total >= 5000000) && ($inv->lunas === 'Y')) {
+                # code...
+                return '<button class="btn btn-danger" data-type="I" data-id="'.$inv->id.'" onClick="materai(this)">Materai</button>';
+            }else{
+                return '-';
+            }
+        })
+        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'cancel', 'payFlag', 'materai'])
         ->make(true);
     }
 
@@ -552,6 +560,10 @@ class CustomerImportController extends CustomerMainController
 
     private function createInvoiceHeader($request, $form, $service, $type)
     {
+        $grandTotal = $request->input("grandTotal$type");
+        if ($grandTotal >= 5000000) {
+            $grandTotal += 10000;
+        }
         return Import::create([
             'form_id' => $form->id,
             'inv_type' => $type,
@@ -566,7 +578,7 @@ class CustomerImportController extends CustomerMainController
             'total' => $request->input("total$type"),
             'admin' => $request->input("admin$type"),
             'pajak' => $request->input("ppn$type"),
-            'grand_total' => $request->input("grandTotal$type"),
+            'grand_total' => $grandTotal,
             'order_by' => Auth::user()->name,
             'order_at' => Carbon::now(),
             'disc_date' => $form->disc_date,

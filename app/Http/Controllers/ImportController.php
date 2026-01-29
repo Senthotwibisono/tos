@@ -226,7 +226,15 @@ class ImportController extends Controller
         ->addColumn('editInvoice', function($inv){
             return '<a href="/invoice/import/edit-'.$inv->form_id.'" target="_blank" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></a>';
         })
-        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete', 'payFlag', 'viewPhoto', 'editInvoice'])
+        ->addColumn('materai', function($inv){
+            if (($inv->grand_total >= 5000000) && ($inv->lunas === 'Y')) {
+                # code...
+                return '<button class="btn btn-danger" data-type="I" data-id="'.$inv->id.'" onClick="materai(this)">Materai</button>';
+            }else{
+                return '-';
+            }
+        })
+        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete', 'payFlag', 'viewPhoto', 'editInvoice', 'materai'])
         ->make(true);
     }
 
@@ -923,8 +931,12 @@ class ImportController extends Controller
         
         $osDS = OSDetail::where('os_id', $form->os_id)->where('type', 'DS')->get();
         $ds = $osDS->isEmpty() ? 'N' : 'Y';
-
+        
        if ($dsk == 'Y') {
+        $grandTotalDSK = $request->grandTotalDSK;
+        if ($grandTotalDSK >= 5000000) {
+            $grandTotalDSK += 10000;
+        }
         $nextProformaNumber = $this->getNextProformaNumber();
         $invoiceNo = $this->getNextInvoiceDSK();
         $invoiceDSK = InvoiceImport::create([
@@ -949,7 +961,7 @@ class ImportController extends Controller
             'admin'=>$request->adminDSK,
             'discount'=>$request->discountDSK,
             'pajak'=>$request->pajakDSK,
-            'grand_total'=>$request->grandTotalDSK,
+            'grand_total'=>$grandTotalDSK,
             'order_by'=> Auth::user()->name,
             'order_at'=> Carbon::now(),
            
@@ -1062,6 +1074,10 @@ class ImportController extends Controller
        }
 
        if ($ds == 'Y') {
+        $grandTotalDS = $request->grandTotalDS;
+        if ($grandTotalDS >= 5000000) {
+            $grandTotalDS += 10000;
+        }
         $nextProformaNumber = $this->getNextProformaNumber();
         $invoiceNo = $this->getNextInvoiceDS();
         $invoiceDS = InvoiceImport::create([
@@ -1085,7 +1101,7 @@ class ImportController extends Controller
             'admin'=>$request->adminDS,
             'discount'=>$request->discountDS,
             'pajak'=>$request->pajakDS,
-            'grand_total'=>$request->grandTotalDS,
+            'grand_total'=>$grandTotalDS,
             'order_by'=> Auth::user()->name,
             'order_at'=> Carbon::now(),
            
@@ -2054,6 +2070,10 @@ private function getNextInvoiceDSK()
 
     private function createInvoiceHeader($request, $form, $service, $type)
     {
+        $grandTotal = $request->input("grandTotal$type");
+        if ($grandTotal >= 5000000) {
+            $grandTotal += 10000;
+        }
         return InvoiceImport::create([
             'form_id' => $form->id,
             'inv_type' => $type,
@@ -2069,7 +2089,7 @@ private function getNextInvoiceDSK()
             'admin' => $request->input("admin$type"),
             'pajak' => $request->input("ppn$type"),
             'discount' => $request->input("discount$type"),
-            'grand_total' => $request->input("grandTotal$type"),
+            'grand_total' => $grandTotal,
             'order_by' => Auth::user()->name,
             'order_at' => Carbon::now(),
             'disc_date' => $form->disc_date,

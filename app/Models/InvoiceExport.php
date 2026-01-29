@@ -43,6 +43,9 @@ class InvoiceExport extends Model
         'invoice_date',
         'user_id',
         'va',
+        'materai_id',
+        'sn',
+        'image_materai'
     ];
 
     public function customer()

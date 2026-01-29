@@ -56,6 +56,7 @@
                                 <th>Status</th>
                                 <th>Pranota</th>
                                 <th>Invoice</th>
+                                <th>Materai</th>
                                 <th>Job</th>
                                 <th>Pay</th>
                                 <th>Status Pembayaran</th>
@@ -99,7 +100,7 @@
     </div>
 </div>
 @endsection
-
+@include('materai.js');
 @section('custom_js')
 <script>
 $(document).ready(function() {
@@ -149,6 +150,7 @@ $(document).ready(function() {
             { data: 'status', name: 'status', className: 'text-center' },
             { data: 'pranota', name: 'pranota', className: 'text-center' },
             { data: 'invoice', name: 'invoice', className: 'text-center' },
+            { data: 'materai', name: 'materai', className: 'text-center' },
             { data: 'job', name: 'job', className: 'text-center' },
             { data: 'action', name: 'action', className: 'text-center' },
             { data: 'payFlag', name: 'payFlag', className: 'text-center' },

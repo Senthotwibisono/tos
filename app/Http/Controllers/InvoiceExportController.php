@@ -165,7 +165,15 @@ class InvoiceExportController extends Controller
                 return '<span class="badge bg-danger text-white">Canceled</span>';
             }
         })
-        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete'])
+        ->addColumn('materai', function($inv){
+            if (($inv->grand_total >= 5000000) && ($inv->lunas === 'Y')) {
+                # code...
+                return '<button class="btn btn-danger" data-type="E" data-id="'.$inv->id.'" onClick="materai(this)">Materai</button>';
+            }else{
+                return '-';
+            }
+        })
+        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete', 'materai'])
         ->make(true);
     }
 
@@ -630,6 +638,10 @@ class InvoiceExportController extends Controller
         // dd($ds, $dsk);
 
        if ($dsk == 'Y') {
+        $grandTotalDSK = $request->grandTotalDSK;
+        if ($grandTotalDSK >= 5000000) {
+            $grandTotalDSK += 10000;
+        }
         $nextProformaNumber = $this->getNextProformaNumber();
         $invoiceNo = $this->getNextInvoiceDSK();
         $invoiceDSK = InvoiceExport::create([
@@ -653,7 +665,7 @@ class InvoiceExportController extends Controller
             'admin'=>$request->adminDSK,
             'discount'=>$request->discountDSK,
             'pajak'=>$request->pajakDSK,
-            'grand_total'=>$request->grandTotalDSK,
+            'grand_total'=>$grandTotalDSK,
             'order_by'=> Auth::user()->name,
             'order_at'=> Carbon::now(),
          
@@ -766,6 +778,10 @@ class InvoiceExportController extends Controller
        }
 
        if ($ds == 'Y') {
+        $grandTotalDS = $request->grandTotalDS;
+        if ($grandTotalDS >= 5000000) {
+            $grandTotalDS += 10000;
+        }
         $nextProformaNumber = $this->getNextProformaNumber();
         $invoiceNo = $this->getNextInvoiceDS();
         $invoiceDS = InvoiceExport::create([
@@ -789,7 +805,7 @@ class InvoiceExportController extends Controller
             'admin'=>$request->adminDS,
             'discount'=>$request->discountDS,
             'pajak'=>$request->pajakDS,
-            'grand_total'=>$request->grandTotalDS,
+            'grand_total'=>$grandTotalDS,
             'order_by'=> Auth::user()->name,
             'order_at'=> Carbon::now(),
           

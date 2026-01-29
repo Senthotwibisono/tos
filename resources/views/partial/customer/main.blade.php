@@ -480,4 +480,49 @@ new simpleDatatables.DataTable('#table2');
     }
 </script>
 
+<script>
+        async function errorResponse(response) {
+            Swal.fire({
+                icon: 'error',
+                title: response.status,
+                text: response.statusText,
+            });
+        }
+        async function errorHasil(hasil) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: hasil.message,
+            });
+        }
+        async function successHasil(hasil) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Sukses',
+                text: hasil.message,
+            });
+        }
+        
+        async function confirmation() {
+            return Swal.fire({
+                icon: 'warning',
+                title: 'Are you sure?',
+                text: 'Apakah anda yakin melakukan aksi berikut?',
+                showCancelButton: true,
+            });
+        }
+
+        async function globalResponse(data, url) {
+            console.log(data, url);
+            return response = await fetch(url, {
+                method: "POST",
+                headers: {
+                  "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+        }
+    </script>
+
 </html>

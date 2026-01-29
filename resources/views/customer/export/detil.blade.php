@@ -93,6 +93,7 @@
                                 <th style="min-width: 150px">Status</th>
                                 <th>Pranota</th>
                                 <th>Invoice</th>
+                                <th>Materai</th>
                                 <th>Job</th>
                                 <th>Action</th>
                                 <th>Cancel</th>
@@ -152,7 +153,7 @@
     </div>
 </div>
 @endsection
-
+@include('materai.js');
 @section('custom_js')
 
 <script>
@@ -265,6 +266,7 @@
                 {name:'status', data:'status', className:'text-center'},
                 {name:'pranota', data:'pranota', className:'text-center', searchable:false, orderable:false},
                 {name:'invoice', data:'invoice', className:'text-center', searchable:false, orderable:false},
+                {name:'materai', data:'materai', className:'text-center', searchable:false, orderable:false},
                 {name:'job', data:'job', className:'text-center', searchable:false, orderable:false},
                 {name:'action', data:'action', className:'text-center', searchable:false, orderable:false},
                 {name:'delete', data:'delete', className:'text-center', searchable:false, orderable:false},

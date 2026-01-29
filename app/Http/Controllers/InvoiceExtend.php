@@ -143,7 +143,15 @@ class InvoiceExtend extends Controller
                 return '';
             }
         })
-        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete', 'viewPhoto', 'edit'])
+        ->addColumn('materai', function($inv){
+            if (($inv->grand_total >= 5000000) && ($inv->lunas === 'Y')) {
+                # code...
+                return '<button class="btn btn-danger" data-type="X" data-id="'.$inv->id.'" onClick="materai(this)">Materai</button>';
+            }else{
+                return '-';
+            }
+        })
+        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete', 'viewPhoto', 'edit', 'materai'])
         ->make(true);
     }
 
@@ -1323,6 +1331,10 @@ public function ReportExcelPiutang(Request $request)
 
     private function createInvoiceHeader($request, $form, $service, $type)
     {
+        $grandTotal = $request->input("grandTotal$type");
+        if ($grandTotal >= 5000000) {
+            $grandTotal += 10000;
+        }
         return Extend::create([
             'form_id' => $form->id,
             'inv_id' => $form->do_id,
@@ -1338,7 +1350,7 @@ public function ReportExcelPiutang(Request $request)
             'admin' => $request->input("admin$type"),
             'pajak' => $request->input("ppn$type"),
             'discount' => $request->input("discount$type"),
-            'grand_total' => $request->input("grandTotal$type"),
+            'grand_total' => $grandTotal,
             'order_by' => Auth::user()->name,
             'order_at' => Carbon::now(),
             'disc_date' => $form->disc_date,

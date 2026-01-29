@@ -13,6 +13,7 @@
                 <th>Status</th>
                 <th>Pranota</th>
                 <th>Invoice</th>
+                <th>Materai</th>
                 <th>Job</th>
                 <th>Action</th>
                 <th>Cancel</th>
@@ -23,7 +24,7 @@
 
 <input type="hidden" id="os_id" value="8" class="hidden">
 @endsection
-
+@include('materai.js');
 @section('table_js')
 <script>
     $(document).ready(function() {
@@ -50,6 +51,7 @@
             {data:'status', name:'status', classNmae:'text-center'},
             {data:'pranota', name:'pranota', classNmae:'text-center'},
             {data:'invoice', name:'invoice', classNmae:'text-center'},
+            {data:'materai', name:'materai', classNmae:'text-center'},
             {data:'job', name:'job', classNmae:'text-center'},
             {data:'action', name:'action', classNmae:'text-center'},
             {data:'delete', name:'delete', classNmae:'text-center'},

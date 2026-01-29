@@ -164,7 +164,7 @@
               <div class="col-xs-12 col-12">
                 <address>
                   <strong>DO Number:</strong><br>
-                  {{$invoice->Form->doOnline->do_no}}
+                  {{$invoice->Form->doOnline->do_no ?? '-'}}
                 </address>
               </div>
             </div>
@@ -186,10 +186,10 @@
                 </address>
                 <address>
                   <strong>Veesel</strong><br>
-                  Ves Name : <strong>{{$form->Kapal->ves_name}}</strong> <br>
-                  Voy No :  <strong>{{$form->Kapal->voy_in}}</strong><br>
-                  Arrival Date : <strong>{{$form->Kapal->arrival_date}}</strong><br>
-                  Departure Date : <strong>{{$form->Kapal->deparature_date}}</strong><br>
+                  Ves Name : <strong>{{$form->Kapal->ves_name ?? '-'}}</strong> <br>
+                  Voy No :  <strong>{{$form->Kapal->voy_in ?? '-'}}</strong><br>
+                  Arrival Date : <strong>{{$form->Kapal->arrival_date ?? '-'}}</strong><br>
+                  Departure Date : <strong>{{$form->Kapal->deparature_date ?? '-'}}</strong><br>
                   <!-- h.elaine@gmail.com<br> -->
                 </address>
               </div>

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\InvoiceService\TrackingInvoice;
 use App\Http\Controllers\Api\CustomerService\GetDataServcie;
 use App\Http\Controllers\Api\Payment\PaymentController;
+use App\Http\Controllers\Api\Materai\MateraiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,4 +39,8 @@ Route::controller(PaymentController::class)->group(function(){
     Route::prefix('/payment')->group(function(){
         Route::post('/billPayment', 'billPaymentRequest');
     });
+});
+
+Route::controller(MateraiController::class)->prefix('/materai')->name('materai.')->group(function(){
+    Route::post('/first', 'first')->name('first');
 });

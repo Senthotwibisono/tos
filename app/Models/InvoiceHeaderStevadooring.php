@@ -54,6 +54,9 @@ class InvoiceHeaderStevadooring extends Model
         'lunas',
         'status',
         'invoice_date',
+        'materai_id',
+        'sn',
+        'image_materai'
     ];
 
     public function customer()

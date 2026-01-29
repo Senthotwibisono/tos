@@ -72,6 +72,7 @@
                                 <th>Status</th>
                                 <th>Pranota</th>
                                 <th>Invoice</th>
+                                <th>E Materai</th>
                                 <th>Job</th>
                                 <th>Action</th>
                                 <th>Edit</th>
@@ -103,6 +104,7 @@
 
 @section('custom_js')
 @include('billingSystem.js.jsInvoice');
+@include('materai.js');
 <script>
   $(document).ready(function() {
     var osId ="{{$osId}}"; // Ambil osId dari hidden input
@@ -110,7 +112,7 @@
       $('#unpaidImport').DataTable({
           processing: true,
           serverSide: true,
-          scrollY: '50hv',
+          scrollY: '50vh',
           scrollX: true,
           ajax: {
               url: '/invoice/import/delivery-data/service',
@@ -129,6 +131,7 @@
               {data:'status', name:'status', classNmae:'text-center'},
               {data:'pranota', name:'pranota', classNmae:'text-center'},
               {data:'invoice', name:'invoice', classNmae:'text-center'},
+              {data:'materai', name:'materai', classNmae:'text-center'},
               {data:'job', name:'job', classNmae:'text-center'},
               {data:'action', name:'action', classNmae:'text-center'},
               {data:'editInvoice', name:'editInvoice', classNmae:'text-center'},

@@ -1340,7 +1340,7 @@ class StevadooringController extends Controller
                 $data['type'] = ' ';
                 break;
         }
-        $data['title'] = 'Pranota Stevadooring ' . $header->ves_name . ' ' . $header->voy_out;
+        $data['title'] = 'Invoice Stevadooring ' . $header->ves_name . ' ' . $header->voy_out;
         $data['invoice'] = $header;
         if ($header->tambat_tongkak == 'Y') {
            $data['tongkak'] = TT::where('inv_id', $header->id)->get();

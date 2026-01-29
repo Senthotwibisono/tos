@@ -40,6 +40,9 @@ class Extend extends Model
         'user_id',
         'pay_flag',
         'va',
+        'materai_id',
+        'sn',
+        'image_materai'
     ];
     
     public function customer()
