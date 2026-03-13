@@ -115,7 +115,7 @@ class MateraiController extends Controller
             $invoice = Stevadooring::findOrFail($request->id);    
 
             // ===== PATH & FILE NAME =====
-            $signedFile = $invoice->inv_no . '.pdf';
+            $signedFile = $invoice->invoice_no . '.pdf';
             $signedDiskPath = 'signed/stevadooring/' . $signedFile; // untuk Storage
             $signedPublicUrl = asset('storage/' . $signedDiskPath); // untuk browser    
 
@@ -130,6 +130,8 @@ class MateraiController extends Controller
 
             // ===== GENERATE UNSIGNED PDF =====
             $fileName = $this->invoiceStevadooringPdf($invoice->id);
+            // var_dump($fileName);
+            // die();
             $file = storage_path('app/public/unsigned/stevadooring/' . $fileName);
         }   
 
@@ -140,14 +142,16 @@ class MateraiController extends Controller
         // var_dump($send);
         // die();
         $invoice->update([
-            'materai_id' => $send['id'],
+            'materai_id' => $send,
         ]); 
 
         $serialNumber = $this->serialNumber($token, $fileName, $invoice);
+        // var_dump($serialNumber);
+        // die();
         $invoice->update([
             'sn'            => $serialNumber['result']['sn'],
             'image_materai' => $serialNumber['result']['filenameQR'],
-        ]); 
+        ]);
 
         $stamping = $this->stamping($invoice, $token);
         $urlFile = $stamping['urlFile'];    
@@ -304,7 +308,7 @@ class MateraiController extends Controller
             ->setPaper('A4', 'portrait');   
 
         // ⬇️ Nama file
-        $filename = 'invoice_stevadooring_'.$data['invoice']->inv_no.'.pdf';   
+        $filename = 'invoice_stevadooring_'.$data['invoice']->invoice_no.'.pdf';   
 
         // ⬇️ Simpan ke storage/app/invoice
         Storage::put('public/unsigned/stevadooring/'.$filename, $pdf->output()); 
@@ -394,7 +398,7 @@ class MateraiController extends Controller
 
             $result = $response->json();
             
-            return $result;   
+            return $result['id'];   
 
         } catch (\Throwable $e) {
             return response()->json([
@@ -486,10 +490,14 @@ class MateraiController extends Controller
             "refToken" => "$invoice->sn", //SN NUMBER
             "spesimenPath" => "/sharefolder/$invoice->image_materai",
             "src" => "/sharefolder/doc_$invoice->materai_id.pdf",
-            "visLLX" => 437,
-            "visLLY" => 159,
-            "visURX" => 537,
-            "visURY" => 59,
+            // "visLLX" => 57,   // 437 - 380
+            // "visLLY" => 159,
+            // "visURX" => 157,  // 537 - 380
+            // "visURY" => 59,
+            "visLLX" => 262,
+            "visLLY" => 150,
+            "visURX" => 332,
+            "visURY" => 80,
             "visSignaturePage" => 1,
             "retryFlag" => "1"
         ];
@@ -548,7 +556,13 @@ class MateraiController extends Controller
         }   
 
         // contoh nama file: INV-001_SIGNED.pdf
-        $fileName = $invoice->inv_no.'.pdf';   
+        if ($request->type === 'S') {
+            # code...
+            $fileName = $invoice->invoice_no.'.pdf';   
+            } else {
+            $fileName = $invoice->inv_no.'.pdf';   
+            # code...
+        }
 
         if ($request->type === 'I') {
             Storage::disk('public')->put(

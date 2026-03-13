@@ -143,9 +143,11 @@
                     @elseif($jb->Invoice->Form->service->order == "SPPS")
                       SURAT PENARIKAN PETIKEMAS STRIPPING (STUFFING)
                     @elseif($jb->Invoice->Form->service->order == "MTK" || $jb->Invoice->Form->service->order == "MTI")
-                      Reciving MT
+                      <!-- Reciving MT -->
+                       {{$jb->Invoice->os_name}}
                     @else
-                      Reciving Full
+                      <!-- Reciving Full -->
+                       {{$jb->Invoice->os_name}}
                     @endif
                     </h3>
                 </div>

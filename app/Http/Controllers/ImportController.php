@@ -470,6 +470,8 @@ class ImportController extends Controller
         }
         
         $customer = Customer::find($request->customerId);
+        // var_dump($do->customer_code, $customer->code);
+        // die();
         if ($do->customer_code != $customer->code) {
             return response()->json([
                 'success' => false,
@@ -934,9 +936,9 @@ class ImportController extends Controller
         
        if ($dsk == 'Y') {
         $grandTotalDSK = $request->grandTotalDSK;
-        if ($grandTotalDSK >= 5000000) {
-            $grandTotalDSK += 10000;
-        }
+        // if ($grandTotalDSK >= 5000000) {
+        //     $grandTotalDSK += 10000;
+        // }
         $nextProformaNumber = $this->getNextProformaNumber();
         $invoiceNo = $this->getNextInvoiceDSK();
         $invoiceDSK = InvoiceImport::create([
@@ -1075,9 +1077,9 @@ class ImportController extends Controller
 
        if ($ds == 'Y') {
         $grandTotalDS = $request->grandTotalDS;
-        if ($grandTotalDS >= 5000000) {
-            $grandTotalDS += 10000;
-        }
+        // if ($grandTotalDS >= 5000000) {
+        //     $grandTotalDS += 10000;
+        // }
         $nextProformaNumber = $this->getNextProformaNumber();
         $invoiceNo = $this->getNextInvoiceDS();
         $invoiceDS = InvoiceImport::create([

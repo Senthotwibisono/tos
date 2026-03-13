@@ -561,9 +561,9 @@ class CustomerImportController extends CustomerMainController
     private function createInvoiceHeader($request, $form, $service, $type)
     {
         $grandTotal = $request->input("grandTotal$type");
-        if ($grandTotal >= 5000000) {
-            $grandTotal += 10000;
-        }
+        // if ($grandTotal >= 5000000) {
+        //     $grandTotal += 10000;
+        // }
         return Import::create([
             'form_id' => $form->id,
             'inv_type' => $type,

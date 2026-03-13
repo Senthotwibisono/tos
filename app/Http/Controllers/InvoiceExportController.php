@@ -639,9 +639,9 @@ class InvoiceExportController extends Controller
 
        if ($dsk == 'Y') {
         $grandTotalDSK = $request->grandTotalDSK;
-        if ($grandTotalDSK >= 5000000) {
-            $grandTotalDSK += 10000;
-        }
+        // if ($grandTotalDSK >= 5000000) {
+        //     $grandTotalDSK += 10000;
+        // }
         $nextProformaNumber = $this->getNextProformaNumber();
         $invoiceNo = $this->getNextInvoiceDSK();
         $invoiceDSK = InvoiceExport::create([
@@ -779,9 +779,9 @@ class InvoiceExportController extends Controller
 
        if ($ds == 'Y') {
         $grandTotalDS = $request->grandTotalDS;
-        if ($grandTotalDS >= 5000000) {
-            $grandTotalDS += 10000;
-        }
+        // if ($grandTotalDS >= 5000000) {
+        //     $grandTotalDS += 10000;
+        // }
         $nextProformaNumber = $this->getNextProformaNumber();
         $invoiceNo = $this->getNextInvoiceDS();
         $invoiceDS = InvoiceExport::create([
@@ -1506,7 +1506,9 @@ class InvoiceExportController extends Controller
             $invoiceQuery->whereIn('inv_type', $request->inv_type);
         }
     
-        $invoice = $invoiceQuery->orderBy('order_date', 'asc')->get();        $fileName = 'ReportInvoiceExport-'.$os.'-'. $startDate . $endDate .'.xlsx';
+        $invoice = $invoiceQuery->orderBy('order_date', 'asc')->get();        
+        // dd($invoice, $request->all());
+        $fileName = 'ReportInvoiceExport-'.$os.'-'. $startDate . $endDate .'.xlsx';
       return Excel::download(new ReportExport($invoice), $fileName);
     }
     public function unpaidReport(Request $request)

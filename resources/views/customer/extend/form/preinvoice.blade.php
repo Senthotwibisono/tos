@@ -137,29 +137,48 @@
 @section('custom_js')
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Attach event listener to the update button
-        document.getElementById('updateButton').addEventListener('click', function (e) {
-            e.preventDefault(); // Prevent the default form submission
+document.addEventListener('DOMContentLoaded', function () {
 
-            // Show SweetAlert confirmation dialog
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, update it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Submit the form programmatically if confirmed
-                        showLoading();
-                    document.getElementById('updateForm').submit();
-                }
-            });
+    const updateButton = document.getElementById('updateButton');
+    const updateForm = document.getElementById('updateForm');
+    let isSubmitting = false; // flag lock
+
+    updateButton.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        if (isSubmitting) return; // cegah klik kedua
+
+        Swal.fire({
+            title: 'Are you sure?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, update it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                isSubmitting = true; // aktifkan lock
+                updateButton.disabled = true; // disable tombol
+                updateButton.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Processing';
+
+                Swal.fire({
+                    title: 'Processing...',
+                    text: 'Please wait while we update the container',
+                    icon: 'info',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    willOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                updateForm.submit();
+            }
         });
     });
+
+});
 </script>
 <script>
 $(document).ready(function() {

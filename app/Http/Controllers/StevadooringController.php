@@ -1196,6 +1196,10 @@ class StevadooringController extends Controller
                 ]);
             }
 
+            $grandTotal = $request->grand_total;
+            // if ($grandTotal >= 5000000) {
+            //     $grandTotal += 10000;
+            // }
             $header->update([
                 'tambat_tongkak_total'=>$request->tambat_tongkak_total,
                 'tambat_kapal_total'=>$request->tambat_kapal_total,
@@ -1204,7 +1208,7 @@ class StevadooringController extends Controller
                 'total'=>$request->total,
                 'pajak'=>$request->pajak,
                 'admin'=>$request->admin,
-                'grand_total'=>$request->grand_total,
+                'grand_total'=>$grandTotal,
                 'status'=>'2',
             ]);
 

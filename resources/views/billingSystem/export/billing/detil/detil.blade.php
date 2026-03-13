@@ -37,14 +37,14 @@
                      <div class="row">
                         <div class="col-6">
                           <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" name="inv_type[]" value="DSK" id="checkbox-dsk">
-                            <label class="form-check-label" for="checkbox-dsk">DSK</label>
+                            <input class="form-check-input" type="checkbox" name="inv_type[]" value="OSK" id="checkbox-dsk">
+                            <label class="form-check-label" for="checkbox-dsk">OSK</label>
                           </div>
                         </div>
                         <div class="col-6">
                           <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" name="inv_type[]" value="DS" id="checkbox-ds">
-                            <label class="form-check-label" for="checkbox-ds">DS</label>
+                            <input class="form-check-input" type="checkbox" name="inv_type[]" value="OS" id="checkbox-ds">
+                            <label class="form-check-label" for="checkbox-ds">OS</label>
                           </div>
                         </div>
                      </div>

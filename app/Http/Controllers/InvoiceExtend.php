@@ -1332,9 +1332,9 @@ public function ReportExcelPiutang(Request $request)
     private function createInvoiceHeader($request, $form, $service, $type)
     {
         $grandTotal = $request->input("grandTotal$type");
-        if ($grandTotal >= 5000000) {
-            $grandTotal += 10000;
-        }
+        // if ($grandTotal >= 5000000) {
+        //     $grandTotal += 10000;
+        // }
         return Extend::create([
             'form_id' => $form->id,
             'inv_id' => $form->do_id,

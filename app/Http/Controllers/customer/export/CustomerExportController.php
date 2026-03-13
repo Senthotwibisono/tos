@@ -409,9 +409,9 @@ class CustomerExportController extends  CustomerMainController
                 if ($request->has('itemOSK')) {
                     $detailsOSK = json_decode($request->itemOSK);
                     $grandTotal = $request->grandTotalOSK;
-                    if ($grandTotal >= 5000000) {
-                        $grandTotal += 10000;
-                    }
+                    // if ($grandTotal >= 5000000) {
+                    //     $grandTotal += 10000;
+                    // }
                     $dataOSK =[
                         'total' => $request->totalAmountOSK,
                         'admin' => $request->adminOSK,
@@ -426,9 +426,9 @@ class CustomerExportController extends  CustomerMainController
                 if ($request->has('itemOS')) {
                     $detailsOS = json_decode($request->itemOS);
                     $grandTotal = $request->grandTotalOS;
-                    if ($grandTotal >= 5000000) {
-                        $grandTotal += 10000;
-                    }
+                    // if ($grandTotal >= 5000000) {
+                    //     $grandTotal += 10000;
+                    // }
                     $dataOS =[
                         'total' => $request->totalAmountOS,
                         'admin' => $request->adminOS,

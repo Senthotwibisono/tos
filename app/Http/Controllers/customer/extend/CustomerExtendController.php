@@ -379,7 +379,7 @@ class CustomerExtendController extends CustomerMainController
     {
         $search = $request->search;
         $page = $request->page ?? 1;
-        $perPage = 5; // Jumlah item per halaman
+        $perPage = 100; // Jumlah item per halaman
 
         // Query untuk import
         if (Auth::user()->id === 522) {
@@ -391,7 +391,7 @@ class CustomerExtendController extends CustomerMainController
         }else{
 
             $importQuery = $this->import
-                ->where('lunas', 'Y')
+               ->whereIn('lunas', ['Y', 'P'])
                 // ->where('inv_type', 'DS')
                 ->select('inv_no', 'id', 'form_id')
                 ->groupBy('inv_no', 'id', 'form_id');
@@ -399,7 +399,7 @@ class CustomerExtendController extends CustomerMainController
 
         // Query untuk export
         $exportQuery = $this->extend
-            ->where('lunas', 'Y')
+            ->whereIn('lunas', ['Y', 'P'])
             ->select('inv_no', 'id', 'form_id')
             ->groupBy('inv_no', 'id', 'form_id');
 
@@ -413,7 +413,7 @@ class CustomerExtendController extends CustomerMainController
 
         // Hitung total data untuk pagination
         $totalCount = $query->count();
-        $oldInvoice = $query->skip(($page - 1) * $perPage)->take($perPage)->get();
+        $oldInvoice = $query->skip(($page - 1) * $perPage)->take($perPage)->orderBy('inv_no', 'desc')->get();
 
         return response()->json([
             'data' => $oldInvoice,
@@ -754,9 +754,9 @@ class CustomerExtendController extends CustomerMainController
     private function createInvoiceHeader($request, $form, $service, $type)
     {
         $grandTotal = $request->input("grandTotal$type");
-        if ($grandTotal >= 5000000) {
-            $grandTotal += 10000;
-        }
+        // if ($grandTotal >= 5000000) {
+        //     $grandTotal += 10000;
+        // }
         return Extend::create([
             'form_id' => $form->id,
             'inv_id' => $form->do_id,

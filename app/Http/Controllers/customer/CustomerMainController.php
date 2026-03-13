@@ -36,6 +36,7 @@ class CustomerMainController extends Controller
             $this->import = Import::where('user_id', Auth::user()->id);
             $this->export = Export::where('user_id', Auth::user()->id);
             $this->extend = Extend::where('user_id', Auth::user()->id);
+            // $this->extend = Extend::query();
             $this->form = Form::where('user_id', Auth::user()->id);
             return $next($request);
         });
