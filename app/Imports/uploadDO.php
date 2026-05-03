@@ -9,6 +9,8 @@ use App\Models\DOonline;
 use Carbon\Carbon;
 use Auth;
 
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+
 class uploadDO implements ToCollection, WithHeadingRow
 {
     /**
@@ -27,7 +29,22 @@ class uploadDO implements ToCollection, WithHeadingRow
             $blNo = $row['bl_no'];
             $customerCode = $row['customer_code'];
             $active = 'Y';
-            $doExpired = Carbon::createFromDate(1900, 1, 1)->addDays($row['do_expired'] - 2);
+            // $doExpired = Carbon::createFromDate(1900, 1, 1)->addDays($row['do_expired'] - 2);
+            // $doExpired = excelDate($row['do_expired']);
+            $doExpired = $row['do_expired'];
+
+            if (is_numeric($doExpired)) {           
+
+                // FORMAT EXCEL NUMBER
+                $doExpired = Carbon::instance(
+                    Date::excelToDateTimeObject($doExpired)
+                );          
+
+            } else {            
+
+                // FORMAT STRING 30/4/2026
+                $doExpired = Carbon::createFromFormat('d/m/Y', trim($doExpired));
+            }
         
             // Cek apakah nomor DO sudah ada dalam array $containerNumbers
             if (!isset($containerNumbers[$doNo])) {

@@ -53,7 +53,7 @@ class GateImportController extends Controller
         $item = Item::where('container_key', $request->container_key)->first();
         try {
             DB::transaction(function() use($item, $request) {
-                if ($item->ctr_intern_status == '03') {
+                if (in_array($item->ctr_intern_status, ['03', '02'])) {
                     $internStatus = '10';
                     $operationName = 'GATI';
                 }elseif ($item->ctr_intern_status == '04') {

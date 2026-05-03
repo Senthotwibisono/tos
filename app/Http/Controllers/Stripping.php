@@ -57,7 +57,7 @@ class Stripping extends Controller
                 'container_key' => $tem->container_key
             ];
         }
-        $containerKeys = Item::where('ctr_intern_status', '=', [03, 04])
+        $containerKeys = Item::where('ctr_intern_status', '=', [02, 03, 04])
             ->whereHas('job', function ($query) {
                 $query->where('order_service_code', 'SPPS');
             })
@@ -68,7 +68,7 @@ class Stripping extends Controller
             ->values()
             ->all();
 
-            $data['containerStr'] = Item::whereIn('ctr_intern_status', ['03', '04'])->where('order_service', 'SPPS')->whereNot('order_service', null)->whereNotNull('job_no')->get();
+            $data['containerStr'] = Item::whereIn('ctr_intern_status', ['02', '03', '04'])->where('order_service', 'SPPS')->whereNot('order_service', null)->whereNotNull('job_no')->get();
         $items = Item::where('ctr_intern_status', 03)->get();
         $users = User::all();
         $yard_block = Yard::distinct('yard_block')->pluck('yard_block');
@@ -121,7 +121,7 @@ class Stripping extends Controller
                 'container_key' => $tem->container_key
             ];
         }
-        $containerKeys = Item::where('ctr_intern_status', '=', [03, 04])
+        $containerKeys = Item::where('ctr_intern_status', '=', [02, 03, 04])
             ->whereHas('job', function ($query) {
                 $query->where('order_service_code', 'SPPS');
             })
@@ -132,7 +132,7 @@ class Stripping extends Controller
             ->values()
             ->all();
 
-            $data['containerStr'] = Item::whereIn('ctr_intern_status', ['03', '04'])->where('order_service', 'SPPS')->whereNot('order_service', null)->whereNotNull('job_no')->get();
+            $data['containerStr'] = Item::whereIn('ctr_intern_status', ['02', '03', '04'])->where('order_service', 'SPPS')->whereNot('order_service', null)->whereNotNull('job_no')->get();
 
         $items = Item::where('ctr_intern_status', 03)->get();
         $users = User::all();

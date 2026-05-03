@@ -204,6 +204,7 @@ class CoparnController extends Controller
                     'voy_no'=>$ves->voy_no,
                     'disch_port'=>$request->disch_port,
                     'load_port'=>$request->load_port,
+                    'customer_code'=>$request->customer_code,
                 ]);
             }
         }
@@ -229,6 +230,7 @@ class CoparnController extends Controller
             'ctr_active_yn'=>'N',
             'selected_do'=>'N',
             'booking_no'=>$request->booking_no,
+            'customer_code'=>$request->customer_code,
         ]);
 
         return redirect('/billing/coparn')->with('success', 'Data berhasil diUpdate.');

@@ -242,7 +242,7 @@ class GetDataController extends Controller
             $item = Item::where('container_key', $job->container_key)->first(); 
     
             // Jika status tidak sesuai
-            if (!in_array($item->ctr_intern_status, ['04', '03', '09'])) {
+            if (!in_array($item->ctr_intern_status, ['04', '03', '02', '09'])) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Tidak dapat dipilih, status container tidak untuk keluar'

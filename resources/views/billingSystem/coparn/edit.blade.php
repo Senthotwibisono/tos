@@ -172,6 +172,12 @@
                                 <input type="text" name="ctr_opr" class="form-control" value="{{$cont->ctr_opr}}">
                             </div>
                         </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="">Customer Code</label>
+                                <input type="text" name="customer_code" class="form-control" value="{{$cont->customer_code}}">
+                            </div>
+                        </div>
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="">Apply to All Booking Number</label>

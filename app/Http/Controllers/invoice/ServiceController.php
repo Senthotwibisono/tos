@@ -145,7 +145,7 @@ class ServiceController extends Controller
         }
         $customer = Customer::where('code', $do->customer_code)->first();
         if ($do) {
-            $items = Item::whereNotIn('ctr_intern_status', ['01', '02'])->where('ctr_i_e_t', 'I')->where('ves_id', $request->vesId)->where('selected_do', 'N')->whereIn('container_no', json_decode($do->container_no, true))->orderBy('disc_date', 'asc')->get();
+            $items = Item::whereNotIn('ctr_intern_status', ['01'])->where('ctr_i_e_t', 'I')->where('ves_id', $request->vesId)->where('selected_do', 'N')->whereIn('container_no', json_decode($do->container_no, true))->orderBy('disc_date', 'asc')->get();
             if ($items->isEmpty()) {
                 return response()->json([
                     'success'=> false,

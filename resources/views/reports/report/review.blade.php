@@ -24,7 +24,7 @@
                     <div class="col-lg-3 mb-1">
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="">Choose Ves Id</span>
-                                <select class="form-select" id="vesid" name="ves_id">
+                                <select class="form-select selectSingle"  style="width: 100%;" id="vesid" name="ves_id">
                                     <option value="-">-</option>
                                     @foreach($item as $itm)
                                         

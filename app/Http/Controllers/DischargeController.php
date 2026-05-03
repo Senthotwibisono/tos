@@ -35,7 +35,7 @@ class DischargeController extends Controller
     $formattedData = [];
     $data = [];
 
-    $items = Item::where('ctr_intern_status', '=', 01)->get();
+    $items = Item::whereIn('ctr_intern_status',  ['01', '02'])->get();
     $users = User::all();
     $data["active"] = "discharge";
     $data["subactive"] = "confirm";
@@ -75,7 +75,7 @@ class DischargeController extends Controller
     $formattedData = [];
     $data = [];
 
-    $items = Item::where('ctr_intern_status', '=', 01)->get();
+    $items = Item::whereIn('ctr_intern_status',  ['01', '02'])->get();
     $users = User::all();
     $data["active"] = "discharge";
     $data["subactive"] = "confirm";
