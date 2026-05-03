@@ -292,6 +292,9 @@
             <li class="submenu-item @if(Request::is('gate/ambil-mty/*')) active @endif">
                 <a href="{{route('gate.ambilMt.index')}}">Gate Ambil MTY</a>
             </li>
+            <li class="submenu-item @if(Request::is('gate/report/*')) active @endif">
+                <a href="{{route('gate.report.index')}}">Report In Out</a>
+            </li>
         </ul>
     </li>
 

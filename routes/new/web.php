@@ -60,6 +60,13 @@ Route::prefix('/gate')->name('gate.')->group(function () {
             Route::post('/cancel', 'cancelAmbilMt')->name('cancel');
             
         });
+        Route::prefix('/report')->name('report.')->group(function() {
+            Route::get('index', 'indexAmbilMt')->name('index');
+            Route::get('data', 'dataAmbilMt')->name('data');
+            Route::post('post', 'postAmbilMt')->name('post');
+            Route::post('/cancel', 'cancelAmbilMt')->name('cancel');
+            
+        });
     });
 });
 
