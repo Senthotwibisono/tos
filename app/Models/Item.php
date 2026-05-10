@@ -120,6 +120,7 @@ class item extends Model
         'mty_date',
         'out_mty_date',
         'out_mty_truck',
+        'stid'
     ];
 
     public function job()

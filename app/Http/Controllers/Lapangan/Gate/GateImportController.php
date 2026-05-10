@@ -64,12 +64,16 @@ class GateImportController extends Controller
                     $operationName = 'GATI-REC';
                 }
 
+                
                 $item->update([
                     'ctr_intern_status' => $internStatus,
                     'truck_no' => $request->truck_no,
                     'truck_in_date' => $request->truck_in_date,
+                    'stid' => $request->stid,
                 ]);
 
+                var_dump($item);
+                die();
                 $dataHistory = [
                   'container_key' => $item->container_key,
                   'container_no' => $item->container_no,
@@ -156,6 +160,7 @@ class GateImportController extends Controller
                     'ctr_intern_status' => $internStatus,
                     'truck_no' => $request->truck_no,
                     'truck_out_date' => $request->truck_in_date,
+                    'stid' => $request->stid,
                 ]);
 
                 $dataHistory = [
@@ -285,7 +290,8 @@ class GateImportController extends Controller
                     'depo_mty' => $request->depo_mty,
                     'truck_no_mty' => $request->truck_no_mty,
                     'mty_date' => $request->mty_date,
-                    'ctr_intern_status' => '04'
+                    'ctr_intern_status' => '04',
+                    'stid' => $request->stid,
                 ]); 
 
                 $dataHistory = [
@@ -380,6 +386,7 @@ class GateImportController extends Controller
                     'ctr_intern_status' => '03',
                     'truck_no' => null,
                     'truck_out_date' => null,
+                    'stid' => $request->stid,
                 ]);
             });
             return response()->json([
@@ -424,7 +431,8 @@ class GateImportController extends Controller
                 $item->update([
                     'out_mty_truck' => $request->out_mty_truck,
                     'out_mty_date' => $request->out_mty_date,
-                    'ctr_intern_status' => '09'
+                    'ctr_intern_status' => '09',
+                    'stid' => $request->stid,
                 ]); 
 
                 $dataHistory = [
