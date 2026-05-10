@@ -72,8 +72,8 @@ class GateImportController extends Controller
                     'stid' => $request->stid,
                 ]);
 
-                var_dump($item);
-                die();
+                // var_dump($item);
+                // die();
                 $dataHistory = [
                   'container_key' => $item->container_key,
                   'container_no' => $item->container_no,
