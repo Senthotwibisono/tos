@@ -37,6 +37,7 @@
                                 <th>Bongkar/Muat</th>
                                 <th>Truck No</th>
                                 <th>Time Out</th>
+                                <th>STID</th>
                                 <th>Voy No</th>
                                 <th>Size</th>
                                 <th>Type</th>
@@ -96,6 +97,10 @@
             <label for="">Truck No</label>
             <input type="text" class="form-control" id="truck_no">
         </div>
+        <div class="form-group">
+            <label for="">STID</label>
+            <input type="text" class="form-control" id="stid">
+        </div>
       </div>
 
       <div class="modal-footer">
@@ -123,6 +128,7 @@
                 {name: 'iet', data: 'iet', className:'text-center'},
                 {name: 'truck_no', data: 'truck_no', className:'text-center'},
                 {name: 'truck_out_date', data: 'truck_out_date', className:'text-center'},
+                {name: 'stid', data: 'stid', className:'text-center'},
                 {name: 'voy_no', data: 'voy_no', className:'text-center'},
                 {name: 'ctr_size', data: 'ctr_size', className:'text-center'},
                 {name: 'ctr_type', data: 'ctr_type', className:'text-center'},
@@ -171,6 +177,7 @@
             $('#keterangan').val(null).trigger('change');
             $('#truck_in_date').val(null).trigger('change');
             $('#truck_no').val(null).trigger('change');
+            $('#stid').val(null).trigger('change');
         });
 
         $('#job_no').on('change', function() {
@@ -212,6 +219,7 @@
                 $('#keterangan').val(hasil.keterangan).trigger('change');
                 $('#truck_in_date').val(hasil.item.truck_out_date).trigger('change');
                 $('#truck_no').val(hasil.item.truck_no).trigger('change');
+                $('#stid').val(hasil.item.stid).trigger('change');
                 successHasil(hasil);
             }else{
                 $('#container_no').val(null).trigger('change');
@@ -219,6 +227,7 @@
                 $('#keterangan').val(null).trigger('change');
                 $('#truck_in_date').val(null).trigger('change');
                 $('#truck_no').val(null).trigger('change');
+                $('#stid').val(null).trigger('change');
                 errorHasil(hasil);
                 return;
             }
@@ -228,6 +237,7 @@
             $('#keterangan').val(null).trigger('change');
             $('#truck_in_date').val(null).trigger('change');
             $('#truck_no').val(null).trigger('change');
+            $('#stid').val(null).trigger('change');
             errorResponse(response);
             return;
         }
@@ -241,6 +251,7 @@
             const truck_no = document.getElementById('truck_no').value;
             const active_to = document.getElementById('active_to').value;
             const truck_in_date = document.getElementById('truck_in_date').value;
+            const stid = document.getElementById('stid').value;
 
             // if (!truck_in_date) {
             //     hideButton(button);
@@ -266,6 +277,7 @@
                 truck_no,
                 active_to,
                 truck_in_date,
+                stid,
             };
 
             const url = '{{route('gate.import.postOut')}}';
@@ -280,6 +292,7 @@
                     $('#keterangan').val(null).trigger('change');
                     $('#truck_in_date').val(null).trigger('change');
                     $('#truck_no').val(null).trigger('change');
+                    $('#stid').val(null).trigger('change');
                     $('#addManual').modal('hide');
                     successHasil(hasil);
                 }else{

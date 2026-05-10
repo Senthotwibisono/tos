@@ -36,6 +36,7 @@
                                 <th>Container No</th>
                                 <th>Truck No</th>
                                 <th>Truck Out Date</th>
+                                <th>STID</th>
                                 <th>Cancel</th>
                             </tr>
                         </thead>
@@ -71,6 +72,10 @@
             <label for="">Truck No</label>
             <input type="text" class="form-control" id="truck_no">
         </div>
+        <div class="form-group">
+            <label for="">STID</label>
+            <input type="text" class="form-control" id="stid">
+        </div>
       </div>
 
       <div class="modal-footer">
@@ -97,6 +102,7 @@
                 {name: 'container_no', data: 'container_no', className:'text-center'},
                 {name: 'truck_no', data: 'truck_no', className:'text-center'},
                 {name: 'truck_out_date', data: 'truck_out_date', className:'text-center'},
+                {name: 'stid', data: 'stid', className:'text-center'},
                 {name: 'cancel', data: 'cancel', className:'text-center', sortable: false},
             ],
         });
@@ -165,15 +171,18 @@
             if (hasil.success) {
                 $('#truck_out_date').val(hasil.item.truck_out_date).trigger('change');
                 $('#truck_no').val(hasil.item.truck_no).trigger('change');
+                $('#stid').val(hasil.item.stid).trigger('change');
                 successHasil(hasil);
             }else{
                 $('#truck_no').val(null).trigger('change');
+                $('#stid').val(null).trigger('change');
                 $('#truck_out_date').val(null).trigger('change');
                 errorHasil(hasil);
                 return;
             }
         }else{
             $('#truck_no').val(null).trigger('change');
+            $('#stid').val(null).trigger('change');
             $('#truck_out_date').val(null).trigger('change');
             errorResponse(response);
             return;
@@ -187,11 +196,13 @@
             const container_key = document.getElementById('container_key').value;
             const truck_no = document.getElementById('truck_no').value;
             const truck_in_date = document.getElementById('truck_out_date').value;
+            const stid = document.getElementById('stid').value;
 
             const data = {
                 container_key,
                 truck_no,
                 truck_in_date,
+                stid,
             };
 
             const url = '{{route('gate.import.postOut')}}';
@@ -203,6 +214,7 @@
                     $('#tableGateIn').DataTable().ajax.reload();
                     $('#truck_no').val(null).trigger('change');
                     $('#truck_out_date').val(null).trigger('change');
+                    $('#stid').val(null).trigger('change');
                     $('#addManual').modal('hide');
                     successHasil(hasil);
                 }else{

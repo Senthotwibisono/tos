@@ -36,6 +36,7 @@
                                 <th>Container No</th>
                                 <th>Truck No</th>
                                 <th>Truck Out Date</th>
+                                <th>STID</th>
                                 <th>Cancel</th>
                             </tr>
                         </thead>
@@ -71,6 +72,10 @@
             <label for="">Truck No</label>
             <input type="text" class="form-control" id="out_mty_truck">
         </div>
+        <div class="form-group">
+            <label for="">STID</label>
+            <input type="text" class="form-control" id="stid">
+        </div>
       </div>
 
       <div class="modal-footer">
@@ -97,6 +102,7 @@
                 {name: 'container_no', data: 'container_no', className:'text-center'},
                 {name: 'out_mty_date', data: 'out_mty_date', className:'text-center'},
                 {name: 'out_mty_truck', data: 'out_mty_truck', className:'text-center'},
+                {name: 'stid_mty', data: 'stid_mty', className:'text-center'},
                 {name: 'cancel', data: 'cancel', className:'text-center', sortable: false},
             ],
         });
@@ -165,16 +171,19 @@
             if (hasil.success) {
                 $('#out_mty_date').val(hasil.item.out_mty_date).trigger('change');
                 $('#out_mty_truck').val(hasil.item.out_mty_truck).trigger('change');
+                $('#stid').val(hasil.item.stid_mty).trigger('change');
                 successHasil(hasil);
             }else{
                 $('#out_mty_truck').val(null).trigger('change');
                 $('#out_mty_date').val(null).trigger('change');
+                $('#stid').val(null).trigger('change');
                 errorHasil(hasil);
                 return;
             }
         }else{
             $('#out_mty_truck').val(null).trigger('change');
             $('#out_mty_date').val(null).trigger('change');
+            $('#stid').val(null).trigger('change');
             errorResponse(response);
             return;
         }
@@ -187,11 +196,13 @@
             const container_key = document.getElementById('container_key').value;
             const out_mty_truck = document.getElementById('out_mty_truck').value;
             const out_mty_date = document.getElementById('out_mty_date').value;
+            const stid = document.getElementById('stid').value;
 
             const data = {
                 container_key,
                 out_mty_truck,
                 out_mty_date,
+                stid,
             };
 
             const url = '{{route('gate.ambilMt.post')}}';
@@ -203,6 +214,7 @@
                     $('#tableGateIn').DataTable().ajax.reload();
                     $('#out_mty_truck').val(null).trigger('change');
                     $('#out_mty_date').val(null).trigger('change');
+                    $('#stid').val(null).trigger('change');
                     $('#addManual').modal('hide');
                     successHasil(hasil);
                 }else{
