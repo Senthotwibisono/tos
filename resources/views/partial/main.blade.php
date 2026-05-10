@@ -181,7 +181,7 @@
             });
 
             $('.date').flatpickr({
-                enableTime: true,
+                enableTime: false,
                 dateFormat: "Y-m-d",
             });
 

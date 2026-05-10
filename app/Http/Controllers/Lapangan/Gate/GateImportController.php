@@ -499,5 +499,12 @@ class GateImportController extends Controller
             ]);
         }
     }
+
+    public function indexReport()
+    {
+        $data['title'] = "Report In Out";
+
+        return view('lapangan.gate.import.report', $data);
+    }
     
 }
