@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Lapangan\Gate;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 use Auth;
 use Carbon\Carbon;
@@ -15,6 +16,8 @@ use App\Models\JobImport;
 use App\Models\JobExtend;
 
 use App\Http\Controllers\HistoryController;
+
+use App\Exports\laporanGate;
 
 class GateImportController extends Controller
 {
@@ -123,7 +126,7 @@ class GateImportController extends Controller
     public function dataOut(Request $request)
     {
         $items = Item::whereIn('ctr_intern_status', ['09', '50'])
-        ->selectRaw('MAX(container_key) as container_key, container_no, MAX(truck_no) as truck_no, MAX(truck_out_date) as truck_out_date, MAX(ctr_intern_status) as ctr_intern_status, MAX(iso_code) as iso_code, MAX(ctr_size) as ctr_size, MAX(ctr_type) as ctr_type, MAX(job_no) as job_no, MAX(voy_no) as voy_no')
+        ->selectRaw('MAX(container_key) as container_key, container_no, MAX(truck_no) as truck_no, MAX(truck_out_date) as truck_out_date, MAX(ctr_intern_status) as ctr_intern_status, MAX(iso_code) as iso_code, MAX(ctr_size) as ctr_size, MAX(ctr_type) as ctr_type, MAX(job_no) as job_no, MAX(voy_no) as voy_no, MAX(stid) as stid')
         ->groupBy('container_no')
         ->get();
         return DataTables::of($items)
@@ -506,5 +509,42 @@ class GateImportController extends Controller
 
         return view('lapangan.gate.import.report', $data);
     }
-    
+
+    public function postReport(Request $request)
+    {
+        $items = Item::query();
+
+        // filter I / E
+        if ($request->ctr_i_e_t) {
+            $items->whereIn('ctr_i_e_t', $request->ctr_i_e_t);
+        }
+
+        // filter gate + tanggal
+        if ($request->gate) {
+
+            $items->where(function ($query) use ($request) {
+
+                if (in_array('in', $request->gate)) {
+                    $query->orWhereBetween(
+                        'truck_in_date',
+                        [$request->start, $request->end]
+                    );
+                }
+
+                if (in_array('out', $request->gate)) {
+                    $query->orWhereBetween(
+                        'truck_out_date',
+                        [$request->start, $request->end]
+                    );
+                }
+
+            });
+        }
+
+        $items = $items->get();
+
+        $fileName = 'Laporan Gate-'. '-' . $request->start . '-' . $request->end . '.xlsx';
+
+        return Excel::download(new laporanGate($items), $fileName);
+    }
 }

@@ -27,28 +27,46 @@
         <div class="card-header">
             <h4>{{$title}}</h4>
         </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-auto">
-                    <div class="form-group">
-                        <label for="">Select By</label>
-                        <select style="width: 100%;" class="selectMultiple" id="select" placeholder="Pilih Filter"  multiple></select>
+        <form action="{{route('gate.report.post')}}" method="post" enctype="multipart/form-data">
+            @csrf
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="">Type</label>
+                            <select style="width: 100%;" class="selectMultiple" id="ctr_i_e_t" name="ctr_i_e_t[]" placeholder="Pilih Filter"  multiple="multiple">
+                                <option value="I">Import</option>
+                                <option value="E">Export</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div class="col-auto">
-                    <div class="form-group">
-                        <label for="">Start Date</label>
-                        <input type="date" class="form-control date" id="start">
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="">Gate Option</label>
+                            <select style="width: 100%;" class="selectMultiple" id="gate" name="gate[]" placeholder="Pilih Filter"  multiple="multiple">
+                                <option value="in">Gate In</option>
+                                <option value="out">Gate Out</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div class="col-auto">
-                    <div class="form-group">
-                        <label for="">End Date</label>
-                        <input type="date" class="form-control date" id="end">
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="">Start Date</label>
+                            <input type="date" class="form-control date" id="start" name="start">
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="">End Date</label>
+                            <input type="date" class="form-control date" id="end" name="end">
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-success">Export Excel</button>
+            </div>
+        </form>
     </div>
 </div>
 @endsection
