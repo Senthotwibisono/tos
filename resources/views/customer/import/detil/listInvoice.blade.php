@@ -26,6 +26,8 @@
                                 <th>Invoice</th>
                                 <th>Job</th>
                                 <th>Pay</th>
+                                <th>Upload Bukti Bayar</th>
+                                <th>Bukti Bayar</th>
                                 <th>Status Pembayaran</th>
                                 <th>Cancel</th>
                             </tr>
@@ -55,6 +57,8 @@
                                 <th>Materai</th>
                                 <th>Job</th>
                                 <th>Pay</th>
+                                <th>Upload Bukti Bayar</th>
+                                <th>Bukti Bayar</th>
                                 <th>Status Pembayaran</th>
                                 <th>Cancel</th>
                             </tr>
@@ -110,6 +114,48 @@
                 <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i> <span class="d-none d-sm-block">Close</span> </button>
                 <button type="button" id="" class="btn btn-primary ml-1" onClick="createVA()"> <i class="bx bx-check d-block d-sm-none"></i> <span class="d-none d-sm-block">Submit</span> </button>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="uploadBuktiModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable modal-xl"role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Payment Form</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"> <i data-feather="x"></i></button>
+            </div>
+            <form action="/customer-import/payImportFromCust" method="POST" id="updateFormBukti" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="">Poforma No</label>
+                                <input type="text" name="order_no" id="order_no_edit" class="form-control" readonly>
+                                <input type="hidden" name="id" id="id_edit" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="">Grand Total</label>
+                                <input type="text" name="grand_total" id="grand_total_edit" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="">Upload Bukti Bayar</label>
+                                <input type="file" name="bukti_bayar[]" id="bukti_bayar" class="form-control" multiple accept="image/*">
+                                <div class="mt-2" id="preview_container">
+                                    <!-- Gambar akan muncul di sini -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i> <span class="d-none d-sm-block">Close</span> </button>
+                    <button type="button" id="updateButtonBukti" class="btn btn-primary ml-1"> <i class="bx bx-check d-block d-sm-none"></i> <span class="d-none d-sm-block">Submit</span> </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -366,6 +412,8 @@
             {data:'invoice', name:'invoice', classNmae:'text-center'},
             {data:'job', name:'job', classNmae:'text-center'},
             {data:'action', name:'action', classNmae:'text-center'},
+            {data:'uploadBukti', name:'uploadBukti', classNmae:'text-center'},
+            {data:'viewPhoto', name:'viewPhoto', classNmae:'text-center'},
             {data:'payFlag', name:'payFlag', classNmae:'text-center'},
             {data:'cancel', name:'cancel', classNmae:'text-center'},
         ],
@@ -399,6 +447,8 @@
             {data:'materai', name:'materai', classNmae:'text-center'},
             {data:'job', name:'job', classNmae:'text-center'},
             {data:'action', name:'action', classNmae:'text-center'},
+            {data:'uploadBukti', name:'uploadBukti', classNmae:'text-center'},
+            {data:'viewPhoto', name:'viewPhoto', classNmae:'text-center'},
             {data:'payFlag', name:'payFlag', classNmae:'text-center'},
             {data:'cancel', name:'cancel', classNmae:'text-center'},
             
@@ -461,5 +511,92 @@
             }
         });
     }
+</script>
+
+<script>
+    $(document).on('click', '#uploadBukti', function(){
+        Swal.fire({
+            title: 'Processing...',
+            text: 'Please wait while we update the container',
+            icon: 'info',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+                willOpen: () => {
+                    Swal.showLoading();
+                }
+        });
+        let id = $(this).data('id');
+        $.ajax({
+          type: 'GET',
+          url: '/customer-import/payButton/' + id,
+          cache: false,
+          data: {
+            id: id
+          },
+              dataType: 'json',
+
+              success: function(response) {
+
+            console.log(response);
+            if (response.success) {
+                swal.close();
+                $('#uploadBuktiModal').modal('show');
+                $("#uploadBuktiModal #id_edit").val(response.data.id);
+                $("#uploadBuktiModal #order_no_edit").val(response.data.proforma_no);
+                $("#uploadBuktiModal #grand_total_edit").val(response.data.grand_total);
+            } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: response.message,
+                });
+            }
+
+          },
+          error: function(data) {
+            console.log('error:', data)
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: response.message,
+            });
+          }
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Attach event listener to the update button
+        document.getElementById('updateButtonBukti').addEventListener('click', function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            // Show SweetAlert confirmation dialog
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, update it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Submit the form programmatically if confirmed
+                        Swal.fire({
+                        title: 'Processing...',
+                        text: 'Please wait while we update the container',
+                        icon: 'info',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                            willOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                    document.getElementById('updateFormBukti').submit();
+                }
+            });
+        });
+    });
 </script>
 @endsection

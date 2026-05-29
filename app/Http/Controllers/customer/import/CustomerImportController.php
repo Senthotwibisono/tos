@@ -270,6 +270,9 @@ class CustomerImportController extends CustomerMainController
                 return '<span class="badge bg-danger text-white">Canceled</span>';
             }
         })
+        ->addColumn('uploadBukti', function($inv){
+             return '<button type="button" id="uploadBukti" data-id="'.$inv->id.'" class="btn btn-sm btn-success"><i class="fa fa-cogs"></i></button>';
+        })
         ->addColumn('payFlag', function($inv){
             if ($inv->lunas == 'N') {
                 if ($inv->pay_flag == 'Y') {
@@ -302,7 +305,11 @@ class CustomerImportController extends CustomerMainController
                 return '-';
             }
         })
-        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'cancel', 'payFlag', 'materai'])
+        ->addColumn('viewPhoto', function($inv){
+            $herf = '/bukti_bayar/import/'; 
+            return '<a href="javascript:void(0)" onclick="openWindow(\''.$herf.$inv->id.'\')" class="btn btn-sm btn-info"><i class="fa fa-eye"></i></a>';
+        })
+        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'cancel', 'payFlag', 'materai', 'uploadBukti', 'viewPhoto'])
         ->make(true);
     }
 

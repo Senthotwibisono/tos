@@ -133,7 +133,10 @@ class RentalController extends Controller
                 return '-';
             }
         })
-        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete'])
+        ->addColumn('editInvoice', function($inv){
+            return '<a href="/invoice/export/edit-'.$inv->form_id.'" target="_blank" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></a>';
+        })
+        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete', 'editInvoice'])
         ->make(true);
     }
 

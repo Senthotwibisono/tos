@@ -297,7 +297,10 @@ class CustomerExtendController extends CustomerMainController
                 return '-';
             }
         })
-        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete', 'payFlag', 'viewPhoto', 'materai'])
+        ->addColumn('uploadBukti', function($inv){
+             return '<button type="button" id="uploadBukti" data-id="'.$inv->id.'" class="btn btn-sm btn-success"><i class="fa fa-cogs"></i></button>';
+        })
+        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete', 'payFlag', 'viewPhoto', 'materai', 'uploadBukti'])
         ->make(true);
     }
 
@@ -481,7 +484,10 @@ class CustomerExtendController extends CustomerMainController
 
             $vessel = VVoyage::find($oldForm->ves_id);
 
-            $discDate = Carbon::parse($oldInvoice->expired_date)->format('Y-m-d');
+            // var_dump($oldJob, $oldInvoice);
+            // die();
+            $singleJob = $oldJob->sortBy('active_to')->first();
+            $discDate = Carbon::parse($singleJob->active_to)->format('Y-m-d');
 
             $items = Item::whereIn('container_key', $oldJob->pluck('container_key'))->whereIn('job_no', $oldJob->pluck('job_no'))->get();
             // dd($items, $oldJob->pluck('container_key'));
@@ -526,6 +532,26 @@ class CustomerExtendController extends CustomerMainController
                 return redirect()->back()->with('error', 'Oopss Somthing wrong!! : Old Form Tidak Ditemukan');
             }
 
+            $selctedCont = Item::whereIn('container_key', $request->container)->get();
+            $firstJobActiveToDate = null;
+            foreach ($selctedCont as $item) {
+                if ($oldForm->i_e == 'X') {
+                    $job = JobExtend::where('job_no', $item->job_no)->first();
+                }elseif ($oldForm->i_e == 'I') {
+                    $job = JobImport::where('job_no', $item->job_no)->first();
+                }else {
+                    return back()->with('error', 'Something Wromg');
+                }
+
+                $jobActiveToDate = Carbon::parse($job->active_to)->toDateString();
+
+                if (!$firstJobActiveToDate) {
+                    $firstJobActiveToDate = $jobActiveToDate;
+                } elseif ($firstJobActiveToDate != $jobActiveToDate) {
+                    return back()->with('error', 'Active to date differs between containers');
+                }
+            }
+
             $disc = Carbon::parse($request->disc_date);
             $expired = Carbon::parse($request->exp_date);
 
@@ -565,7 +591,7 @@ class CustomerExtendController extends CustomerMainController
                 $massa2 = 0;
                 $massa3 = $jumlahHari;
             }
-            $selctedCont = Item::whereIn('container_key', $request->container)->get();
+            
             // dd($oldForm->massa2, $oldForm->massa3, $jumlahHari, $massa2, $massa3, $request->all(), $selctedCont);
 
             try {

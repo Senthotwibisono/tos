@@ -186,29 +186,31 @@
               <div class="col-xs-12 col-12">
                <div class="col-xs-12 col-12">
                 @php
-  use Carbon\Carbon;
-    $invoiceDate = Carbon::parse($invoice->invoice_date);
-    $cutoffDate = Carbon::create(2025, 5, 1);
-@endphp
+                  use Carbon\Carbon;
+                    $invoiceDate = Carbon::parse($invoice->invoice_date);
+                    $cutoffDate = Carbon::create(2025, 5, 1);
+                @endphp               
 
-@if($invoiceDate->lt($cutoffDate))
-    <address>
-        <strong>Metode Pembayaran</strong><br>
-        Nama Bank : <strong>MANDIRI</strong> <br>
-        Pemilik Rekening : <strong>PT. INDO KONTAINER SARANA</strong><br>
-        Kode Bank : <strong>008</strong><br>
-        Nomor Rekening : <strong>1460002771975</strong><br>
-        {{-- <small>h.elaine@gmail.com</small> --}}
-    </address>
-@else
-    <address>
-        <strong>Metode Pembayaran</strong><br>
-        Nama Bank: <strong>MANDIRI</strong> <br>
-        Pemilik Rekening: <strong>PT. DEPO INDO KONTAINER SARANA</strong><br>
-        Kode Bank: <strong>008</strong><br>
-        Nomor Rekening: <strong>1460021308742</strong><br>
-    </address>
-@endif
+                @if($invoiceDate->lt($cutoffDate))
+                    <address>
+                        <strong>Metode Pembayaran</strong><br>
+                        Nama Bank : <strong>MANDIRI</strong> <br>
+                        Pemilik Rekening : <strong>PT. INDO KONTAINER SARANA</strong><br>
+                        Kode Bank : <strong>008</strong><br>
+                        Nomor Rekening : <strong>1460002771975</strong><br>
+                        Virtual Account : <strong>{{$invoice->va ?? 'Tidak menerbitkan VA'}}</strong><br>
+                        {{-- <small>h.elaine@gmail.com</small> --}}
+                    </address>
+                @else
+                    <address>
+                        <strong>Metode Pembayaran</strong><br>
+                        Nama Bank: <strong>MANDIRI</strong> <br>
+                        Pemilik Rekening: <strong>PT. DEPO INDO KONTAINER SARANA</strong><br>
+                        Kode Bank: <strong>008</strong><br>
+                        Nomor Rekening: <strong>1460021308742</strong><br>
+                        Virtual Account : <strong>{{$invoice->va ?? 'Tidak menerbitkan VA'}}</strong><br>
+                    </address>
+                @endif
                 <address>
                   <strong>Veesel</strong><br>
                   Ves Name : <strong>{{$form->Kapal->ves_name}}</strong> <br>

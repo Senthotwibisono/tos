@@ -61,6 +61,7 @@ class ReportInvoiceAllExport implements FromCollection, WithMapping, WithHeading
             $invoice['discount'],
             $invoice['pajak'],
             $invoice['grand_total'],
+             "'" . $invoice['va'],
             $status
         ];
     }
@@ -81,6 +82,7 @@ class ReportInvoiceAllExport implements FromCollection, WithMapping, WithHeading
             'Discount',
             'PPN',
             'Grand Total',
+            'Virtual Account',
             'Status'
         ];
     }

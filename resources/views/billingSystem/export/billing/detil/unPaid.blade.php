@@ -43,6 +43,7 @@
                   <table class="table-hover" id="unpaidTable">
                     <thead style="white-space: nowrap;">
                       <tr>
+                        <th>Bukti Bayar</th>
                         <th>Proforma No</th>
                         <th>Customer</th>
                         <th>Order Service</th>
@@ -90,6 +91,7 @@
         data: {type : 'unpaid'}
       },
       columns: [
+        {data:'viewPhoto', name:'viewPhoto', classNmae:'text-center'},
         {data:'proforma', name:'proforma', classNmae:'text-center'},
         {data:'customer', name:'customer', classNmae:'text-center'},
         {data:'service', name:'service', classNmae:'text-center'},
@@ -104,5 +106,11 @@
       ],
     })
   })
+</script>
+
+<script>
+    function openWindow(url) {
+        window.open(url, '_blank', 'width=600,height=800');
+    }
 </script>
 @endsection

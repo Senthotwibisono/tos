@@ -173,7 +173,14 @@ class InvoiceExportController extends Controller
                 return '-';
             }
         })
-        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete', 'materai'])
+        ->addColumn('viewPhoto', function($inv){
+            $herf = '/bukti_bayar/export/'; 
+            return '<a href="javascript:void(0)" onclick="openWindow(\''.$herf.$inv->id.'\')" class="btn btn-sm btn-info"><i class="fa fa-eye"></i></a>';
+        })
+        ->addColumn('editInvoice', function($inv){
+            return '<a href="/invoice/export/edit-'.$inv->form_id.'" target="_blank" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></a>';
+        })
+        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete', 'materai', 'viewPhoto', 'editInvoice'])
         ->make(true);
     }
 
@@ -1599,6 +1606,7 @@ class InvoiceExportController extends Controller
             'discount' => $invoice->discount,
             'pajak' => $invoice->pajak,
             'grand_total' => $invoice->grand_total,
+            'va' => $invoice->va ?? '',
             'lunas' => $invoice->lunas,
             'Form' => $invoice->Form
         ];
@@ -1615,6 +1623,7 @@ class InvoiceExportController extends Controller
             'discount' => $invoice->discount,
             'pajak' => $invoice->pajak,
             'grand_total' => $invoice->grand_total,
+            'va' => $invoice->va ?? '',
             'lunas' => $invoice->lunas,
             'Form' => $invoice->Form
         ];
@@ -1677,5 +1686,122 @@ class InvoiceExportController extends Controller
         ]);
     }
 
+    public function editInvoice($form_id)
+    {
+        $form = Form::find($form_id);
+
+        $data['title'] = 'Edit Invoice Export';
+        
+        $invoice = InvoiceExport::where('form_id', $form->id)->get();
+
+        $data['singleInvoice'] = $invoice->first();
+
+        $data['customers'] = Customer::get();
+        $data['vesels'] = VVoyage::get();
+        $data['form'] = $form;
+
+        $data['expired'] = Carbon::parse($data['singleInvoice']->disc_Date)->addDays(4);
+
+        $data['services'] = OS::whereIn('ie', ['E', 'P', 'R'])->get();
+        $data['flagDSK'] = 'N';
+        $data['flagDS'] = 'N';
+
+        $dsk = $invoice->where('inv_type', 'OSK')->first();
+        if ($dsk) {
+            $data['flagDSK'] = 'Y';
+            $data['dsk'] = $dsk;
+        }
+        $ds = $invoice->where('inv_type', 'OS')->first();
+        if ($ds) {
+            $data['flagDS'] = 'Y';
+            $data['ds'] = $ds;
+        }
+
+        $container = Container::where('form_id', $form_id)->get();
+        $data['items'] = Item::whereIn('container_key', $container->pluck('container_key'))->get();
+        // dd($invoice);
+
+        return view('billingSystem.export.billing.edit.index', $data);
+    }
+
+    public function updateInvoice(Request $request)
+    {
+        try {
+            // dd($request->all());
+            //code...
+            $form = Form::find($request->form_id);
+            $form->update([
+                'os_id' => $request->os_id,
+                'ves_id' => $request->ves_id,
+                'cust_id' => $request->cust_id,
+            ]);
     
+            $customer = Customer::find($request->cust_id);
+            $headers = InvoiceExport::where('form_id', $form->id)->get();
+            foreach ($headers as $header) {
+                $header->update([
+                    'os_id' => $form->os_id ?? null,
+                    'cust_id' => $form->cust_id ?? null,
+                    'cust_name' => $customer->name ?? null, 
+                    'fax' => $request->fax ?? null, 
+                    'npwp' => $request->npwp ?? null, 
+                    'alamat' => $request->alamat ?? null, 
+                ]);
+            }
+            if ($request->has('order_service')) {
+                foreach ($request->order_service as $containerKey => $service) {
+                    Item::where('container_key', $containerKey)->update([
+                        'order_service' => $service
+                    ]);
+                }
+            }
+
+            $details = Detail::where('form_id', $form->id)->get();
+            foreach ($details as $detil) {
+                $detil->update([
+                    'cust_id' => $request->cust_id,
+                    'cust_name' => $customer->name,
+                ]);
+            }
+    
+            // $detil = Detail::where('form_id', $form->id)->update([
+            //     'cust_id' => $request->cust_id,
+            //     'cust_name' => $customer->name,
+            // ]);
+    
+            $dsk = InvoiceExport::where('form_id', $form->id)->where('inv_type', 'OSK')->first();
+            if ($dsk) {
+                $dsk->update([
+                    'total' => $request->totalDSK, 
+                    'admin' => $request->adminDSK, 
+                    'discount' => $request->discountDSK, 
+                    'pajak' => $request->pajakDSK, 
+                    'grand_total' => $request->grand_totalDSK, 
+                    'order_at' => $request->order_atDSK,
+                    'piutang_at' => $request->piutang_atDSK, 
+                    'lunas_at' => $request->lunas_atDSK, 
+                    'invoice_date' => $request->invoice_dateDSK, 
+                ]);
+            }
+    
+            $ds = InvoiceExport::where('form_id', $form->id)->where('inv_type', 'OS')->first();
+            if ($ds) {
+                $ds->update([
+                    'total' => $request->totalDS, 
+                    'admin' => $request->adminDS, 
+                    'discount' => $request->discountDS, 
+                    'pajak' => $request->pajakDS, 
+                    'grand_total' => $request->grand_totalDS, 
+                    'order_at' => $request->order_atDS,
+                    'piutang_at' => $request->piutang_atDS, 
+                    'lunas_at' => $request->lunas_atDS, 
+                    'invoice_date' => $request->invoice_dateDS, 
+                ]);
+            }
+            return redirect()->back()->with('success', 'Data Berhasil di perbarui');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Something Wrong In : ' . $th->getMessage());
+            //throw $th;
+        }
+    }
 }

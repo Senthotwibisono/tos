@@ -1119,6 +1119,12 @@ Route::controller(ImportController::class)->group(function(){
   Route::post('/invoice/import/updateInvoice', 'updateInvoice');
 });
 
+
+Route::controller(InvoiceExportController::class)->group(function(){
+  Route::get('/invoice/export/edit-{form_id?}', 'editInvoice');
+  Route::post('/invoice/export/updateInvoice', 'updateInvoice');
+});
+
 // Extend
 Route::middleware('permission:Form Extend')->group(function(){
   Route::get('/billing/import/extendIndexForm', [InvoiceExtend::class, 'ListForm'])->name('listForm-extend');
@@ -1423,6 +1429,16 @@ Route::middleware('permission:User')->group(function(){
     return view('list-photos', compact('files', 'id'));
   });
 
+  Route::get('/bukti_bayar/export/{id}', function ($id) {
+    $path = "public/bukti_bayar/export/{$id}";
+    if (!Storage::exists($path)) {
+        abort(404, "Folder tidak ditemukan");
+    }
+
+    $files = Storage::files($path);
+    return view('list-photos', compact('files', 'id'));
+  });
+
   Route::controller(CustomerMainController::class)->group(function(){
     Route::get('/customer-dashboard', 'dashboardIndex');
     Route::get('/customer-import', 'Import');
@@ -1531,11 +1547,12 @@ Route::middleware('permission:User')->group(function(){
 
         Route::get('/firstStepIndex-{id?}', 'firstStepIndex');
         Route::post('/firstStepPost', 'firstStepPost')->name('customer.export.firstStepPost');
-
         // Preinvoice
         Route::get('/preinvoice-{id?}', 'preinvoice');
         Route::post('/createInvoice', 'createInvoice')->name('customer.export.createInvoice');
       });
+      Route::get('/payButton/{id?}', 'payButton');
+      Route::post('/payExportFromCust', 'payExportFromCust');
 
       Route::prefix('/transaction')->group(function(){
           Route::get('/searchToPay-{id?}', 'searchToPay');

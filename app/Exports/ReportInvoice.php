@@ -67,6 +67,7 @@ class ReportInvoice implements FromCollection, WithMapping, WithHeadings, Should
             $invoice->discount,
             $invoice->pajak,
             $invoice->grand_total,
+            $invoice->va ?? '',
             $status      
         ];
     }
@@ -88,6 +89,7 @@ class ReportInvoice implements FromCollection, WithMapping, WithHeadings, Should
             'Discount',
             'PPN',
             'Grand Total',
+            'Virtual Account',
             'Status'
         ];
     }

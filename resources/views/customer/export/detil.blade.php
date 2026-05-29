@@ -36,6 +36,9 @@
                                 <th>Invoice</th>
                                 <th>Job</th>
                                 <th>Action</th>
+                                <th>Upload Bukti Bayar</th>
+                                <th>Bukti Bayar</th>
+                                <th>Status Pembayaran</th>
                                 <th>Cancel</th>
                             </tr>
                         </thead>
@@ -65,6 +68,9 @@
                                 <th>Invoice</th>
                                 <th>Job</th>
                                 <th>Action</th>
+                                <th>Upload Bukti Bayar</th>
+                                <th>Bukti Bayar</th>
+                                <th>Status Pembayaran</th>
                                 <th>Cancel</th>
                             </tr>
                         </thead>
@@ -96,6 +102,9 @@
                                 <th>Materai</th>
                                 <th>Job</th>
                                 <th>Action</th>
+                                <th>Upload Bukti Bayar</th>
+                                <th>Bukti Bayar</th>
+                                <th>Status Pembayaran</th>
                                 <th>Cancel</th>
                             </tr>
                         </thead>
@@ -152,6 +161,48 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="uploadBuktiModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable modal-xl"role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Payment Form</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"> <i data-feather="x"></i></button>
+            </div>
+            <form action="/customer-export/payExportFromCust" method="POST" id="updateFormBukti" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="">Poforma No</label>
+                                <input type="text" name="order_no" id="order_no_edit" class="form-control" readonly>
+                                <input type="hidden" name="id" id="id_edit" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="">Grand Total</label>
+                                <input type="text" name="grand_total" id="grand_total_edit" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="">Upload Bukti Bayar</label>
+                                <input type="file" name="bukti_bayar[]" id="bukti_bayar" class="form-control" multiple accept="image/*">
+                                <div class="mt-2" id="preview_container">
+                                    <!-- Gambar akan muncul di sini -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal"> <i class="bx bx-x d-block d-sm-none"></i> <span class="d-none d-sm-block">Close</span> </button>
+                    <button type="button" id="updateButtonBukti" class="btn btn-primary ml-1"> <i class="bx bx-check d-block d-sm-none"></i> <span class="d-none d-sm-block">Submit</span> </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 @include('materai.js');
 @section('custom_js')
@@ -179,6 +230,9 @@
                 {name:'invoice', data:'invoice', className:'text-center', searchable:false, orderable:false},
                 {name:'job', data:'job', className:'text-center', searchable:false, orderable:false},
                 {name:'action', data:'action', className:'text-center', searchable:false, orderable:false},
+                {data:'uploadBukti', name:'uploadBukti', classNmae:'text-center'},
+                {data:'viewPhoto', name:'viewPhoto', classNmae:'text-center'},
+                {data:'payFlag', name:'payFlag', classNmae:'text-center'},
                 {name:'delete', data:'delete', className:'text-center', searchable:false, orderable:false},
             ],
             initComplete: function () {
@@ -224,6 +278,9 @@
                 {name:'invoice', data:'invoice', className:'text-center', searchable:false, orderable:false},
                 {name:'job', data:'job', className:'text-center', searchable:false, orderable:false},
                 {name:'action', data:'action', className:'text-center', searchable:false, orderable:false},
+                {data:'uploadBukti', name:'uploadBukti', classNmae:'text-center'},
+                {data:'viewPhoto', name:'viewPhoto', classNmae:'text-center'},
+                {data:'payFlag', name:'payFlag', classNmae:'text-center'},
                 {name:'delete', data:'delete', className:'text-center', searchable:false, orderable:false},
             ],
             initComplete: function () {
@@ -269,6 +326,9 @@
                 {name:'materai', data:'materai', className:'text-center', searchable:false, orderable:false},
                 {name:'job', data:'job', className:'text-center', searchable:false, orderable:false},
                 {name:'action', data:'action', className:'text-center', searchable:false, orderable:false},
+                {data:'uploadBukti', name:'uploadBukti', classNmae:'text-center'},
+                {data:'viewPhoto', name:'viewPhoto', classNmae:'text-center'},
+                {data:'payFlag', name:'payFlag', classNmae:'text-center'},
                 {name:'delete', data:'delete', className:'text-center', searchable:false, orderable:false},
             ],
             initComplete: function () {
@@ -443,6 +503,120 @@
             }
         });
     }
+</script>
+
+<script>
+    document.getElementById('bukti_bayar').addEventListener('change', function(event) {
+        let files = event.target.files; // Ambil semua file yang dipilih
+        let previewContainer = document.getElementById('preview_container'); 
+
+        // Hapus gambar sebelumnya
+        previewContainer.innerHTML = '';
+
+        for (let i = 0; i < files.length; i++) {
+            let file = files[i];
+            let reader = new FileReader();
+
+            reader.onload = function(e) {
+                let imgElement = document.createElement('img'); // Buat elemen img baru
+                imgElement.src = e.target.result;
+                imgElement.classList.add('img-thumbnail', 'm-1'); // Tambahkan kelas Bootstrap
+                imgElement.style.maxWidth = '120px'; // Atur ukuran gambar
+                imgElement.style.maxHeight = '120px';
+
+                previewContainer.appendChild(imgElement); // Tambahkan gambar ke dalam container
+            }
+
+            reader.readAsDataURL(file); // Membaca file sebagai URL data
+        }
+    });
+</script>
+
+<script>
+    $(document).on('click', '#uploadBukti', function(){
+        Swal.fire({
+            title: 'Processing...',
+            text: 'Please wait while we update the container',
+            icon: 'info',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+                willOpen: () => {
+                    Swal.showLoading();
+                }
+        });
+        let id = $(this).data('id');
+        $.ajax({
+          type: 'GET',
+          url: '/customer-export/payButton/' + id,
+          cache: false,
+          data: {
+            id: id
+          },
+              dataType: 'json',
+
+              success: function(response) {
+
+            console.log(response);
+            if (response.success) {
+                swal.close();
+                $('#uploadBuktiModal').modal('show');
+                $("#uploadBuktiModal #id_edit").val(response.data.id);
+                $("#uploadBuktiModal #order_no_edit").val(response.data.proforma_no);
+                $("#uploadBuktiModal #grand_total_edit").val(response.data.grand_total);
+            } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: response.message,
+                });
+            }
+
+          },
+          error: function(data) {
+            console.log('error:', data)
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: response.message,
+            });
+          }
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Attach event listener to the update button
+        document.getElementById('updateButtonBukti').addEventListener('click', function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            // Show SweetAlert confirmation dialog
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, update it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Submit the form programmatically if confirmed
+                        Swal.fire({
+                        title: 'Processing...',
+                        text: 'Please wait while we update the container',
+                        icon: 'info',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                            willOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                    document.getElementById('updateFormBukti').submit();
+                }
+            });
+        });
+    });
 </script>
 
 @endsection

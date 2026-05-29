@@ -196,6 +196,7 @@
                         <th>Pranota</th>
                         <th>Invoice</th>
                         <th>Action</th>
+                        <th>Edit</th>
                         <th>Cancel</th>
                       </tr>
                     </thead>
@@ -278,6 +279,7 @@
                         <th>Pranota</th>
                         <th>Invoice</th>
                         <th>Action</th>
+                        <th>Edit</th>
                         <th>Cancel</th>
                       </tr>
                     </thead>
@@ -733,6 +735,7 @@ $(document).ready(function() {
         {data:'pranota', name:'pranota', classNmae:'text-center'},
         {data:'invoice', name:'invoice', classNmae:'text-center'},
         {data:'action', name:'action', classNmae:'text-center'},
+        {data:'editInvoice', name:'editInvoice', classNmae:'text-center'},
         {data:'delete', name:'delete', classNmae:'text-center'},
       ],
     })
@@ -757,6 +760,7 @@ $(document).ready(function() {
           {data:'pranota', name:'pranota', classNmae:'text-center'},
           {data:'invoice', name:'invoice', classNmae:'text-center'},
           {data:'action', name:'action', classNmae:'text-center'},
+          {data:'editInvoice', name:'editInvoice', classNmae:'text-center'},
           {data:'delete', name:'delete', classNmae:'text-center'},
         ],
       })

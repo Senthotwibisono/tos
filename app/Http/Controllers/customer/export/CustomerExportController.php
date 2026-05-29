@@ -131,6 +131,9 @@ class CustomerExportController extends  CustomerMainController
                 return '-';
             }
         })
+        ->addColumn('uploadBukti', function($inv){
+             return '<button type="button" id="uploadBukti" data-id="'.$inv->id.'" class="btn btn-sm btn-success"><i class="fa fa-cogs"></i></button>';
+        })
         ->addColumn('delete', function($inv){
             if ($inv->lunas == 'N') {
                 return '<button type="button" class="btn btn-danger" onClick="deleteButton(this)" data-id="'.$inv->form_id.'">Cancel</button>';
@@ -146,7 +149,11 @@ class CustomerExportController extends  CustomerMainController
                 return '-';
             }
         })
-        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete', 'payFlag', 'materai'])
+        ->addColumn('viewPhoto', function($inv){
+            $herf = '/bukti_bayar/export/'; 
+            return '<a href="javascript:void(0)" onclick="openWindow(\''.$herf.$inv->id.'\')" class="btn btn-sm btn-info"><i class="fa fa-eye"></i></a>';
+        })
+        ->rawColumns(['status', 'pranota', 'invoice', 'job', 'action', 'delete', 'payFlag', 'materai', 'uploadBukti', 'viewPhoto'])
         ->make(true);
     }
 
@@ -825,5 +832,52 @@ class CustomerExportController extends  CustomerMainController
         }
 
         return null;
+    }
+
+    public function payButton($id)
+    {
+        // var_dump($id);
+        // die();
+        try {
+            //code...
+            $export = Export::find($id);
+    
+            return response()->json([
+                'success' => true,
+                'data' => $export,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Oopss something wrong : ' . $th->getMessage(),
+            ]);
+        }
+    }
+
+    public function payExportFromCust(Request $request)
+    {
+        // Hapus `dd($request->all());` setelah debugging
+        if (!$request->hasFile('bukti_bayar')) {
+            return back()->with('error', 'Anda Wajib Memasukkan Bukti Pembayaran');
+        }
+
+        $export = Export::find($request->id);
+        if (!$export) {
+            return back()->with('error', 'Data Export tidak ditemukan');
+        }
+
+        foreach ($request->file('bukti_bayar') as $photo) {
+            $fileName = time() . '_' . $photo->getClientOriginalName(); // Tambahkan timestamp untuk menghindari nama duplikat
+            $filePath = 'bukti_bayar/export/' . $export->id;
+
+            // Simpan ke storage
+            $photo->storeAs($filePath, $fileName, 'public');
+
+            // Simpan ke database
+           $export->update([
+            'pay_flag' => 'Y',
+           ]);
+        }
+        return back()->with('success', 'Bukti pembayaran berhasil diunggah');
     }
 }

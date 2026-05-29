@@ -20,6 +20,7 @@
                                 <th>Yard Position</th>
                                 <th>Placement Date</th>
                                 <th>Truck No</th>
+                                <th>STID</th>
                                 <th>Gate In Delivery</th>
                                 <th>Gate Out Delivery</th>
                                 <th>Gate In Reciving</th>
@@ -69,6 +70,7 @@
                                 <td>{{$item->yard_block}}{{$item->yard_slot}}{{$item->yard_row}}{{$item->yard_tier}}</td>
                                 <td>{{$item->PLC->created_at ?? '' }}</td>
                                 <td>{{$item->truck_no}}</td>
+                                <td>{{$item->stid}}</td>
                                 @if($item->ctr_i_e_t == "I")
                                 <td>{{$item->truck_in_date}}</td>
                                 <td>{{$item->truck_out_date}}</td>

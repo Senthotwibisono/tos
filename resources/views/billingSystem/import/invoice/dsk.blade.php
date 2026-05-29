@@ -182,6 +182,7 @@
                   Pemilik Rekening :  <strong>PT. INDO KONTAINER SARANA</strong><br>
                   Kode Bank : <strong>008</strong><br>
                   Nomor Rekening : <strong>1460002771975</strong><br>
+                  Virtual Account : <strong>{{$invoice->va ?? 'Tidak menerbitkan VA'}}</strong><br>
                   <!-- h.elaine@gmail.com<br> -->
                 </address>
                 <address>

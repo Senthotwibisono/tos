@@ -42,6 +42,7 @@ class InvoiceExport extends Model
         'booking_no',
         'invoice_date',
         'user_id',
+        'pay_flag',
         'va',
         'materai_id',
         'sn',

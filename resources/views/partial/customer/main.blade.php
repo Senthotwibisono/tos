@@ -525,4 +525,10 @@ new simpleDatatables.DataTable('#table2');
         }
     </script>
 
+    <script>
+        function openWindow(url) {
+            window.open(url, '_blank', 'width=600,height=800');
+        }
+    </script>
+
 </html>

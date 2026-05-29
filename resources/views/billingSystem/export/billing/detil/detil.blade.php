@@ -63,6 +63,7 @@
                   <table class="table-hover" id="lunasTable">
                     <thead style="white-space: nowrap;">
                       <tr>
+                        <th>Bukti Bayar</th>
                         <th>Proforma No</th>
                         <th>Customer</th>
                         <th>Order Service</th>
@@ -74,6 +75,7 @@
                         <th>Materai</th>
                         <th>Job</th>
                         <th>Action</th>
+                        <th>Edit</th>
                         <th>Cancel</th>
                       </tr>
                     </thead>
@@ -113,6 +115,7 @@
         data: {os_id : '{{ $os->id }}'}
       },
       columns: [
+        {data:'viewPhoto', name:'viewPhoto', classNmae:'text-center'},
         {data:'proforma', name:'proforma', classNmae:'text-center'},
         {data:'customer', name:'customer', classNmae:'text-center'},
         {data:'service', name:'service', classNmae:'text-center'},
@@ -124,9 +127,15 @@
         {data:'materai', name:'materai', classNmae:'text-center'},
         {data:'job', name:'job', classNmae:'text-center'},
         {data:'action', name:'action', classNmae:'text-center'},
+        {data:'editInvoice', name:'editInvoice', classNmae:'text-center'},
         {data:'delete', name:'delete', classNmae:'text-center'},
       ],
     })
   })
+</script>
+<script>
+    function openWindow(url) {
+        window.open(url, '_blank', 'width=600,height=800');
+    }
 </script>
 @endsection

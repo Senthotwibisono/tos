@@ -123,7 +123,7 @@
             </button> -->
             <a href="/customer-extend/formFirstStepId={{$form->id}}" class="btn btn-primary text-white"><i class="fa fa-pen"></i> Edit</a>
             <!-- <a onclick="cancelAddCustomer();" type="button" class="btn btn-warning"><i class="fa fa-close"></i> Batal</a> -->
-            <a class="btn btn-danger Delete" data-id="{{$form->id}}"><i class="fa fa-close"></i> Batal</a>
+            <button type="button" class="btn btn-light-danger" onClick="deleteForm(this)" data-id="{{$form->id}}"><i class="bx bx-x d-block d-sm-none"></i><span class="d-none d-sm-block">Delete</span></button>
           </div>
         </div>
 
@@ -227,5 +227,46 @@ $(document).ready(function() {
         });
     });
 });
+</script>
+
+<script>
+    async function deleteForm(event) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Are you sure?',
+            showCancelButton: true,
+        }).then( async(result) => {
+            if (result.isConfirmed) {
+                const formId = event.getAttribute('data-id');
+                showLoading();
+                const url = '{{route('customer.extend.deleteInvoice')}}';
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    },
+                    body: JSON.stringify({ formId: formId }),
+                });
+                hideLoading();
+                const hasil = await response.json();
+                if (hasil.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        text: hasil.message,
+                    }).then(() => {
+                        window.location.href = '{{route('customer.extend.formList')}}';
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        text: hasil.message,
+                    }).then(() => {
+                        location.reload();
+                    });
+                }
+            }
+        });
+    }
 </script>
 @endsection
