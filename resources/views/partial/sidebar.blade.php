@@ -533,6 +533,9 @@
             <li class="submenu-item @if(Request::is('master/operator')) active @endif">
                 <a href="{{route('operator')}}">Operator</a>
             </li>
+            <li class="submenu-item @if(Request::is('master/stid')) active @endif">
+                <a href="{{route('master.stid.index')}}">STID</a>
+            </li>
         </ul>
     </li>
     @else

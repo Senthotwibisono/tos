@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Lapangan\Vessel\PlanningController;
 use App\Http\Controllers\Lapangan\Gate\GateImportController;
 use App\Http\Controllers\Lapangan\GetDataController;
+use App\Http\Controllers\Lapangan\StidController;
 
 
 Route::prefix('/planning')->name('planning.')->controller(PlanningController::class)->group(function() {
@@ -80,4 +81,12 @@ Route::prefix('/getData')->name('getData.')->controller(GetDataController::class
     Route::get('/jobImport', 'getJobImport')->name('jobImport');
     Route::post('/jobImportDetil', 'getJobImportDetil')->name('jobImportDetil');
     Route::post('/jobImportDetilOut', 'getJobImportDetilOut')->name('jobImportDetilOut');
+});
+
+Route::prefix('/master/stid')->name('master.stid.')->controller(StidController::class)->group(function() {
+    Route::get('/index', 'index')->name('index');
+    Route::get('/data', 'data')->name('data');
+    Route::post('/post', 'post')->name('post');
+    Route::post('/edit', 'edit')->name('edit');
+    Route::post('/delete', 'delete')->name('delete');
 });
