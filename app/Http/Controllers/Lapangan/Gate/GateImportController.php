@@ -14,6 +14,7 @@ use DataTables;
 use App\Models\Item;
 use App\Models\JobImport;
 use App\Models\JobExtend;
+use App\Models\MasterStid as STID;
 
 use App\Http\Controllers\HistoryController;
 
@@ -29,6 +30,7 @@ class GateImportController extends Controller
     public function indexIn()
     {
         $data['title'] = 'Gate Bongkaran';
+        $data['stids'] = STID::where('status', 'active')->get();
 
         return view('lapangan.gate.import.gate-in', $data);
     }
@@ -119,6 +121,7 @@ class GateImportController extends Controller
     public function indexOut()
     {
         $data['title'] = 'Gate Bongkaran';
+        $data['stids'] = STID::where('status', 'active')->get();
 
         return view('lapangan.gate.import.gate-out', $data);
     }
@@ -265,6 +268,7 @@ class GateImportController extends Controller
     public function indexBalikMt(Request $request)
     {
         $data['title'] = 'Gate Bongkaran';
+        $data['stids'] = STID::where('status', 'active')->get();
 
         return view('lapangan.gate.import.balik-mt', $data);
     }
@@ -364,6 +368,7 @@ class GateImportController extends Controller
     public function indexPelindoImport(Request $request)
     {
         $data['title'] = 'Gate Pelindo Import';
+        $data['stids'] = STID::where('status', 'active')->get();
 
         return view('lapangan.gate.import.pelindo-import', $data);
     }
@@ -407,6 +412,7 @@ class GateImportController extends Controller
     public function indexAmbilMt(Request $request)
     {
          $data['title'] = 'Gate Pelindo Import';
+         $data['stids'] = STID::where('status', 'active')->get();
 
         return view('lapangan.gate.import.ambil-mty', $data);
     }
@@ -506,6 +512,7 @@ class GateImportController extends Controller
     public function indexReport()
     {
         $data['title'] = "Report In Out";
+        $data['stids'] = STID::where('status', 'active')->get();
 
         return view('lapangan.gate.import.report', $data);
     }

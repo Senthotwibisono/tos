@@ -16,6 +16,7 @@ use App\Models\VSeq;
 use App\Models\VService;
 use App\Models\Berth;
 use App\Models\Isocode;
+use App\Models\MasterStid;
 
 use App\Models\JobImport;
 use App\Models\JobExtend;
@@ -114,6 +115,22 @@ class GetDataController extends Controller
             return response()->json([
                 'success' => true,
                 'data' => $iso 
+            ]);
+        }else{
+            return response()->jsom([
+                'success'  => false,
+                'message' => 'Data tidak ditemukan'
+            ]);
+        }
+    }
+
+    public function getStid(Request $request)
+    {
+        $stid = MasterStid::where('stid', $request->stid)->first();
+        if ($stid) {
+            return response()->json([
+                'success' => true,
+                'data' => $stid 
             ]);
         }else{
             return response()->jsom([

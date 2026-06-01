@@ -94,12 +94,17 @@
             <input type="text" class="form-control" id="keterangan" readonly>
         </div>
         <div class="form-group">
-            <label for="">Truck No</label>
-            <input type="text" class="form-control" id="truck_no">
+            <label for="">STID</label>
+            <select name="" id="stid" class="form-control selectSingle" style="height: 150%; width: 100%;" data-placeholder="Pilih STID" onChange="getStidData">
+                <option disabeled selected value>Pilih Satu</option>
+                @foreach($stids as $stid)
+                <option value="{{$stid->stid}}">{{$stid->stid}}</option>
+                @endforeach
+            </select>
         </div>
         <div class="form-group">
-            <label for="">STID</label>
-            <input type="text" class="form-control" id="stid">
+            <label for="">Truck No</label>
+            <input type="text" class="form-control" id="truck_no">
         </div>
       </div>
 
@@ -186,6 +191,13 @@
                 getJobData(jobNo);
             }
         })
+
+        $('#stid').on('change', function() {
+            const stid = $(this).val();
+            if (stid) { // akan false kalau null, undefined, atau ""
+                getStidData(stid);
+            }
+        })
     })
 </script>
 
@@ -236,6 +248,39 @@
             $('#container_key').val(null).trigger('change');
             $('#keterangan').val(null).trigger('change');
             $('#truck_in_date').val(null).trigger('change');
+            $('#truck_no').val(null).trigger('change');
+            $('#stid').val(null).trigger('change');
+            errorResponse(response);
+            return;
+        }
+    }
+
+    async function getStidData() {
+        showLoading();
+      
+        const stid = document.getElementById('stid').value;
+
+        const data = {
+            stid
+        };
+        
+        const url = "{{route('getData.stid')}}";
+
+        const response = await globalResponse(data, url);
+        hideLoading();
+        if (response.ok) {
+            const hasil = await response.json();
+            if (hasil.success) {
+                $('#truck_no').val(hasil.data.truck_no).trigger('change');
+                $('#stid').val(hasil.data.stid).trigger('change.select2');
+                successHasil(hasil);
+            }else{
+                $('#truck_no').val(null).trigger('change');
+                $('#stid').val(null).trigger('change');
+                errorHasil(hasil);
+                return;
+            }
+        }else{
             $('#truck_no').val(null).trigger('change');
             $('#stid').val(null).trigger('change');
             errorResponse(response);

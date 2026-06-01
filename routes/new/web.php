@@ -81,6 +81,7 @@ Route::prefix('/getData')->name('getData.')->controller(GetDataController::class
     Route::get('/jobImport', 'getJobImport')->name('jobImport');
     Route::post('/jobImportDetil', 'getJobImportDetil')->name('jobImportDetil');
     Route::post('/jobImportDetilOut', 'getJobImportDetilOut')->name('jobImportDetilOut');
+    Route::post('/stid', 'getStid')->name('stid');
 });
 
 Route::prefix('/master/stid')->name('master.stid.')->controller(StidController::class)->group(function() {
