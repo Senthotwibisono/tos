@@ -1606,6 +1606,7 @@ class InvoiceExportController extends Controller
             'discount' => $invoice->discount,
             'pajak' => $invoice->pajak,
             'grand_total' => $invoice->grand_total,
+            'order_by' => $invoice->order_by,
             'va' => $invoice->va ?? '',
             'lunas' => $invoice->lunas,
             'Form' => $invoice->Form
@@ -1623,6 +1624,7 @@ class InvoiceExportController extends Controller
             'discount' => $invoice->discount,
             'pajak' => $invoice->pajak,
             'grand_total' => $invoice->grand_total,
+            'order_by' => $invoice->order_by,
             'va' => $invoice->va ?? '',
             'lunas' => $invoice->lunas,
             'Form' => $invoice->Form

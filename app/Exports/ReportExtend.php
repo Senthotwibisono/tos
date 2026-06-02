@@ -78,6 +78,7 @@ class ReportExtend implements FromCollection, WithMapping, WithHeadings, ShouldA
             '0',
             $pajak,
             $grand,
+            $invoice->order_by ?? '',
             $invoice->va ?? '',
             $status         
         ];
@@ -101,6 +102,7 @@ class ReportExtend implements FromCollection, WithMapping, WithHeadings, ShouldA
             'Discount',
             'PPN',
             'Total',
+            'Dibuat Oleh',
             'Virtual Account',
             'Status'
         ];
