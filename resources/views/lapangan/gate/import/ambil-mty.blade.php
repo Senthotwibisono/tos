@@ -105,8 +105,8 @@
             order: [[2, 'desc']],
             columns: [
                 {name: 'container_no', data: 'container_no', className:'text-center'},
-                {name: 'out_mty_date', data: 'out_mty_date', className:'text-center'},
                 {name: 'out_mty_truck', data: 'out_mty_truck', className:'text-center'},
+                {name: 'out_mty_date', data: 'out_mty_date', className:'text-center'},
                 {name: 'stid_mty', data: 'stid_mty', className:'text-center'},
                 {name: 'cancel', data: 'cancel', className:'text-center', sortable: false},
             ],
@@ -217,17 +217,17 @@
         if (response.ok) {
             const hasil = await response.json();
             if (hasil.success) {
-                $('#truck_no').val(hasil.data.truck_no).trigger('change');
-                $('#stid').val(hasil.data.stid).trigger('change.select2');
+                $('#out_mty_truck').val(hasil.data.truck_no).trigger('change');
+                $('#stid').val(hasil.data.stid_mty).trigger('change.select2');
                 successHasil(hasil);
             }else{
-                $('#truck_no').val(null).trigger('change');
+                $('#out_mty_truck').val(null).trigger('change');
                 $('#stid').val(null).trigger('change');
                 errorHasil(hasil);
                 return;
             }
         }else{
-            $('#truck_no').val(null).trigger('change');
+            $('#out_mty_truck').val(null).trigger('change');
             $('#stid').val(null).trigger('change');
             errorResponse(response);
             return;

@@ -9,7 +9,7 @@
     <h2>Daftar Bukti Bayar untuk ID {{ $id }}</h2>
     <div>
         @foreach ($files as $file)
-            <img src="{{ asset(str_replace('public/', 'storage/', $file)) }}" alt="Bukti Bayar" width="200">
+            <img src="{{ asset(str_replace('public/', 'storage/', $file)) }}" alt="Bukti Bayar" width="800">
         @endforeach
     </div>
 </body>

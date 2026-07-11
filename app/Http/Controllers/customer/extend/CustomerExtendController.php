@@ -380,47 +380,46 @@ class CustomerExtendController extends CustomerMainController
 
     public function getOldInvoice(Request $request)
     {
-        $search = $request->search;
+        $search = trim($request->search ?? '');
         $page = $request->page ?? 1;
-        $perPage = 100; // Jumlah item per halaman
+        $perPage = 5;   
 
-        // Query untuk import
-        if (Auth::user()->id === 522) {
-            $importQuery = $this->import
-                ->whereIn('lunas', ['Y', 'P'])
-                // ->where('inv_type', 'DS')
-                ->select('inv_no', 'id', 'form_id')
-                ->groupBy('inv_no', 'id', 'form_id');
-        }else{
+        // Query Import
+        $importQuery = $this->import
+            ->whereIn('lunas', ['Y', 'P'])
+            ->select('inv_no', 'id', 'form_id');    
 
-            $importQuery = $this->import
-               ->whereIn('lunas', ['Y', 'P'])
-                // ->where('inv_type', 'DS')
-                ->select('inv_no', 'id', 'form_id')
-                ->groupBy('inv_no', 'id', 'form_id');
-        }
-
-        // Query untuk export
+        // Query Export
         $exportQuery = $this->extend
             ->whereIn('lunas', ['Y', 'P'])
-            ->select('inv_no', 'id', 'form_id')
-            ->groupBy('inv_no', 'id', 'form_id');
+            ->select('inv_no', 'id', 'form_id');    
 
-        // Gabungkan kedua query dengan UNION
-        $query = $importQuery->union($exportQuery);
+        // UNION
+        $unionQuery = $importQuery->union($exportQuery);    
 
-        // Tambahkan pencarian jika ada
-        if ($search) {
+        // Bungkus UNION menjadi subquery agar bisa di-search dan dipaginate
+        $query = DB::query()->fromSub($unionQuery, 'invoices'); 
+
+        // Search
+        if (!empty($search)) {
             $query->where('inv_no', 'like', "%{$search}%");
-        }
+        }   
 
-        // Hitung total data untuk pagination
-        $totalCount = $query->count();
-        $oldInvoice = $query->skip(($page - 1) * $perPage)->take($perPage)->orderBy('inv_no', 'desc')->get();
+        // Total data
+        $totalCount = (clone $query)->count();  
+
+        // Data per halaman
+        $oldInvoice = $query
+            ->orderBy('inv_no')
+            ->offset(($page - 1) * $perPage)
+            ->limit($perPage)
+            ->get();    
 
         return response()->json([
             'data' => $oldInvoice,
-            'more' => false, // Cek apakah ada halaman berikutnya
+            'pagination' => [
+                'more' => ($page * $perPage) < $totalCount
+            ]
         ]);
     }
 
@@ -552,12 +551,12 @@ class CustomerExtendController extends CustomerMainController
                 }
             }
 
-            $disc = Carbon::parse($request->disc_date);
+            $disc = Carbon::parse($firstJobActiveToDate);
             $expired = Carbon::parse($request->exp_date);
 
             $interval = $disc->diff($expired);
             $jumlahHari = ($interval->days);
-
+            // dd($disc, $expired, $interval, $jumlahHari);
             $massa2 = 0;
             $massa3 = 0;
 
@@ -601,7 +600,7 @@ class CustomerExtendController extends CustomerMainController
                     'cust_id' => $request->customer,
                     'do_id' => $request->oldInvoice,
                     'ves_id' => $oldForm->ves_id,
-                    'disc_date' => $request->disc_date,
+                    'disc_date' => $firstJobActiveToDate,
                     'tipe' => $request->tipe,
                     'massa2' => $massa2,
                     'massa3' => $massa3,

@@ -35,6 +35,7 @@
                             <tr>
                                 <th>Container No</th>
                                 <th>Truck No</th>
+                                <th>STID</th>
                                 <th>Tanggal MT</th>
                                 <th>Depo MT</th>
                                 <th>Cancel</th>
@@ -109,10 +110,11 @@
             scrollX: true,
             scrollY: '50vh',
             ajax: '{{route('gate.balikMt.data')}}',
-            order: [[2, 'desc']],
+            order: [[3, 'desc']],
             columns: [
                 {name: 'container_no', data: 'container_no', className:'text-center'},
                 {name: 'truck_no_mty', data: 'truck_no_mty', className:'text-center'},
+                {name: 'stid_balik_mty', data: 'stid_balik_mty', className:'text-center'},
                 {name: 'mty_date', data: 'mty_date', className:'text-center'},
                 {name: 'depo_mty', data: 'depo_mty', className:'text-center'},
                 {name: 'cancel', data: 'cancel', className:'text-center', sortable: false},
@@ -188,9 +190,9 @@
         if (response.ok) {
             const hasil = await response.json();
             if (hasil.success) {
-                $('#mty_date').val(hasil.item.mty_date).trigger('change');
-                $('#truck_no_mty').val(hasil.item.truck_no_mty).trigger('change');
-                $('#depo_mty').val(hasil.item.depo_mty).trigger('change');
+                $('#truck_no_mty').val(hasil.data.truck_no_mty).trigger('change');
+                // $('#depo_mty').val(hasil.data.depo_mty).trigger('change');
+                $('#mty_date').val(hasil.data.mty_date).trigger('change');
                 successHasil(hasil);
             }else{
                 $('#mty_date').val(null).trigger('change');
@@ -222,17 +224,17 @@
         if (response.ok) {
             const hasil = await response.json();
             if (hasil.success) {
-                $('#truck_no').val(hasil.data.truck_no).trigger('change');
-                $('#stid').val(hasil.data.stid).trigger('change.select2');
+                $('#truck_no_mty').val(hasil.data.truck_no).trigger('change');
+                // $('#stid').val(hasil.data.stid_balik_mty).trigger('change.select2');
                 successHasil(hasil);
             }else{
-                $('#truck_no').val(null).trigger('change');
+                $('#truck_no_mty').val(null).trigger('change');
                 $('#stid').val(null).trigger('change');
                 errorHasil(hasil);
                 return;
             }
         }else{
-            $('#truck_no').val(null).trigger('change');
+            $('#truck_no_mty').val(null).trigger('change');
             $('#stid').val(null).trigger('change');
             errorResponse(response);
             return;
@@ -247,11 +249,13 @@
             const truck_no_mty = document.getElementById('truck_no_mty').value;
             const depo_mty = document.getElementById('depo_mty').value;
             const mty_date = document.getElementById('mty_date').value;
+            const stid = document.getElementById('stid').value;
 
             const data = {
                 container_key,
                 truck_no_mty,
                 depo_mty,
+                stid,
                 mty_date,
             };
 
@@ -264,6 +268,7 @@
                     $('#tableGateIn').DataTable().ajax.reload();
                     $('#mty_date').val(null).trigger('change');
                     $('#truck_no_mty').val(null).trigger('change');
+                    $('#stid').val(null).trigger('change');
                     $('#addManual').modal('hide');
                     successHasil(hasil);
                 }else{

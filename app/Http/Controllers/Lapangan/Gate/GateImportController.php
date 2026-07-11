@@ -298,7 +298,7 @@ class GateImportController extends Controller
                     'truck_no_mty' => $request->truck_no_mty,
                     'mty_date' => $request->mty_date,
                     'ctr_intern_status' => '04',
-                    // 'stid' => $request->stid,
+                    'stid_balik_mty' => $request->stid,
                 ]); 
 
                 $dataHistory = [

@@ -122,6 +122,7 @@ class item extends Model
         'out_mty_truck',
         'stid',
         'stid_mty',
+        'stid_balik_mty',
     ];
 
     public function job()
