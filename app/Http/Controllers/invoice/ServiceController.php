@@ -885,7 +885,7 @@ class ServiceController extends Controller
        $form = Form::find($query->form_id);
        $oldExpired = Carbon::parse($form->expired_date)->format('Y-m-d');
        $order = $form->service->order;
-       $job = $queryJob->where('inv_id', $query->id)->get();
+       $job = $queryJob->where('inv_id', $query->id)->whereNot('extend_flag', 'Y')->get();
        return response()->json([
         'success' => true,
         'data' => [

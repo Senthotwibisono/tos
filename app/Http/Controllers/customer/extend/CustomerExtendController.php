@@ -460,14 +460,14 @@ class CustomerExtendController extends CustomerMainController
                     $oldInvoice = Import::find($request->oldId);
                     // var_dump($oldInvoice);
                     $allInvoice = Import::where('form_id', $oldForm->id)->get();
-                    $oldJob = JobImport::whereIn('inv_id', $allInvoice->pluck('id'))->get();
+                    $oldJob = JobImport::whereIn('inv_id', $allInvoice->pluck('id'))->whereNot('extend_flag', 'Y')->get();
                     // dd($oldJob);
                     $tipe = 'I';
                     break;
                     case 'X':
                         $oldInvoice = Extend::find($request->oldId);
                         $allInvoice = Extend::where('form_id', $oldForm->id)->get();
-                        $oldJob = JobExtend::whereIn('inv_id', $allInvoice->pluck('id'))->get();
+                        $oldJob = JobExtend::whereIn('inv_id', $allInvoice->pluck('id'))->whereNot('extend_flag', 'Y')->get();
                         $tipe = 'P';
                     break;
                 default:
