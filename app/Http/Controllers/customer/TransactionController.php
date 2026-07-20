@@ -471,10 +471,15 @@ class TransactionController extends Controller
                     $job = JobExtend::where('inv_id', $extend->id)->where('container_key', $cont->container_key)->first();
                     if (!$job) {
                         $job = DB::transaction(function() use($extend, $jobNo, $cont){
-                            $oldJobExtend = JobExtend::where('contianer_key', $cont->container_key)->get();
-                            $oldJobExtend->update(['extend_flag'=>'Y']);
-                            $oldJobImport = JobImport::where('contianer_key', $cont->container_key)->get();
-                            $oldJobImport->update(['extend_flag'=>'Y']);
+                            JobExtend::where('container_key', $cont->container_key)
+                                ->update([
+                                    'extend_flag' => 'Y'
+                                ]);
+                        
+                            JobImport::where('container_key', $cont->container_key)
+                                ->update([
+                                    'extend_flag' => 'Y'
+                                ]);
                             return JobExtend::create([
                                 'inv_id'=>$extend->id,
                                 'job_no'=>$jobNo,

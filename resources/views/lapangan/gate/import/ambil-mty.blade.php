@@ -218,7 +218,7 @@
             const hasil = await response.json();
             if (hasil.success) {
                 $('#out_mty_truck').val(hasil.data.truck_no).trigger('change');
-                $('#stid').val(hasil.data.stid_mty).trigger('change.select2');
+                // $('#stid').val(hasil.data.stid_mty).trigger('change.select2');
                 successHasil(hasil);
             }else{
                 $('#out_mty_truck').val(null).trigger('change');
