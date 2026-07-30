@@ -206,7 +206,7 @@
                   <tbody>
                
                     <tr>
-                      <td class="text-center">{{$form->service->name}}</td>
+                      <td class="text-center">{{$invoice->os_name ?? ''}}</td>
                       <td class="text-center">{{$form->keterangan ?? '-'}}</td>
                       <td class="text-center">{{$form->palka}}</td>
                     </tr>
