@@ -72,12 +72,12 @@ class ReportExport implements FromCollection, WithMapping, WithHeadings, ShouldA
             $invoice->master_item_name,
             $invoice->service->order,
             $invoice->kode,
-            $invoice->tarif,
+            ($invoice->tarif),
             $item,
-            $invoice->total,
+            ($invoice->total),
             '0',
-            $pajak,
-            $grand,
+            ($pajak),
+            ($grand),
             $invoice->va ?? '',
             $status         
         ];

@@ -6,6 +6,7 @@ use App\Http\Controllers\Lapangan\Vessel\PlanningController;
 use App\Http\Controllers\Lapangan\Gate\GateImportController;
 use App\Http\Controllers\Lapangan\GetDataController;
 use App\Http\Controllers\Lapangan\StidController;
+use App\Http\Controllers\Lapangan\ReportController;
 
 
 Route::prefix('/planning')->name('planning.')->controller(PlanningController::class)->group(function() {
@@ -82,6 +83,7 @@ Route::prefix('/getData')->name('getData.')->controller(GetDataController::class
     Route::post('/jobImportDetil', 'getJobImportDetil')->name('jobImportDetil');
     Route::post('/jobImportDetilOut', 'getJobImportDetilOut')->name('jobImportDetilOut');
     Route::post('/stid', 'getStid')->name('stid');
+    Route::post('/masterContainer', 'getMasterContainer')->name('masterContainer');
 });
 
 Route::prefix('/master/stid')->name('master.stid.')->controller(StidController::class)->group(function() {
@@ -90,4 +92,10 @@ Route::prefix('/master/stid')->name('master.stid.')->controller(StidController::
     Route::post('/post', 'post')->name('post');
     Route::post('/edit', 'edit')->name('edit');
     Route::post('/delete', 'delete')->name('delete');
+});
+
+Route::prefix('/report')->name('report.')->controller(ReportController::class)->group(function() {
+    Route::get('/indexOpname', 'indexOpname')->name('indexOpname');
+    Route::get('/dataOpname', 'dataOpname')->name('dataOpname');
+    Route::post('/updateMasterContianer', 'updateMasterContianer')->name('updateMasterContianer');
 });

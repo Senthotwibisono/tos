@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use App\Models\Item;
+use App\Models\MasterContainer;
 use App\Models\Isocode;
 use App\Models\VVoyage;
 use App\Models\Ship;
@@ -102,6 +103,18 @@ class BapleiExc implements ToCollection, WithHeadingRow
                     'selected_do'=>'N',
                     'relokasi_flag' => trim($row['relokasi_flag']),
                 ]);
+
+                MasterContainer::updateOrCreate(
+                    [
+                        'container_no' => $item->container_no,
+                    ],
+                    [
+                        'ctr_size' => $item->ctr_size,
+                        'ctr_type' => $item->ctr_type,
+                        'status' => 'inactive',
+                        'location' => 'Kapal Menuju IKS',
+                    ]
+                );
                }
                $ship = Ship::where('ves_id', $this->ves_id)->where('bay_slot', $bay_slot)->where('bay_row', $bay_row)->where('bay_tier', $bay_tier)->first();
                if ($ship) {
@@ -144,6 +157,18 @@ class BapleiExc implements ToCollection, WithHeadingRow
                 ];
     
                 $item = Item::create($item);
+
+                MasterContainer::updateOrCreate(
+                    [
+                        'container_no' => $item->container_no,
+                    ],
+                    [
+                        'ctr_size' => $item->ctr_size,
+                        'ctr_type' => $item->ctr_type,
+                        'status' => 'inactive',
+                        'location' => 'Kapal Menuju IKS',
+                    ]
+                );
 
                 $ship = Ship::where('ves_id', $this->ves_id)->where('bay_slot', $bay_slot)->where('bay_row', $bay_row)->where('bay_tier', $bay_tier)->first();
                 if ($ship) {

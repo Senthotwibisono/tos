@@ -309,6 +309,7 @@
             processing: true,
             serverSide: true,
             scrollX: true,
+            scrollY: '50vh',
             ajax: {
                 
                 url: '{{ route('customer.export.dataDetail')}}',

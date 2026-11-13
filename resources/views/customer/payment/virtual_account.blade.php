@@ -63,7 +63,7 @@
                   <td class="px-4 py-2">{{$detil->proforma_no}}</td>
                   <td class="px-4 py-2">{{$detil->invoice->os_name ?? '-'}}</td>
                   <td class="px-4 py-2">{{$detil->invoice->cust_name}}</td>
-                  <td class="px-4 py-2">Rp. {{number_format(ceil($detil->invoice->grand_total),0)}}</td>
+                  <td class="px-4 py-2">Rp. {{number_format(($detil->invoice->grand_total),2)}}</td>
                 </tr>
                 @endforeach
               <!-- Baris lainnya -->
@@ -72,7 +72,7 @@
         </div>
 
         <p class="text-gray-500 mb-2">Total Tagihan</p>
-        <h1 class="text-2xl font-bold text-gray-800 mb-4">Rp. {{number_format(ceil($va->billing_amount))}}</h1>
+        <h1 class="text-2xl font-bold text-gray-800 mb-4">Rp. {{number_format(($va->billing_amount),2)}}</h1>
     </div>
 
     <script>

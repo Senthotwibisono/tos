@@ -856,7 +856,7 @@ class InvoiceExtend extends Controller
         if ($adminDSK) {
             $data['admin'] = $adminDSK->total;
         }
-        $data['terbilang'] = $this->terbilang($data['invoice']->grand_total);
+        $data['terbilang'] = $this->terbilang(($data['invoice']->grand_total));
 
         return view('billingSystem.extend.pranota.main', $data);
     }
@@ -875,7 +875,7 @@ class InvoiceExtend extends Controller
         if ($adminDSK) {
             $data['admin'] = $adminDSK->total;
         }
-        $data['terbilang'] = $this->terbilang($data['invoice']->grand_total);
+        $data['terbilang'] = $this->terbilang(($data['invoice']->grand_total));
 
         return view('billingSystem.extend.invoice.main', $data);
     }

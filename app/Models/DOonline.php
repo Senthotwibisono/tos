@@ -22,5 +22,6 @@ class DOonline extends Model
         'created_by',
         'customer_code',
         'active',
+        'status',
     ];
 }

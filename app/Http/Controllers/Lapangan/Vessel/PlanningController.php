@@ -19,6 +19,7 @@ use App\Models\ProfileTier;
 use App\Models\Ship;
 use App\Models\Port;
 use App\Models\Item;
+use App\Models\MasterContainer;
 use App\Models\Isocode;
 use App\Models\Imocode;
 
@@ -198,6 +199,18 @@ class PlanningController extends Controller
                         'user_id' => Auth::user()->id,
                         'selected_do' => 'N',
                         'relokasi_flag' => $request->relokasi_flag
+                    ]
+                );
+
+                MasterContainer::updateOrCreate(
+                    [
+                        'container_no' => $item->container_no,
+                    ],
+                    [
+                        'ctr_size' => $item->ctr_size,
+                        'ctr_type' => $item->ctr_type,
+                        'status' => 'inactive',
+                        'location' => 'Kapal Menuju IKS',
                     ]
                 );
 

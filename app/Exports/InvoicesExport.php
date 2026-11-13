@@ -70,12 +70,12 @@ class InvoicesExport implements FromCollection, WithMapping, WithHeadings, Shoul
             $invoice->master_item_name,
             $invoice->service->order,
             $invoice->kode,
-            $invoice->tarif,
+            ($invoice->tarif),
             $item,
-            $invoice->total,
+            ($invoice->total),
             '0',
-            $pajak,
-            $grand,  
+            ($pajak),
+            ($grand),  
             $status      
         ];
     }

@@ -82,7 +82,21 @@
     <script src="{{asset('dist/assets/js/pages/simple-datatables.js')}}"></script>
 
     <!-- dataTables -->
-    <script src="{{ asset('dataTables/datatables.min.js')}}"></script>
+    <!-- <script src="{{ asset('dataTables/datatables.min.js')}}"></script> -->
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap5.js"></script>
+    
+    <!-- DataTables Buttons -->
+    <script src="https://cdn.datatables.net/buttons/3.0.0/js/dataTables.buttons.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.html5.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.print.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    
+    <!-- DataTables Select -->
+    <script src="https://cdn.datatables.net/select/3.0.0/js/dataTables.select.js"></script>
+    <script src="https://cdn.datatables.net/select/3.0.0/js/select.bootstrap5.js"></script>
 
     <!-- QR Generator -->
   <script src="{{ asset('html5/html5.min.js') }}"></script>

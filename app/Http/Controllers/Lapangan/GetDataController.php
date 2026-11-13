@@ -17,6 +17,7 @@ use App\Models\VService;
 use App\Models\Berth;
 use App\Models\Isocode;
 use App\Models\MasterStid;
+use App\Models\MasterContainer;
 
 use App\Models\JobImport;
 use App\Models\JobExtend;
@@ -117,7 +118,7 @@ class GetDataController extends Controller
                 'data' => $iso 
             ]);
         }else{
-            return response()->jsom([
+            return response()->json([
                 'success'  => false,
                 'message' => 'Data tidak ditemukan'
             ]);
@@ -133,7 +134,7 @@ class GetDataController extends Controller
                 'data' => $stid 
             ]);
         }else{
-            return response()->jsom([
+            return response()->json([
                 'success'  => false,
                 'message' => 'Data tidak ditemukan'
             ]);
@@ -365,6 +366,22 @@ class GetDataController extends Controller
             'item' => $item,
             'keterangan' => $keterangan
         ]);
+    }
+
+    public function getMasterContainer(Request $request)
+    {
+        $stid = MasterContainer::findOrFail($request->id);
+        if ($stid) {
+            return response()->json([
+                'success' => true,
+                'data' => $stid 
+            ]);
+        }else{
+            return response()->json([
+                'success'  => false,
+                'message' => 'Data tidak ditemukan'
+            ]);
+        }
     }
 
 }

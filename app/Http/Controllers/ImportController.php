@@ -486,6 +486,13 @@ class ImportController extends Controller
             ]);
         }
 
+        if ($do->status === 'N') {
+            return response()->json([
+                'success' => false,
+                'message' => 'DO Belum di setujui bagian administrasi !!',
+            ]);
+        }
+
         // var_dump($do);
 
         if (!$do) {
@@ -1325,7 +1332,7 @@ private function getNextInvoiceDSK()
         if ($adminDSK) {
             $data['admin'] = $adminDSK->total;
         }
-        $data['terbilang'] = $this->terbilang($data['invoice']->grand_total);
+        $data['terbilang'] = $this->terbilang(($data['invoice']->grand_total));
 
 
         return view('billingSystem.import.pranota.dsk', $data);
@@ -1346,9 +1353,8 @@ private function getNextInvoiceDSK()
         if ($adminDS) {
             $data['admin'] = $adminDS->total;
         }
-        $data['terbilang'] = $this->terbilang($data['invoice']->grand_total);
-
-        $data['terbilang'] = $this->terbilang($data['invoice']->grand_total);
+      
+        $data['terbilang'] = $this->terbilang(($data['invoice']->grand_total));
 
         return view('billingSystem.import.pranota.ds', $data);
     }
@@ -1426,7 +1432,7 @@ private function getNextInvoiceDSK()
         if ($adminDSK) {
             $data['admin'] = $adminDSK->total;
         }
-        $data['terbilang'] = $this->terbilang($data['invoice']->grand_total);
+        $data['terbilang'] = $this->terbilang(($data['invoice']->grand_total));
 
         return view('billingSystem.import.invoice.dsk', $data);
     }
@@ -1447,7 +1453,7 @@ private function getNextInvoiceDSK()
         if ($adminDS) {
             $data['admin'] = $adminDS->total;
         }
-        $data['terbilang'] = $this->terbilang($data['invoice']->grand_total);
+        $data['terbilang'] = $this->terbilang(($data['invoice']->grand_total));
 
         return view('billingSystem.import.invoice.ds', $data);
     }
@@ -2073,9 +2079,9 @@ private function getNextInvoiceDSK()
     private function createInvoiceHeader($request, $form, $service, $type)
     {
         $grandTotal = $request->input("grandTotal$type");
-        if ($grandTotal >= 5000000) {
-            $grandTotal += 10000;
-        }
+        // if ($grandTotal >= 5000000) {
+        //     $grandTotal += 10000;
+        // }
         return InvoiceImport::create([
             'form_id' => $form->id,
             'inv_type' => $type,

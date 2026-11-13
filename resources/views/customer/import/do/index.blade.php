@@ -41,7 +41,7 @@
           <h3 class="card-title">
             Table DO Online
           </h3>
-          <p>Lorem Ipsum</p>
+          <p></p>
         </div>
         <div class="card-body">
           <div class="row">
@@ -53,6 +53,7 @@
                       <th>No</th>
                       <th>Do No</th>
                       <th>BL No</th>
+                      <th>Status</th>
                       <th>Container No</th>
                       <th>Customer Code</th>
                       <th>Do Expired</th>
@@ -128,6 +129,7 @@
                 { data: 'DT_RowIndex', name: 'DT_RowIndex', className: 'text-center', orderable: false, searchable: false },
                 { data: 'do_no', name: 'do_no', className: 'text-center' },
                 { data: 'bl_no', name: 'bl_no', className: 'text-center' },
+                { data: 'status', name: 'status', className: 'text-center' },
                 { data: 'container_no', name: 'container_no', className: 'text-center' },
                 { data: 'customer_code', name: 'customer_code', className: 'text-center' },
                 { data: 'expired', name: 'expired', className: 'text-center' },

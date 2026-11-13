@@ -1085,7 +1085,7 @@ class InvoiceExportController extends Controller
         if ($adminDSK) {
             $data['admin'] = $adminDSK->total;
         }
-        $data['terbilang'] = $this->terbilang($data['invoice']->grand_total);
+        $data['terbilang'] = $this->terbilang(($data['invoice']->grand_total));
 
 
         return view('billingSystem.export.pranota.dsk', $data);
@@ -1106,10 +1106,7 @@ class InvoiceExportController extends Controller
         if ($adminDS) {
             $data['admin'] = $adminDS->total;
         }
-        $data['terbilang'] = $this->terbilang($data['invoice']->grand_total);
-
-        $data['terbilang'] = $this->terbilang($data['invoice']->grand_total);
-
+        $data['terbilang'] = $this->terbilang(($data['invoice']->grand_total));
         return view('billingSystem.export.pranota.ds', $data);
     }
 
@@ -1387,7 +1384,7 @@ class InvoiceExportController extends Controller
         if ($adminDSK) {
             $data['admin'] = $adminDSK->total;
         }
-        $data['terbilang'] = $this->terbilang($data['invoice']->grand_total);
+        $data['terbilang'] = $this->terbilang(($data['invoice']->grand_total));
 
         return view('billingSystem.export.invoice.dsk', $data);
     }
@@ -1408,7 +1405,7 @@ class InvoiceExportController extends Controller
         if ($adminDS) {
             $data['admin'] = $adminDS->total;
         }
-        $data['terbilang'] = $this->terbilang($data['invoice']->grand_total);
+        $data['terbilang'] = $this->terbilang(($data['invoice']->grand_total));
 
         return view('billingSystem.export.invoice.ds', $data);
     }
@@ -1582,24 +1579,24 @@ class InvoiceExportController extends Controller
 
     // Retrieve the invoices
     $invoices = $invoiceQuery->get();
-
+    // dd($invoiceQuery);
     // Initialize the query for InvoiceHeaderStevadooring
     $stevadooringQuery = InvoiceHeaderStevadooring::whereDate('invoice_date', '>=', $startDate)
         ->whereDate('invoice_date', '<=', $endDate)
         ->whereNot('lunas', '=', 'N')
         ->orderBy('invoice_no', 'asc');
-
+    // dd($stevadooringQuery);
     // Retrieve the stevadooring invoices
     $stevadooringInvoices = $stevadooringQuery->get();
-
+    // dd($stevadooringInvoices);
     // Merge both invoice collections
-    $mergedInvoices = $invoices->map(function ($invoice) {
+    $mergedInvoices = $invoices->toBase()->map(function ($invoice) {
         return [
             'inv_no' => $invoice->inv_no,
             'invoice_date' => $invoice->invoice_date,
             'proforma_no' => $invoice->proforma_no,
             'inv_type' => $invoice->inv_type,
-            'cust_name' => $invoice->customer->name,
+            'cust_name' => $invoice->customer->name ?? null,
             'os_name' => $invoice->os_name,
             'total' => $invoice->total,
             'admin' => $invoice->admin,
@@ -1611,25 +1608,27 @@ class InvoiceExportController extends Controller
             'lunas' => $invoice->lunas,
             'Form' => $invoice->Form
         ];
-    })->merge($stevadooringInvoices->map(function ($invoice) {
+    })->merge($stevadooringInvoices->toBase()->map(function ($invoice) {
         return [
-            'inv_no' => $invoice->invoice_no,
-            'invoice_date' => $invoice->invoice_date,
+            'inv_no' => $invoice->invoice_no ?? null,
+            'invoice_date' => $invoice->invoice_date ?? null,
             'proforma_no' => $invoice->proforma_no ?? 'N/A',
             'inv_type' => 'N/A',
-            'cust_name' => $invoice->customer->name,
-            'os_name' => $invoice->os_name,
-            'total' => $invoice->total,
-            'admin' => $invoice->admin,
-            'discount' => $invoice->discount,
-            'pajak' => $invoice->pajak,
-            'grand_total' => $invoice->grand_total,
-            'order_by' => $invoice->order_by,
+            'cust_name' => $invoice->customer->name ?? null,
+            'os_name' => $invoice->os_name ?? null,
+            'total' => $invoice->total ?? null,
+            'admin' => $invoice->admin ?? null,
+            'discount' => $invoice->discount ?? null,
+            'pajak' => $invoice->pajak ?? null,
+            'grand_total' => $invoice->grand_total ?? null,
+            'order_by' => $invoice->order_by ?? null,
             'va' => $invoice->va ?? '',
-            'lunas' => $invoice->lunas,
-            'Form' => $invoice->Form
+            'lunas' => $invoice->lunas ?? null,
+            'Form' => $invoice->Form ?? null
         ];
     }));
+
+    // dd($mergedInvoices);
 
     // Sort the merged collection by 'inv_no'
     $invoice = $mergedInvoices->sortBy('inv_no')->values();

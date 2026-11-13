@@ -15,6 +15,8 @@ use App\Models\Payment\RefDetail;
 use App\Http\Controllers\customer\TransactionController;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 class PaymentController extends Controller
 {
     protected $userid;
@@ -137,67 +139,149 @@ class PaymentController extends Controller
     }
 
     private function inquiryService($request)
-    {
-        // var_dump($request->all());
-        // die();
+{
+    // Logger khusus inquiry service
+    $logger = Log::build([
+        'driver' => 'single',
+        'path' => storage_path('logs/inquiry-service.log'),
+        'level' => 'debug',
+    ]);
 
+    $trxid = $request->trxid;
+
+    $context = [
+        'trxid' => $trxid,
+        'va' => $request->va,
+        'bankid' => $request->bankid,
+        'merchant_type' => $request->merchant_type,
+        'terminal_id' => $request->terminal_id,
+        'ip' => $request->ip(),
+    ];
+
+    $logger->info('Inquiry dimulai', $context);
+
+    try {
+        // Cari virtual account
         $va = VA::where('virtual_account', $request->va)->first();
-        $detail = RefDetail::where('va_id', $va->id)->get();
-        $proforma = $detail->pluck('proforma_no')->implode(', ');
-        if ($va) {
-            if (Carbon::parse($va->expired_va)->greaterThan(Carbon::now())) {
-                if ($va->status != 'N') {
-                    return response()->json([
-                        'type' => 'response_inquiry',
-                        'success' => false,
-                        'status' => 88,
-                        'message' => ($va->status == 'C') ? 'VA Status : Canceled' : 'VA Status Paid',
-                        'trxid' => $request->trxid,
-                    ]);
-                }
 
-                $inquiryTime = Carbon::parse($request->datetime);
-                // var_dump($inquiryTime);
-                // die();
-                $va->update([
-                    'bank_id' => $request->bankid,
-                    'merchant_type' => $request->merchant_type,
-                    'terminal_id' => $request->terminal_id,
-                    'trx_id' => $request->trxid,
-                    'inquiry_time' => $inquiryTime,
-                ]);
-                return response()->json([
-                    'type' => 'response_inquiry',
-                    'success' => true,
-                    'status' => '00',
-                    'message' => 'Success',
-                    'trxid' => $request->trxid,
-                    'va' => $va->virtual_account,
-                    'name' => $va->customer_name,
-                    'customerid' => $va->customer_id,
-                    'description' => $proforma,
-                    'billing_amount' => ceil($va->billing_amount),
-                    'type_trx' => "c"
-                ]);
-            } else {
-                return response()->json([
-                    'type' => 'response_inquiry',
-                    'success' => false,
-                    'status' => '10',
-                    'message' => 'VA Expired',
-                    'trxid' => $request->trxid,
-                ]);
-            }
-        } else {
+        if (!$va) {
+            $logger->warning('Inquiry gagal: VA tidak ditemukan', $context);
+
             return response()->json([
                 'type' => 'response_inquiry',
                 'success' => false,
                 'status' => '10',
                 'message' => 'VA Tidak ditemukan',
-                'trxid' => $request->trxid,
+                'trxid' => $trxid,
             ]);
         }
+
+        $context['va_id'] = $va->id;
+        $context['va_status'] = $va->status;
+        $context['expired_va'] = $va->expired_va;
+
+        $logger->info('VA ditemukan', $context);
+
+        // Periksa masa berlaku VA
+        if (!Carbon::parse($va->expired_va)->greaterThan(Carbon::now())) {
+            $logger->warning('Inquiry gagal: VA expired', $context);
+
+            return response()->json([
+                'type' => 'response_inquiry',
+                'success' => false,
+                'status' => '10',
+                'message' => 'VA Expired',
+                'trxid' => $trxid,
+            ]);
+        }
+
+        // Periksa status VA
+        if ($va->status != 'N') {
+            $message = ($va->status == 'C')
+                ? 'VA Status : Canceled'
+                : 'VA Status Paid';
+
+            $logger->warning('Inquiry gagal: status VA bukan N', array_merge(
+                $context,
+                ['message' => $message]
+            ));
+
+            return response()->json([
+                'type' => 'response_inquiry',
+                'success' => false,
+                'status' => 88,
+                'message' => $message,
+                'trxid' => $trxid,
+            ]);
+        }
+
+        // Ambil detail proforma
+        $detail = RefDetail::where('va_id', $va->id)->get();
+        $proforma = $detail->pluck('proforma_no')->implode(', ');
+
+        $logger->info('Detail proforma berhasil diambil', array_merge(
+            $context,
+            [
+                'detail_count' => $detail->count(),
+                'proforma' => $proforma,
+            ]
+        ));
+
+        // Simpan data inquiry
+        $inquiryTime = Carbon::parse($request->datetime);
+
+        $va->update([
+            'bank_id' => $request->bankid,
+            'merchant_type' => $request->merchant_type,
+            'terminal_id' => $request->terminal_id,
+            'trx_id' => $trxid,
+            'inquiry_time' => $inquiryTime,
+        ]);
+
+        $logger->info('Inquiry berhasil', array_merge(
+            $context,
+            [
+                'inquiry_time' => $inquiryTime->toDateTimeString(),
+                'billing_amount' => $va->billing_amount,
+                'detail_count' => $detail->count(),
+            ]
+        ));
+
+        return response()->json([
+            'type' => 'response_inquiry',
+            'success' => true,
+            'status' => '00',
+            'message' => 'Success',
+            'trxid' => $trxid,
+            'va' => $va->virtual_account,
+            'name' => $va->customer_name,
+            'customerid' => $va->customer_id,
+            'description' => $proforma,
+            'billing_amount' => ceil($va->billing_amount),
+            'type_trx' => 'c',
+        ]);
+
+    } catch (Throwable $e) {
+        $logger->error('Inquiry mengalami exception', array_merge(
+            $context,
+            [
+                'exception' => get_class($e),
+                'error_message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]
+        ));
+
+        return response()->json([
+            'type' => 'response_inquiry',
+            'success' => false,
+            'status' => '96',
+            'message' => 'Internal Server Error',
+            'trxid' => $trxid,
+        ], 500);
     }
+}
 
     public function paymentService(Request $request)
     {
@@ -216,7 +300,7 @@ class PaymentController extends Controller
                     ]);
                 }
 
-                $amount = Ceil($va->billing_amount);
+                $amount = ceil($va->billing_amount);
                 if ($amount != $request->payment_amount) {
                     return response()->json([
                         'type' => 'response_payment',

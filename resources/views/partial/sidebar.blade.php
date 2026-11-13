@@ -439,6 +439,13 @@
         </ul>
     </li>
 
+    <li class="sidebar-item">
+        <a href="{{route('report.indexOpname')}}" class='sidebar-link'>
+            <i class="fas fa-newspaper"></i>
+            <span>Report Opname</span>
+        </a>
+    </li>
+
 
     <!-- CTR -->
 

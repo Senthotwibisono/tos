@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\customer\CustomerMainController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 use App\Models\InvoiceImport as Import;
 use App\Models\OrderService as OS;
@@ -973,7 +974,7 @@ class CustomerImportController extends CustomerMainController
     public function doIndex()
     {
         $data['title'] = 'DO Online, ' . Auth::user()->name;
-        $data['vessels'] = VVoyage::where('deparature_date', '>=', Carbon::now())->orderBy('ves_id', 'desc')->get();
+        $data['vessels'] = VVoyage::orderBy('ves_id', 'desc')->get();
 
         return view('customer.import.do.index', $data);
     }
@@ -982,10 +983,24 @@ class CustomerImportController extends CustomerMainController
     {
         $mui = MUI::where('user_id', $this->userId)->get();
         $customer = Customer::whereIn('id', $mui->pluck('customer_id'))->get();
-        $doData = DOonline::whereIn('customer_code', $customer->pluck('code'))->get(); // Adjust with your actual model and query logic
+        $doData = DOonline::whereIn('customer_code', $customer->pluck('code'))->orderBy('created_at', 'desc')->get(); // Adjust with your actual model and query logic
         return datatables()->of($doData)
             ->addIndexColumn() // This adds DT_RowIndex to each row
             ->addColumn('actions', function($do) {
+                $pdfDirectory = storage_path('app/public/do/' . $do->id);           
+
+                $hasPdf = \Illuminate\Support\Facades\File::exists($pdfDirectory)
+                    && count(\Illuminate\Support\Facades\File::files($pdfDirectory)) > 0;           
+
+                $pdfButton = $hasPdf
+                    ? '<a href="' . route('doFiles', $do->id) . '"
+                          class="btn btn-info" target="_blank_">
+                          File PDF
+                       </a>'
+                    : '<a href="' . route('doFiles', $do->id) . '"
+                          class="btn btn-outline-info" target="_blank_">
+                          File PDF (0)
+                       </a>';
                 // return '
                 //     <div class="row mb-3">
                 //         <div class="col-sm-6">
@@ -1000,7 +1015,7 @@ class CustomerImportController extends CustomerMainController
                 //         </div>
                 //     </div>';
 
-                return 'HUbungi Admin';
+                return $pdfButton;
             })
             ->addColumn('container_no', function($do) {
                 $doArray = json_decode($do->container_no, true);
@@ -1010,7 +1025,13 @@ class CustomerImportController extends CustomerMainController
                     return $do->container_no;
                 }
             })
-            ->rawColumns(['actions', 'container_no'])
+            ->editColumn('status', function ($do) {
+                if ($do->status === 'N') {
+                    return '<span class="text-danger fw-bold">Belum Disetujui</span>';
+                }
+                return '<span class="text-success fw-bold">Sudah Disetujui</span>';
+            })
+            ->rawColumns(['actions', 'container_no', 'status'])
             ->make(true);
     }
 

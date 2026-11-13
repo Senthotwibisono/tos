@@ -319,7 +319,7 @@ class RentalController extends Controller
         // $discDateCarbon = Carbon::parse($form->disc_date);
         // $expDateCarbon = Carbon::parse($form->expired_date);
         // $secondsDifference = $discDateCarbon->diffInSeconds($expDateCarbon);
-        // $shiftCount = ceil($secondsDifference / 28800);
+        // $shiftCount = ($secondsDifference / 28800);
         // dd($shiftCount);
         $osDS = OSDetail::where('os_id', $form->os_id)->where('type', '=', 'OS')->get();
 
@@ -362,7 +362,7 @@ class RentalController extends Controller
         $discDateCarbon = Carbon::parse($form->disc_date);
         $expDateCarbon = Carbon::parse($form->expired_date);
         $secondsDifference = $discDateCarbon->diffInSeconds($expDateCarbon);
-        $shiftCount = ceil($secondsDifference / 28800);
+        $shiftCount = ($secondsDifference / 28800);
         // dd($shiftCount);
         $osDS = OSDetail::where('os_id', $form->os_id)->where('type', '=', 'OS')->get();
         $ds = $osDS->isEmpty() ? 'N' : 'Y';
@@ -567,10 +567,7 @@ class RentalController extends Controller
         if ($adminDS) {
             $data['admin'] = $adminDS->total;
         }
-        $data['terbilang'] = $this->terbilang($data['invoice']->grand_total);
-
-        $data['terbilang'] = $this->terbilang($data['invoice']->grand_total);
-
+        $data['terbilang'] = $this->terbilang(($data['invoice']->grand_total));
         return view('billingSystem.rental-repair.pranota.ds', $data);
     }
 
@@ -592,7 +589,7 @@ class RentalController extends Controller
         if ($adminDS) {
             $data['admin'] = $adminDS->total;
         }
-        $data['terbilang'] = $this->terbilang($data['invoice']->grand_total);
+        $data['terbilang'] = $this->terbilang(($data['invoice']->grand_total));
 
         return view('billingSystem.rental-repair.invoice.ds', $data);
     }

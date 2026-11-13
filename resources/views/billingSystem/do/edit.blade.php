@@ -22,9 +22,23 @@
             <?= $title ?>
           </h3>
         </div>
-        <form action="{{ route('doUpdate')}}" method="post"> 
+        <form action="{{ route('doUpdate')}}" method="post" enctype="multipart/form-data"> 
             @csrf
             <div class="card-body">
+              <div class="row mb-3">
+                  <div class="col-sm-12">
+                      <div class="form-group">
+                          <label for="do_pdf">Upload Delivery Order (PDF)</label>
+                          <input
+                              type="file"
+                              class="form-control"
+                              id="do_pdf"
+                              name="do_pdf"
+                              accept=".pdf,application/pdf"
+                          >
+                      </div>
+                  </div>
+              </div>
               <div class="row mb-3">
                 <div class="col-sm-3">
                     <div class="form-group">

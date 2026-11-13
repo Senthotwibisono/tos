@@ -42,7 +42,7 @@
           <h3 class="card-title">
             Table DO Online
           </h3>
-          <p>Lorem Ipsum</p>
+          <p></p>
         </div>
         <div class="card-body">
           <div class="row">
@@ -52,6 +52,8 @@
                   <thead>
                     <tr>
                       <th>No</th>
+                      <th>Status</th>
+                      <th>Approve</th>
                       <th>Do No</th>
                       <th>BL No</th>
                       <th>Container No</th>
@@ -160,6 +162,8 @@
             },
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex', className: 'text-center', orderable: false, searchable: false },
+                { data: 'status', name: 'status', className: 'text-center' },
+                { data: 'approve', name: 'approve', className: 'text-center' },
                 { data: 'do_no', name: 'do_no', className: 'text-center' },
                 { data: 'bl_no', name: 'bl_no', className: 'text-center' },
                 { data: 'container_no', name: 'container_no', className: 'text-center' },
@@ -196,5 +200,35 @@
             });
         });
     });
+</script>
+
+<script>
+  async function approveButton(button) {
+    const result = await confirmation();
+    if (result.isConfirmed) {
+      showLoading();
+      const data = {
+        id : button.dataset.id,
+        action : button.dataset.action,
+      }
+
+      const url = '/billing/do/approved';
+      const response = await globalResponse(data, url);
+      hideLoading();
+      if (response.ok) {
+        const hasil = await response.json();
+        if (hasil.success) {
+          $('#doTable').DataTable().ajax.reload();
+          return successHasil(hasil);
+        }else{
+          return errorHasil(hasil);
+        }
+      }else{
+        return errorResponse(response);
+      }
+    }else{
+      return;
+    }
+  }
 </script>
 @endsection

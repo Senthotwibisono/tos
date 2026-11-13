@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\VVoyage;
 use App\Models\Isocode;
 use App\Models\Item;
+use App\Models\MasterContainer;
 use App\Models\Imocode;
 use App\Models\Port;
 use App\Models\User;
@@ -202,6 +203,19 @@ class BayplanImportController extends Controller
                 'selected_do' => 'N',
 
             ]);
+
+            MasterContainer::updateOrCreate(
+                [
+                    'container_no' => $item->container_no,
+                ],
+                [
+                    'ctr_size' => $item->ctr_size,
+                    'ctr_type' => $item->ctr_type,
+                    'status' => 'inactive',
+                    'location' => 'Kapal Menuju IKS',
+                ]
+            );
+
             $ship = Ship::where('ves_id', $item->ves_id)->where('bay_slot', $item->bay_slot)->where('bay_row', $item->bay_row)->where('bay_tier', $item->bay_tier)->first();
             if ($ship) {
              if ($ship->container_key == null) {
@@ -325,6 +339,18 @@ class BayplanImportController extends Controller
             'ctr_opr' => $request->ctr_opr,
             'user_id' => $request->user_id,
         ]);
+
+        MasterContainer::updateOrCreate(
+            [
+                'container_no' => $item->container_no,
+            ],
+            [
+                'ctr_size' => $item->ctr_size,
+                'ctr_type' => $item->ctr_type,
+                'status' => 'inactive',
+                'location' => 'Kapal Menuju IKS',
+            ]
+        );
 
         $oldShip = Ship::where('ctr_i_e_t', '=', 'I')->where('container_key', $item->container_key)->first();
         $ship = Ship::where('ves_id', $item->ves_id)->where('bay_slot', $item->bay_slot)->where('bay_row', $item->bay_row)->where('bay_tier', $item->bay_tier)->first();
@@ -460,6 +486,18 @@ class BayplanImportController extends Controller
                 'disc_date' => $request->disc_date,
                 'selected_do' => 'N',
             ]);
+
+            MasterContainer::updateOrCreate(
+                [
+                    'container_no' => $item->container_no,
+                ],
+                [
+                    'ctr_size' => $item->ctr_size,
+                    'ctr_type' => $item->ctr_type,
+                    'status' => 'inactive',
+                    'location' => 'Kapal Menuju IKS',
+                ]
+            );
 
            
             return redirect('/planning/bayplan_import')->with('success', "Container Berhasil Dibuat");

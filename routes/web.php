@@ -939,7 +939,11 @@ Route::middleware('permission:Master Customer')->group(function(){
 
 Route::controller(MasterTarifController::class)->group(function(){
   Route::get('/billing/do/createManual', 'createDoManual');
+  Route::post('/billing/do/parse-pdf', 'parseDoPdf')->name('billing.do.parse-pdf');
   Route::post('/billing/do/postManual', 'postManual');
+  Route::post('/billing/do/approved', 'approved');
+  Route::get('/billing/do/{id}/files', 'doFiles')->name('doFiles');
+  Route::delete('/billing/do/{id}/files', 'deleteDoFile')->name('doFiles.delete');
 });
 Route::post('/billing/dock-DO/delete', [MasterTarifController::class, 'deleteDo'])->name('deleteDo');
 Route::post('/update/doOnline/{id?}', [MasterTarifController::class, 'doUpdate'])->name('doUpdate');

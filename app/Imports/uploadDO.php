@@ -29,6 +29,7 @@ class uploadDO implements ToCollection, WithHeadingRow
             $blNo = $row['bl_no'];
             $customerCode = $row['customer_code'];
             $active = 'Y';
+            $status = Auth::user()->hasRole('customer') ? 'Y' : 'Y';
             // $doExpired = Carbon::createFromDate(1900, 1, 1)->addDays($row['do_expired'] - 2);
             // $doExpired = excelDate($row['do_expired']);
             $doExpired = $row['do_expired'];
@@ -63,6 +64,7 @@ class uploadDO implements ToCollection, WithHeadingRow
                 $doOnline->customer_code = $customerCode;
                 $doOnline->expired = $doExpired;
                 $doOnline->active = $active;
+                $doOnline->status = $status;
                 $doOnline->created_at = Carbon::now();
                 $doOnline->created_by = Auth::user()->name;
                 $doOnline->save();

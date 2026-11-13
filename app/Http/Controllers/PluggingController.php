@@ -587,10 +587,7 @@ class PluggingController extends Controller
         if ($adminDS) {
             $data['admin'] = $adminDS->total;
         }
-        $data['terbilang'] = $this->terbilang($data['invoice']->grand_total);
-
-        $data['terbilang'] = $this->terbilang($data['invoice']->grand_total);
-
+        $data['terbilang'] = $this->terbilang(($data['invoice']->grand_total));
         return view('billingSystem.plugging.pranota.ds', $data);
     }
 
@@ -612,7 +609,7 @@ class PluggingController extends Controller
         if ($adminDS) {
             $data['admin'] = $adminDS->total;
         }
-        $data['terbilang'] = $this->terbilang($data['invoice']->grand_total);
+        $data['terbilang'] = $this->terbilang(($data['invoice']->grand_total));
 
         return view('billingSystem.plugging.invoice.ds', $data);
     }

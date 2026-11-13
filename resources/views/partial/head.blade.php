@@ -18,7 +18,13 @@
 <link rel="stylesheet" href="{{asset('dist/assets/extensions/choices.js/public/assets/styles/choices.css')}}">
 
 <!-- Data Tables -->
-<link href="{{asset('dataTables/datatables.min.css')}}" rel="stylesheet">
+<!-- <link href="{{asset('dataTables/datatables.min.css')}}" rel="stylesheet"> -->
+ <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap5.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/3.0.0/css/select.bootstrap5.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/3.2.2/css/buttons.bootstrap5.css">
 <!-- <link rel="stylesheet" href="{{ asset('bulma/css/bulma.min.css') }}"> -->
  
 
